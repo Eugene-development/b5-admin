@@ -6,6 +6,6 @@
 <div>
 	<h1>Agents</h1>
 	{#each data.agents as agent}
-		<p>{agent.id}</p>
+		<p>{agent.id}-{agent.city}</p>
 	{/each}
 </div>

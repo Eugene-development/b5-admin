@@ -32,7 +32,6 @@ export const load = async () => {
 		}
 	`;
 	const data = await request(import.meta.env.VITE_B5_API_URL, query);
-	console.log(data);
 
 	return {
 		agents: data.users
