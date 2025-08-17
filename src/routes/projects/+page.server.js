@@ -3,20 +3,18 @@ import { gql, request } from 'graphql-request';
 export const load = async () => {
 	const query = gql`
 		{
-			users {
+			projects {
 				id
-				city
-				name
-				email
-				email_verified_at
+				value
+				description
 				created_at
-				updated_at
 			}
 		}
 	`;
 	const data = await request(import.meta.env.VITE_B5_API_URL, query);
+	console.log(data);
 
 	return {
-		agents: data.users
+		projects: data.projects
 	};
 };
