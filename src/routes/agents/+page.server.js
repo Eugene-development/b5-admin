@@ -28,6 +28,11 @@ export const load = async () => {
 			users {
 				id
 				city
+				name
+				email
+				email_verified_at
+				created_at
+				# updated_at
 			}
 		}
 	`;
