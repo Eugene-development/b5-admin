@@ -2,7 +2,7 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import ActionButtons from './ActionButtons.svelte';
 
-	let { agents = [], isLoading = false, onBanAgent, onDeleteAgent } = $props();
+	let { agents = [], isLoading = false, onBanAgent, onDeleteAgent, updateCounter = 0 } = $props();
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -21,9 +21,14 @@
 
 	// Get agent ban status for StatusBadge (preparation for ban functionality)
 	function getAgentBanStatus(agent) {
-		// Check if agent has a status field and is banned
+		console.log('Checking agent ban status:', { id: agent.id, status: agent.status });
 		return agent.status === 'banned' ? 'banned' : null;
 	}
+
+	// Log agents data when it changes
+	$effect(() => {
+		console.log('AgentsTable received agents:', agents.map(a => ({ id: a.id, status: a.status })));
+	});
 </script>
 
 <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
@@ -114,7 +119,7 @@
 					</td>
 				</tr>
 			{:else}
-				{#each agents as agent (agent.id)}
+				{#each agents as agent (agent.id + '-' + agent.status + '-' + updateCounter)}
 					<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"
@@ -137,17 +142,22 @@
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
 						<td class="whitespace-nowrap px-6 py-4 text-sm">
-							{#if getAgentBanStatus(agent)}
-								<StatusBadge status={getAgentBanStatus(agent)} />
+							{#if agent.status === 'banned'}
+								<StatusBadge status="banned" />
 							{:else}
 								<StatusBadge status="verified" text="Active" />
 							{/if}
+							<!-- Temporary debug info -->
+							<div class="text-xs text-gray-400 mt-1">
+								Status: "{agent.status}" (type: {typeof agent.status})
+							</div>
 						</td>
 						<td
 							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 						>
 							<ActionButtons
 								{agent}
+								agentStatus={agent.status}
 								onBan={onBanAgent}
 								onDelete={onDeleteAgent}
 								{isLoading}

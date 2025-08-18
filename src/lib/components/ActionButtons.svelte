@@ -10,10 +10,15 @@
 	 * @param {Function} onDelete - Callback function for delete action
 	 * @param {boolean} [isLoading=false] - Loading state for disabling buttons
 	 */
-	let { agent, onBan, onDelete, isLoading = false } = $props();
+	let { agent, agentStatus, onBan, onDelete, isLoading = false } = $props();
 
-	// Determine if agent is currently banned
-	const isBanned = $derived(agent.status === 'banned');
+	// Determine if agent is currently banned - using correct Svelte 5 syntax
+	const isBanned = $derived(() => {
+		const status = agentStatus || agent.status;
+		const banned = status === 'banned';
+		console.log(`ActionButtons debug - Agent ${agent.id}: status="${status}" (type: ${typeof status}), isBanned=${banned}`);
+		return banned;
+	});
 
 	// Handle ban/unban action
 	function handleBanAction() {

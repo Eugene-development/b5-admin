@@ -1,6 +1,8 @@
 <script>
-	import { AgentsTable, SearchBar, ConfirmationModal } from '$lib';
+	import { AgentsTable, SearchBar, ConfirmationModal, ToastContainer, ErrorBoundary, LoadingSpinner } from '$lib';
 	import { gql, request } from 'graphql-request';
+	import { toasts, addSuccessToast, addErrorToast, handleApiError, retryOperation } from '$lib/utils/toastStore.js';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
 
@@ -11,11 +13,36 @@
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
-	let actionError = $state('');
-	let actionSuccess = $state('');
 
-	// Local agents state for updates
-	let localAgents = $state([...(data?.agents || [])]);
+	// Error boundary state
+	let hasError = $state(false);
+	let errorBoundaryError = $state(null);
+
+	// Loading state for data refresh
+	let isRefreshing = $state(false);
+
+	// Local agents state for updates - normalize status to lowercase
+	let localAgents = $state([...(data?.agents || []).map(agent => ({
+		...agent,
+		status: agent.status?.toLowerCase() || 'active'
+	}))]);
+	
+	// Force update counter for reactivity
+	let updateCounter = $state(0);
+
+	// Check for server-side load errors
+	let loadError = $state(data?.error || null);
+
+	// Debug: Log initial data to see what we're getting
+	console.log('Initial data from server:', data?.agents?.map(a => ({ 
+		id: a.id, 
+		name: a.name, 
+		email: a.email,
+		status: a.status,
+		statusType: typeof a.status 
+	})));
+
+
 
 	// Computed filteredAgents reactive statement
 	let filteredAgents = $derived.by(() => {
@@ -69,40 +96,38 @@
 		clearMessages();
 	}
 
-	// Execute confirmed action
+	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
 
 		isActionLoading = true;
-		clearMessages();
 
 		try {
 			const { type, agent } = confirmAction;
 			
-			if (type === 'ban') {
-				await banAgent(agent.id);
-				updateAgentStatus(agent.id, 'banned');
-				actionSuccess = `Агент "${agent.name || agent.email}" успешно забанен.`;
-			} else if (type === 'unban') {
-				await unbanAgent(agent.id);
-				updateAgentStatus(agent.id, 'active');
-				actionSuccess = `Агент "${agent.name || agent.email}" успешно разбанен.`;
-			} else if (type === 'delete') {
-				await deleteAgent(agent.id);
-				removeAgentFromList(agent.id);
-				actionSuccess = `Агент "${agent.name || agent.email}" успешно удален.`;
-			}
+			// Use retry mechanism for critical operations
+			await retryOperation(async () => {
+				if (type === 'ban') {
+					const result = await banAgent(agent.id);
+					// Convert GraphQL enum to lowercase for consistency
+					const status = result?.status?.toLowerCase() || 'banned';
+					updateAgentStatus(agent.id, status);
+					addSuccessToast(`Агент "${agent.name || agent.email}" успешно забанен.`);
+				} else if (type === 'unban') {
+					const result = await unbanAgent(agent.id);
+					// Convert GraphQL enum to lowercase for consistency
+					const status = result?.status?.toLowerCase() || 'active';
+					updateAgentStatus(agent.id, status);
+					addSuccessToast(`Агент "${agent.name || agent.email}" успешно разбанен.`);
+				} else if (type === 'delete') {
+					await deleteAgent(agent.id);
+					removeAgentFromList(agent.id);
+					addSuccessToast(`Агент "${agent.name || agent.email}" успешно удален.`);
+				}
+			}, 2, 1000); // 2 retries with 1 second delay
 		} catch (error) {
-			console.error('Action error:', error);
-			
-			// More specific error handling
-			if (error.name === 'TypeError' && error.message.includes('fetch')) {
-				actionError = `Ошибка сети: Не удается подключиться к серверу. Проверьте, что API сервер запущен на ${import.meta.env.VITE_B5_API_URL}`;
-			} else if (error.response) {
-				actionError = `Ошибка сервера: ${error.response.errors?.[0]?.message || error.message}`;
-			} else {
-				actionError = `Ошибка при выполнении действия: ${error.message || 'Неизвестная ошибка'}`;
-			}
+			// Error is already handled by handleApiError in retryOperation
+			console.error('Action failed after retries:', error);
 		} finally {
 			isActionLoading = false;
 			showConfirmModal = false;
@@ -119,8 +144,6 @@
 
 	// Ban agent GraphQL mutation
 	async function banAgent(agentId) {
-		console.log('Banning agent:', agentId);
-		console.log('API URL:', import.meta.env.VITE_B5_API_URL);
 		
 		const mutation = gql`
 			mutation BanUser($id: ID!) {
@@ -143,7 +166,6 @@
 					'Accept': 'application/json'
 				}
 			);
-			console.log('Ban result:', result);
 			return result.banUser;
 		} catch (error) {
 			console.error('Ban request failed:', error);
@@ -153,8 +175,6 @@
 
 	// Unban agent GraphQL mutation
 	async function unbanAgent(agentId) {
-		console.log('Unbanning agent:', agentId);
-		console.log('API URL:', import.meta.env.VITE_B5_API_URL);
 		
 		const mutation = gql`
 			mutation UnbanUser($id: ID!) {
@@ -177,7 +197,6 @@
 					'Accept': 'application/json'
 				}
 			);
-			console.log('Unban result:', result);
 			return result.unbanUser;
 		} catch (error) {
 			console.error('Unban request failed:', error);
@@ -187,8 +206,6 @@
 
 	// Delete agent GraphQL mutation
 	async function deleteAgent(agentId) {
-		console.log('Deleting agent:', agentId);
-		console.log('API URL:', import.meta.env.VITE_B5_API_URL);
 		
 		const mutation = gql`
 			mutation DeleteUser($id: ID!) {
@@ -213,7 +230,6 @@
 					'Accept': 'application/json'
 				}
 			);
-			console.log('Delete result:', result);
 			return result.deleteUser;
 		} catch (error) {
 			console.error('Delete request failed:', error);
@@ -223,11 +239,15 @@
 
 	// Update agent status in local state
 	function updateAgentStatus(agentId, newStatus) {
+		// Create completely new array with new objects to ensure reactivity
 		localAgents = localAgents.map(agent => 
 			agent.id === agentId 
 				? { ...agent, status: newStatus }
 				: agent
 		);
+		
+		// Force reactivity update
+		updateCounter++;
 	}
 
 	// Remove agent from local state after deletion
@@ -235,93 +255,134 @@
 		localAgents = localAgents.filter(agent => agent.id !== agentId);
 	}
 
-	// Clear success/error messages
-	function clearMessages() {
-		actionError = '';
-		actionSuccess = '';
+	// Refresh data from server
+	async function refreshData() {
+		isRefreshing = true;
+		try {
+			const query = gql`
+				{
+					users {
+						id
+						city
+						name
+						email
+						email_verified_at
+						created_at
+						updated_at
+						status
+					}
+				}
+			`;
+			
+			const result = await request(import.meta.env.VITE_B5_API_URL, query);
+			// Normalize status to lowercase
+			localAgents = (result.users || []).map(agent => ({
+				...agent,
+				status: agent.status?.toLowerCase() || 'active'
+			}));
+			loadError = null;
+			addSuccessToast('Data refreshed successfully');
+		} catch (error) {
+			handleApiError(error, 'Failed to refresh data');
+		} finally {
+			isRefreshing = false;
+		}
 	}
 
-	// Auto-clear messages after 5 seconds
-	$effect(() => {
-		if (actionSuccess || actionError) {
-			const timer = setTimeout(clearMessages, 5000);
-			return () => clearTimeout(timer);
+	// Handle error boundary errors
+	function handleErrorBoundaryError(error) {
+		hasError = true;
+		errorBoundaryError = error;
+		handleApiError(error, 'A critical error occurred');
+	}
+
+	// Retry from error boundary
+	async function retryFromErrorBoundary() {
+		hasError = false;
+		errorBoundaryError = null;
+		await refreshData();
+	}
+
+	// Handle initial load error
+	onMount(() => {
+		if (loadError) {
+			addErrorToast(loadError.message, { duration: 0 });
 		}
 	});
+
+	// Debug function to manually set agent status (for testing)
+	function debugSetAgentStatus(agentId, status) {
+		console.log('Debug: Manually setting agent status:', { agentId, status });
+		updateAgentStatus(agentId, status);
+	}
+
+	// Make debug function available globally for testing
+	if (typeof window !== 'undefined') {
+		window.debugSetAgentStatus = debugSetAgentStatus;
+	}
 </script>
 
-<div class="space-y-6 bg-gray-900">
-	<div class="sm:flex sm:items-center">
-		<div class="sm:flex-auto">
-			<h1 class="text-base font-semibold text-gray-900 dark:text-white">Агенты</h1>
-			<!-- <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-				Lis		t of all registered agents in the system.
-			</p> -->
+<ErrorBoundary
+	{hasError}
+	error={errorBoundaryError}
+	onError={handleErrorBoundaryError}
+	onRetry={retryFromErrorBoundary}
+	fallbackTitle="Agents Page Error"
+	fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
+	showDetails={true}
+>
+	<div class="space-y-6 bg-gray-900">
+		<div class="sm:flex sm:items-center sm:justify-between">
+			<div class="sm:flex-auto">
+				<h1 class="text-base font-semibold text-gray-900 dark:text-white">Агенты</h1>
+			</div>
+			<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+				<button
+					type="button"
+					onclick={refreshData}
+					disabled={isRefreshing}
+					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+				>
+					{#if isRefreshing}
+						<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
+					{/if}
+					{isRefreshing ? 'Refreshing...' : 'Refresh'}
+				</button>
+			</div>
 		</div>
-	</div>
 
-	<!-- Success/Error Messages -->
-	{#if actionSuccess}
-		<div class="rounded-md bg-green-50 p-4 dark:bg-green-900/20">
-			<div class="flex">
-				<div class="flex-shrink-0">
-					<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.236 4.53L7.53 10.23a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
-					</svg>
-				</div>
-				<div class="ml-3">
-					<p class="text-sm font-medium text-green-800 dark:text-green-200">
-						{actionSuccess}
-					</p>
-				</div>
-				<div class="ml-auto pl-3">
-					<div class="-mx-1.5 -my-1.5">
-						<button
-							type="button"
-							onclick={clearMessages}
-							class="inline-flex rounded-md bg-green-50 p-1.5 text-green-500 hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-green-50 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/40"
-						>
-							<span class="sr-only">Dismiss</span>
-							<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-							</svg>
-						</button>
+		<!-- Load Error Banner -->
+		{#if loadError && loadError.canRetry}
+			<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
+				<div class="flex">
+					<div class="flex-shrink-0">
+						<svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+						</svg>
+					</div>
+					<div class="ml-3">
+						<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+							Data Loading Issue
+						</h3>
+						<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+							<p>{loadError.message}</p>
+						</div>
+						<div class="mt-4">
+							<div class="-mx-2 -my-1.5 flex">
+								<button
+									type="button"
+									onclick={refreshData}
+									disabled={isRefreshing}
+									class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+								>
+									{isRefreshing ? 'Retrying...' : 'Retry'}
+								</button>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-	{/if}
-
-	{#if actionError}
-		<div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
-			<div class="flex">
-				<div class="flex-shrink-0">
-					<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-						<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
-					</svg>
-				</div>
-				<div class="ml-3">
-					<p class="text-sm font-medium text-red-800 dark:text-red-200">
-						{actionError}
-					</p>
-				</div>
-				<div class="ml-auto pl-3">
-					<div class="-mx-1.5 -my-1.5">
-						<button
-							type="button"
-							onclick={clearMessages}
-							class="inline-flex rounded-md bg-red-50 p-1.5 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:ring-offset-red-50 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40"
-						>
-							<span class="sr-only">Dismiss</span>
-							<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-								<path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
-							</svg>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	{/if}
+		{/if}
 
 	<!-- Search Bar -->
 	<div class="max-w-md">
@@ -341,13 +402,15 @@
 		</div>
 	{/if}
 
-	<AgentsTable
-		agents={filteredAgents}
-		isLoading={isActionLoading}
-		onBanAgent={handleBanAgent}
-		onDeleteAgent={handleDeleteAgent}
-	/>
-</div>
+		<AgentsTable
+			agents={filteredAgents}
+			isLoading={isActionLoading}
+			onBanAgent={handleBanAgent}
+			onDeleteAgent={handleDeleteAgent}
+			{updateCounter}
+		/>
+	</div>
+</ErrorBoundary>
 
 <!-- Confirmation Modal -->
 {#if confirmAction}
@@ -363,3 +426,6 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
+
+<!-- Toast Notifications -->
+<ToastContainer toasts={$toasts} position="top-right" />

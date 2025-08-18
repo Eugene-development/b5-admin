@@ -21,7 +21,7 @@
 			case 'unverified':
 				return 'Нет';
 			case 'banned':
-				return 'Banned';
+				return 'Забанен';
 			default:
 				return status;
 		}
