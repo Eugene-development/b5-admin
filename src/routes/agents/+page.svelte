@@ -55,10 +55,18 @@
 		clearMessages();
 	}
 
-	// Delete agent handler (placeholder for future implementation)
+	// Delete agent handler with confirmation
 	function handleDeleteAgent(agent) {
-		console.log('Delete agent:', agent);
-		// TODO: Implement delete functionality
+		confirmAction = {
+			type: 'delete',
+			agent: agent,
+			title: 'Удалить агента',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить агента "${agent.name || agent.email}"? Это действие нельзя отменить. Все данные агента будут потеряны.`,
+			confirmText: 'Удалить навсегда',
+			isDestructive: true
+		};
+		showConfirmModal = true;
+		clearMessages();
 	}
 
 	// Execute confirmed action
@@ -79,6 +87,10 @@
 				await unbanAgent(agent.id);
 				updateAgentStatus(agent.id, 'active');
 				actionSuccess = `Агент "${agent.name || agent.email}" успешно разбанен.`;
+			} else if (type === 'delete') {
+				await deleteAgent(agent.id);
+				removeAgentFromList(agent.id);
+				actionSuccess = `Агент "${agent.name || agent.email}" успешно удален.`;
 			}
 		} catch (error) {
 			console.error('Action error:', error);
@@ -173,6 +185,42 @@
 		}
 	}
 
+	// Delete agent GraphQL mutation
+	async function deleteAgent(agentId) {
+		console.log('Deleting agent:', agentId);
+		console.log('API URL:', import.meta.env.VITE_B5_API_URL);
+		
+		const mutation = gql`
+			mutation DeleteUser($id: ID!) {
+				deleteUser(id: $id) {
+					id
+					name
+					email
+					deleted
+				}
+			}
+		`;
+
+		const variables = { id: agentId };
+		
+		try {
+			const result = await request(
+				import.meta.env.VITE_B5_API_URL, 
+				mutation, 
+				variables,
+				{
+					'Content-Type': 'application/json',
+					'Accept': 'application/json'
+				}
+			);
+			console.log('Delete result:', result);
+			return result.deleteUser;
+		} catch (error) {
+			console.error('Delete request failed:', error);
+			throw error;
+		}
+	}
+
 	// Update agent status in local state
 	function updateAgentStatus(agentId, newStatus) {
 		localAgents = localAgents.map(agent => 
@@ -180,6 +228,11 @@
 				? { ...agent, status: newStatus }
 				: agent
 		);
+	}
+
+	// Remove agent from local state after deletion
+	function removeAgentFromList(agentId) {
+		localAgents = localAgents.filter(agent => agent.id !== agentId);
 	}
 
 	// Clear success/error messages
