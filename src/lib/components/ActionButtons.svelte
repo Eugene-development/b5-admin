@@ -277,7 +277,7 @@
 			id={deleteButtonId}
 			onclick={handleDeleteAction}
 			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+			class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
 			aria-label={getAccessibleDeleteText(agent.name)}
 			aria-describedby={`${deleteButtonId}-description`}

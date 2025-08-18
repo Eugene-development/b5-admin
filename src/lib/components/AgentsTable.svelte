@@ -250,11 +250,7 @@
 	</table>
 
 	<!-- Table description for screen readers -->
-	<div id={tableDescriptionId} class="sr-only">
-		This table contains agent information including ID, name, email, city, registration date, email
-		verification status, account status, and available actions. Use Tab to navigate between
-		interactive elements.
-	</div>
+	<div id={tableDescriptionId} class="sr-only"></div>
 </div>
 
 <!-- Mobile Card View (visible on mobile only) -->

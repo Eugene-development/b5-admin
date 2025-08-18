@@ -137,7 +137,7 @@
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Backdrop -->
 			<div
-				class="bg-opacity-75 dark:bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity dark:bg-gray-900"
+				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-75"
 				onclick={handleBackdropClick}
 				aria-hidden="true"
 			></div>
@@ -145,7 +145,7 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-gray-800 mx-4 sm:mx-0"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-gray-800"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
@@ -162,7 +162,7 @@
 						{#if isDestructive}
 							<!-- Exclamation triangle icon for destructive actions -->
 							<svg
-								class="h-6 w-6 text-red-600 dark:text-red-400"
+								class="h-6 w-6 text-red-800 dark:text-red-400"
 								fill="none"
 								viewBox="0 0 24 24"
 								stroke-width="1.5"
@@ -195,9 +195,9 @@
 					</div>
 
 					<!-- Content -->
-					<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+					<div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
 						<h3
-							class="text-base leading-6 font-semibold text-gray-900 dark:text-white"
+							class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
 							id="modal-title"
 						>
 							{title}
@@ -211,14 +211,16 @@
 				</div>
 
 				<!-- Action buttons -->
-				<div class="mt-6 flex flex-col space-y-3 sm:mt-4 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse">
+				<div
+					class="mt-6 flex flex-col space-y-3 sm:mt-4 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse"
+				>
 					<!-- Confirm button -->
 					<button
 						bind:this={confirmButtonElement}
 						type="button"
 						onclick={handleConfirm}
 						disabled={isLoading}
-						class="inline-flex w-full justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] sm:w-auto sm:py-2 {isDestructive
+						class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 {isDestructive
 							? 'bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600 active:bg-red-700'
 							: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 					>
@@ -254,7 +256,7 @@
 						type="button"
 						onclick={handleCancel}
 						disabled={isLoading}
-						class="inline-flex w-full justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 active:bg-gray-100 dark:active:bg-gray-600"
+						class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
 					>
 						{cancelText}
 					</button>
