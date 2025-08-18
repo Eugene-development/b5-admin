@@ -8,3 +8,4 @@ export { default as LoadingSpinner } from './components/LoadingSpinner.svelte';
 export { default as Toast } from './components/Toast.svelte';
 export { default as ToastContainer } from './components/ToastContainer.svelte';
 export { default as ErrorBoundary } from './components/ErrorBoundary.svelte';
+export { default as EmptyState } from './components/EmptyState.svelte';

@@ -35,7 +35,7 @@
 	// Handle toast dismissal
 	function handleToastDismiss(toastId) {
 		// Find the toast and call its onDismiss callback if it exists
-		const toast = toasts.find(t => t.id === toastId);
+		const toast = toasts.find((t) => t.id === toastId);
 		if (toast && toast.onDismiss) {
 			toast.onDismiss();
 		}
@@ -44,7 +44,7 @@
 
 {#if visibleToasts.length > 0}
 	<div class="{positionClasses[position]} {additionalClasses}">
-		<div class="flex flex-col space-y-2 w-80 max-w-sm">
+		<div class="flex w-80 max-w-sm flex-col space-y-2">
 			{#each visibleToasts as toast (toast.id)}
 				<div class="transform transition-all duration-300 ease-in-out">
 					<Toast

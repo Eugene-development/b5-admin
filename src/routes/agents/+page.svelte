@@ -1,7 +1,21 @@
 <script>
-	import { AgentsTable, SearchBar, ConfirmationModal, ToastContainer, ErrorBoundary, LoadingSpinner } from '$lib';
+	import {
+		AgentsTable,
+		SearchBar,
+		ConfirmationModal,
+		ToastContainer,
+		ErrorBoundary,
+		LoadingSpinner,
+		EmptyState
+	} from '$lib';
 	import { gql, request } from 'graphql-request';
-	import { toasts, addSuccessToast, addErrorToast, handleApiError, retryOperation } from '$lib/utils/toastStore.js';
+	import {
+		toasts,
+		addSuccessToast,
+		addErrorToast,
+		handleApiError,
+		retryOperation
+	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
 
 	let { data } = $props();
@@ -22,11 +36,13 @@
 	let isRefreshing = $state(false);
 
 	// Local agents state for updates - normalize status to lowercase
-	let localAgents = $state([...(data?.agents || []).map(agent => ({
-		...agent,
-		status: agent.status?.toLowerCase() || 'active'
-	}))]);
-	
+	let localAgents = $state([
+		...(data?.agents || []).map((agent) => ({
+			...agent,
+			status: agent.status?.toLowerCase() || 'active'
+		}))
+	]);
+
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
 
@@ -34,15 +50,16 @@
 	let loadError = $state(data?.error || null);
 
 	// Debug: Log initial data to see what we're getting
-	console.log('Initial data from server:', data?.agents?.map(a => ({ 
-		id: a.id, 
-		name: a.name, 
-		email: a.email,
-		status: a.status,
-		statusType: typeof a.status 
-	})));
-
-
+	console.log(
+		'Initial data from server:',
+		data?.agents?.map((a) => ({
+			id: a.id,
+			name: a.name,
+			email: a.email,
+			status: a.status,
+			statusType: typeof a.status
+		}))
+	);
 
 	// Computed filteredAgents reactive statement
 	let filteredAgents = $derived.by(() => {
@@ -72,7 +89,7 @@
 			type: isBanned ? 'unban' : 'ban',
 			agent: agent,
 			title: isBanned ? 'Разбанить агента' : 'Забанить агента',
-			message: isBanned 
+			message: isBanned
 				? `Вы уверены, что хотите разбанить агента "${agent.name || agent.email}"? Агент снова сможет получить доступ к системе.`
 				: `Вы уверены, что хотите забанить агента "${agent.name || agent.email}"? Агент потеряет доступ к системе.`,
 			confirmText: isBanned ? 'Разбанить' : 'Забанить',
@@ -104,27 +121,31 @@
 
 		try {
 			const { type, agent } = confirmAction;
-			
+
 			// Use retry mechanism for critical operations
-			await retryOperation(async () => {
-				if (type === 'ban') {
-					const result = await banAgent(agent.id);
-					// Convert GraphQL enum to lowercase for consistency
-					const status = result?.status?.toLowerCase() || 'banned';
-					updateAgentStatus(agent.id, status);
-					addSuccessToast(`Агент "${agent.name || agent.email}" успешно забанен.`);
-				} else if (type === 'unban') {
-					const result = await unbanAgent(agent.id);
-					// Convert GraphQL enum to lowercase for consistency
-					const status = result?.status?.toLowerCase() || 'active';
-					updateAgentStatus(agent.id, status);
-					addSuccessToast(`Агент "${agent.name || agent.email}" успешно разбанен.`);
-				} else if (type === 'delete') {
-					await deleteAgent(agent.id);
-					removeAgentFromList(agent.id);
-					addSuccessToast(`Агент "${agent.name || agent.email}" успешно удален.`);
-				}
-			}, 2, 1000); // 2 retries with 1 second delay
+			await retryOperation(
+				async () => {
+					if (type === 'ban') {
+						const result = await banAgent(agent.id);
+						// Convert GraphQL enum to lowercase for consistency
+						const status = result?.status?.toLowerCase() || 'banned';
+						updateAgentStatus(agent.id, status);
+						addSuccessToast(`Агент "${agent.name || agent.email}" успешно забанен.`);
+					} else if (type === 'unban') {
+						const result = await unbanAgent(agent.id);
+						// Convert GraphQL enum to lowercase for consistency
+						const status = result?.status?.toLowerCase() || 'active';
+						updateAgentStatus(agent.id, status);
+						addSuccessToast(`Агент "${agent.name || agent.email}" успешно разбанен.`);
+					} else if (type === 'delete') {
+						await deleteAgent(agent.id);
+						removeAgentFromList(agent.id);
+						addSuccessToast(`Агент "${agent.name || agent.email}" успешно удален.`);
+					}
+				},
+				2,
+				1000
+			); // 2 retries with 1 second delay
 		} catch (error) {
 			// Error is already handled by handleApiError in retryOperation
 			console.error('Action failed after retries:', error);
@@ -144,7 +165,6 @@
 
 	// Ban agent GraphQL mutation
 	async function banAgent(agentId) {
-		
 		const mutation = gql`
 			mutation BanUser($id: ID!) {
 				banUser(id: $id) {
@@ -155,17 +175,12 @@
 		`;
 
 		const variables = { id: agentId };
-		
+
 		try {
-			const result = await request(
-				import.meta.env.VITE_B5_API_URL, 
-				mutation, 
-				variables,
-				{
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				}
-			);
+			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			});
 			return result.banUser;
 		} catch (error) {
 			console.error('Ban request failed:', error);
@@ -175,7 +190,6 @@
 
 	// Unban agent GraphQL mutation
 	async function unbanAgent(agentId) {
-		
 		const mutation = gql`
 			mutation UnbanUser($id: ID!) {
 				unbanUser(id: $id) {
@@ -186,17 +200,12 @@
 		`;
 
 		const variables = { id: agentId };
-		
+
 		try {
-			const result = await request(
-				import.meta.env.VITE_B5_API_URL, 
-				mutation, 
-				variables,
-				{
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				}
-			);
+			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			});
 			return result.unbanUser;
 		} catch (error) {
 			console.error('Unban request failed:', error);
@@ -206,7 +215,6 @@
 
 	// Delete agent GraphQL mutation
 	async function deleteAgent(agentId) {
-		
 		const mutation = gql`
 			mutation DeleteUser($id: ID!) {
 				deleteUser(id: $id) {
@@ -219,17 +227,12 @@
 		`;
 
 		const variables = { id: agentId };
-		
+
 		try {
-			const result = await request(
-				import.meta.env.VITE_B5_API_URL, 
-				mutation, 
-				variables,
-				{
-					'Content-Type': 'application/json',
-					'Accept': 'application/json'
-				}
-			);
+			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			});
 			return result.deleteUser;
 		} catch (error) {
 			console.error('Delete request failed:', error);
@@ -240,19 +243,17 @@
 	// Update agent status in local state
 	function updateAgentStatus(agentId, newStatus) {
 		// Create completely new array with new objects to ensure reactivity
-		localAgents = localAgents.map(agent => 
-			agent.id === agentId 
-				? { ...agent, status: newStatus }
-				: agent
+		localAgents = localAgents.map((agent) =>
+			agent.id === agentId ? { ...agent, status: newStatus } : agent
 		);
-		
+
 		// Force reactivity update
 		updateCounter++;
 	}
 
 	// Remove agent from local state after deletion
 	function removeAgentFromList(agentId) {
-		localAgents = localAgents.filter(agent => agent.id !== agentId);
+		localAgents = localAgents.filter((agent) => agent.id !== agentId);
 	}
 
 	// Refresh data from server
@@ -273,10 +274,10 @@
 					}
 				}
 			`;
-			
+
 			const result = await request(import.meta.env.VITE_B5_API_URL, query);
 			// Normalize status to lowercase
-			localAgents = (result.users || []).map(agent => ({
+			localAgents = (result.users || []).map((agent) => ({
 				...agent,
 				status: agent.status?.toLowerCase() || 'active'
 			}));
@@ -331,23 +332,43 @@
 	fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
 	showDetails={true}
 >
+	<!-- Skip link for keyboard navigation -->
+	<a 
+		href="#main-content" 
+		class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-indigo-600 text-white px-4 py-2 rounded-md z-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+	>
+		Skip to main content
+	</a>
+
 	<div class="space-y-6 bg-gray-900">
-		<div class="sm:flex sm:items-center sm:justify-between">
-			<div class="sm:flex-auto">
-				<h1 class="text-base font-semibold text-gray-900 dark:text-white">Агенты</h1>
+		<!-- Page landmark -->
+		<main id="main-content" aria-labelledby="page-title">
+		<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+			<div class="flex-auto">
+				<h1 
+					id="page-title"
+					class="text-lg font-semibold text-gray-900 dark:text-white sm:text-base"
+				>
+					Агенты
+				</h1>
 			</div>
-			<div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+			<div class="flex-none">
 				<button
 					type="button"
 					onclick={refreshData}
 					disabled={isRefreshing}
-					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+					class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] w-full sm:w-auto transition-colors duration-150 ease-in-out"
+					aria-label="Refresh agents data from server"
+					aria-describedby="refresh-button-description"
 				>
 					{#if isRefreshing}
 						<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
 					{/if}
 					{isRefreshing ? 'Refreshing...' : 'Refresh'}
 				</button>
+				<div id="refresh-button-description" class="sr-only">
+					Reload the agents data from the server to get the latest information
+				</div>
 			</div>
 		</div>
 
@@ -356,8 +377,17 @@
 			<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
 				<div class="flex">
 					<div class="flex-shrink-0">
-						<svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-							<path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+						<svg
+							class="h-5 w-5 text-yellow-400"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							aria-hidden="true"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+								clip-rule="evenodd"
+							/>
 						</svg>
 					</div>
 					<div class="ml-3">
@@ -373,7 +403,7 @@
 									type="button"
 									onclick={refreshData}
 									disabled={isRefreshing}
-									class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+									class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
 								>
 									{isRefreshing ? 'Retrying...' : 'Retry'}
 								</button>
@@ -384,23 +414,28 @@
 			</div>
 		{/if}
 
-	<!-- Search Bar -->
-	<div class="max-w-md">
-		<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
-	</div>
-
-	<!-- Results summary -->
-	{#if searchTerm.trim()}
-		<div class="text-sm text-gray-600 dark:text-gray-400">
-			{#if filteredAgents.length === 0}
-				<p>No agents found matching "{searchTerm}". Try adjusting your search terms.</p>
-			{:else if filteredAgents.length === 1}
-				<p>Found 1 agent matching "{searchTerm}"</p>
-			{:else}
-				<p>Found {filteredAgents.length} agents matching "{searchTerm}"</p>
-			{/if}
+		<!-- Search Bar -->
+		<div class="w-full sm:max-w-md" role="search" aria-label="Agent search">
+			<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
 		</div>
-	{/if}
+
+		<!-- Results summary -->
+		{#if searchTerm.trim()}
+			<div 
+				class="text-sm text-gray-600 dark:text-gray-400"
+				role="status"
+				aria-live="polite"
+				aria-atomic="true"
+			>
+				{#if filteredAgents.length === 0}
+					<p>No agents found matching "{searchTerm}". Try adjusting your search terms.</p>
+				{:else if filteredAgents.length === 1}
+					<p>Found 1 agent matching "{searchTerm}"</p>
+				{:else}
+					<p>Found {filteredAgents.length} agents matching "{searchTerm}"</p>
+				{/if}
+			</div>
+		{/if}
 
 		<AgentsTable
 			agents={filteredAgents}
@@ -408,7 +443,10 @@
 			onBanAgent={handleBanAgent}
 			onDeleteAgent={handleDeleteAgent}
 			{updateCounter}
+			{searchTerm}
+			hasSearched={searchTerm.trim().length > 0}
 		/>
+		</main>
 	</div>
 </ErrorBoundary>
 

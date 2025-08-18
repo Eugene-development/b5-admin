@@ -23,15 +23,15 @@
 <el-dialog>
 	<dialog id="sidebar" class="backdrop:bg-transparent lg:hidden">
 		<el-dialog-backdrop
-			class="data-closed:opacity-0 fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear"
+			class="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
 		></el-dialog-backdrop>
 
 		<div tabindex="-1" class="fixed inset-0 flex focus:outline-none">
 			<el-dialog-panel
-				class="group/dialog-panel data-closed:-translate-x-full relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out"
+				class="group/dialog-panel relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full"
 			>
 				<div
-					class="group-data-closed/dialog-panel:opacity-0 absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out"
+					class="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out group-data-closed/dialog-panel:opacity-0"
 				>
 					<button type="button" command="close" commandfor="sidebar" class="-m-2.5 p-2.5">
 						<span class="sr-only">Close sidebar</span>
@@ -62,7 +62,7 @@
 						<img
 							src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
 							alt="Your Company"
-							class="not-dark:hidden h-8 w-auto"
+							class="h-8 w-auto not-dark:hidden"
 						/>
 					</div>
 					<nav class="relative flex flex-1 flex-col">
@@ -539,7 +539,7 @@
 <div class="lg:pl-72">
 	<div class="sticky top-0 z-40 lg:mx-auto lg:max-w-full">
 		<div
-			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
+			class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
 		>
 			<button
 				type="button"
@@ -574,7 +574,7 @@
 						name="search"
 						placeholder="Поиск"
 						aria-label="Search"
-						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:ring-0 focus:ring-offset-0 focus:outline-none sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
 						style="outline: none !important; box-shadow: none !important;"
 					/>
 					<svg
@@ -653,16 +653,16 @@
 						<el-menu
 							anchor="bottom end"
 							popover
-							class="transition-discrete data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition [--anchor-gap:--spacing(2.5)] dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+							class="w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition transition-discrete [--anchor-gap:--spacing(2.5)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
 						>
 							<a
 								href="#"
-								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+								class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-gray-900"
 								>Your profile</a
 							>
 							<a
 								href="#"
-								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+								class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-gray-900"
 								>Sign out</a
 							>
 						</el-menu>

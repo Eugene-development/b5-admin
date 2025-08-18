@@ -67,7 +67,7 @@
 		if (isOpen) {
 			// Store the previously focused element
 			previousActiveElement = document.activeElement;
-			
+
 			// Focus the confirm button when modal opens
 			setTimeout(() => {
 				if (confirmButtonElement) {
@@ -77,16 +77,16 @@
 
 			// Add event listener for escape key
 			document.addEventListener('keydown', handleKeydown);
-			
+
 			// Prevent body scroll
 			document.body.style.overflow = 'hidden';
 		} else {
 			// Remove event listener
 			document.removeEventListener('keydown', handleKeydown);
-			
+
 			// Restore body scroll
 			document.body.style.overflow = '';
-			
+
 			// Restore focus to previously active element
 			if (previousActiveElement) {
 				previousActiveElement.focus();
@@ -107,7 +107,7 @@
 		const focusableElements = modalElement?.querySelectorAll(
 			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
 		);
-		
+
 		if (!focusableElements || focusableElements.length === 0) return;
 
 		const firstElement = focusableElements[0];
@@ -133,15 +133,11 @@
 
 <!-- Modal backdrop and container -->
 {#if isOpen}
-	<div
-		class="fixed inset-0 z-50 overflow-y-auto"
-	>
-		<div
-			class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-		>
+	<div class="fixed inset-0 z-50 overflow-y-auto">
+		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Backdrop -->
 			<div
-				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-75"
+				class="bg-opacity-75 dark:bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity dark:bg-gray-900"
 				onclick={handleBackdropClick}
 				aria-hidden="true"
 			></div>
@@ -149,7 +145,7 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-gray-800"
+				class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6 dark:bg-gray-800 mx-4 sm:mx-0"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
@@ -199,9 +195,9 @@
 					</div>
 
 					<!-- Content -->
-					<div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+					<div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
 						<h3
-							class="text-base font-semibold leading-6 text-gray-900 dark:text-white"
+							class="text-base leading-6 font-semibold text-gray-900 dark:text-white"
 							id="modal-title"
 						>
 							{title}
@@ -215,16 +211,16 @@
 				</div>
 
 				<!-- Action buttons -->
-				<div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+				<div class="mt-6 flex flex-col space-y-3 sm:mt-4 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse">
 					<!-- Confirm button -->
 					<button
 						bind:this={confirmButtonElement}
 						type="button"
 						onclick={handleConfirm}
 						disabled={isLoading}
-						class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm sm:ml-3 sm:w-auto focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 {isDestructive
-							? 'bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600'
-							: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
+						class="inline-flex w-full justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] sm:w-auto sm:py-2 {isDestructive
+							? 'bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600 active:bg-red-700'
+							: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 					>
 						{#if isLoading}
 							<svg
@@ -258,7 +254,7 @@
 						type="button"
 						onclick={handleCancel}
 						disabled={isLoading}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+						class="inline-flex w-full justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 active:bg-gray-100 dark:active:bg-gray-600"
 					>
 						{cancelText}
 					</button>

@@ -2,7 +2,7 @@ import { writable } from 'svelte/store';
 
 /**
  * Toast Store
- * 
+ *
  * A centralized store for managing toast notifications throughout the application.
  * Provides methods to add, remove, and manage toast notifications.
  */
@@ -31,9 +31,15 @@ function generateToastId() {
  * @param {string} [toastConfig.class=''] - Additional CSS classes
  * @returns {string} Toast ID
  */
-export function addToast({ type, message, duration = 5000, dismissible = true, class: className = '' }) {
+export function addToast({
+	type,
+	message,
+	duration = 5000,
+	dismissible = true,
+	class: className = ''
+}) {
 	const id = generateToastId();
-	
+
 	const toast = {
 		id,
 		type,
@@ -45,7 +51,7 @@ export function addToast({ type, message, duration = 5000, dismissible = true, c
 		onDismiss: () => removeToast(id)
 	};
 
-	toasts.update(currentToasts => [...currentToasts, toast]);
+	toasts.update((currentToasts) => [...currentToasts, toast]);
 
 	return id;
 }
@@ -55,9 +61,7 @@ export function addToast({ type, message, duration = 5000, dismissible = true, c
  * @param {string} toastId - Toast ID to remove
  */
 export function removeToast(toastId) {
-	toasts.update(currentToasts => 
-		currentToasts.filter(toast => toast.id !== toastId)
-	);
+	toasts.update((currentToasts) => currentToasts.filter((toast) => toast.id !== toastId));
 }
 
 /**
@@ -115,12 +119,13 @@ export function addInfoToast(message, options = {}) {
  */
 export function handleApiError(error, defaultMessage = 'An error occurred') {
 	console.error('API Error:', error);
-	
+
 	let errorMessage = defaultMessage;
-	
+
 	// Handle different types of errors
 	if (error.name === 'TypeError' && error.message.includes('fetch')) {
-		errorMessage = 'Network error: Unable to connect to the server. Please check your connection and try again.';
+		errorMessage =
+			'Network error: Unable to connect to the server. Please check your connection and try again.';
 	} else if (error.response) {
 		// GraphQL or API response error
 		if (error.response.errors && error.response.errors.length > 0) {
@@ -133,7 +138,7 @@ export function handleApiError(error, defaultMessage = 'An error occurred') {
 	} else if (error.message) {
 		errorMessage = error.message;
 	}
-	
+
 	return addErrorToast(errorMessage);
 }
 
@@ -146,32 +151,34 @@ export function handleApiError(error, defaultMessage = 'An error occurred') {
  */
 export async function retryOperation(operation, maxRetries = 3, delay = 1000) {
 	let lastError;
-	
+
 	for (let attempt = 1; attempt <= maxRetries; attempt++) {
 		try {
 			const result = await operation();
-			
+
 			// If we had previous failures but this attempt succeeded
 			if (attempt > 1) {
 				addSuccessToast('Operation completed successfully after retry');
 			}
-			
+
 			return result;
 		} catch (error) {
 			lastError = error;
-			
+
 			if (attempt < maxRetries) {
-				addWarningToast(`Attempt ${attempt} failed, retrying... (${maxRetries - attempt} attempts remaining)`);
-				
+				addWarningToast(
+					`Attempt ${attempt} failed, retrying... (${maxRetries - attempt} attempts remaining)`
+				);
+
 				// Wait before retrying
-				await new Promise(resolve => setTimeout(resolve, delay));
-				
+				await new Promise((resolve) => setTimeout(resolve, delay));
+
 				// Exponential backoff
 				delay *= 1.5;
 			}
 		}
 	}
-	
+
 	// All retries failed
 	handleApiError(lastError, `Operation failed after ${maxRetries} attempts`);
 	throw lastError;

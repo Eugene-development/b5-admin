@@ -27,10 +27,26 @@
 		}
 	}
 
+	// Get accessible description for screen readers
+	function getAccessibleDescription(status, customText) {
+		if (customText) return customText;
+
+		switch (status) {
+			case 'verified':
+				return 'Email verified';
+			case 'unverified':
+				return 'Email not verified';
+			case 'banned':
+				return 'Account banned';
+			default:
+				return status;
+		}
+	}
+
 	// Get the appropriate CSS classes based on status and size
 	function getBadgeClasses(status, size) {
 		// Base classes for all badges
-		const baseClasses = 'inline-flex items-center rounded-md font-medium ring-1 ring-inset';
+		const baseClasses = 'inline-flex items-center rounded-md font-medium ring-1 ring-inset transition-all duration-200 ease-in-out';
 
 		// Size-specific classes
 		const sizeClasses = {
@@ -55,8 +71,14 @@
 	// Computed values using Svelte 5 runes
 	const displayText = $derived(getDisplayText(status, text));
 	const badgeClasses = $derived(getBadgeClasses(status, size));
+	const accessibleDescription = $derived(getAccessibleDescription(status, text));
 </script>
 
-<span class={badgeClasses} role="status" aria-label={`Status: ${displayText}`}>
+<span 
+	class={badgeClasses} 
+	role="status" 
+	aria-label={accessibleDescription}
+	title={accessibleDescription}
+>
 	{displayText}
 </span>

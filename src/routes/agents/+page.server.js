@@ -16,37 +16,35 @@ export const load = async ({ fetch }) => {
 			}
 		}
 	`;
-	
+
 	try {
 		// Add timeout and retry logic
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-		
+
 		const data = await request(
-			import.meta.env.VITE_B5_API_URL, 
+			import.meta.env.VITE_B5_API_URL,
 			query,
 			{},
 			{
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			}
 		);
-		
-		clearTimeout(timeoutId);
-		
 
-		
+		clearTimeout(timeoutId);
+
 		return {
 			agents: data.users || [],
 			error: null
 		};
 	} catch (err) {
 		console.error('GraphQL Error:', err);
-		
+
 		// Determine error type and provide appropriate fallback
 		let errorMessage = 'Failed to load agents';
 		let shouldThrow = false;
-		
+
 		if (err.name === 'AbortError') {
 			errorMessage = 'Request timed out. The server may be unavailable.';
 		} else if (err.name === 'TypeError' && err.message.includes('fetch')) {
@@ -66,12 +64,12 @@ export const load = async ({ fetch }) => {
 		} else {
 			errorMessage = `Unexpected error: ${err.message}`;
 		}
-		
+
 		// For critical errors, throw to show error page
 		if (shouldThrow) {
 			throw error(err.response?.status || 500, errorMessage);
 		}
-		
+
 		// For non-critical errors, return empty data with error info
 		return {
 			agents: [],

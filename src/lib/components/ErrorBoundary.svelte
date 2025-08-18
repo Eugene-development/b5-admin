@@ -63,17 +63,17 @@
 	// Format error for display
 	function formatError(err) {
 		if (!err) return 'Unknown error';
-		
+
 		let errorInfo = `Error: ${err.message || 'Unknown error'}\n`;
-		
+
 		if (err.stack) {
 			errorInfo += `Stack: ${err.stack}\n`;
 		}
-		
+
 		if (err.name) {
 			errorInfo += `Type: ${err.name}\n`;
 		}
-		
+
 		return errorInfo;
 	}
 
@@ -81,7 +81,7 @@
 	$effect(() => {
 		if (hasError && error) {
 			console.error('ErrorBoundary caught an error:', error);
-			
+
 			// Call onError callback if provided
 			if (onError) {
 				onError(error);
@@ -91,10 +91,12 @@
 </script>
 
 {#if hasError}
-	<div class="min-h-96 flex items-center justify-center p-6 {additionalClasses}">
-		<div class="text-center max-w-md mx-auto">
+	<div class="flex min-h-96 items-center justify-center p-6 {additionalClasses}">
+		<div class="mx-auto max-w-md text-center">
 			<!-- Error Icon -->
-			<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+			<div
+				class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20"
+			>
 				<svg
 					class="h-6 w-6 text-red-600 dark:text-red-400"
 					fill="none"
@@ -122,13 +124,13 @@
 			</p>
 
 			<!-- Action Buttons -->
-			<div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+			<div class="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
 				{#if showRetry}
 					<button
 						type="button"
 						onclick={handleRetry}
 						disabled={isRetrying}
-						class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+						class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{#if isRetrying}
 							<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
@@ -141,7 +143,7 @@
 					<button
 						type="button"
 						onclick={toggleErrorDetails}
-						class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-colors duration-200 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+						class="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 					>
 						{showErrorDetails ? 'Hide Details' : 'Show Details'}
 					</button>
@@ -152,11 +154,14 @@
 			{#if showDetails && showErrorDetails && error}
 				<div class="mt-6 text-left">
 					<details class="group">
-						<summary class="cursor-pointer text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white">
+						<summary
+							class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white"
+						>
 							Technical Details
 						</summary>
-						<div class="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
-							<pre class="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-wrap overflow-x-auto">
+						<div class="mt-2 rounded-md bg-gray-50 p-3 dark:bg-gray-800">
+							<pre
+								class="overflow-x-auto text-xs whitespace-pre-wrap text-gray-600 dark:text-gray-400">
 								{formatError(error)}
 							</pre>
 						</div>

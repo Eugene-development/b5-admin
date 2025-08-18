@@ -3,6 +3,9 @@
 
 	let searchInput;
 	let debounceTimer;
+	let searchId = `search-${Math.random().toString(36).substr(2, 9)}`;
+	let descriptionId = `${searchId}-description`;
+	let statusId = `${searchId}-status`;
 
 	// Debounced search function (300ms delay)
 	function handleInput(event) {
@@ -17,6 +20,8 @@
 		// Set new timer for debounced search
 		debounceTimer = setTimeout(() => {
 			onSearch?.(searchTerm);
+			// Announce search results to screen readers
+			announceSearchResults(searchTerm);
 		}, 300);
 	}
 
@@ -25,6 +30,38 @@
 		value = '';
 		onSearch?.('');
 		searchInput?.focus();
+		// Announce that search was cleared
+		announceToScreenReader('Search cleared. Showing all agents.');
+	}
+
+	// Announce search results to screen readers
+	function announceSearchResults(searchTerm) {
+		if (searchTerm.trim()) {
+			announceToScreenReader(`Searching for "${searchTerm}". Results will update automatically.`);
+		} else {
+			announceToScreenReader('Showing all agents.');
+		}
+	}
+
+	// Utility function to announce messages to screen readers
+	function announceToScreenReader(message) {
+		const statusElement = document.getElementById(statusId);
+		if (statusElement) {
+			statusElement.textContent = message;
+			// Clear the message after a short delay to allow for re-announcements
+			setTimeout(() => {
+				statusElement.textContent = '';
+			}, 1000);
+		}
+	}
+
+	// Handle keyboard navigation
+	function handleKeydown(event) {
+		// Allow Escape key to clear search
+		if (event.key === 'Escape' && value) {
+			event.preventDefault();
+			clearSearch();
+		}
 	}
 
 	// Cleanup timer on component destroy
@@ -51,23 +88,30 @@
 	<input
 		bind:this={searchInput}
 		type="text"
+		id={searchId}
 		{placeholder}
 		{value}
 		oninput={handleInput}
-		class="block w-full rounded-md border-0 bg-white py-1.5 pl-10 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500"
-		aria-label="Локальный поиск"
-		aria-describedby="search-description"
+		onkeydown={handleKeydown}
+		class="block w-full rounded-md border-0 bg-white py-2.5 pr-12 pl-10 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset text-base sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500 transition-all duration-200 ease-in-out"
+		aria-label="Search agents by name, email, or city"
+		aria-describedby="{descriptionId} {statusId}"
+		role="searchbox"
+		autocomplete="off"
+		autocorrect="off"
+		autocapitalize="off"
+		spellcheck="false"
 	/>
 	{#if value}
-		<div class="absolute inset-y-0 right-0 flex items-center pr-3">
+		<div class="absolute inset-y-0 right-0 flex items-center pr-2">
 			<button
 				type="button"
 				onclick={clearSearch}
-				class="rounded-full p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:hover:text-gray-300 dark:focus:ring-offset-gray-800"
+				class="rounded-full p-2 text-gray-400 hover:text-gray-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:hover:text-gray-300 dark:focus:ring-offset-gray-800 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors duration-150 ease-in-out"
 				aria-label="Clear search"
 			>
 				<!-- Clear/X icon -->
-				<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+				<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
 					<path
 						d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z"
 					/>
@@ -77,7 +121,10 @@
 	{/if}
 </div>
 
-<!-- Screen reader description -->
-<div id="search-description" class="sr-only">
-	Search for agents by their name, email address, or city
+<!-- Screen reader descriptions and status -->
+<div id={descriptionId} class="sr-only">
+	Search for agents by their name, email address, or city. Use Escape key to clear search.
+</div>
+<div id={statusId} class="sr-only" aria-live="polite" aria-atomic="true">
+	<!-- Dynamic search status announcements -->
 </div>
