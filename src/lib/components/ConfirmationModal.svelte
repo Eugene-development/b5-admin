@@ -154,7 +154,8 @@
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
-			></div>
+				tabindex="-1"
+			>
 				<div class="sm:flex sm:items-start">
 					<!-- Icon -->
 					<div
@@ -264,5 +265,5 @@
 				</div>
 			</div>
 		</div>
-	
+	</div>
 {/if}
