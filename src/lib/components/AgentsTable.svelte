@@ -39,37 +39,37 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Name
+					Имя
 				</th>
 				<th
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Email
+					Почта
 				</th>
 				<th
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					City
+					Город
 				</th>
 				<th
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Registration Date
+					Дата регистрации
 				</th>
 				<th
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Email Verification
+					Подтверждён
 				</th>
 				<th
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Status
+					Статус
 				</th>
 				<th scope="col" class="relative px-6 py-3">
 					<span class="sr-only">Actions</span>
@@ -127,7 +127,7 @@
 							{agent.email}
 						</td>
 						<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
-							{agent.city || 'Not specified'}
+							{agent.city || 'Не указан'}
 						</td>
 						<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white">
 							{formatDate(agent.created_at)}
@@ -152,7 +152,7 @@
 									class="inline-flex items-center rounded-md bg-yellow-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 disabled:opacity-50"
 									disabled={isLoading}
 								>
-									Ban
+									Бан
 								</button>
 								<button
 									type="button"
@@ -160,7 +160,7 @@
 									class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50"
 									disabled={isLoading}
 								>
-									Delete
+									Удалить
 								</button>
 							</div>
 						</td>

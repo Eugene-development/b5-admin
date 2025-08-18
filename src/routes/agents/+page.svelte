@@ -1,40 +1,38 @@
 <script>
 	import { AgentsTable, SearchBar } from '$lib';
-	
+
 	let { data } = $props();
-	
+
 	// Search state management
-	let searchTerm = $state("");
-	
+	let searchTerm = $state('');
+
 	// Computed filteredAgents reactive statement
 	let filteredAgents = $derived.by(() => {
 		if (!searchTerm.trim()) {
 			return data?.agents || [];
 		}
-		
+
 		const term = searchTerm.toLowerCase().trim();
-		return (data?.agents || []).filter(agent => {
+		return (data?.agents || []).filter((agent) => {
 			const name = (agent.name || '').toLowerCase();
 			const email = (agent.email || '').toLowerCase();
 			const city = (agent.city || '').toLowerCase();
-			
-			return name.includes(term) || 
-				   email.includes(term) || 
-				   city.includes(term);
+
+			return name.includes(term) || email.includes(term) || city.includes(term);
 		});
 	});
-	
+
 	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
 	}
-	
+
 	// Placeholder functions for future implementation
 	function handleBanAgent(agent) {
 		console.log('Ban agent:', agent);
 		// TODO: Implement ban functionality
 	}
-	
+
 	function handleDeleteAgent(agent) {
 		console.log('Delete agent:', agent);
 		// TODO: Implement delete functionality
@@ -44,20 +42,16 @@
 <div class="space-y-6 bg-gray-900">
 	<div class="sm:flex sm:items-center">
 		<div class="sm:flex-auto">
-			<h1 class="text-base font-semibold text-gray-900 dark:text-white">Agents</h1>
-			<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-				List of all registered agents in the system.
-			</p>
+			<h1 class="text-base font-semibold text-gray-900 dark:text-white">Агенты</h1>
+			<!-- <p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+				Lis		t of all registered agents in the system.
+			</p> -->
 		</div>
 	</div>
 
 	<!-- Search Bar -->
 	<div class="max-w-md">
-		<SearchBar 
-			placeholder="Search agents by name, email, or city..."
-			onSearch={handleSearch}
-			value={searchTerm}
-		/>
+		<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
 	</div>
 
 	<!-- Results summary -->
@@ -73,8 +67,8 @@
 		</div>
 	{/if}
 
-	<AgentsTable 
-		agents={filteredAgents} 
+	<AgentsTable
+		agents={filteredAgents}
 		onBanAgent={handleBanAgent}
 		onDeleteAgent={handleDeleteAgent}
 	/>

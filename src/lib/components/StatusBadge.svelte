@@ -17,9 +17,9 @@
 
 		switch (status) {
 			case 'verified':
-				return 'Verified';
+				return 'Да';
 			case 'unverified':
-				return 'Unverified';
+				return 'Нет';
 			case 'banned':
 				return 'Banned';
 			default:
