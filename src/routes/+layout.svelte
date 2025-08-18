@@ -672,8 +672,8 @@
 		</div>
 	</div>
 
-	<main class="py-10">
-		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+	<main class="">
+		<div class="mx-auto bg-gray-900 px-4 sm:px-6 lg:px-8">
 			{@render children?.()}
 		</div>
 	</main>
