@@ -1,41 +1,12 @@
-import { gql, request } from 'graphql-request';
 import { error } from '@sveltejs/kit';
+import { getAllUsers } from '$lib/api/agents.js';
 
 export const load = async ({ fetch }) => {
-	const query = gql`
-		{
-			users {
-				id
-				city
-				name
-				email
-				email_verified_at
-				created_at
-				updated_at
-				status
-			}
-		}
-	`;
-
 	try {
-		// Add timeout and retry logic
-		const controller = new AbortController();
-		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-
-		const data = await request(
-			import.meta.env.VITE_B5_API_URL,
-			query,
-			{},
-			{
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			}
-		);
-
-		clearTimeout(timeoutId);
+		const users = await getAllUsers();
 
 		return {
-			agents: data.users || [],
+			agents: users || [],
 			error: null
 		};
 	} catch (err) {

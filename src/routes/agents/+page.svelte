@@ -8,15 +8,16 @@
 		LoadingSpinner,
 		EmptyState
 	} from '$lib';
-	import { gql, request } from 'graphql-request';
 	import {
 		toasts,
 		addSuccessToast,
 		addErrorToast,
 		handleApiError,
-		retryOperation
+		retryOperation,
+		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
+	import { banUser, unbanUser, deleteUser, refreshUsers } from '$lib/api/agents.js';
 
 	let { data } = $props();
 
@@ -48,18 +49,6 @@
 
 	// Check for server-side load errors
 	let loadError = $state(data?.error || null);
-
-	// Debug: Log initial data to see what we're getting
-	console.log(
-		'Initial data from server:',
-		data?.agents?.map((a) => ({
-			id: a.id,
-			name: a.name,
-			email: a.email,
-			status: a.status,
-			statusType: typeof a.status
-		}))
-	);
 
 	// Computed filteredAgents reactive statement
 	let filteredAgents = $derived.by(() => {
@@ -96,7 +85,7 @@
 			isDestructive: !isBanned
 		};
 		showConfirmModal = true;
-		clearMessages();
+		clearAllToasts();
 	}
 
 	// Delete agent handler with confirmation
@@ -110,7 +99,7 @@
 			isDestructive: true
 		};
 		showConfirmModal = true;
-		clearMessages();
+		clearAllToasts();
 	}
 
 	// Execute confirmed action with retry mechanism
@@ -126,19 +115,19 @@
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
-						const result = await banAgent(agent.id);
+						const result = await banUser(agent.id);
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'banned';
 						updateAgentStatus(agent.id, status);
 						addSuccessToast(`Агент "${agent.name || agent.email}" успешно забанен.`);
 					} else if (type === 'unban') {
-						const result = await unbanAgent(agent.id);
+						const result = await unbanUser(agent.id);
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'active';
 						updateAgentStatus(agent.id, status);
 						addSuccessToast(`Агент "${agent.name || agent.email}" успешно разбанен.`);
 					} else if (type === 'delete') {
-						await deleteAgent(agent.id);
+						await deleteUser(agent.id);
 						removeAgentFromList(agent.id);
 						addSuccessToast(`Агент "${agent.name || agent.email}" успешно удален.`);
 					}
@@ -163,83 +152,6 @@
 		isActionLoading = false;
 	}
 
-	// Ban agent GraphQL mutation
-	async function banAgent(agentId) {
-		const mutation = gql`
-			mutation BanUser($id: ID!) {
-				banUser(id: $id) {
-					id
-					status
-				}
-			}
-		`;
-
-		const variables = { id: agentId };
-
-		try {
-			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			});
-			return result.banUser;
-		} catch (error) {
-			console.error('Ban request failed:', error);
-			throw error;
-		}
-	}
-
-	// Unban agent GraphQL mutation
-	async function unbanAgent(agentId) {
-		const mutation = gql`
-			mutation UnbanUser($id: ID!) {
-				unbanUser(id: $id) {
-					id
-					status
-				}
-			}
-		`;
-
-		const variables = { id: agentId };
-
-		try {
-			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			});
-			return result.unbanUser;
-		} catch (error) {
-			console.error('Unban request failed:', error);
-			throw error;
-		}
-	}
-
-	// Delete agent GraphQL mutation
-	async function deleteAgent(agentId) {
-		const mutation = gql`
-			mutation DeleteUser($id: ID!) {
-				deleteUser(id: $id) {
-					id
-					name
-					email
-					deleted
-				}
-			}
-		`;
-
-		const variables = { id: agentId };
-
-		try {
-			const result = await request(import.meta.env.VITE_B5_API_URL, mutation, variables, {
-				'Content-Type': 'application/json',
-				Accept: 'application/json'
-			});
-			return result.deleteUser;
-		} catch (error) {
-			console.error('Delete request failed:', error);
-			throw error;
-		}
-	}
-
 	// Update agent status in local state
 	function updateAgentStatus(agentId, newStatus) {
 		// Create completely new array with new objects to ensure reactivity
@@ -260,24 +172,9 @@
 	async function refreshData() {
 		isRefreshing = true;
 		try {
-			const query = gql`
-				{
-					users {
-						id
-						city
-						name
-						email
-						email_verified_at
-						created_at
-						updated_at
-						status
-					}
-				}
-			`;
-
-			const result = await request(import.meta.env.VITE_B5_API_URL, query);
+			const users = await refreshUsers();
 			// Normalize status to lowercase
-			localAgents = (result.users || []).map((agent) => ({
+			localAgents = users.map((agent) => ({
 				...agent,
 				status: agent.status?.toLowerCase() || 'active'
 			}));

@@ -82,7 +82,7 @@
 </div>
 
 <!-- Desktop Table View (hidden on mobile) -->
-<div class="hidden overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg">
+<div class="ring-opacity-5 hidden overflow-hidden shadow ring-1 ring-black md:block md:rounded-lg">
 	<table
 		id={tableId}
 		class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"
@@ -99,7 +99,7 @@
 					id="col-id"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					ID
@@ -108,7 +108,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -117,7 +117,7 @@
 					id="col-email"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Почта
@@ -126,7 +126,7 @@
 					id="col-city"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Город
@@ -135,7 +135,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регистрация
@@ -144,7 +144,7 @@
 					id="col-verified"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Подтверждён
@@ -153,7 +153,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус
@@ -192,44 +192,44 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-id"
 						>
 							{agent.id}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{agent.name || 'Not specified'}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
 							{agent.email}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-city"
 						>
 							{agent.city || 'Не указан'}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
 						</td>
-						<td class="whitespace-nowrap px-6 py-4 text-sm" role="cell" headers="col-verified">
+						<td class="px-6 py-4 text-sm whitespace-nowrap" role="cell" headers="col-verified">
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
-						<td class="whitespace-nowrap px-6 py-4 text-sm" role="cell" headers="col-status">
+						<td class="px-6 py-4 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
@@ -237,7 +237,7 @@
 							{/if}
 						</td>
 						<td
-							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+							class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
@@ -302,7 +302,7 @@
 					<dl id="agent-{agent.id}-details" class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Город
 							</dt>
@@ -312,7 +312,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Регистрация
 							</dt>
@@ -358,41 +358,41 @@
 <div class="hidden sm:block md:hidden">
 	<div class="overflow-x-auto">
 		<div class="inline-block min-w-full align-middle">
-			<div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
+			<div class="ring-opacity-5 overflow-hidden rounded-lg shadow ring-1 ring-black">
 				<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 					<thead class="bg-gray-50 dark:bg-gray-800">
 						<tr>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								ID
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Почта
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Город
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</th>
-							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
+							<th scope="col" class="relative px-4 py-3 whitespace-nowrap">
 								<span class="sr-only">Actions</span>
 							</th>
 						</tr>
@@ -421,20 +421,20 @@
 							{#each agents as agent (agent.id + '-' + agent.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td
-										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
+										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{agent.id}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
+									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.name || 'Not specified'}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
+									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.email}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
+									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.city || 'Не указан'}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm">
+									<td class="px-4 py-4 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 												<StatusBadge status="banned" />
@@ -445,7 +445,7 @@
 										</div>
 									</td>
 									<td
-										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
+										class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap"
 									>
 										<ActionButtons
 											{agent}

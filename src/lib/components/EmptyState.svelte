@@ -44,7 +44,7 @@
 
 <div class="py-12 text-center" role="region" aria-label="Empty state">
 	{#if showIcon}
-		<div class="mx-auto flex h-12 w-12 items-center justify-center animate-pulse">
+		<div class="mx-auto flex h-12 w-12 animate-pulse items-center justify-center">
 			{#if finalIconType === 'search'}
 				<!-- Search icon for no-results state -->
 				<svg

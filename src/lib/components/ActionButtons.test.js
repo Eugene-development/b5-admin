@@ -36,7 +36,9 @@ describe('ActionButtons Component', () => {
 			});
 
 			expect(screen.getByRole('button', { name: /Ban Test Agent/i })).toBeInTheDocument();
-			expect(screen.getByRole('button', { name: /Delete Test Agent permanently/i })).toBeInTheDocument();
+			expect(
+				screen.getByRole('button', { name: /Delete Test Agent permanently/i })
+			).toBeInTheDocument();
 		});
 
 		test('renders unban button for banned agent', () => {
@@ -133,7 +135,7 @@ describe('ActionButtons Component', () => {
 
 			expect(banButton).toBeInTheDocument();
 			expect(deleteButton).toBeInTheDocument();
-			
+
 			// Check for mobile-specific text
 			expect(screen.getByText('Забанить')).toBeInTheDocument();
 			expect(screen.getByText('Удалить')).toBeInTheDocument();
@@ -225,8 +227,12 @@ describe('ActionButtons Component', () => {
 				}
 			});
 
-			expect(screen.getByText(/This will prevent the agent from accessing the system/)).toBeInTheDocument();
-			expect(screen.getByText(/This action cannot be undone and will permanently remove all agent data/)).toBeInTheDocument();
+			expect(
+				screen.getByText(/This will prevent the agent from accessing the system/)
+			).toBeInTheDocument();
+			expect(
+				screen.getByText(/This action cannot be undone and will permanently remove all agent data/)
+			).toBeInTheDocument();
 		});
 
 		test('updates description for banned agent', () => {
@@ -253,7 +259,7 @@ describe('ActionButtons Component', () => {
 
 			const banButton = screen.getByRole('button', { name: /Ban Test Agent/i });
 			banButton.focus();
-			
+
 			await user.keyboard('{Enter}');
 			expect(mockOnBan).toHaveBeenCalledWith(mockAgent);
 		});
@@ -270,7 +276,7 @@ describe('ActionButtons Component', () => {
 
 			const deleteButton = screen.getByRole('button', { name: /Delete Test Agent permanently/i });
 			deleteButton.focus();
-			
+
 			await user.keyboard(' ');
 			expect(mockOnDelete).toHaveBeenCalledWith(mockAgent);
 		});
@@ -324,10 +330,10 @@ describe('ActionButtons Component', () => {
 			});
 
 			const banButton = screen.getByRole('button', { name: /Ban Test Agent/i });
-			
+
 			// Button should be disabled, but let's try to click anyway
 			await user.click(banButton);
-			
+
 			// Should not call the handler when loading
 			expect(mockOnBan).not.toHaveBeenCalled();
 		});

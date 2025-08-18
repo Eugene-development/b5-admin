@@ -4,44 +4,44 @@
 
 /* Mobile touch optimizations */
 @media (max-width: 768px) {
-  /* Improve touch scrolling on mobile */
-  * {
-    -webkit-overflow-scrolling: touch;
-  }
-  
-  /* Prevent zoom on input focus on iOS */
-  input[type="text"],
-  input[type="email"],
-  input[type="search"],
-  textarea,
-  select {
-    font-size: 16px !important;
-  }
-  
-  /* Improve button touch targets */
-  button {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  /* Smooth scrolling for better mobile experience */
-  html {
-    scroll-behavior: smooth;
-  }
-  
-  /* Prevent horizontal scroll on mobile */
-  body {
-    overflow-x: hidden;
-  }
+	/* Improve touch scrolling on mobile */
+	* {
+		-webkit-overflow-scrolling: touch;
+	}
+
+	/* Prevent zoom on input focus on iOS */
+	input[type='text'],
+	input[type='email'],
+	input[type='search'],
+	textarea,
+	select {
+		font-size: 16px !important;
+	}
+
+	/* Improve button touch targets */
+	button {
+		min-height: 44px;
+		min-width: 44px;
+	}
+
+	/* Smooth scrolling for better mobile experience */
+	html {
+		scroll-behavior: smooth;
+	}
+
+	/* Prevent horizontal scroll on mobile */
+	body {
+		overflow-x: hidden;
+	}
 }
 
 /* Tablet-specific optimizations */
 @media (min-width: 640px) and (max-width: 1024px) {
-  /* Optimize table scrolling on tablets */
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+	/* Optimize table scrolling on tablets */
+	.table-container {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+	}
 }
 
 /* Focus improvements for accessibility */
@@ -49,19 +49,19 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
+	outline: 2px solid #3b82f6;
+	outline-offset: 2px;
 }
 
 /* Active states for better touch feedback */
 button:active {
-  transform: scale(0.98);
-  transition: transform 0.1s ease-in-out;
+	transform: scale(0.98);
+	transition: transform 0.1s ease-in-out;
 }
 
 /* Improve modal backdrop on mobile */
 @media (max-width: 640px) {
-  .modal-backdrop {
-    backdrop-filter: blur(4px);
-  }
+	.modal-backdrop {
+		backdrop-filter: blur(4px);
+	}
 }

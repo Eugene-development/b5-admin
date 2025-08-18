@@ -10,7 +10,7 @@ describe('ConfirmationModal Component', () => {
 		mockOnConfirm = vi.fn();
 		mockOnCancel = vi.fn();
 		vi.clearAllMocks();
-		
+
 		// Reset body overflow style
 		document.body.style.overflow = '';
 	});
@@ -171,7 +171,9 @@ describe('ConfirmationModal Component', () => {
 			});
 
 			// Find the backdrop (the div with bg-opacity-75)
-			const backdrop = screen.getByRole('dialog').parentElement.querySelector('[aria-hidden="true"]');
+			const backdrop = screen
+				.getByRole('dialog')
+				.parentElement.querySelector('[aria-hidden="true"]');
 			await user.click(backdrop);
 
 			expect(mockOnCancel).toHaveBeenCalledTimes(1);
@@ -286,7 +288,9 @@ describe('ConfirmationModal Component', () => {
 				}
 			});
 
-			const backdrop = screen.getByRole('dialog').parentElement.querySelector('[aria-hidden="true"]');
+			const backdrop = screen
+				.getByRole('dialog')
+				.parentElement.querySelector('[aria-hidden="true"]');
 			await user.click(backdrop);
 
 			expect(mockOnCancel).not.toHaveBeenCalled();

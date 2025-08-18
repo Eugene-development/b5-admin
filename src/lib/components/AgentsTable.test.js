@@ -187,7 +187,7 @@ describe('AgentsTable Component', () => {
 			expect(cells.length).toBeGreaterThan(0);
 
 			// Check that cells have headers attribute
-			cells.forEach(cell => {
+			cells.forEach((cell) => {
 				expect(cell).toHaveAttribute('headers');
 			});
 		});
@@ -207,7 +207,7 @@ describe('AgentsTable Component', () => {
 			// Check for loading spinner
 			const loadingCell = screen.getByRole('cell');
 			expect(loadingCell).toHaveAttribute('colspan', '8');
-			
+
 			// Check for loading message
 			expect(screen.getByText('Loading agents data, please wait...')).toBeInTheDocument();
 		});
@@ -292,7 +292,7 @@ describe('AgentsTable Component', () => {
 			});
 
 			const listItems = screen.getAllByRole('listitem');
-			
+
 			listItems.forEach((item, index) => {
 				const agent = mockAgents[index];
 				expect(item).toHaveAttribute('aria-labelledby', `agent-${agent.id}-name`);
@@ -310,13 +310,13 @@ describe('AgentsTable Component', () => {
 			});
 
 			// Check for agent name headings
-			mockAgents.forEach(agent => {
+			mockAgents.forEach((agent) => {
 				const nameElement = screen.getByText(agent.name || 'Not specified');
 				expect(nameElement).toHaveAttribute('id', `agent-${agent.id}-name`);
 			});
 
 			// Check for description lists
-			mockAgents.forEach(agent => {
+			mockAgents.forEach((agent) => {
 				const detailsList = document.getElementById(`agent-${agent.id}-details`);
 				expect(detailsList).toBeInTheDocument();
 				expect(detailsList.tagName).toBe('DL');

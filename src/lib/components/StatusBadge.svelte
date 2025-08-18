@@ -46,7 +46,8 @@
 	// Get the appropriate CSS classes based on status and size
 	function getBadgeClasses(status, size) {
 		// Base classes for all badges
-		const baseClasses = 'inline-flex items-center rounded-md font-medium ring-1 ring-inset transition-all duration-200 ease-in-out';
+		const baseClasses =
+			'inline-flex items-center rounded-md font-medium ring-1 ring-inset transition-all duration-200 ease-in-out';
 
 		// Size-specific classes
 		const sizeClasses = {
@@ -74,9 +75,9 @@
 	const accessibleDescription = $derived(getAccessibleDescription(status, text));
 </script>
 
-<span 
-	class={badgeClasses} 
-	role="status" 
+<span
+	class={badgeClasses}
+	role="status"
 	aria-label={accessibleDescription}
 	title={accessibleDescription}
 >
