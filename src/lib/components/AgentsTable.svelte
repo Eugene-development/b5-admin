@@ -1,5 +1,6 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
+	import ActionButtons from './ActionButtons.svelte';
 
 	let { agents = [], isLoading = false, onBanAgent, onDeleteAgent } = $props();
 
@@ -57,7 +58,7 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Дата регистрации
+					Регистрация
 				</th>
 				<th
 					scope="col"
@@ -145,24 +146,12 @@
 						<td
 							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 						>
-							<div class="flex justify-end space-x-2">
-								<button
-									type="button"
-									onclick={() => onBanAgent?.(agent)}
-									class="inline-flex items-center rounded-md bg-yellow-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-yellow-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-600 disabled:opacity-50"
-									disabled={isLoading}
-								>
-									Бан
-								</button>
-								<button
-									type="button"
-									onclick={() => onDeleteAgent?.(agent)}
-									class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:opacity-50"
-									disabled={isLoading}
-								>
-									Удалить
-								</button>
-							</div>
+							<ActionButtons
+								{agent}
+								onBan={onBanAgent}
+								onDelete={onDeleteAgent}
+								{isLoading}
+							/>
 						</td>
 					</tr>
 				{/each}
