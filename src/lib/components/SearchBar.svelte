@@ -74,7 +74,7 @@
 	});
 </script>
 
-<div class="relative">
+<div class="relative py-4">
 	<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 		<!-- Search icon -->
 		<svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -93,7 +93,7 @@
 		{value}
 		oninput={handleInput}
 		onkeydown={handleKeydown}
-		class="block w-full rounded-md border-0 bg-white py-2.5 pr-12 pl-10 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset text-base sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500 transition-all duration-200 ease-in-out"
+		class="block w-full rounded-md border-0 bg-white py-2.5 pl-10 pr-12 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-all duration-200 ease-in-out placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500"
 		aria-label="Search agents by name, email, or city"
 		aria-describedby="{descriptionId} {statusId}"
 		role="searchbox"
@@ -107,7 +107,7 @@
 			<button
 				type="button"
 				onclick={clearSearch}
-				class="rounded-full p-2 text-gray-400 hover:text-gray-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:hover:text-gray-300 dark:focus:ring-offset-gray-800 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors duration-150 ease-in-out"
+				class="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full p-2 text-gray-400 transition-colors duration-150 ease-in-out hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:hover:text-gray-300 dark:focus:ring-offset-gray-800"
 				aria-label="Clear search"
 			>
 				<!-- Clear/X icon -->

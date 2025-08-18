@@ -4,6 +4,7 @@
 	 *
 	 * A reusable component for agent management actions (Ban/Unban and Delete).
 	 * Provides proper styling, loading states, and accessibility features.
+	 * Uses Svelte 5 runes for reactive state management.
 	 *
 	 * @param {Object} agent - The agent object containing id, name, status, etc.
 	 * @param {Function} onBan - Callback function for ban action
@@ -12,16 +13,18 @@
 	 * @param {boolean} [mobile=false] - Mobile mode with larger touch targets
 	 * @param {boolean} [compact=false] - Compact mode for tablet view
 	 */
-	let { agent, agentStatus, onBan, onDelete, isLoading = false, mobile = false, compact = false } = $props();
+	let { agent, onBan, onDelete, isLoading = false, mobile = false, compact = false } = $props();
 
 	// Determine if agent is currently banned - using correct Svelte 5 syntax
-	const isBanned = $derived(() => {
-		const status = agentStatus || agent.status;
-		const banned = status === 'banned';
+	const isBanned = $derived(
+		agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'
+	);
+
+	// Debug effect to log the current state
+	$effect(() => {
 		console.log(
-			`ActionButtons debug - Agent ${agent.id}: status="${status}" (type: ${typeof status}), isBanned=${banned}`
+			`🎯 ActionButtons Agent ${agent.id}: status="${agent.status}", isBanned=${isBanned}, buttonText="${isBanned ? 'Разбанить' : 'Забанить'}"`
 		);
-		return banned;
 	});
 
 	// Generate unique IDs for accessibility
@@ -70,15 +73,15 @@
 
 {#if mobile}
 	<!-- Mobile Layout - Larger touch targets, full width buttons -->
-	<div class="flex flex-col space-y-2 w-full">
+	<div class="flex w-full flex-col space-y-2">
 		<!-- Ban/Unban Button -->
 		<button
 			type="button"
 			id={banButtonId}
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[44px] {isBanned
-				? 'bg-orange-600 text-white hover:bg-orange-500 focus-visible:outline-orange-600 active:bg-orange-700'
+			class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
+				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 			disabled={isLoading}
 			aria-label={getAccessibleBanText(isBanned, agent.name)}
@@ -110,7 +113,7 @@
 			id={deleteButtonId}
 			onclick={handleDeleteAction}
 			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 active:bg-red-700 min-h-[44px]"
+			class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
 			aria-label={getAccessibleDeleteText(agent.name)}
 			aria-describedby={`${deleteButtonId}-description`}
@@ -144,8 +147,8 @@
 			id={banButtonId}
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-[36px] {isBanned
-				? 'bg-orange-600 text-white hover:bg-orange-500 focus-visible:outline-orange-600'
+			class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
+				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
 			aria-label={getAccessibleBanText(isBanned, agent.name)}
@@ -177,7 +180,7 @@
 			id={deleteButtonId}
 			onclick={handleDeleteAction}
 			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex items-center rounded-md bg-red-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50 min-h-[36px]"
+			class="inline-flex min-h-[36px] items-center rounded-md bg-red-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
 			aria-label={getAccessibleDeleteText(agent.name)}
 			aria-describedby={`${deleteButtonId}-description`}
@@ -212,7 +215,7 @@
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
 			class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
-				? 'bg-orange-600 text-white hover:bg-orange-500 focus-visible:outline-orange-600'
+				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
 			aria-label={getAccessibleBanText(isBanned, agent.name)}
@@ -272,7 +275,9 @@
 
 	<!-- Hidden descriptions for screen readers (shared across all layouts) -->
 	<div id="{banButtonId}-description" class="sr-only">
-		{isBanned ? 'This will restore access for the agent' : 'This will prevent the agent from accessing the system'}
+		{isBanned
+			? 'This will restore access for the agent'
+			: 'This will prevent the agent from accessing the system'}
 	</div>
 	<div id="{deleteButtonId}-description" class="sr-only">
 		This action cannot be undone and will permanently remove all agent data

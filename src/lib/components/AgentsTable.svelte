@@ -28,10 +28,12 @@
 		return emailVerifiedAt ? 'verified' : 'unverified';
 	}
 
-	// Get agent ban status for StatusBadge (preparation for ban functionality)
+	// Get agent ban status for StatusBadge
 	function getAgentBanStatus(agent) {
 		console.log('Checking agent ban status:', { id: agent.id, status: agent.status });
-		return agent.status === 'banned' ? 'banned' : null;
+		return agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'
+			? 'banned'
+			: 'active';
 	}
 
 	// Generate unique table ID for accessibility
@@ -49,10 +51,13 @@
 
 	// Announce table updates to screen readers
 	function announceTableUpdate() {
-		const message = agents.length === 0 
-			? (hasSearched ? `No agents found matching "${searchTerm}"` : 'No agents available')
-			: `${agents.length} agent${agents.length === 1 ? '' : 's'} ${hasSearched ? `found matching "${searchTerm}"` : 'displayed'}`;
-		
+		const message =
+			agents.length === 0
+				? hasSearched
+					? `No agents found matching "${searchTerm}"`
+					: 'No agents available'
+				: `${agents.length} agent${agents.length === 1 ? '' : 's'} ${hasSearched ? `found matching "${searchTerm}"` : 'displayed'}`;
+
 		// Use a live region to announce changes
 		const announcement = document.getElementById(`${tableId}-announcements`);
 		if (announcement) {
@@ -77,8 +82,8 @@
 </div>
 
 <!-- Desktop Table View (hidden on mobile) -->
-<div class="hidden md:block ring-opacity-5 overflow-hidden shadow ring-1 ring-black md:rounded-lg">
-	<table 
+<div class="hidden overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg">
+	<table
 		id={tableId}
 		class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"
 		aria-labelledby={tableCaptionId}
@@ -94,7 +99,7 @@
 					id="col-id"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					ID
@@ -103,7 +108,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -112,7 +117,7 @@
 					id="col-email"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Почта
@@ -121,7 +126,7 @@
 					id="col-city"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Город
@@ -130,7 +135,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регистрация
@@ -139,7 +144,7 @@
 					id="col-verified"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Подтверждён
@@ -148,7 +153,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус
@@ -163,7 +168,10 @@
 				<tr>
 					<td colspan="8" class="px-6 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading agents data">
-							<div class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600" aria-hidden="true"></div>
+							<div
+								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
+								aria-hidden="true"
+							></div>
 						</div>
 						<span class="sr-only">Loading agents data, please wait...</span>
 					</td>
@@ -179,89 +187,73 @@
 				</tr>
 			{:else}
 				{#each agents as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
-					<tr 
-						class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150 ease-in-out" 
+					<tr
+						class="transition-colors duration-150 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800"
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-id"
 						>
 							{agent.id}
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+						<td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{agent.name || 'Not specified'}
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+						<td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
 							{agent.email}
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+						<td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-city"
 						>
 							{agent.city || 'Не указан'}
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+						<td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap"
-							role="cell"
-							headers="col-verified"
-						>
+						<td class="whitespace-nowrap px-6 py-4 text-sm" role="cell" headers="col-verified">
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
-						<td 
-							class="px-6 py-4 text-sm whitespace-nowrap"
-							role="cell"
-							headers="col-status"
-						>
-							{#if agent.status === 'banned'}
+						<td class="whitespace-nowrap px-6 py-4 text-sm" role="cell" headers="col-status">
+							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
-								<StatusBadge status="verified" text="Active" />
+								<StatusBadge status="verified" text="Активен" />
 							{/if}
-							<!-- Temporary debug info -->
-							<div class="mt-1 text-xs text-gray-400">
-								Status: "{agent.status}" (type: {typeof agent.status})
-							</div>
 						</td>
 						<td
-							class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6"
+							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
-							<ActionButtons
-								{agent}
-								agentStatus={agent.status}
-								onBan={onBanAgent}
-								onDelete={onDeleteAgent}
-								{isLoading}
-							/>
+							<ActionButtons {agent} onBan={onBanAgent} onDelete={onDeleteAgent} {isLoading} />
 						</td>
 					</tr>
 				{/each}
 			{/if}
 		</tbody>
 	</table>
-	
+
 	<!-- Table description for screen readers -->
 	<div id={tableDescriptionId} class="sr-only">
-		This table contains agent information including ID, name, email, city, registration date, email verification status, account status, and available actions. Use Tab to navigate between interactive elements.
+		This table contains agent information including ID, name, email, city, registration date, email
+		verification status, account status, and available actions. Use Tab to navigate between
+		interactive elements.
 	</div>
 </div>
 
@@ -281,28 +273,28 @@
 	{:else}
 		<div class="space-y-4" role="list" aria-label="Agents list">
 			{#each agents as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
-				<div 
-					class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4"
+				<div
+					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
 					role="listitem"
 					aria-labelledby="agent-{agent.id}-name"
 					aria-describedby="agent-{agent.id}-details"
 				>
 					<!-- Agent Header -->
-					<div class="flex items-start justify-between mb-3">
-						<div class="flex-1 min-w-0">
-							<h3 
+					<div class="mb-3 flex items-start justify-between">
+						<div class="min-w-0 flex-1">
+							<h3
 								id="agent-{agent.id}-name"
-								class="text-sm font-medium text-gray-900 dark:text-white truncate"
+								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
 								{agent.name || 'Not specified'}
 							</h3>
-							<p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
 								{agent.email}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
-							<span 
-								class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+							<span
+								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 								aria-label="Agent ID {agent.id}"
 							>
 								ID: {agent.id}
@@ -311,12 +303,11 @@
 					</div>
 
 					<!-- Agent Details Grid -->
-					<dl 
-						id="agent-{agent.id}-details"
-						class="grid grid-cols-2 gap-3 mb-4"
-					>
+					<dl id="agent-{agent.id}-details" class="mb-4 grid grid-cols-2 gap-3">
 						<div>
-							<dt class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Город
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -324,7 +315,9 @@
 							</dd>
 						</div>
 						<div>
-							<dt class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Регистрация
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -334,26 +327,25 @@
 					</dl>
 
 					<!-- Status Badges -->
-					<div class="flex flex-wrap gap-2 mb-4">
+					<div class="mb-4 flex flex-wrap gap-2">
 						<div class="flex items-center">
-							<span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-2">Email:</span>
+							<span class="mr-2 text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</div>
 						<div class="flex items-center">
-							<span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-2">Статус:</span>
-							{#if agent.status === 'banned'}
+							<span class="mr-2 text-xs font-medium text-gray-500 dark:text-gray-400">Статус:</span>
+							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
-								<StatusBadge status="verified" text="Active" />
+								<StatusBadge status="verified" text="Активен" />
 							{/if}
 						</div>
 					</div>
 
 					<!-- Action Buttons -->
-					<div class="flex justify-end pt-3 border-t border-gray-200 dark:border-gray-600">
+					<div class="flex justify-end border-t border-gray-200 pt-3 dark:border-gray-600">
 						<ActionButtons
 							{agent}
-							agentStatus={agent.status}
 							onBan={onBanAgent}
 							onDelete={onDeleteAgent}
 							{isLoading}
@@ -370,41 +362,41 @@
 <div class="hidden sm:block md:hidden">
 	<div class="overflow-x-auto">
 		<div class="inline-block min-w-full align-middle">
-			<div class="ring-opacity-5 overflow-hidden shadow ring-1 ring-black rounded-lg">
+			<div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
 				<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 					<thead class="bg-gray-50 dark:bg-gray-800">
 						<tr>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 whitespace-nowrap"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								ID
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 whitespace-nowrap"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 whitespace-nowrap"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Почта
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 whitespace-nowrap"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Город
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 whitespace-nowrap"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Статус
 							</th>
-							<th scope="col" class="relative px-4 py-3 whitespace-nowrap">
+							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
 								<span class="sr-only">Actions</span>
 							</th>
 						</tr>
@@ -414,7 +406,9 @@
 							<tr>
 								<td colspan="6" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
-										<div class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+										<div
+											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
+										></div>
 									</div>
 								</td>
 							</tr>
@@ -431,35 +425,34 @@
 							{#each agents as agent (agent.id + '-' + agent.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td
-										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
 									>
 										{agent.id}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{agent.name || 'Not specified'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{agent.email}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{agent.city || 'Не указан'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap">
+									<td class="whitespace-nowrap px-4 py-4 text-sm">
 										<div class="flex flex-col space-y-1">
-											{#if agent.status === 'banned'}
+											{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 												<StatusBadge status="banned" />
 											{:else}
-												<StatusBadge status="verified" text="Active" />
+												<StatusBadge status="verified" text="Активен" />
 											{/if}
 											<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 										</div>
 									</td>
 									<td
-										class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap"
+										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
 									>
 										<ActionButtons
 											{agent}
-											agentStatus={agent.status}
 											onBan={onBanAgent}
 											onDelete={onDeleteAgent}
 											{isLoading}
