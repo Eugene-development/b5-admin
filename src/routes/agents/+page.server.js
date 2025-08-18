@@ -14,9 +14,16 @@ export const load = async () => {
 			}
 		}
 	`;
-	const data = await request(import.meta.env.VITE_B5_API_URL, query);
-
-	return {
-		agents: data.users
-	};
+	try {
+		const data = await request(import.meta.env.VITE_B5_API_URL, query);
+		
+		return {
+			agents: data.users || []
+		};
+	} catch (error) {
+		console.error('GraphQL Error:', error);
+		return {
+			agents: []
+		};
+	}
 };
