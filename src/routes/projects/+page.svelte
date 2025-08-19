@@ -1,6 +1,7 @@
 <script>
 	import {
 		ProjectsTable,
+		ProjectEditModal,
 		SearchBar,
 		ConfirmationModal,
 		ToastContainer,
@@ -29,6 +30,10 @@
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
+
+	// Edit modal state management
+	let showEditModal = $state(false);
+	let editingProject = $state(null);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -77,8 +82,9 @@
 
 	// Edit project handler
 	function handleEditProject(project) {
-		// TODO: Implement edit functionality
-		addInfoToast(`Редактирование проекта "${project.name}" будет реализовано позже`);
+		editingProject = project;
+		showEditModal = true;
+		clearAllToasts();
 	}
 
 	// Delete project handler with confirmation
@@ -133,9 +139,49 @@
 		isActionLoading = false;
 	}
 
+	// Save project changes
+	async function handleSaveProject(updatedProjectData) {
+		isActionLoading = true;
+
+		try {
+			// Use retry mechanism for critical operations
+			await retryOperation(
+				async () => {
+					const updatedProject = await updateProject(updatedProjectData);
+					updateProjectInList(updatedProject);
+					addSuccessToast(`Проект "${updatedProject.name}" успешно обновлен.`);
+				},
+				2,
+				1000
+			); // 2 retries with 1 second delay
+		} catch (error) {
+			// Error is already handled by handleApiError in retryOperation
+			console.error('Project update failed after retries:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			editingProject = null;
+		}
+	}
+
+	// Cancel edit project
+	function handleCancelEditProject() {
+		showEditModal = false;
+		editingProject = null;
+		isActionLoading = false;
+	}
+
 	// Remove project from local state after deletion
 	function removeProjectFromList(projectId) {
 		localProjects = localProjects.filter((project) => project.id !== projectId);
+		updateCounter++;
+	}
+
+	// Update project in local state after editing
+	function updateProjectInList(updatedProject) {
+		localProjects = localProjects.map((project) =>
+			project.id === updatedProject.id ? updatedProject : project
+		);
 		updateCounter++;
 	}
 
@@ -318,6 +364,17 @@
 		onConfirm={confirmActionHandler}
 		onCancel={cancelAction}
 		isDestructive={confirmAction.isDestructive}
+		isLoading={isActionLoading}
+	/>
+{/if}
+
+<!-- Project Edit Modal -->
+{#if editingProject}
+	<ProjectEditModal
+		isOpen={showEditModal}
+		project={editingProject}
+		onSave={handleSaveProject}
+		onCancel={handleCancelEditProject}
 		isLoading={isActionLoading}
 	/>
 {/if}
