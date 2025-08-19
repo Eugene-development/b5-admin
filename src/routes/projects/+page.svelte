@@ -149,7 +149,7 @@
 				async () => {
 					const updatedProject = await updateProject(updatedProjectData);
 					updateProjectInList(updatedProject);
-					addSuccessToast(`Проект "${updatedProject.name}" успешно обновлен.`);
+					addSuccessToast(`Проект "${updatedProject.value}" успешно обновлен.`);
 				},
 				2,
 				1000
@@ -317,10 +317,10 @@
 
 			<!-- Search Bar -->
 			<div class="w-full sm:max-w-md" role="search" aria-label="Project search">
-				<SearchBar 
-					placeholder="Поиск проектов по названию, агенту, городу или номеру договора" 
-					onSearch={handleSearch} 
-					value={searchTerm} 
+				<SearchBar
+					placeholder="Поиск проектов по названию, агенту, городу или номеру договора"
+					onSearch={handleSearch}
+					value={searchTerm}
 				/>
 			</div>
 

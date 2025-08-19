@@ -254,7 +254,7 @@
 							role="cell"
 							headers="col-name"
 						>
-							{project.name || 'Не указано'}
+							{project.value || 'Не указано'}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
@@ -283,7 +283,7 @@
 							role="cell"
 							headers="col-contract"
 						>
-							{project.contract_number || 'Не указан'}
+							{project.contract_name || 'Не указан'}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
@@ -304,18 +304,18 @@
 							role="cell"
 							headers="col-rate"
 						>
-							{formatAgentRate(project.agent_rate, project.agent_rate_type)}
+							{formatAgentRate(project.agent_percentage, 'percentage')}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm"
 							role="cell"
 							headers="col-completion"
-							class:text-red-600={isOverdue(project.planned_completion)}
-							class:dark:text-red-400={isOverdue(project.planned_completion)}
-							class:text-gray-900={!isOverdue(project.planned_completion)}
-							class:dark:text-white={!isOverdue(project.planned_completion)}
+							class:text-red-600={isOverdue(project.planned_completion_date)}
+							class:dark:text-red-400={isOverdue(project.planned_completion_date)}
+							class:text-gray-900={!isOverdue(project.planned_completion_date)}
+							class:dark:text-white={!isOverdue(project.planned_completion_date)}
 						>
-							{formatDate(project.planned_completion)}
+							{formatDate(project.planned_completion_date)}
 						</td>
 						<td
 							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
@@ -374,7 +374,7 @@
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{project.name || 'Не указано'}
+								{project.value || 'Не указано'}
 							</h3>
 							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
 								{project.city || 'Город не указан'}
@@ -409,7 +409,7 @@
 								Номер договора
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.contract_number || 'Не указан'}
+								{project.contract_name || 'Не указан'}
 							</dd>
 						</div>
 						<div class="grid grid-cols-2 gap-3">
@@ -431,12 +431,12 @@
 								</dt>
 								<dd
 									class="mt-1 text-sm"
-									class:text-red-600={isOverdue(project.planned_completion)}
-									class:dark:text-red-400={isOverdue(project.planned_completion)}
-									class:text-gray-900={!isOverdue(project.planned_completion)}
-									class:dark:text-white={!isOverdue(project.planned_completion)}
+									class:text-red-600={isOverdue(project.planned_completion_date)}
+									class:dark:text-red-400={isOverdue(project.planned_completion_date)}
+									class:text-gray-900={!isOverdue(project.planned_completion_date)}
+									class:dark:text-white={!isOverdue(project.planned_completion_date)}
 								>
-									{formatDate(project.planned_completion)}
+									{formatDate(project.planned_completion_date)}
 								</dd>
 							</div>
 						</div>
@@ -458,7 +458,7 @@
 									Ставка агенту
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatAgentRate(project.agent_rate, project.agent_rate_type)}
+									{formatAgentRate(project.agent_percentage, 'percentage')}
 								</dd>
 							</div>
 						</div>
@@ -569,7 +569,7 @@
 									<td
 										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
 									>
-										{project.name || 'Не указано'}
+										{project.value || 'Не указано'}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{getAgentDisplay(project.agent)}
@@ -582,12 +582,12 @@
 									</td>
 									<td
 										class="whitespace-nowrap px-4 py-4 text-sm"
-										class:text-red-600={isOverdue(project.planned_completion)}
-										class:dark:text-red-400={isOverdue(project.planned_completion)}
-										class:text-gray-900={!isOverdue(project.planned_completion)}
-										class:dark:text-white={!isOverdue(project.planned_completion)}
+										class:text-red-600={isOverdue(project.planned_completion_date)}
+										class:dark:text-red-400={isOverdue(project.planned_completion_date)}
+										class:text-gray-900={!isOverdue(project.planned_completion_date)}
+										class:dark:text-white={!isOverdue(project.planned_completion_date)}
 									>
-										{formatDate(project.planned_completion)}
+										{formatDate(project.planned_completion_date)}
 									</td>
 									<td
 										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"

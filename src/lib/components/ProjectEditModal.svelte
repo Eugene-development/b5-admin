@@ -13,13 +13,7 @@
 	 * @param {Function} onCancel - Callback function for cancellation
 	 * @param {boolean} [isLoading=false] - Loading state for save button
 	 */
-	let {
-		isOpen = false,
-		project = null,
-		onSave,
-		onCancel,
-		isLoading = false
-	} = $props();
+	let { isOpen = false, project = null, onSave, onCancel, isLoading = false } = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -42,28 +36,30 @@
 	let errors = $state({});
 	let isFormValid = $derived(
 		formData.name.trim() &&
-		formData.city.trim() &&
-		formData.contract_number.trim() &&
-		formData.contract_date &&
-		formData.contract_amount &&
-		formData.agent_rate &&
-		formData.planned_completion &&
-		Object.keys(errors).length === 0
+			formData.city.trim() &&
+			formData.contract_number.trim() &&
+			formData.contract_date &&
+			formData.contract_amount &&
+			formData.agent_rate &&
+			formData.planned_completion &&
+			Object.keys(errors).length === 0
 	);
 
 	// Initialize form data when project changes
 	$effect(() => {
 		if (project && isOpen) {
 			formData = {
-				name: project.name || '',
+				name: project.value || '', // map value to name for UI
 				city: project.city || '',
 				description: project.description || '',
-				contract_number: project.contract_number || '',
+				contract_number: project.contract_name || '', // map contract_name to contract_number for UI
 				contract_date: project.contract_date ? project.contract_date.split('T')[0] : '',
 				contract_amount: project.contract_amount || '',
-				agent_rate: project.agent_rate || '',
-				agent_rate_type: project.agent_rate_type || 'percentage',
-				planned_completion: project.planned_completion ? project.planned_completion.split('T')[0] : ''
+				agent_rate: project.agent_percentage || '', // map agent_percentage to agent_rate for UI
+				agent_rate_type: 'percentage', // default value since field doesn't exist in new schema
+				planned_completion: project.planned_completion_date
+					? project.planned_completion_date.split('T')[0]
+					: '' // map planned_completion_date to planned_completion for UI
 			};
 			errors = {};
 		}
@@ -94,11 +90,18 @@
 	// Handle save action
 	function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
+			// Map UI field names to GraphQL schema field names
 			const updatedData = {
 				id: project.id,
-				...formData,
+				value: formData.name, // map name to value for GraphQL
+				city: formData.city,
+				description: formData.description,
+				contract_name: formData.contract_number, // map contract_number to contract_name for GraphQL
+				contract_date: formData.contract_date,
 				contract_amount: parseFloat(formData.contract_amount),
-				agent_rate: parseFloat(formData.agent_rate)
+				agent_percentage: parseFloat(formData.agent_rate), // map agent_rate to agent_percentage for GraphQL
+				planned_completion_date: formData.planned_completion, // map planned_completion to planned_completion_date for GraphQL
+				is_active: true // default value since this field is not in the UI
 			};
 			onSave(updatedData);
 		}
@@ -251,7 +254,7 @@
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Backdrop -->
 			<div
-				class="bg-opacity-75 dark:bg-opacity-75 fixed inset-0 bg-gray-500 transition-opacity dark:bg-gray-900"
+				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-75"
 				onclick={handleBackdropClick}
 				aria-hidden="true"
 			></div>
@@ -259,7 +262,7 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 dark:bg-gray-800"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 dark:bg-gray-800"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
@@ -269,7 +272,7 @@
 				<!-- Modal Header -->
 				<div class="mb-6">
 					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
+						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
 						id="modal-title"
 					>
 						Редактировать проект
@@ -283,7 +286,10 @@
 				<form onsubmit={handleSubmit} class="space-y-6">
 					<!-- Project Name -->
 					<div>
-						<label for="project-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="project-name"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Название проекта *
 						</label>
 						<input
@@ -307,7 +313,10 @@
 
 					<!-- City -->
 					<div>
-						<label for="project-city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="project-city"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Город *
 						</label>
 						<input
@@ -330,7 +339,10 @@
 
 					<!-- Description -->
 					<div>
-						<label for="project-description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="project-description"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Описание
 						</label>
 						<textarea
@@ -347,7 +359,10 @@
 					<!-- Contract Number and Date -->
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<div>
-							<label for="contract-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label
+								for="contract-number"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>
 								Номер договора *
 							</label>
 							<input
@@ -369,7 +384,10 @@
 						</div>
 
 						<div>
-							<label for="contract-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label
+								for="contract-date"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>
 								Дата заключения договора *
 							</label>
 							<input
@@ -394,7 +412,10 @@
 					<!-- Contract Amount and Agent Rate -->
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<div>
-							<label for="contract-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label
+								for="contract-amount"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>
 								Сумма договора (₽) *
 							</label>
 							<input
@@ -418,7 +439,10 @@
 						</div>
 
 						<div>
-							<label for="agent-rate" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label
+								for="agent-rate"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>
 								Ставка агенту *
 							</label>
 							<div class="mt-1 flex rounded-md shadow-sm">
@@ -455,7 +479,10 @@
 
 					<!-- Planned Completion -->
 					<div>
-						<label for="planned-completion" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="planned-completion"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Планируемое завершение *
 						</label>
 						<input
@@ -477,7 +504,9 @@
 					</div>
 
 					<!-- Action buttons -->
-					<div class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse">
+					<div
+						class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse"
+					>
 						<!-- Save button -->
 						<button
 							type="submit"
@@ -515,7 +544,7 @@
 							type="button"
 							onclick={handleCancel}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
+							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
 						>
 							Отмена
 						</button>
