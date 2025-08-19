@@ -15,13 +15,12 @@ const PROJECTS_QUERY = gql`
 				}
 				city
 				description
-				contract_number
+				is_active
+				contract_name
 				contract_date
 				contract_amount
-				agent_rate
-				agent_rate_type
-				planned_completion
-				status
+				agent_percentage
+				planned_completion_date
 				created_at
 				updated_at
 			}
@@ -52,13 +51,12 @@ const UPDATE_PROJECT_MUTATION = gql`
 			}
 			city
 			description
-			contract_number
+			is_active
+			contract_name
 			contract_date
 			contract_amount
-			agent_rate
-			agent_rate_type
-			planned_completion
-			status
+			agent_percentage
+			planned_completion_date
 			created_at
 			updated_at
 		}
