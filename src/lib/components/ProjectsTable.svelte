@@ -15,7 +15,7 @@
 
 	// Format date helper function
 	function formatDate(dateString) {
-		if (!dateString) return 'Не указано';
+		if (!dateString) return ' - ';
 		return new Date(dateString).toLocaleDateString('ru-RU', {
 			day: '2-digit',
 			month: '2-digit',
@@ -25,7 +25,7 @@
 
 	// Format currency helper function
 	function formatCurrency(amount, currency = 'RUB') {
-		if (!amount && amount !== 0) return 'Не указано';
+		if (!amount && amount !== 0) return ' - ';
 		return new Intl.NumberFormat('ru-RU', {
 			style: 'currency',
 			currency: currency,
@@ -36,17 +36,11 @@
 
 	// Format agent rate helper function
 	function formatAgentRate(rate, type) {
-		if (!rate && rate !== 0) return 'Не указано';
+		if (!rate && rate !== 0) return ' - ';
 		if (type === 'percentage') {
 			return `${rate}%`;
 		}
 		return formatCurrency(rate);
-	}
-
-	// Truncate text helper function
-	function truncateText(text, maxLength = 100) {
-		if (!text || text.length <= maxLength) return text || 'Описание не указано';
-		return text.substring(0, maxLength) + '...';
 	}
 
 	// Check if date is overdue
@@ -158,15 +152,6 @@
 					Город
 				</th>
 				<th
-					id="col-description"
-					scope="col"
-					role="columnheader"
-					class="hidden px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 lg:table-cell dark:text-gray-400"
-					aria-sort="none"
-				>
-					Описание
-				</th>
-				<th
 					id="col-contract"
 					scope="col"
 					role="columnheader"
@@ -219,7 +204,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="10" class="px-6 py-4 text-center" role="cell">
+					<td colspan="9" class="px-6 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных проектов">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -231,7 +216,7 @@
 				</tr>
 			{:else if projects.length === 0}
 				<tr>
-					<td colspan="10" class="px-6 py-4" role="cell">
+					<td colspan="9" class="px-6 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -254,7 +239,7 @@
 							role="cell"
 							headers="col-name"
 						>
-							{project.value || 'Не указано'}
+							{project.value || ' - '}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
@@ -268,22 +253,14 @@
 							role="cell"
 							headers="col-city"
 						>
-							{project.city || 'Не указан'}
-						</td>
-						<td
-							class="hidden px-6 py-4 text-sm text-gray-900 lg:table-cell dark:text-white"
-							role="cell"
-							headers="col-description"
-							title={project.description || 'Описание не указано'}
-						>
-							{truncateText(project.description)}
+							{project.city || ' - '}
 						</td>
 						<td
 							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 lg:table-cell dark:text-white"
 							role="cell"
 							headers="col-contract"
 						>
-							{project.contract_name || 'Не указан'}
+							{project.contract_name || ' - '}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
@@ -374,10 +351,10 @@
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{project.value || 'Не указано'}
+								{project.value || ' - '}
 							</h3>
 							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-								{project.city || 'Город не указан'}
+								{project.city || ' - '}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
@@ -409,7 +386,7 @@
 								Номер договора
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.contract_name || 'Не указан'}
+								{project.contract_name || ' - '}
 							</dd>
 						</div>
 						<div class="grid grid-cols-2 gap-3">
@@ -463,20 +440,6 @@
 							</div>
 						</div>
 					</dl>
-
-					<!-- Description -->
-					{#if project.description}
-						<div class="mb-4">
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Описание
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.description}
-							</dd>
-						</div>
-					{/if}
 
 					<!-- Action Buttons -->
 					<div class="flex justify-end border-t border-gray-200 pt-3 dark:border-gray-600">
@@ -569,13 +532,13 @@
 									<td
 										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
 									>
-										{project.value || 'Не указано'}
+										{project.value || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{getAgentDisplay(project.agent)}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{project.city || 'Не указан'}
+										{project.city || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{formatCurrency(project.contract_amount)}

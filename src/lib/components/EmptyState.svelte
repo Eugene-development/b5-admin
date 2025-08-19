@@ -20,25 +20,25 @@
 	// Default titles and messages based on type
 	const defaults = {
 		'no-data': {
-			title: 'No agents found',
-			message: 'There are no agents registered in the system yet.',
+			title: 'Нет данных',
+			message: 'Нет данных в системе.',
 			iconType: 'users'
 		},
 		'no-results': {
-			title: 'No matching agents',
-			message: 'No agents match your current search criteria.',
+			title: 'Нет совпадающих результатов',
+			message: 'Нет результатов, соответствующих вашему текущему критерию поиска.',
 			iconType: 'search'
 		}
 	};
 
 	// Use provided values or defaults
-	const finalTitle = title || defaults[type]?.title || 'No data';
-	const finalMessage = message || defaults[type]?.message || 'No data available';
+	const finalTitle = title || defaults[type]?.title || 'Нет данных';
+	const finalMessage = message || defaults[type]?.message || 'Нет данных';
 	const finalIconType = iconType || defaults[type]?.iconType || 'users';
 
 	// Format search term message for no-results state
 	const searchMessage = searchTerm
-		? `Try adjusting your search for "${searchTerm}" or clear the search to see all agents.`
+		? `Попробуйте изменить поисковую фразу "${searchTerm}" или очистить поиск, чтобы увидеть все результаты.`
 		: finalMessage;
 </script>
 
@@ -93,9 +93,7 @@
 	{#if type === 'no-results' && searchTerm}
 		<div class="mt-4">
 			<p class="text-xs text-gray-400 dark:text-gray-500">
-				Searched for: <span class="font-medium text-gray-600 dark:text-gray-300"
-					>"{searchTerm}"</span
-				>
+				Поиск: <span class="font-medium text-gray-600 dark:text-gray-300">"{searchTerm}"</span>
 			</p>
 		</div>
 	{/if}
