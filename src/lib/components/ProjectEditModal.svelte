@@ -34,16 +34,8 @@
 
 	// Form validation state
 	let errors = $state({});
-	let isFormValid = $derived(
-		formData.name.trim() &&
-			formData.city.trim() &&
-			formData.contract_number.trim() &&
-			formData.contract_date &&
-			formData.contract_amount &&
-			formData.agent_rate &&
-			formData.planned_completion &&
-			Object.keys(errors).length === 0
-	);
+	// Поля необязательные: валидность зависит только от отсутствия ошибок формата
+	let isFormValid = $derived(Object.keys(errors).length === 0);
 
 	// Initialize form data when project changes
 	$effect(() => {
@@ -91,18 +83,43 @@
 	function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			// Map UI field names to GraphQL schema field names
-			const updatedData = {
-				id: project.id,
-				value: formData.name, // map name to value for GraphQL
-				city: formData.city,
-				description: formData.description,
-				contract_name: formData.contract_number, // map contract_number to contract_name for GraphQL
-				contract_date: formData.contract_date,
-				contract_amount: parseFloat(formData.contract_amount),
-				agent_percentage: parseFloat(formData.agent_rate), // map agent_rate to agent_percentage for GraphQL
-				planned_completion_date: formData.planned_completion, // map planned_completion to planned_completion_date for GraphQL
-				is_active: true // default value since this field is not in the UI
-			};
+			const updatedData = { id: project.id };
+
+			const nameTrimmed = (formData.name || '').trim();
+			if (nameTrimmed !== '') updatedData.value = nameTrimmed;
+
+			const cityTrimmed = (formData.city || '').trim();
+			if (cityTrimmed !== '') updatedData.city = cityTrimmed;
+
+			const descriptionTrimmed = (formData.description || '').trim();
+			if (descriptionTrimmed !== '') updatedData.description = descriptionTrimmed;
+
+			const contractNumberTrimmed = (formData.contract_number || '').trim();
+			if (contractNumberTrimmed !== '') updatedData.contract_name = contractNumberTrimmed;
+
+			if (formData.contract_date) updatedData.contract_date = formData.contract_date;
+
+			if (
+				formData.contract_amount !== '' &&
+				formData.contract_amount !== null &&
+				formData.contract_amount !== undefined
+			) {
+				const amount = parseFloat(formData.contract_amount);
+				if (!isNaN(amount) && amount > 0) updatedData.contract_amount = amount;
+			}
+
+			if (
+				formData.agent_rate !== '' &&
+				formData.agent_rate !== null &&
+				formData.agent_rate !== undefined
+			) {
+				const rate = parseFloat(formData.agent_rate);
+				if (!isNaN(rate) && rate > 0) updatedData.agent_percentage = rate;
+			}
+
+			if (formData.planned_completion)
+				updatedData.planned_completion_date = formData.planned_completion;
+
 			onSave(updatedData);
 		}
 	}
@@ -114,60 +131,36 @@
 		}
 	}
 
-	// Validate field
+	// Validate field (все поля необязательны; проверяем только корректность числовых значений)
 	function validateField(field, value) {
 		const newErrors = { ...errors };
 
 		switch (field) {
-			case 'name':
-				if (!value.trim()) {
-					newErrors.name = 'Название проекта обязательно';
-				} else {
-					delete newErrors.name;
-				}
-				break;
-			case 'city':
-				if (!value.trim()) {
-					newErrors.city = 'Город обязателен';
-				} else {
-					delete newErrors.city;
-				}
-				break;
-			case 'contract_number':
-				if (!value.trim()) {
-					newErrors.contract_number = 'Номер договора обязателен';
-				} else {
-					delete newErrors.contract_number;
-				}
-				break;
-			case 'contract_date':
-				if (!value) {
-					newErrors.contract_date = 'Дата заключения договора обязательна';
-				} else {
-					delete newErrors.contract_date;
-				}
-				break;
-			case 'contract_amount':
-				if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
+			case 'contract_amount': {
+				if (value === '' || value === null || value === undefined) {
+					delete newErrors.contract_amount;
+				} else if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
 					newErrors.contract_amount = 'Сумма договора должна быть положительным числом';
 				} else {
 					delete newErrors.contract_amount;
 				}
 				break;
-			case 'agent_rate':
-				if (!value || isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
+			}
+			case 'agent_rate': {
+				if (value === '' || value === null || value === undefined) {
+					delete newErrors.agent_rate;
+				} else if (isNaN(parseFloat(value)) || parseFloat(value) <= 0) {
 					newErrors.agent_rate = 'Ставка агенту должна быть положительным числом';
 				} else {
 					delete newErrors.agent_rate;
 				}
 				break;
-			case 'planned_completion':
-				if (!value) {
-					newErrors.planned_completion = 'Планируемая дата завершения обязательна';
-				} else {
-					delete newErrors.planned_completion;
-				}
+			}
+			default: {
+				// Текстовые и датовые поля не обязательны
+				if (field in newErrors) delete newErrors[field];
 				break;
+			}
 		}
 
 		errors = newErrors;
@@ -290,7 +283,7 @@
 							for="project-name"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Название проекта *
+							Название проекта
 						</label>
 						<input
 							bind:this={firstInputElement}
@@ -302,7 +295,6 @@
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 							aria-describedby={errors.name ? 'project-name-error' : undefined}
 							aria-invalid={errors.name ? 'true' : 'false'}
-							required
 						/>
 						{#if errors.name}
 							<p id="project-name-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -317,7 +309,7 @@
 							for="project-city"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Город *
+							Город
 						</label>
 						<input
 							type="text"
@@ -328,7 +320,6 @@
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 							aria-describedby={errors.city ? 'project-city-error' : undefined}
 							aria-invalid={errors.city ? 'true' : 'false'}
-							required
 						/>
 						{#if errors.city}
 							<p id="project-city-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -363,7 +354,7 @@
 								for="contract-number"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Номер договора *
+								Номер договора
 							</label>
 							<input
 								type="text"
@@ -374,7 +365,6 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.contract_number ? 'contract-number-error' : undefined}
 								aria-invalid={errors.contract_number ? 'true' : 'false'}
-								required
 							/>
 							{#if errors.contract_number}
 								<p id="contract-number-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -388,7 +378,7 @@
 								for="contract-date"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Дата заключения договора *
+								Дата заключения договора
 							</label>
 							<input
 								type="date"
@@ -399,7 +389,6 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.contract_date ? 'contract-date-error' : undefined}
 								aria-invalid={errors.contract_date ? 'true' : 'false'}
-								required
 							/>
 							{#if errors.contract_date}
 								<p id="contract-date-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -416,7 +405,7 @@
 								for="contract-amount"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Сумма договора (₽) *
+								Сумма договора (₽)
 							</label>
 							<input
 								type="number"
@@ -429,7 +418,6 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.contract_amount ? 'contract-amount-error' : undefined}
 								aria-invalid={errors.contract_amount ? 'true' : 'false'}
-								required
 							/>
 							{#if errors.contract_amount}
 								<p id="contract-amount-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -443,7 +431,7 @@
 								for="agent-rate"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Ставка агенту *
+								Ставка агенту
 							</label>
 							<div class="mt-1 flex rounded-md shadow-sm">
 								<input
@@ -457,7 +445,6 @@
 									class="block w-full rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 									aria-describedby={errors.agent_rate ? 'agent-rate-error' : undefined}
 									aria-invalid={errors.agent_rate ? 'true' : 'false'}
-									required
 								/>
 								<select
 									value={formData.agent_rate_type}
@@ -483,7 +470,7 @@
 							for="planned-completion"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Планируемое завершение *
+							Планируемое завершение
 						</label>
 						<input
 							type="date"
@@ -494,7 +481,6 @@
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 							aria-describedby={errors.planned_completion ? 'planned-completion-error' : undefined}
 							aria-invalid={errors.planned_completion ? 'true' : 'false'}
-							required
 						/>
 						{#if errors.planned_completion}
 							<p id="planned-completion-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
