@@ -2,36 +2,43 @@
 	/**
 	 * ActionButtons Component
 	 *
-	 * A reusable component for agent management actions (Ban/Unban and Delete).
+	 * A reusable component for agent/project management actions (Ban/Unban and Delete or Edit and Delete).
 	 * Provides proper styling, loading states, and accessibility features.
 	 * Uses Svelte 5 runes for reactive state management.
 	 *
-	 * @param {Object} agent - The agent object containing id, name, status, etc.
-	 * @param {Function} onBan - Callback function for ban action
+	 * @param {Object} agent - The agent/project object containing id, name, status, etc.
+	 * @param {Function} onBan - Callback function for ban/edit action
 	 * @param {Function} onDelete - Callback function for delete action
 	 * @param {boolean} [isLoading=false] - Loading state for disabling buttons
 	 * @param {boolean} [mobile=false] - Mobile mode with larger touch targets
 	 * @param {boolean} [compact=false] - Compact mode for tablet view
+	 * @param {boolean} [projectMode=false] - Project mode changes ban/unban to edit
 	 */
-	let { agent, onBan, onDelete, isLoading = false, mobile = false, compact = false } = $props();
+	let { agent, onBan, onDelete, isLoading = false, mobile = false, compact = false, projectMode = false } = $props();
 
 	// Determine if agent is currently banned - using correct Svelte 5 syntax
 	const isBanned = $derived(
-		agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'
+		!projectMode && (agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended')
 	);
 
 	// Debug effect to log the current state
 	$effect(() => {
-		console.log(
-			`🎯 ActionButtons Agent ${agent.id}: status="${agent.status}", isBanned=${isBanned}, buttonText="${isBanned ? 'Разбанить' : 'Забанить'}"`
-		);
+		if (projectMode) {
+			console.log(
+				`🎯 ActionButtons Project ${agent.id}: name="${agent.name}"`
+			);
+		} else {
+			console.log(
+				`🎯 ActionButtons Agent ${agent.id}: status="${agent.status}", isBanned=${isBanned}, buttonText="${isBanned ? 'Разбанить' : 'Забанить'}"`
+			);
+		}
 	});
 
 	// Generate unique IDs for accessibility
 	const banButtonId = `ban-button-${agent.id}`;
 	const deleteButtonId = `delete-button-${agent.id}`;
 
-	// Handle ban/unban action
+	// Handle ban/unban or edit action
 	function handleBanAction() {
 		if (onBan && !isLoading) {
 			onBan(agent);
@@ -60,12 +67,20 @@
 
 	// Get accessible button text
 	function getAccessibleBanText(isBanned, agentName) {
+		if (projectMode) {
+			const projectIdentifier = agentName || `проект ${agent.id}`;
+			return `Редактировать ${projectIdentifier}`;
+		}
 		const action = isBanned ? 'Unban' : 'Ban';
 		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
 		return `${action} ${agentIdentifier}`;
 	}
 
 	function getAccessibleDeleteText(agentName) {
+		if (projectMode) {
+			const projectIdentifier = agentName || `проект ${agent.id}`;
+			return `Удалить ${projectIdentifier} навсегда`;
+		}
 		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
 		return `Delete ${agentIdentifier} permanently`;
 	}
@@ -74,13 +89,15 @@
 {#if mobile}
 	<!-- Mobile Layout - Larger touch targets, full width buttons -->
 	<div class="flex w-full flex-col space-y-2">
-		<!-- Ban/Unban Button -->
+		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
 			id={banButtonId}
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
+			class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
+				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600 active:bg-blue-700'
+				: isBanned
 				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 			disabled={isLoading}
@@ -104,7 +121,7 @@
 					></path>
 				</svg>
 			{/if}
-			{isBanned ? 'Разбанить' : 'Забанить'}
+			{projectMode ? 'Редактировать' : isBanned ? 'Разбанить' : 'Забанить'}
 		</button>
 
 		<!-- Delete Button -->
@@ -156,13 +173,15 @@
 {:else if compact}
 	<!-- Compact Layout - Smaller buttons for tablet view -->
 	<div class="flex justify-end space-x-1">
-		<!-- Ban/Unban Button -->
+		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
 			id={banButtonId}
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
+			class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
+				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600'
+				: isBanned
 				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
@@ -186,7 +205,7 @@
 					></path>
 				</svg>
 			{/if}
-			{isBanned ? 'Разбан' : 'Бан'}
+			{projectMode ? 'Ред.' : isBanned ? 'Разбан' : 'Бан'}
 		</button>
 
 		<!-- Delete Button -->
@@ -238,13 +257,15 @@
 {:else}
 	<!-- Desktop Layout - Original design -->
 	<div class="flex justify-end space-x-2">
-		<!-- Ban/Unban Button -->
+		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
 			id={banButtonId}
 			onclick={handleBanAction}
 			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {isBanned
+			class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
+				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600'
+				: isBanned
 				? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 				: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
@@ -268,7 +289,7 @@
 					></path>
 				</svg>
 			{/if}
-			{isBanned ? 'Разбанить' : 'Бан'}
+			{projectMode ? 'Редактировать' : isBanned ? 'Разбанить' : 'Бан'}
 		</button>
 
 		<!-- Delete Button -->
@@ -320,11 +341,15 @@
 
 	<!-- Hidden descriptions for screen readers (shared across all layouts) -->
 	<div id="{banButtonId}-description" class="sr-only">
-		{isBanned
+		{projectMode
+			? 'Откроет форму редактирования проекта'
+			: isBanned
 			? 'This will restore access for the agent'
 			: 'This will prevent the agent from accessing the system'}
 	</div>
 	<div id="{deleteButtonId}-description" class="sr-only">
-		This action cannot be undone and will permanently remove all agent data
+		{projectMode
+			? 'Это действие нельзя отменить, проект будет удален навсегда'
+			: 'This action cannot be undone and will permanently remove all agent data'}
 	</div>
 {/if}
