@@ -23,15 +23,15 @@
 <el-dialog>
 	<dialog id="sidebar" class="backdrop:bg-transparent lg:hidden">
 		<el-dialog-backdrop
-			class="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
+			class="data-closed:opacity-0 fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear"
 		></el-dialog-backdrop>
 
 		<div tabindex="-1" class="fixed inset-0 flex focus:outline-none">
 			<el-dialog-panel
-				class="group/dialog-panel relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full"
+				class="group/dialog-panel data-closed:-translate-x-full relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out"
 			>
 				<div
-					class="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out group-data-closed/dialog-panel:opacity-0"
+					class="group-data-closed/dialog-panel:opacity-0 absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out"
 				>
 					<button type="button" command="close" commandfor="sidebar" class="-m-2.5 p-2.5">
 						<span class="sr-only">Close sidebar</span>
@@ -62,7 +62,7 @@
 						<img
 							src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
 							alt="Your Company"
-							class="h-8 w-auto not-dark:hidden"
+							class="not-dark:hidden h-8 w-auto"
 						/>
 					</div>
 					<nav class="relative flex flex-1 flex-col">
@@ -72,8 +72,10 @@
 									<li>
 										<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 										<a
-											href="#"
+											href="/dashboard"
 											class="group flex gap-x-3 rounded-md bg-gray-50 p-2 text-sm/6 font-semibold text-indigo-600 dark:bg-white/5 dark:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -90,13 +92,15 @@
 													stroke-linejoin="round"
 												/>
 											</svg>
-											Dashboard
+											Дашборд
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/agents"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -108,7 +112,7 @@
 												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 											>
 												<path
-													d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+													d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
 													stroke-linecap="round"
 													stroke-linejoin="round"
 												/>
@@ -118,8 +122,10 @@
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/curators"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -131,18 +137,20 @@
 												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 											>
 												<path
-													d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+													d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
 													stroke-linecap="round"
 													stroke-linejoin="round"
 												/>
 											</svg>
-											Projects
+											Кураторы
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/contractors"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -154,18 +162,20 @@
 												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 											>
 												<path
-													d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+													d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
 													stroke-linecap="round"
 													stroke-linejoin="round"
 												/>
 											</svg>
-											Calendar
+											Контрагенты
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/suppliers"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -177,18 +187,20 @@
 												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 											>
 												<path
-													d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+													d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m4.5 4.5V16.5a1.5 1.5 0 0 1 3-1.5m3 3.75h1.5a1.5 1.5 0 0 0 1.5-1.5V16.5a1.5 1.5 0 0 1 3-1.5m-6 3V16.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5m0 0V18a2.25 2.25 0 0 0 4.5 0V16.5h-4.5Z"
 													stroke-linecap="round"
 													stroke-linejoin="round"
 												/>
 											</svg>
-											Documents
+											Поставщики
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/services"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<svg
 												viewBox="0 0 24 24"
@@ -200,67 +212,70 @@
 												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 											>
 												<path
-													d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
-													stroke-linecap="round"
-													stroke-linejoin="round"
-												/>
-												<path
-													d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
+													d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655-4.653c-.143-.467-.384-.89-.766-1.207m13.5-9.228-4.39 5.584m0 0c.9-.556 2.427-.465 3.494.315a3.8 3.8 0 0 1 .315 3.494M8.5 6.5a5 5 0 1 1-7.071 7.071"
 													stroke-linecap="round"
 													stroke-linejoin="round"
 												/>
 											</svg>
-											Reports
+											Сервис
 										</a>
 									</li>
 								</ul>
 							</li>
 							<li>
-								<div class="text-xs/6 font-semibold text-gray-400">Your teams</div>
+								<div class="text-xs/6 font-semibold text-gray-400">Аналитика</div>
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
 									<li>
 										<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 										<a
-											href="#"
+											href="/clients"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<span
 												class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-												>H</span
+												>К</span
 											>
-											<span class="truncate">Heroicons</span>
+											<span class="truncate">Клиенты</span>
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/projects"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<span
 												class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-												>T</span
+												>П</span
 											>
-											<span class="truncate">Tailwind Labs</span>
+											<span class="truncate">Проекты</span>
 										</a>
 									</li>
 									<li>
 										<a
-											href="#"
+											href="/finance"
 											class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											command="close"
+											commandfor="sidebar"
 										>
 											<span
 												class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-												>W</span
+												>Ф</span
 											>
-											<span class="truncate">Workcation</span>
+											<span class="truncate">Финансы</span>
 										</a>
 									</li>
 								</ul>
 							</li>
 							<li class="mt-auto">
 								<a
-									href="#"
+									href="/settings"
 									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									command="close"
+									commandfor="sidebar"
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -282,7 +297,7 @@
 											stroke-linejoin="round"
 										/>
 									</svg>
-									Settings
+									Настройки
 								</a>
 							</li>
 						</ul>
@@ -354,7 +369,7 @@
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
 									<path
-										d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
+										d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
 										stroke-linecap="round"
 										stroke-linejoin="round"
 									/>
@@ -377,7 +392,7 @@
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
 									<path
-										d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"
+										d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
 										stroke-linecap="round"
 										stroke-linejoin="round"
 									/>
@@ -400,7 +415,7 @@
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
 									<path
-										d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
+										d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
 										stroke-linecap="round"
 										stroke-linejoin="round"
 									/>
@@ -423,7 +438,7 @@
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
 									<path
-										d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75"
+										d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m4.5 4.5V16.5a1.5 1.5 0 0 1 3-1.5m3 3.75h1.5a1.5 1.5 0 0 0 1.5-1.5V16.5a1.5 1.5 0 0 1 3-1.5m-6 3V16.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5m0 0V18a2.25 2.25 0 0 0 4.5 0V16.5h-4.5Z"
 										stroke-linecap="round"
 										stroke-linejoin="round"
 									/>
@@ -446,12 +461,7 @@
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
 									<path
-										d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
-									<path
-										d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z"
+										d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655-4.653c-.143-.467-.384-.89-.766-1.207m13.5-9.228-4.39 5.584m0 0c.9-.556 2.427-.465 3.494.315a3.8 3.8 0 0 1 .315 3.494M8.5 6.5a5 5 0 1 1-7.071 7.071"
 										stroke-linecap="round"
 										stroke-linejoin="round"
 									/>
@@ -539,7 +549,7 @@
 <div class="lg:pl-72">
 	<div class="sticky top-0 z-40 lg:mx-auto lg:max-w-full">
 		<div
-			class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
+			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
 		>
 			<button
 				type="button"
@@ -574,7 +584,7 @@
 						name="search"
 						placeholder="Поиск"
 						aria-label="Search"
-						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:ring-0 focus:ring-offset-0 focus:outline-none sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
 						style="outline: none !important; box-shadow: none !important;"
 					/>
 					<svg
@@ -653,17 +663,17 @@
 						<el-menu
 							anchor="bottom end"
 							popover
-							class="w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition transition-discrete [--anchor-gap:--spacing(2.5)] data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
+							class="transition-discrete data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition [--anchor-gap:--spacing(2.5)] dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
 						>
 							<a
-								href="#"
-								class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-gray-900"
-								>Your profile</a
+								href="/profile"
+								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+								>Ваш профиль</a
 							>
 							<a
-								href="#"
-								class="block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 focus:outline-hidden dark:text-white dark:focus:bg-gray-900"
-								>Sign out</a
+								href="/logout"
+								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+								>Выйти</a
 							>
 						</el-menu>
 					</el-dropdown>
