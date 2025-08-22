@@ -7,7 +7,6 @@ const PROJECTS_QUERY = gql`
 			data {
 				id
 				value
-				agent_id
 				agent {
 					id
 					name
@@ -43,7 +42,6 @@ const UPDATE_PROJECT_MUTATION = gql`
 		updateProject(input: $input) {
 			id
 			value
-			agent_id
 			agent {
 				id
 				name
