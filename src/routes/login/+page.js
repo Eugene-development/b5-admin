@@ -1,13 +1,11 @@
-/**
- * Login page load function
- * Handles server-side logic for the login page
- */
+import { redirect } from '@sveltejs/kit';
 
 export async function load({ url }) {
-	// Get the redirectTo parameter from URL search params
-	const redirectTo = url.searchParams.get('redirectTo') || '/dashboard';
-	
-	return {
-		redirectTo
-	};
+	// Redirect to auth group with preserved redirectTo parameter
+	const redirectTo = url.searchParams.get('redirectTo');
+	const newUrl = redirectTo
+		? `/(auth)/login?redirectTo=${encodeURIComponent(redirectTo)}`
+		: '/(auth)/login';
+
+	throw redirect(307, newUrl);
 }
