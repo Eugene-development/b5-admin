@@ -1,4 +1,6 @@
 import { gql, request } from 'graphql-request';
+import { getAuthHeaders } from './config.js';
+import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 
 // GraphQL queries and mutations
 const USERS_QUERY = gql`
@@ -45,21 +47,30 @@ const DELETE_USER_MUTATION = gql`
 	}
 `;
 
-// Helper function to make GraphQL requests with proper error handling
+// Helper function to make GraphQL requests with proper error handling and authentication
 async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQL operation') {
 	try {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-		const result = await request(import.meta.env.VITE_B5_API_URL, query, variables, {
+		// Get authentication headers
+		const authHeaders = getAuthHeaders();
+		const headers = {
 			'Content-Type': 'application/json',
-			Accept: 'application/json'
-		});
+			Accept: 'application/json',
+			...authHeaders
+		};
+
+		const result = await request(import.meta.env.VITE_B5_API_URL, query, variables, headers);
 
 		clearTimeout(timeoutId);
 		return result;
 	} catch (err) {
 		console.error(`GraphQL Error in ${operationName}:`, err);
+		
+		// Handle authentication errors
+		handleAuthError(err, '/agents');
+		
 		throw err;
 	}
 }

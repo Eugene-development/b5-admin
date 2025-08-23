@@ -1,6 +1,12 @@
 <script>
+	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 </script>
 
-<div>
-	<h1>Dashboard</h1>
-</div>
+<ProtectedRoute>
+	{#snippet children()}
+		<div>
+			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+			<p class="mt-4 text-gray-600 dark:text-gray-400">Добро пожаловать в административную панель B5-Admin.</p>
+		</div>
+	{/snippet}
+</ProtectedRoute>

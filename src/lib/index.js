@@ -7,6 +7,7 @@ export { default as ActionButtons } from './components/ActionButtons.svelte';
 export { default as ConfirmationModal } from './components/ConfirmationModal.svelte';
 export { default as StatusBadge } from './components/StatusBadge.svelte';
 export { default as LoadingSpinner } from './components/LoadingSpinner.svelte';
+export { default as LoadingOverlay } from './components/LoadingOverlay.svelte';
 export { default as Toast } from './components/Toast.svelte';
 export { default as ToastContainer } from './components/ToastContainer.svelte';
 export { default as ErrorBoundary } from './components/ErrorBoundary.svelte';
@@ -15,6 +16,15 @@ export { default as TruncatedText } from './components/TruncatedText.svelte';
 export { default as DateDisplay } from './components/DateDisplay.svelte';
 export { default as CurrencyDisplay } from './components/CurrencyDisplay.svelte';
 export { default as AgentDisplay } from './components/AgentDisplay.svelte';
+export { default as ProtectedRoute } from './components/ProtectedRoute.svelte';
 
 // Export utilities
 export * from './utils/index.js';
+
+// Export authentication API
+export * from './api/config.js';
+export * from './api/client.js';
+export * from './api/auth.js';
+
+// Export authentication state store
+export * from './state/auth.svelte.js';

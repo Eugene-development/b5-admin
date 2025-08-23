@@ -1,148 +1,154 @@
-# Утилиты форматирования данных
+# Authentication Error Handling Utilities
 
-Этот модуль содержит функции для форматирования различных типов данных в проектах B5 Admin.
+This directory contains utilities for centralized error handling in the B5-Admin authentication system.
 
-## Основные функции
+## Files
 
-### Финансовые данные
+### `authErrorHandler.js`
+Main error handling utilities with the following key functions:
 
+#### Core Error Handlers
+- `handleAuthError(error, operation, options)` - Centralized authentication error handling
+- `handleNetworkError(error, options)` - Specialized network error handling  
+- `handleTimeoutError(error, options)` - Specialized timeout error handling
+
+#### Retry Mechanisms
+- `retryAuthOperation(operation, operationType, options)` - Enhanced retry with exponential backoff
+- `executeCriticalAuthOperation(operation, operationType, options)` - Wrapper for critical operations with automatic retry
+
+#### Utility Functions
+- `formatValidationErrors(validationErrors)` - Format API validation errors for display
+- `isRecoverableError(error)` - Check if an error can be retried
+- `createDebouncedErrorHandler(handler, delay)` - Create debounced error handlers
+
+#### Constants
+- `AUTH_ERROR_MESSAGES` - Predefined error messages in Russian
+- `CRITICAL_OPERATIONS` - List of operations that should use retry mechanism
+
+### `authWithErrorHandling.js`
+Enhanced versions of auth API functions with integrated error handling:
+
+- `loginUser(email, password, remember, options)` - Login with error handling and retry
+- `registerUser(userData, options)` - Registration with error handling
+- `logoutUser(options)` - Logout with error handling
+- `getCurrentUser(options)` - Get user data with error handling
+- `sendEmailVerification(options)` - Send verification email with error handling
+- `resendEmailVerification(options)` - Resend verification email with error handling
+- `verifyEmail(id, hash, signature, options)` - Verify email with error handling
+- `batchAuthOperations(operations, options)` - Execute multiple operations in batch
+- `authHealthCheck()` - Check authentication system health
+
+## Usage Examples
+
+### Basic Error Handling
 ```javascript
-import { formatCurrency, formatAgentRate } from '$lib/utils/formatters.js';
+import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 
-// Форматирование валюты
-formatCurrency(1500000); // "1 500 000 ₽"
-formatCurrency(1000, 'USD'); // "1 000 $"
-formatCurrency(null); // "Не указано"
-
-// Форматирование ставки агента
-formatAgentRate(15, 'percentage'); // "15%"
-formatAgentRate(50000, 'fixed'); // "50 000 ₽"
+try {
+  // Some API call
+} catch (error) {
+  const errorInfo = handleAuthError(error, 'login', {
+    showToast: true,
+    redirectOnAuth: true
+  });
+  
+  console.log('Error type:', errorInfo.type);
+  console.log('Error message:', errorInfo.message);
+}
 ```
 
-### Даты
-
+### Using Enhanced Auth Functions
 ```javascript
-import { formatDate, isOverdue, getDateUrgency } from '$lib/utils/formatters.js';
-import { getRelativeTime, getDateUrgencyClasses } from '$lib/utils/dateUtils.js';
+import { loginUser } from '$lib/api/authWithErrorHandling.js';
 
-// Форматирование даты
-formatDate('2025-01-15'); // "15.01.2025"
-formatDate(null); // "Не указано"
+// Login with automatic error handling and retry
+const result = await loginUser('user@example.com', 'password', true, {
+  showSuccessToast: true,
+  showErrorToast: true,
+  maxRetries: 2
+});
 
-// Проверка просрочки
-isOverdue('2025-01-10'); // true (если сегодня позже)
-
-// Относительное время
-getRelativeTime('2025-01-20'); // "Через 5 дней"
-
-// CSS классы для срочности
-getDateUrgencyClasses('2025-01-10'); // "text-red-600 font-semibold bg-red-50 px-2 py-1 rounded"
+if (result.success) {
+  console.log('Login successful:', result.user);
+} else {
+  console.log('Login failed:', result.message);
+  console.log('Validation errors:', result.formattedErrors);
+}
 ```
 
-### Текст
-
+### Retry Mechanism
 ```javascript
-import { truncateText, isTruncated } from '$lib/utils/formatters.js';
+import { retryAuthOperation, CRITICAL_OPERATIONS } from '$lib/utils/authErrorHandler.js';
 
-// Обрезка текста
-truncateText('Очень длинное описание проекта...', 50); // "Очень длинное описание проекта..."
-isTruncated('Короткий текст', 50); // false
+const result = await retryAuthOperation(
+  () => someApiCall(),
+  CRITICAL_OPERATIONS.LOGIN,
+  {
+    maxRetries: 3,
+    initialDelay: 1000,
+    exponentialBackoff: true,
+    showRetryToasts: true
+  }
+);
 ```
 
-### Агенты
-
+### Custom Error Handling
 ```javascript
-import { formatAgentDisplay } from '$lib/utils/formatters.js';
+import { createDebouncedErrorHandler } from '$lib/utils/authErrorHandler.js';
 
-const agent = { name: 'Иван Иванов', email: 'ivan@example.com' };
-formatAgentDisplay(agent); // "Иван Иванов (ivan@example.com)"
-formatAgentDisplay(null); // "Не назначен"
+const debouncedHandler = createDebouncedErrorHandler((error) => {
+  console.error('Debounced error:', error);
+}, 1000);
+
+// Multiple rapid calls will be debounced
+debouncedHandler(error1);
+debouncedHandler(error2); // Only this one will execute after 1 second
 ```
 
-## Компоненты
+## Integration with Toast System
 
-### TruncatedText
+The error handlers automatically integrate with the existing toast system:
 
-Компонент для отображения текста с автоматической обрезкой и tooltip:
+- Error messages are displayed as error toasts
+- Success messages are displayed as success toasts  
+- Retry attempts show warning toasts
+- Network errors show persistent toasts (don't auto-dismiss)
 
-```svelte
-<script>
-  import { TruncatedText } from '$lib';
-</script>
+## Configuration Options
 
-<TruncatedText 
-  text="Очень длинное описание проекта которое нужно обрезать"
-  maxLength={100}
-  className="text-gray-700"
-/>
+Most functions accept an options object with these common properties:
+
+- `showToast: boolean` - Whether to show toast notifications (default: true)
+- `showSuccessToast: boolean` - Whether to show success toasts (default: true)
+- `showErrorToast: boolean` - Whether to show error toasts (default: true)
+- `showRetryToasts: boolean` - Whether to show retry attempt toasts (default: true)
+- `maxRetries: number` - Maximum retry attempts (default: varies by operation)
+- `redirectOnAuth: boolean` - Whether to redirect on auth errors (default: true)
+- `customMessage: string` - Custom error message to display
+
+## Error Types
+
+The system recognizes these error types:
+
+- `network` - Network connectivity issues
+- `timeout` - Request timeout errors
+- `unauthorized` - 401 authentication errors
+- `forbidden` - 403 authorization errors
+- `validation` - 422 validation errors
+- `rate_limited` - 429 rate limiting errors
+- `server` - Generic server errors
+
+## Testing
+
+Tests are located in `__tests__/authErrorHandler.test.js` and cover:
+
+- All error handling functions
+- Retry mechanisms with different scenarios
+- Validation error formatting
+- Debounced error handling
+- Error type detection
+
+Run tests with:
+```bash
+npm test -- --run src/lib/utils/__tests__/authErrorHandler.test.js
 ```
-
-### DateDisplay
-
-Компонент для отображения дат с цветовой индикацией:
-
-```svelte
-<script>
-  import { DateDisplay } from '$lib';
-</script>
-
-<DateDisplay 
-  date="2025-01-15"
-  showRelative={true}
-  className="text-sm"
-/>
-```
-
-### CurrencyDisplay
-
-Компонент для отображения финансовых данных:
-
-```svelte
-<script>
-  import { CurrencyDisplay } from '$lib';
-</script>
-
-<CurrencyDisplay 
-  amount={1500000}
-  currency="RUB"
-  size="large"
-/>
-
-<CurrencyDisplay 
-  amount={15}
-  type="agent_rate"
-  rateType="percentage"
-/>
-```
-
-### AgentDisplay
-
-Компонент для отображения информации об агенте:
-
-```svelte
-<script>
-  import { AgentDisplay } from '$lib';
-</script>
-
-<AgentDisplay 
-  agent={{ name: 'Иван Иванов', email: 'ivan@example.com', id: 1 }}
-  clickable={true}
-  showId={true}
-/>
-```
-
-## Цветовая индикация дат
-
-Система автоматически применяет цветовую индикацию для дат:
-
-- **Красный** (overdue): Просроченные даты
-- **Оранжевый** (urgent): До 3 дней
-- **Желтый** (warning): До 7 дней  
-- **Серый** (normal): Более 7 дней
-
-## Локализация
-
-Все функции поддерживают русскую локализацию:
-- Форматирование чисел и валют по российским стандартам
-- Правильные падежи для дней ("1 день", "2 дня", "5 дней")
-- Русские названия для состояний ("Не указано", "Не назначен")

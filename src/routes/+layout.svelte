@@ -6,8 +6,25 @@
 		closeMobileMenu,
 		openMobileMenu
 	} from '$lib/state/visibleMobileMenu.svelte';
+	import { 
+		authState, 
+		initializeAuth, 
+		logout, 
+		isAuthenticated, 
+		getCurrentUserData 
+	} from '$lib/state/auth.svelte.js';
+	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+	import ToastContainer from '$lib/components/ToastContainer.svelte';
+	import { toasts } from '$lib/utils/toastStore.js';
 
 	let { children } = $props();
+
+	// Initialize authentication when the app loads
+	onMount(async () => {
+		await initializeAuth();
+	});
 
 	// Handle backdrop click to close menu
 	function handleBackdropClick(event) {
@@ -26,6 +43,37 @@
 	// Handle menu content click to prevent closing
 	function handleMenuClick(event) {
 		event.stopPropagation();
+	}
+
+	// Handle logout with confirmation
+	async function handleLogout() {
+		if (confirm('Вы уверены, что хотите выйти из системы?')) {
+			try {
+				const success = await logout();
+				if (success) {
+					addSuccessToast('Вы успешно вышли из системы');
+					goto('/login');
+				} else {
+					addErrorToast('Произошла ошибка при выходе из системы');
+				}
+			} catch (error) {
+				console.error('Logout error:', error);
+				addErrorToast('Произошла ошибка при выходе из системы');
+			}
+		}
+	}
+
+	// Get user display name
+	function getUserDisplayName() {
+		const user = getCurrentUserData();
+		return user?.name || 'Пользователь';
+	}
+
+	// Get user avatar (placeholder for now)
+	function getUserAvatar() {
+		// For now, return a placeholder avatar
+		// In the future, this could be user.avatar_url or similar
+		return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
 	}
 </script>
 
@@ -295,34 +343,128 @@
 						</ul>
 					</li>
 					<li class="mt-auto">
-						<a
-							href="/settings"
-							class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							command="close"
-							commandfor="sidebar"
-						>
-							<svg
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="1.5"
-								data-slot="icon"
-								aria-hidden="true"
-								class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
-							>
-								<path
-									d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-								<path
-									d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-									stroke-linecap="round"
-									stroke-linejoin="round"
-								/>
-							</svg>
-							Настройки
-						</a>
+						{#if isAuthenticated()}
+							<!-- User info section for mobile -->
+							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
+								<div class="flex items-center gap-x-3 px-2 py-2">
+									<img
+										src={getUserAvatar()}
+										alt="User avatar"
+										class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
+									/>
+									<div class="flex-1 min-w-0">
+										<p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+											{getUserDisplayName()}
+										</p>
+										<p class="text-xs text-gray-500 truncate dark:text-gray-400">
+											{getCurrentUserData()?.email || ''}
+										</p>
+									</div>
+								</div>
+								
+								<!-- Profile and logout buttons -->
+								<div class="mt-2 space-y-1">
+									<a
+										href="/profile"
+										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										onclick={closeMobileMenu}
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											data-slot="icon"
+											aria-hidden="true"
+											class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										>
+											<path
+												d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+										Профиль
+									</a>
+									
+									<a
+										href="/settings"
+										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										onclick={closeMobileMenu}
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											data-slot="icon"
+											aria-hidden="true"
+											class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										>
+											<path
+												d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+											<path
+												d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+										Настройки
+									</a>
+									
+									<button
+										onclick={handleLogout}
+										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											data-slot="icon"
+											aria-hidden="true"
+											class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										>
+											<path
+												d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+										Выйти
+									</button>
+								</div>
+							</div>
+						{:else}
+							<!-- Login button for unauthenticated users -->
+							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
+								<a
+									href="/login"
+									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+									onclick={closeMobileMenu}
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										data-slot="icon"
+										aria-hidden="true"
+										class="size-6 shrink-0 text-white"
+									>
+										<path
+											d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+									Войти
+								</a>
+							</div>
+						{/if}
 					</li>
 				</ul>
 			</nav>
@@ -536,32 +678,125 @@
 					</ul>
 				</li>
 				<li class="mt-auto">
-					<a
-						href="/settings"
-						class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-white"
-					>
-						<svg
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="1.5"
-							data-slot="icon"
-							aria-hidden="true"
-							class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
-						>
-							<path
-								d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							/>
-							<path
-								d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							/>
-						</svg>
-						Настройки
-					</a>
+					{#if isAuthenticated()}
+						<!-- User info section for desktop -->
+						<div class="border-t border-gray-200 pt-4 dark:border-white/10">
+							<div class="flex items-center gap-x-3 px-2 py-2">
+								<img
+									src={getUserAvatar()}
+									alt="User avatar"
+									class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
+								/>
+								<div class="flex-1 min-w-0">
+									<p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+										{getUserDisplayName()}
+									</p>
+									<p class="text-xs text-gray-500 truncate dark:text-gray-400">
+										{getCurrentUserData()?.email || ''}
+									</p>
+								</div>
+							</div>
+							
+							<!-- Profile and logout buttons -->
+							<div class="mt-2 space-y-1">
+								<a
+									href="/profile"
+									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										data-slot="icon"
+										aria-hidden="true"
+										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									>
+										<path
+											d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+									Профиль
+								</a>
+								
+								<a
+									href="/settings"
+									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										data-slot="icon"
+										aria-hidden="true"
+										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									>
+										<path
+											d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+										<path
+											d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+									Настройки
+								</a>
+								
+								<button
+									onclick={handleLogout}
+									class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+								>
+									<svg
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="1.5"
+										data-slot="icon"
+										aria-hidden="true"
+										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									>
+										<path
+											d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
+									Выйти
+								</button>
+							</div>
+						</div>
+					{:else}
+						<!-- Login button for unauthenticated users -->
+						<div class="border-t border-gray-200 pt-4 dark:border-white/10">
+							<a
+								href="/login"
+								class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+							>
+								<svg
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="1.5"
+									data-slot="icon"
+									aria-hidden="true"
+									class="size-6 shrink-0 text-white"
+								>
+									<path
+										d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									/>
+								</svg>
+								Войти
+							</a>
+						</div>
+					{/if}
 				</li>
 			</ul>
 		</nav>
@@ -652,52 +887,64 @@
 					></div>
 
 					<!-- Profile dropdown -->
-					<el-dropdown class="relative">
-						<button class="relative flex items-center">
-							<span class="absolute -inset-1.5"></span>
-							<span class="sr-only">Open user menu</span>
-							<img
-								src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-								alt=""
-								class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-							/>
-							<span class="hidden lg:flex lg:items-center">
-								<span
-									aria-hidden="true"
-									class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">Tom Cook</span
-								>
-								<svg
-									viewBox="0 0 20 20"
-									fill="currentColor"
-									data-slot="icon"
-									aria-hidden="true"
-									class="ml-2 size-5 text-gray-400"
-								>
-									<path
-										d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
-										clip-rule="evenodd"
-										fill-rule="evenodd"
-									/>
-								</svg>
-							</span>
-						</button>
-						<el-menu
-							anchor="bottom end"
-							popover
-							class="transition-discrete data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition [--anchor-gap:--spacing(2.5)] dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
-						>
-							<a
-								href="/profile"
-								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
-								>Ваш профиль</a
+					{#if isAuthenticated()}
+						<el-dropdown class="relative">
+							<button class="relative flex items-center">
+								<span class="absolute -inset-1.5"></span>
+								<span class="sr-only">Open user menu</span>
+								<img
+									src={getUserAvatar()}
+									alt="User avatar"
+									class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
+								/>
+								<span class="hidden lg:flex lg:items-center">
+									<span
+										aria-hidden="true"
+										class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">{getUserDisplayName()}</span
+									>
+									<svg
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										data-slot="icon"
+										aria-hidden="true"
+										class="ml-2 size-5 text-gray-400"
+									>
+										<path
+											d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+											clip-rule="evenodd"
+											fill-rule="evenodd"
+										/>
+									</svg>
+								</span>
+							</button>
+							<el-menu
+								anchor="bottom end"
+								popover
+								class="transition-discrete data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition [--anchor-gap:--spacing(2.5)] dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
 							>
+								<a
+									href="/profile"
+									class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+									>Ваш профиль</a
+								>
+								<button
+									onclick={handleLogout}
+									class="focus:outline-hidden block w-full text-left px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+									>Выйти</button
+								>
+							</el-menu>
+						</el-dropdown>
+					{:else}
+						<!-- Show login button for unauthenticated users -->
+						<div class="flex items-center gap-x-2">
 							<a
-								href="/logout"
-								class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
-								>Выйти</a
+								href="/login"
+								class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 							>
-						</el-menu>
-					</el-dropdown>
+								Войти
+							</a>
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -709,3 +956,6 @@
 		</div>
 	</main>
 </div>
+
+<!-- Toast notifications -->
+<ToastContainer toasts={$toasts} position="top-right" />
