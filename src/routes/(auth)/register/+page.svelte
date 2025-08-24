@@ -228,8 +228,8 @@
 					</div>
 				</div>
 
-				<h1 class="mb-2 text-3xl font-bold text-white">Создать аккаунт</h1>
-				<p class="text-lg text-white/90">Присоединяйтесь к административной панели B5</p>
+				<h1 class="mb-2 text-3xl font-bold text-white">BONUS.BAND</h1>
+				<p class="text-lg text-white/90">Регистрация в системе управления агентами</p>
 			</div>
 		</div>
 
@@ -382,7 +382,7 @@
 							class:border-red-300={formErrors.email}
 							class:focus:ring-red-500={formErrors.email}
 							class:focus:border-red-500={formErrors.email}
-							placeholder="example@company.com"
+							placeholder="example@mail.ru"
 						/>
 					</div>
 					{#if formErrors.email}

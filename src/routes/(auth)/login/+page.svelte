@@ -130,8 +130,8 @@
 </script>
 
 <svelte:head>
-	<title>Вход в систему - B5 Admin</title>
-	<meta name="description" content="Войдите в административную панель B5" />
+	<title>Вход в систему - Admin</title>
+	<meta name="description" content="Войдите в административную панель" />
 </svelte:head>
 
 <!-- Loading overlay -->
@@ -174,8 +174,8 @@
 					</div>
 				</div>
 
-				<h1 class="mb-2 text-3xl font-bold text-white">Добро пожаловать</h1>
-				<p class="text-lg text-white/90">Войдите в административную панель B5</p>
+				<h1 class="mb-2 text-3xl font-bold text-white">BONUS.BAND</h1>
+				<p class="text-lg text-white/90">Вход в систему управления агентами</p>
 			</div>
 		</div>
 
@@ -215,7 +215,7 @@
 							class:border-red-300={formErrors.email}
 							class:focus:ring-red-500={formErrors.email}
 							class:focus:border-red-500={formErrors.email}
-							placeholder="example@company.com"
+							placeholder="example@mail.ru"
 						/>
 					</div>
 					{#if formErrors.email}

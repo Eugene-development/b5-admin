@@ -42,7 +42,7 @@
 
 	<!-- Контейнер для содержимого -->
 	<div class="relative z-10 flex min-h-screen items-center justify-center p-4">
-		<div class="w-full max-w-md">
+		<div class="w-full max-w-3xl">
 			{@render children?.()}
 		</div>
 	</div>
