@@ -6,20 +6,67 @@
 		closeMobileMenu,
 		openMobileMenu
 	} from '$lib/state/visibleMobileMenu.svelte';
-	import { 
-		authState, 
-		initializeAuth, 
-		logout, 
-		isAuthenticated, 
-		getCurrentUserData 
+	import {
+		authState,
+		initializeAuth,
+		logout,
+		isAuthenticated,
+		getCurrentUserData
 	} from '$lib/state/auth.svelte.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import { toasts } from '$lib/utils/toastStore.js';
 
 	let { children } = $props();
+
+	// Function to check if a route is active
+	function isActiveRoute(route) {
+		return $page.url.pathname === route;
+	}
+
+	// Function to get CSS classes for navigation items
+	function getNavClasses(route) {
+		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold';
+		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
+		const inactiveClasses =
+			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
+
+		return `${baseClasses} ${isActiveRoute(route) ? activeClasses : inactiveClasses}`;
+	}
+
+	// Function to get icon classes for navigation items
+	function getIconClasses(route) {
+		const baseClasses = 'size-6 shrink-0';
+		const activeClasses = 'text-indigo-600 dark:text-white';
+		const inactiveClasses = 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white';
+
+		return `${baseClasses} ${isActiveRoute(route) ? activeClasses : inactiveClasses}`;
+	}
+
+	// Function to get CSS classes for navigation items with span icons (analytics section)
+	function getNavClassesWithSpan(route) {
+		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold';
+		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
+		const inactiveClasses =
+			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
+
+		return `${baseClasses} ${isActiveRoute(route) ? activeClasses : inactiveClasses}`;
+	}
+
+	// Function to get span icon classes for analytics navigation items
+	function getSpanIconClasses(route) {
+		const baseClasses =
+			'flex size-6 shrink-0 items-center justify-center rounded-lg border text-[0.625rem] font-medium';
+		const activeClasses =
+			'border-indigo-600 bg-indigo-600 text-white dark:border-white dark:bg-white dark:text-black';
+		const inactiveClasses =
+			'border-gray-200 bg-white text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white';
+
+		return `${baseClasses} ${isActiveRoute(route) ? activeClasses : inactiveClasses}`;
+	}
 
 	// Initialize authentication when the app loads
 	onMount(async () => {
@@ -73,7 +120,7 @@
 	function getUserAvatar() {
 		// For now, return a placeholder avatar
 		// In the future, this could be user.avatar_url or similar
-		return "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80";
+		return 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80';
 	}
 </script>
 
@@ -152,11 +199,7 @@
 						<ul role="list" class="-mx-2 space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-								<a
-									href="/dashboard"
-									class="group flex gap-x-3 rounded-md bg-gray-50 p-2 text-sm/6 font-semibold text-indigo-600 dark:bg-white/5 dark:text-white"
-									onclick={closeMobileMenu}
-								>
+								<a href="/dashboard" class={getNavClasses('/dashboard')} onclick={closeMobileMenu}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -164,7 +207,7 @@
 										stroke-width="1.5"
 										data-slot="icon"
 										aria-hidden="true"
-										class="size-6 shrink-0 text-indigo-600 dark:text-white"
+										class={getIconClasses('/dashboard')}
 									>
 										<path
 											d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
@@ -176,11 +219,7 @@
 								</a>
 							</li>
 							<li>
-								<a
-									href="/agents"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-									onclick={closeMobileMenu}
-								>
+								<a href="/agents" class={getNavClasses('/agents')} onclick={closeMobileMenu}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -188,7 +227,7 @@
 										stroke-width="1.5"
 										data-slot="icon"
 										aria-hidden="true"
-										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										class={getIconClasses('/agents')}
 									>
 										<path
 											d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
@@ -200,11 +239,7 @@
 								</a>
 							</li>
 							<li>
-								<a
-									href="/curators"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-									onclick={closeMobileMenu}
-								>
+								<a href="/curators" class={getNavClasses('/curators')} onclick={closeMobileMenu}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -212,7 +247,7 @@
 										stroke-width="1.5"
 										data-slot="icon"
 										aria-hidden="true"
-										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										class={getIconClasses('/curators')}
 									>
 										<path
 											d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
@@ -226,7 +261,7 @@
 							<li>
 								<a
 									href="/contractors"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class={getNavClasses('/contractors')}
 									onclick={closeMobileMenu}
 								>
 									<svg
@@ -236,7 +271,7 @@
 										stroke-width="1.5"
 										data-slot="icon"
 										aria-hidden="true"
-										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										class={getIconClasses('/contractors')}
 									>
 										<path
 											d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
@@ -304,39 +339,30 @@
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 								<a
 									href="/clients"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class={getNavClassesWithSpan('/clients')}
 									onclick={closeMobileMenu}
 								>
-									<span
-										class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-										>К</span
-									>
+									<span class={getSpanIconClasses('/clients')}>К</span>
 									<span class="truncate">Клиенты</span>
 								</a>
 							</li>
 							<li>
 								<a
 									href="/projects"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class={getNavClassesWithSpan('/projects')}
 									onclick={closeMobileMenu}
 								>
-									<span
-										class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-										>П</span
-									>
+									<span class={getSpanIconClasses('/projects')}>П</span>
 									<span class="truncate">Проекты</span>
 								</a>
 							</li>
 							<li>
 								<a
 									href="/finance"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class={getNavClassesWithSpan('/finance')}
 									onclick={closeMobileMenu}
 								>
-									<span
-										class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-										>Ф</span
-									>
+									<span class={getSpanIconClasses('/finance')}>Ф</span>
 									<span class="truncate">Финансы</span>
 								</a>
 							</li>
@@ -352,16 +378,16 @@
 										alt="User avatar"
 										class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
 									/>
-									<div class="flex-1 min-w-0">
-										<p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+									<div class="min-w-0 flex-1">
+										<p class="truncate text-sm font-medium text-gray-900 dark:text-white">
 											{getUserDisplayName()}
 										</p>
-										<p class="text-xs text-gray-500 truncate dark:text-gray-400">
+										<p class="truncate text-xs text-gray-500 dark:text-gray-400">
 											{getCurrentUserData()?.email || ''}
 										</p>
 									</div>
 								</div>
-								
+
 								<!-- Profile and logout buttons -->
 								<div class="mt-2 space-y-1">
 									<a
@@ -386,7 +412,7 @@
 										</svg>
 										Профиль
 									</a>
-									
+
 									<a
 										href="/settings"
 										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
@@ -414,7 +440,7 @@
 										</svg>
 										Настройки
 									</a>
-									
+
 									<button
 										onclick={handleLogout}
 										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
@@ -443,7 +469,7 @@
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 								<a
 									href="/login"
-									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+									class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500"
 									onclick={closeMobileMenu}
 								>
 									<svg
@@ -496,10 +522,7 @@
 					<ul role="list" class="-mx-2 space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-							<a
-								href="/dashboard"
-								class="group flex gap-x-3 rounded-md bg-gray-50 p-2 text-sm/6 font-semibold text-indigo-600 dark:bg-white/5 dark:text-white"
-							>
+							<a href="/dashboard" class={getNavClasses('/dashboard')}>
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"
@@ -507,7 +530,7 @@
 									stroke-width="1.5"
 									data-slot="icon"
 									aria-hidden="true"
-									class="size-6 shrink-0 text-indigo-600 dark:text-white"
+									class={getIconClasses('/dashboard')}
 								>
 									<path
 										d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
@@ -519,10 +542,7 @@
 							</a>
 						</li>
 						<li>
-							<a
-								href="/agents"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
+							<a href="/agents" class={getNavClasses('/agents')}>
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"
@@ -530,7 +550,7 @@
 									stroke-width="1.5"
 									data-slot="icon"
 									aria-hidden="true"
-									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									class={getIconClasses('/agents')}
 								>
 									<path
 										d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
@@ -542,10 +562,7 @@
 							</a>
 						</li>
 						<li>
-							<a
-								href="/curators"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
+							<a href="/curators" class={getNavClasses('/curators')}>
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"
@@ -553,7 +570,7 @@
 									stroke-width="1.5"
 									data-slot="icon"
 									aria-hidden="true"
-									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									class={getIconClasses('/curators')}
 								>
 									<path
 										d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
@@ -565,10 +582,7 @@
 							</a>
 						</li>
 						<li>
-							<a
-								href="/contractors"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
+							<a href="/contractors" class={getNavClasses('/contractors')}>
 								<svg
 									viewBox="0 0 24 24"
 									fill="none"
@@ -576,7 +590,7 @@
 									stroke-width="1.5"
 									data-slot="icon"
 									aria-hidden="true"
-									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+									class={getIconClasses('/contractors')}
 								>
 									<path
 										d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
@@ -640,38 +654,20 @@
 					<ul role="list" class="-mx-2 mt-2 space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-							<a
-								href="/clients"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
-								<span
-									class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-									>H</span
-								>
+							<a href="/clients" class={getNavClassesWithSpan('/clients')}>
+								<span class={getSpanIconClasses('/clients')}>К</span>
 								<span class="truncate">Клиенты</span>
 							</a>
 						</li>
 						<li>
-							<a
-								href="/projects"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
-								<span
-									class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-									>T</span
-								>
+							<a href="/projects" class={getNavClassesWithSpan('/projects')}>
+								<span class={getSpanIconClasses('/projects')}>П</span>
 								<span class="truncate">Проекты</span>
 							</a>
 						</li>
 						<li>
-							<a
-								href="/finance"
-								class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-							>
-								<span
-									class="flex size-6 shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white text-[0.625rem] font-medium text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600 dark:border-white/10 dark:bg-white/5 dark:group-hover:border-white/20 dark:group-hover:text-white"
-									>W</span
-								>
+							<a href="/finance" class={getNavClassesWithSpan('/finance')}>
+								<span class={getSpanIconClasses('/finance')}>Ф</span>
 								<span class="truncate">Финансы</span>
 							</a>
 						</li>
@@ -687,16 +683,16 @@
 									alt="User avatar"
 									class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
 								/>
-								<div class="flex-1 min-w-0">
-									<p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+								<div class="min-w-0 flex-1">
+									<p class="truncate text-sm font-medium text-gray-900 dark:text-white">
 										{getUserDisplayName()}
 									</p>
-									<p class="text-xs text-gray-500 truncate dark:text-gray-400">
+									<p class="truncate text-xs text-gray-500 dark:text-gray-400">
 										{getCurrentUserData()?.email || ''}
 									</p>
 								</div>
 							</div>
-							
+
 							<!-- Profile and logout buttons -->
 							<div class="mt-2 space-y-1">
 								<a
@@ -720,7 +716,7 @@
 									</svg>
 									Профиль
 								</a>
-								
+
 								<a
 									href="/settings"
 									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
@@ -747,7 +743,7 @@
 									</svg>
 									Настройки
 								</a>
-								
+
 								<button
 									onclick={handleLogout}
 									class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
@@ -776,7 +772,7 @@
 						<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 							<a
 								href="/login"
-								class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+								class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500"
 							>
 								<svg
 									viewBox="0 0 24 24"
@@ -900,7 +896,8 @@
 								<span class="hidden lg:flex lg:items-center">
 									<span
 										aria-hidden="true"
-										class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">{getUserDisplayName()}</span
+										class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white"
+										>{getUserDisplayName()}</span
 									>
 									<svg
 										viewBox="0 0 20 20"
@@ -929,7 +926,7 @@
 								>
 								<button
 									onclick={handleLogout}
-									class="focus:outline-hidden block w-full text-left px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+									class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
 									>Выйти</button
 								>
 							</el-menu>

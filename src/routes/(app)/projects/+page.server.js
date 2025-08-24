@@ -1,14 +1,9 @@
-import { error, redirect } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { getAllProjects } from '$lib/api/projects.js';
 
-export const load = async ({ fetch, cookies, url }) => {
-	// Check for authentication token
-	const token = cookies.get('auth_token');
-	if (!token) {
-		// Redirect to login with current URL as redirectTo parameter
-		const redirectTo = encodeURIComponent(url.pathname + url.search);
-		throw redirect(302, `/login?redirectTo=${redirectTo}`);
-	}
+export const load = async ({ fetch, url }) => {
+	// Note: Authentication is handled client-side by ProtectedRoute component
+	// Server-side auth check removed as token is stored in localStorage, not cookies
 	try {
 		const projects = await getAllProjects();
 

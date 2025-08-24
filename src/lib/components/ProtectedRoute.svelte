@@ -16,26 +16,25 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { 
-		authState, 
-		initializeAuth, 
-		isAuthenticated, 
-		isEmailVerified, 
-		isLoading 
+	import {
+		authState,
+		initializeAuth,
+		isAuthenticated,
+		isEmailVerified,
+		isLoading
 	} from '../state/auth.svelte.js';
 	import LoadingSpinner from './LoadingSpinner.svelte';
 
 	// Props
-	let { 
-		requireEmailVerification = false, 
-		redirectTo = undefined,
-		children 
-	} = $props();
+	let { requireEmailVerification = false, redirectTo = undefined, children } = $props();
+
+	// State to prevent flickering during initialization
+	let isInitializing = $state(true);
 
 	// Reactive state for access control
 	let hasAccess = $derived(() => {
 		// If still loading or not initialized, don't grant access yet
-		if (!authState.initialized || isLoading()) {
+		if (!authState.initialized || isLoading() || isInitializing) {
 			return false;
 		}
 
@@ -55,7 +54,7 @@
 	// Reactive state for determining redirect behavior
 	let shouldRedirect = $derived(() => {
 		// Don't redirect while still initializing or loading
-		if (!authState.initialized || isLoading()) {
+		if (!authState.initialized || isLoading() || isInitializing) {
 			return false;
 		}
 
@@ -78,7 +77,7 @@
 
 		// Determine redirect destination
 		let redirectUrl;
-		
+
 		if (!isAuthenticated()) {
 			// Not authenticated - redirect to login
 			const currentUrl = redirectTo || $page.url.pathname + $page.url.search;
@@ -101,29 +100,34 @@
 			await initializeAuth();
 		}
 
+		// Add a small delay to ensure all reactive states are settled
+		// This prevents the flickering during initialization
+		await new Promise((resolve) => setTimeout(resolve, 50));
+		isInitializing = false;
+
 		// Handle redirect after initialization
 		handleRedirect();
 	});
 
 	// Watch for changes in authentication state and handle redirects
 	$effect(() => {
-		if (authState.initialized) {
+		if (authState.initialized && !isInitializing) {
 			handleRedirect();
 		}
 	});
 </script>
 
 <!-- Show loading spinner while initializing or during auth operations -->
-{#if !authState.initialized || isLoading()}
-	<div class="flex items-center justify-center min-h-screen">
+{#if !authState.initialized || isLoading() || isInitializing}
+	<div class="flex min-h-screen items-center justify-center">
 		<LoadingSpinner />
 	</div>
-<!-- Show protected content if access is granted -->
+	<!-- Show protected content if access is granted -->
 {:else if hasAccess}
 	{@render children()}
-<!-- Show nothing while redirecting (component will redirect) -->
+	<!-- Show nothing while redirecting (component will redirect) -->
 {:else}
-	<div class="flex items-center justify-center min-h-screen">
+	<div class="flex min-h-screen items-center justify-center">
 		<LoadingSpinner />
 	</div>
 {/if}
