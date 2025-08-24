@@ -27,7 +27,7 @@
 
 	// Function to get CSS classes for navigation items
 	function getNavClasses(route) {
-		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold';
+		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -46,7 +46,7 @@
 
 	// Function to get CSS classes for navigation items with span icons (analytics section)
 	function getNavClassesWithSpan(route) {
-		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold';
+		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -104,6 +104,12 @@
 				addErrorToast('Произошла ошибка при выходе из системы');
 			}
 		}
+	}
+
+	// Handle navigation for mobile menu
+	function handleMobileNavigation(path) {
+		closeMobileMenu();
+		goto(path);
 	}
 
 	// Get user display name
@@ -195,7 +201,7 @@
 						<ul role="list" class="-mx-2 space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-								<a href="/dashboard" class={getNavClasses('/dashboard')} onclick={closeMobileMenu}>
+								<button type="button" class={getNavClasses('/dashboard')} onclick={() => handleMobileNavigation('/dashboard')}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -212,10 +218,10 @@
 										/>
 									</svg>
 									Дашборд
-								</a>
+								</button>
 							</li>
 							<li>
-								<a href="/agents" class={getNavClasses('/agents')} onclick={closeMobileMenu}>
+								<button type="button" class={getNavClasses('/agents')} onclick={() => handleMobileNavigation('/agents')}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -232,10 +238,10 @@
 										/>
 									</svg>
 									Агенты
-								</a>
+								</button>
 							</li>
 							<li>
-								<a href="/curators" class={getNavClasses('/curators')} onclick={closeMobileMenu}>
+								<button type="button" class={getNavClasses('/curators')} onclick={() => handleMobileNavigation('/curators')}>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -252,13 +258,13 @@
 										/>
 									</svg>
 									Кураторы
-								</a>
+								</button>
 							</li>
 							<li>
-								<a
-									href="/contractors"
+								<button
+									type="button"
 									class={getNavClasses('/contractors')}
-									onclick={closeMobileMenu}
+									onclick={() => handleMobileNavigation('/contractors')}
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -276,13 +282,13 @@
 										/>
 									</svg>
 									Контрагенты
-								</a>
+								</button>
 							</li>
 							<li>
-								<a
-									href="/suppliers"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-									onclick={closeMobileMenu}
+								<button
+									type="button"
+									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+									onclick={() => handleMobileNavigation('/suppliers')}
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -300,13 +306,13 @@
 										/>
 									</svg>
 									Поставщики
-								</a>
+								</button>
 							</li>
 							<li>
-								<a
-									href="/services"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-									onclick={closeMobileMenu}
+								<button
+									type="button"
+									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+									onclick={() => handleMobileNavigation('/services')}
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -324,7 +330,7 @@
 										/>
 									</svg>
 									Сервис
-								</a>
+								</button>
 							</li>
 						</ul>
 					</li>
@@ -333,34 +339,34 @@
 						<ul role="list" class="-mx-2 mt-2 space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-								<a
-									href="/clients"
+								<button
+									type="button"
 									class={getNavClassesWithSpan('/clients')}
-									onclick={closeMobileMenu}
+									onclick={() => handleMobileNavigation('/clients')}
 								>
 									<span class={getSpanIconClasses('/clients')}>К</span>
 									<span class="truncate">Клиенты</span>
-								</a>
+								</button>
 							</li>
 							<li>
-								<a
-									href="/projects"
+								<button
+									type="button"
 									class={getNavClassesWithSpan('/projects')}
-									onclick={closeMobileMenu}
+									onclick={() => handleMobileNavigation('/projects')}
 								>
 									<span class={getSpanIconClasses('/projects')}>П</span>
 									<span class="truncate">Проекты</span>
-								</a>
+								</button>
 							</li>
 							<li>
-								<a
-									href="/finance"
+								<button
+									type="button"
 									class={getNavClassesWithSpan('/finance')}
-									onclick={closeMobileMenu}
+									onclick={() => handleMobileNavigation('/finance')}
 								>
 									<span class={getSpanIconClasses('/finance')}>Ф</span>
 									<span class="truncate">Финансы</span>
-								</a>
+								</button>
 							</li>
 						</ul>
 					</li>
@@ -370,10 +376,10 @@
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 								<!-- Profile and logout buttons -->
 								<div class="mt-2 space-y-1">
-									<a
-										href="/profile"
-										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-										onclick={closeMobileMenu}
+									<button
+										type="button"
+										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+										onclick={() => handleMobileNavigation('/profile')}
 									>
 										<svg
 											viewBox="0 0 24 24"
@@ -391,12 +397,12 @@
 											/>
 										</svg>
 										Профиль
-									</a>
+									</button>
 
-									<a
-										href="/settings"
-										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-										onclick={closeMobileMenu}
+									<button
+										type="button"
+										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+										onclick={() => handleMobileNavigation('/settings')}
 									>
 										<svg
 											viewBox="0 0 24 24"
@@ -419,7 +425,7 @@
 											/>
 										</svg>
 										Настройки
-									</a>
+									</button>
 
 									<button
 										onclick={handleLogout}
@@ -447,10 +453,10 @@
 						{:else}
 							<!-- Login button for unauthenticated users -->
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
-								<a
-									href="/login"
-									class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500"
-									onclick={closeMobileMenu}
+								<button
+									type="button"
+									class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500 w-full text-left"
+									onclick={() => handleMobileNavigation('/login')}
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -468,7 +474,7 @@
 										/>
 									</svg>
 									Войти
-								</a>
+								</button>
 							</div>
 						{/if}
 					</li>
