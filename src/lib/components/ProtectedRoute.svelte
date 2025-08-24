@@ -93,15 +93,16 @@
 		}
 	}
 
-	// Initialize authentication and handle redirects
+	// Wait for global auth initialization and handle redirects
 	onMount(async () => {
-		// Initialize auth state if not already done
-		if (!authState.initialized) {
-			await initializeAuth();
+		// Wait for global auth initialization to complete
+		let attempts = 0;
+		while (!authState.initialized && attempts < 50) {
+			await new Promise((resolve) => setTimeout(resolve, 100));
+			attempts++;
 		}
 
 		// Add a small delay to ensure all reactive states are settled
-		// This prevents the flickering during initialization
 		await new Promise((resolve) => setTimeout(resolve, 50));
 		isInitializing = false;
 
@@ -110,9 +111,14 @@
 	});
 
 	// Watch for changes in authentication state and handle redirects
+	// Only redirect if user becomes unauthenticated during session (logout)
 	$effect(() => {
-		if (authState.initialized && !isInitializing) {
-			handleRedirect();
+		if (authState.initialized && !isInitializing && !isLoading()) {
+			// Only redirect if user was authenticated before but now is not
+			// This prevents redirects during normal navigation
+			if (!isAuthenticated() && authState.user === null) {
+				handleRedirect();
+			}
 		}
 	});
 </script>

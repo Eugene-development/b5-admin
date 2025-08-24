@@ -7,12 +7,13 @@
 
 	let { children } = $props();
 
-	// Initialize authentication when the app loads
+	// Check if user is already authenticated and redirect if needed
 	onMount(async () => {
-		await initializeAuth();
+		// Wait a bit for potential auth initialization by global layout
+		await new Promise((resolve) => setTimeout(resolve, 100));
 
 		// If user is already authenticated, redirect to dashboard
-		if (isAuthenticated()) {
+		if (authState.initialized && isAuthenticated()) {
 			goto('/dashboard');
 		}
 	});

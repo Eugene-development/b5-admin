@@ -1,8 +1,15 @@
 <script>
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { onMount } from 'svelte';
+	import { initializeAuth } from '$lib/state/auth.svelte.js';
 
 	let { children } = $props();
+
+	// Global authentication initialization
+	onMount(async () => {
+		await initializeAuth();
+	});
 </script>
 
 <svelte:head>

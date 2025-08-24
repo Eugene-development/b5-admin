@@ -8,7 +8,6 @@
 	} from '$lib/state/visibleMobileMenu.svelte';
 	import {
 		authState,
-		initializeAuth,
 		logout,
 		isAuthenticated,
 		getCurrentUserData
@@ -16,7 +15,6 @@
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
 	import ToastContainer from '$lib/components/ToastContainer.svelte';
 	import { toasts } from '$lib/utils/toastStore.js';
 
@@ -68,10 +66,8 @@
 		return `${baseClasses} ${isActiveRoute(route) ? activeClasses : inactiveClasses}`;
 	}
 
-	// Initialize authentication when the app loads
-	onMount(async () => {
-		await initializeAuth();
-	});
+	// Authentication is initialized globally in root layout
+	// No need to initialize here
 
 	// Handle backdrop click to close menu
 	function handleBackdropClick(event) {
@@ -160,7 +156,7 @@
 			tabindex="0"
 		>
 			<div class="flex items-center justify-between">
-				<div class="flex h-16 shrink-0 items-center">
+				<!-- <div class="flex h-16 shrink-0 items-center">
 					<img
 						src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
 						alt="Your Company"
@@ -171,7 +167,7 @@
 						alt="Your Company"
 						class="not-dark:hidden h-8 w-auto"
 					/>
-				</div>
+				</div> -->
 				<button
 					onclick={closeMobileMenu}
 					type="button"
@@ -372,22 +368,6 @@
 						{#if isAuthenticated()}
 							<!-- User info section for mobile -->
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
-								<div class="flex items-center gap-x-3 px-2 py-2">
-									<img
-										src={getUserAvatar()}
-										alt="User avatar"
-										class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-									/>
-									<div class="min-w-0 flex-1">
-										<p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-											{getUserDisplayName()}
-										</p>
-										<p class="truncate text-xs text-gray-500 dark:text-gray-400">
-											{getCurrentUserData()?.email || ''}
-										</p>
-									</div>
-								</div>
-
 								<!-- Profile and logout buttons -->
 								<div class="mt-2 space-y-1">
 									<a
@@ -677,22 +657,6 @@
 					{#if isAuthenticated()}
 						<!-- User info section for desktop -->
 						<div class="border-t border-gray-200 pt-4 dark:border-white/10">
-							<div class="flex items-center gap-x-3 px-2 py-2">
-								<img
-									src={getUserAvatar()}
-									alt="User avatar"
-									class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-								/>
-								<div class="min-w-0 flex-1">
-									<p class="truncate text-sm font-medium text-gray-900 dark:text-white">
-										{getUserDisplayName()}
-									</p>
-									<p class="truncate text-xs text-gray-500 dark:text-gray-400">
-										{getCurrentUserData()?.email || ''}
-									</p>
-								</div>
-							</div>
-
 							<!-- Profile and logout buttons -->
 							<div class="mt-2 space-y-1">
 								<a
@@ -916,7 +880,7 @@
 							</button>
 							<el-menu
 								anchor="bottom end"
-								popover
+								popover="true"
 								class="transition-discrete data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in w-32 origin-top-right rounded-md bg-white py-2 shadow-lg outline-1 outline-gray-900/5 transition [--anchor-gap:--spacing(2.5)] dark:bg-gray-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10"
 							>
 								<a
@@ -936,7 +900,7 @@
 						<div class="flex items-center gap-x-2">
 							<a
 								href="/login"
-								class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+								class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 							>
 								Войти
 							</a>
