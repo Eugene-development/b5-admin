@@ -13,14 +13,14 @@ export const API_CONFIG = {
 		login: '/api/auth/login',
 		logout: '/api/auth/logout',
 		user: '/api/auth/user',
-		
+
 		// Email verification endpoints
 		sendEmailVerification: '/api/email/verification-notification',
 		verifyEmail: '/api/email/verify'
 	},
 	headers: {
 		'Content-Type': 'application/json',
-		'Accept': 'application/json'
+		Accept: 'application/json'
 	}
 };
 
@@ -35,10 +35,15 @@ export const STORAGE_KEYS = {
  * @returns {string|null} The stored auth token or null if not found
  */
 export function getAuthToken() {
+	// Check if we're in browser environment
+	if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+		return null;
+	}
+
 	try {
 		const tokenData = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
 		if (!tokenData) return null;
-		
+
 		const parsed = JSON.parse(tokenData);
 		return parsed.access_token || null;
 	} catch (error) {
@@ -55,6 +60,11 @@ export function getAuthToken() {
  * @param {string|null} tokenData.expires_at - Token expiration date
  */
 export function setAuthToken(tokenData) {
+	// Check if we're in browser environment
+	if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+		return;
+	}
+
 	try {
 		localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, JSON.stringify(tokenData));
 	} catch (error) {
@@ -66,6 +76,11 @@ export function setAuthToken(tokenData) {
  * Remove authentication token from localStorage
  */
 export function removeAuthToken() {
+	// Check if we're in browser environment
+	if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+		return;
+	}
+
 	try {
 		localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
 		localStorage.removeItem(STORAGE_KEYS.USER_DATA);
@@ -89,9 +104,9 @@ export function hasAuthToken() {
 export function getAuthHeaders() {
 	const token = getAuthToken();
 	if (!token) return null;
-	
+
 	return {
-		'Authorization': `Bearer ${token}`
+		Authorization: `Bearer ${token}`
 	};
 }
 
@@ -100,6 +115,11 @@ export function getAuthHeaders() {
  * @returns {Object|null} User data object or null if not found
  */
 export function getUserData() {
+	// Check if we're in browser environment
+	if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+		return null;
+	}
+
 	try {
 		const userData = localStorage.getItem(STORAGE_KEYS.USER_DATA);
 		return userData ? JSON.parse(userData) : null;
@@ -114,6 +134,11 @@ export function getUserData() {
  * @param {Object} userData - User data object
  */
 export function setUserData(userData) {
+	// Check if we're in browser environment
+	if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+		return;
+	}
+
 	try {
 		localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(userData));
 	} catch (error) {

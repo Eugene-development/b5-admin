@@ -202,10 +202,15 @@
 		await refreshData();
 	}
 
-	// Handle initial load error
+	// Handle initial load error and load data if empty
 	onMount(() => {
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
+		}
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (!localAgents.length && !loadError) {
+			refreshData();
 		}
 	});
 
