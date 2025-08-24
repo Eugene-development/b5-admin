@@ -2,8 +2,6 @@
 	import { onMount } from 'svelte';
 	import { authState, initializeAuth, isAuthenticated } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
-	import { toasts } from '$lib/utils/toastStore.js';
 
 	let { children } = $props();
 
@@ -46,9 +44,4 @@
 			{@render children?.()}
 		</div>
 	</div>
-</div>
-
-<!-- Toast notifications positioned absolutely -->
-<div class="fixed right-0 top-0 z-50">
-	<ToastContainer toasts={$toasts} position="top-right" />
 </div>

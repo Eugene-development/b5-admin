@@ -15,8 +15,6 @@
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import ToastContainer from '$lib/components/ToastContainer.svelte';
-	import { toasts } from '$lib/utils/toastStore.js';
 
 	let { children } = $props();
 
@@ -27,7 +25,8 @@
 
 	// Function to get CSS classes for navigation items
 	function getNavClasses(route) {
-		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
+		const baseClasses =
+			'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -46,7 +45,8 @@
 
 	// Function to get CSS classes for navigation items with span icons (analytics section)
 	function getNavClassesWithSpan(route) {
-		const baseClasses = 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
+		const baseClasses =
+			'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -201,7 +201,11 @@
 						<ul role="list" class="-mx-2 space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-								<button type="button" class={getNavClasses('/dashboard')} onclick={() => handleMobileNavigation('/dashboard')}>
+								<button
+									type="button"
+									class={getNavClasses('/dashboard')}
+									onclick={() => handleMobileNavigation('/dashboard')}
+								>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -221,7 +225,11 @@
 								</button>
 							</li>
 							<li>
-								<button type="button" class={getNavClasses('/agents')} onclick={() => handleMobileNavigation('/agents')}>
+								<button
+									type="button"
+									class={getNavClasses('/agents')}
+									onclick={() => handleMobileNavigation('/agents')}
+								>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -241,7 +249,11 @@
 								</button>
 							</li>
 							<li>
-								<button type="button" class={getNavClasses('/curators')} onclick={() => handleMobileNavigation('/curators')}>
+								<button
+									type="button"
+									class={getNavClasses('/curators')}
+									onclick={() => handleMobileNavigation('/curators')}
+								>
 									<svg
 										viewBox="0 0 24 24"
 										fill="none"
@@ -287,7 +299,7 @@
 							<li>
 								<button
 									type="button"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+									class="group flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 									onclick={() => handleMobileNavigation('/suppliers')}
 								>
 									<svg
@@ -311,7 +323,7 @@
 							<li>
 								<button
 									type="button"
-									class="group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+									class="group flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 									onclick={() => handleMobileNavigation('/services')}
 								>
 									<svg
@@ -378,7 +390,7 @@
 								<div class="mt-2 space-y-1">
 									<button
 										type="button"
-										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 										onclick={() => handleMobileNavigation('/profile')}
 									>
 										<svg
@@ -401,7 +413,7 @@
 
 									<button
 										type="button"
-										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white w-full text-left"
+										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 										onclick={() => handleMobileNavigation('/settings')}
 									>
 										<svg
@@ -455,7 +467,7 @@
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 								<button
 									type="button"
-									class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500 w-full text-left"
+									class="group -mx-2 flex w-full gap-x-3 rounded-md bg-indigo-600 p-2 text-left text-sm/6 font-semibold text-white hover:bg-indigo-500"
 									onclick={() => handleMobileNavigation('/login')}
 								>
 									<svg
@@ -923,6 +935,3 @@
 		</div>
 	</main>
 </div>
-
-<!-- Toast notifications -->
-<ToastContainer toasts={$toasts} position="top-right" />

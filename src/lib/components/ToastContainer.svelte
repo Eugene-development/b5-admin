@@ -44,7 +44,7 @@
 
 {#if visibleToasts.length > 0}
 	<div class="{positionClasses[position]} {additionalClasses}">
-		<div class="flex w-80 max-w-sm flex-col space-y-2">
+		<div class="flex w-96 max-w-md flex-col space-y-2">
 			{#each visibleToasts as toast (toast.id)}
 				<div class="transform transition-all duration-300 ease-in-out">
 					<Toast

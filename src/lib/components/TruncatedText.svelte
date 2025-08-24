@@ -14,19 +14,23 @@
 </script>
 
 <div class="relative inline-block {className}">
-	<span
-		class="cursor-default"
-		class:cursor-help={showTooltip}
-		on:mouseenter={() => showTooltip && (showTooltipState = true)}
-		on:mouseleave={() => (showTooltipState = false)}
-		on:focus={() => showTooltip && (showTooltipState = true)}
-		on:blur={() => (showTooltipState = false)}
-		tabindex={showTooltip ? 0 : -1}
-		role={showTooltip ? 'button' : 'text'}
-		aria-label={showTooltip ? `Полный текст: ${text}` : undefined}
-	>
-		{displayText}
-	</span>
+	{#if showTooltip}
+		<button
+			type="button"
+			class="font-inherit m-0 cursor-help border-none bg-transparent p-0 text-inherit"
+			on:mouseenter={() => (showTooltipState = true)}
+			on:mouseleave={() => (showTooltipState = false)}
+			on:focus={() => (showTooltipState = true)}
+			on:blur={() => (showTooltipState = false)}
+			aria-label={`Полный текст: ${text}`}
+		>
+			{displayText}
+		</button>
+	{:else}
+		<span>
+			{displayText}
+		</span>
+	{/if}
 
 	{#if showTooltip && showTooltipState}
 		<div
@@ -37,7 +41,7 @@
 		>
 			{text}
 			<div
-				class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"
+				class="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2 transform border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"
 			></div>
 		</div>
 	{/if}
