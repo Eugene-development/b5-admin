@@ -14,17 +14,25 @@
 		logout,
 		getCurrentUserData,
 		isAuthenticated,
-		isEmailVerified
+		isEmailVerified,
+		isLoading,
+		checkAuth
 	} from '$lib/state/auth.svelte.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	// Component state
 	let showSuccessMessage = $state(false);
 	let successMessage = $state('');
 	let showCopyMessage = $state(false);
 	let copyMessage = $state('');
-	let isLoading = $state(false);
+	let isLogoutLoading = $state(false);
+	let isCheckingAuth = $state(false);
+	let isRedirecting = $state(false);
+	let redirectMessage = $state('');
+	let authError = $state(null);
+	let isCopyingKey = $state(false);
 
 	// Get user data for display
 	function getUserDisplayData() {
@@ -61,17 +69,20 @@
 		window.history.replaceState({}, '', url);
 	}
 
-	// Copy secret key to clipboard
+	// Copy secret key to clipboard with enhanced error handling
 	async function copyKey() {
 		const user = getUserDisplayData();
 		if (!user?.key) {
 			showCopyMessage = true;
 			copyMessage = 'Ошибка: секретный ключ не найден';
+			addErrorToast('Секретный ключ не найден');
 			setTimeout(() => {
 				showCopyMessage = false;
 			}, 3000);
 			return;
 		}
+
+		isCopyingKey = true;
 
 		try {
 			// Check if clipboard API is available
@@ -82,6 +93,7 @@
 			await navigator.clipboard.writeText(user.key);
 			showCopyMessage = true;
 			copyMessage = 'Ключ скопирован в буфер обмена!';
+			addSuccessToast('Секретный ключ скопирован в буфер обмена');
 			setTimeout(() => {
 				showCopyMessage = false;
 			}, 3000);
@@ -104,6 +116,7 @@
 				if (successful) {
 					showCopyMessage = true;
 					copyMessage = 'Ключ скопирован в буфер обмена!';
+					addSuccessToast('Секретный ключ скопирован в буфер обмена (резервный метод)');
 				} else {
 					throw new Error('Legacy copy method failed');
 				}
@@ -111,265 +124,462 @@
 				console.error('Fallback copy method also failed:', fallbackError);
 				showCopyMessage = true;
 				copyMessage = 'Ошибка копирования ключа';
+				addErrorToast('Не удалось скопировать ключ в буфер обмена');
 			}
 
 			setTimeout(() => {
 				showCopyMessage = false;
 			}, 3000);
+		} finally {
+			isCopyingKey = false;
 		}
 	}
 
-	// Handle logout
+	// Handle logout with enhanced loading states
 	async function handleLogout() {
-		isLoading = true;
+		isLogoutLoading = true;
+		authError = null;
+
 		try {
 			const success = await logout();
 			if (success) {
 				addSuccessToast('Вы успешно вышли из системы');
-				goto('/');
+				isRedirecting = true;
+				redirectMessage = 'Перенаправление на главную страницу...';
+
+				// Add a small delay to show the redirect message
+				setTimeout(() => {
+					goto('/');
+				}, 1000);
 			} else {
-				addErrorToast('Произошла ошибка при выходе из системы');
+				authError = 'Произошла ошибка при выходе из системы';
+				addErrorToast(authError);
 			}
 		} catch (error) {
 			console.error('Logout error:', error);
-			addErrorToast('Произошла ошибка при выходе из системы');
-			goto('/'); // Force redirect even on error
+			authError = 'Произошла ошибка при выходе из системы';
+			addErrorToast(authError);
+
+			// Force redirect even on error after showing message
+			isRedirecting = true;
+			redirectMessage = 'Перенаправление на главную страницу...';
+			setTimeout(() => {
+				goto('/');
+			}, 2000);
 		} finally {
-			isLoading = false;
+			isLogoutLoading = false;
+		}
+	}
+
+	// Check authentication status with loading indicator
+	async function checkAuthenticationStatus() {
+		isCheckingAuth = true;
+		authError = null;
+
+		try {
+			const isAuth = await checkAuth();
+			if (!isAuth) {
+				isRedirecting = true;
+				redirectMessage = 'Перенаправление на страницу входа...';
+
+				setTimeout(() => {
+					const currentUrl = $page.url.pathname + $page.url.search;
+					goto(`/login?redirectTo=${encodeURIComponent(currentUrl)}`);
+				}, 1500);
+			}
+		} catch (error) {
+			console.error('Auth check error:', error);
+			authError = 'Ошибка проверки авторизации';
+			addErrorToast(authError);
+		} finally {
+			isCheckingAuth = false;
 		}
 	}
 
 	// Initialize component
 	onMount(() => {
 		checkUrlParams();
+
+		// Check authentication status on mount if needed
+		if (!authState.initialized) {
+			checkAuthenticationStatus();
+		}
 	});
 </script>
 
 <ProtectedRoute requireEmailVerification={false}>
-	<div class="min-h-screen bg-gray-900 px-6 py-12 sm:py-12 lg:px-8">
-		<div class="mx-auto max-w-2xl">
-			<!-- Page Title -->
-			<div class="mx-auto mb-16 text-center">
-				<h1 class="text-4xl font-normal tracking-widest text-white sm:text-6xl">Профиль</h1>
-			</div>
-
-			<!-- Success Notifications -->
-			{#if showSuccessMessage}
-				<div class="fixed left-1/2 top-4 z-50 -translate-x-1/2 transform">
-					<div class="rounded-lg bg-green-500/10 p-4 backdrop-blur-sm">
-						<div class="flex items-center">
-							<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-								<path
-									fill-rule="evenodd"
-									d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							<p class="ml-3 text-sm font-medium text-green-400">{successMessage}</p>
-						</div>
+	<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+		<div class="mx-auto max-w-4xl">
+			<!-- Loading States -->
+			{#if isCheckingAuth}
+				<div class="flex min-h-[50vh] items-center justify-center">
+					<div class="text-center">
+						<LoadingSpinner size="lg" color="white" />
+						<p class="mt-4 text-lg text-gray-300">Проверка авторизации...</p>
 					</div>
 				</div>
-			{/if}
-
-			<!-- Copy Notifications -->
-			{#if showCopyMessage}
-				<div
-					class="animate-in fade-in slide-in-from-top-2 fixed left-1/2 top-4 z-50 -translate-x-1/2 transform duration-300"
-				>
-					<div
-						class="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4 shadow-lg backdrop-blur-sm"
-					>
-						<div class="flex items-center">
-							{#if copyMessage.includes('Ошибка')}
-								<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+			{:else if isRedirecting}
+				<div class="flex min-h-[50vh] items-center justify-center">
+					<div class="text-center">
+						<LoadingSpinner size="lg" color="white" />
+						<p class="mt-4 text-lg text-gray-300">{redirectMessage}</p>
+					</div>
+				</div>
+			{:else if isLoading()}
+				<div class="flex min-h-[50vh] items-center justify-center">
+					<div class="text-center">
+						<LoadingSpinner size="lg" color="white" />
+						<p class="mt-4 text-lg text-gray-300">Загрузка данных пользователя...</p>
+					</div>
+				</div>
+			{:else}
+				<!-- Error Messages -->
+				{#if authError}
+					<div class="mb-8 rounded-xl bg-red-500/20 border border-red-500/30 p-6 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-red-500/25 hover:border-red-500/40">
+						<div class="flex items-start gap-4">
+							<div class="flex-shrink-0">
+								<svg class="h-6 w-6 text-red-400" viewBox="0 0 20 20" fill="currentColor">
 									<path
 										fill-rule="evenodd"
 										d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
 										clip-rule="evenodd"
 									/>
 								</svg>
-								<p class="ml-3 text-sm font-medium text-red-400">{copyMessage}</p>
-							{:else}
-								<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-									<path
-										fill-rule="evenodd"
-										d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-										clip-rule="evenodd"
-									/>
-								</svg>
-								<p class="ml-3 text-sm font-medium text-green-400">{copyMessage}</p>
-							{/if}
-						</div>
-					</div>
-				</div>
-			{/if}
-
-			<!-- User Information Card -->
-			<div class="mb-8 rounded-lg bg-white/5 p-8 backdrop-blur-sm">
-				<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">
-					Информация о пользователе
-				</h2>
-
-				{#if getUserDisplayData()}
-					{@const user = getUserDisplayData()}
-					<div class="grid gap-6 sm:grid-cols-2">
-						<!-- Name -->
-						<div>
-							<label class="block text-sm font-medium text-gray-300">Имя</label>
-							<p class="mt-1 text-lg text-white">{user.name || 'Не указано'}</p>
-						</div>
-
-						<!-- Email -->
-						<div>
-							<label class="block text-sm font-medium text-gray-300">Email</label>
-							<div class="mt-1 flex items-center gap-2">
-								<p class="text-lg text-white">{user.email || 'Не указано'}</p>
-								{#if user.email_verified}
-									<span
-										class="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-400"
-									>
-										<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-											<path
-												fill-rule="evenodd"
-												d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-												clip-rule="evenodd"
-											/>
-										</svg>
-										Подтвержден
-									</span>
-								{:else}
-									<span
-										class="inline-flex items-center gap-1 rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-400"
-									>
-										<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-											<path
-												fill-rule="evenodd"
-												d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-												clip-rule="evenodd"
-											/>
-										</svg>
-										Не подтвержден
-									</span>
-								{/if}
+							</div>
+							<div class="flex-1">
+								<h3 class="text-sm font-semibold text-red-400 mb-1">Ошибка</h3>
+								<p class="text-sm text-red-300 leading-relaxed">{authError}</p>
 							</div>
 						</div>
+					</div>
+				{/if}
+				<!-- Page Title -->
+				<div class="mx-auto mb-16 text-center">
+					<div class="inline-flex items-center gap-4 mb-4">
+						<div class="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1"></div>
+						<svg class="h-8 w-8 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
+						</svg>
+						<div class="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1"></div>
+					</div>
+					<h1 class="text-4xl font-light tracking-[0.2em] text-white sm:text-6xl lg:text-7xl mb-2">
+						Профиль
+					</h1>
+					<p class="text-gray-400 text-lg font-light tracking-wide">Управление аккаунтом куратора</p>
+				</div>
 
-						<!-- City -->
-						<div>
-							<label class="block text-sm font-medium text-gray-300">Город</label>
-							<p class="mt-1 text-lg text-white">{user.city || 'Не указано'}</p>
+				<!-- Success Notifications -->
+				{#if showSuccessMessage}
+					<div class="fixed top-6 left-1/2 z-50 -translate-x-1/2 transform animate-in fade-in slide-in-from-top-4 duration-300">
+						<div class="rounded-xl bg-green-500/20 border border-green-500/30 p-4 backdrop-blur-md shadow-2xl shadow-green-500/10">
+							<div class="flex items-center gap-3">
+								<div class="flex-shrink-0">
+									<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+										<path
+											fill-rule="evenodd"
+											d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+								</div>
+								<p class="text-sm font-medium text-green-300 leading-relaxed">{successMessage}</p>
+							</div>
 						</div>
+					</div>
+				{/if}
 
-						<!-- Secret Key -->
-						<div>
-							<label class="block text-sm font-medium text-gray-300">Секретный ключ</label>
-							<button
-								onclick={copyKey}
-								class="group mt-1 flex w-full cursor-pointer items-center justify-between rounded bg-gray-800 px-3 py-2 text-lg text-white transition-all duration-200 hover:bg-gray-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-								title="Нажмите для копирования в буфер обмена"
-							>
-								<span class="font-mono">{user.key || 'Не указано'}</span>
-								<svg
-									class="h-5 w-5 text-gray-400 transition-colors group-hover:text-white"
-									viewBox="0 0 20 20"
-									fill="currentColor"
-								>
-									<path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
-									<path
-										d="M3 5a2 2 0 012-2 3 3 0 003 3h6a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2V5h-2v6z"
-									/>
-								</svg>
-							</button>
-							<p class="mt-1 text-xs text-gray-500">Кликните для копирования ключа</p>
-						</div>
-
-						<!-- User ID -->
-						<div>
-							<label class="block text-sm font-medium text-gray-300">ID пользователя</label>
-							<p class="mt-1 text-lg text-white">{user.id || 'Не указано'}</p>
-						</div>
-
-						<!-- Ban Status -->
-						{#if user.is_banned}
-							<div class="sm:col-span-2">
-								<div class="rounded-lg bg-red-500/10 p-4">
-									<div class="flex items-center">
+				<!-- Copy Notifications -->
+				{#if showCopyMessage}
+					<div
+						class="animate-in fade-in slide-in-from-top-4 fixed top-6 left-1/2 z-50 -translate-x-1/2 transform duration-300"
+					>
+						<div
+							class="rounded-xl border p-4 shadow-2xl backdrop-blur-md {copyMessage.includes('Ошибка') 
+								? 'bg-red-500/20 border-red-500/30 shadow-red-500/10' 
+								: 'bg-blue-500/20 border-blue-500/30 shadow-blue-500/10'}"
+						>
+							<div class="flex items-center gap-3">
+								<div class="flex-shrink-0">
+									{#if copyMessage.includes('Ошибка')}
 										<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
 											<path
 												fill-rule="evenodd"
-												d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
+												d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
 												clip-rule="evenodd"
 											/>
 										</svg>
-										<p class="ml-3 text-sm font-medium text-red-400">
-											Аккаунт заблокирован
-											{#if user.ban_reason}
-												: {user.ban_reason}
-											{/if}
-										</p>
+									{:else}
+										<svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+											<path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
+											<path d="M3 5a2 2 0 012-2 3 3 0 003 3h6a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2V5h-2v6z" />
+										</svg>
+									{/if}
+								</div>
+								<p class="text-sm font-medium leading-relaxed {copyMessage.includes('Ошибка') ? 'text-red-300' : 'text-blue-300'}">{copyMessage}</p>
+							</div>
+						</div>
+					</div>
+				{/if}
+
+				<!-- User Information Card -->
+				<div class="mb-8 rounded-xl bg-white/5 p-8 backdrop-blur-sm border border-white/10 shadow-xl transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-2xl">
+					<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">Профиль куратора</h2>
+
+					{#if isLoading() && !getUserDisplayData()}
+						<div class="flex items-center justify-center py-12">
+							<div class="text-center">
+								<LoadingSpinner size="lg" color="white" />
+								<p class="mt-4 text-gray-400">Загрузка информации о пользователе...</p>
+							</div>
+						</div>
+					{:else if getUserDisplayData()}
+						{@const user = getUserDisplayData()}
+						<div class="grid gap-6 sm:grid-cols-2 lg:gap-8">
+							<!-- Name -->
+							<div class="group">
+								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Имя</div>
+								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
+									<p class="text-lg text-white font-medium">{user.name || 'Не указано'}</p>
+								</div>
+							</div>
+
+							<!-- Email -->
+							<div class="group">
+								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Email</div>
+								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
+									<div class="flex items-center gap-3">
+										<p class="text-lg text-white font-medium flex-1">{user.email || 'Не указано'}</p>
+										{#if user.email_verified}
+											<span
+												class="inline-flex items-center gap-1 rounded-full bg-green-500/20 border border-green-500/30 px-3 py-1 text-xs font-semibold text-green-400 transition-all duration-200 hover:bg-green-500/30"
+											>
+												<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+													<path
+														fill-rule="evenodd"
+														d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+														clip-rule="evenodd"
+													/>
+												</svg>
+												Подтвержден
+											</span>
+										{:else}
+											<span
+												class="inline-flex items-center gap-1 rounded-full bg-yellow-500/20 border border-yellow-500/30 px-3 py-1 text-xs font-semibold text-yellow-400 transition-all duration-200 hover:bg-yellow-500/30"
+											>
+												<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+													<path
+														fill-rule="evenodd"
+														d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+														clip-rule="evenodd"
+													/>
+												</svg>
+												Не подтвержден
+											</span>
+										{/if}
 									</div>
 								</div>
 							</div>
-						{/if}
-					</div>
-				{/if}
-			</div>
 
-			<!-- Email Verification Warning -->
-			{#if isAuthenticated() && !isEmailVerified()}
-				<div class="mb-8 rounded-lg bg-yellow-500/10 p-6 backdrop-blur-sm">
-					<div class="flex items-start">
-						<svg class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-							<path
-								fill-rule="evenodd"
-								d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-								clip-rule="evenodd"
-							/>
-						</svg>
-						<div class="ml-3">
-							<h3 class="text-sm font-medium text-yellow-400">Требуется подтверждение email</h3>
-							<p class="mt-1 text-sm text-yellow-300">
-								Для получения полного доступа к функциям системы необходимо подтвердить ваш email
-								адрес.
-							</p>
-							<div class="mt-4">
+							<!-- City -->
+							<div class="group">
+								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Город</div>
+								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
+									<p class="text-lg text-white font-medium">{user.city || 'Не указано'}</p>
+								</div>
+							</div>
+
+							<!-- Secret Key -->
+							<div class="group">
+								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Секретный ключ</div>
+								<button
+									onclick={copyKey}
+									disabled={isCopyingKey}
+									class="group/key w-full rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]"
+									title="Нажмите для копирования в буфер обмена"
+								>
+									<div class="flex items-center justify-between">
+										<span class="font-mono text-lg text-white font-medium truncate pr-2">{user.key || 'Не указано'}</span>
+										{#if isCopyingKey}
+											<LoadingSpinner size="sm" color="white" inline={true} />
+										{:else}
+											<svg
+												class="h-5 w-5 text-gray-400 transition-all duration-200 group-hover/key:text-indigo-400 group-hover/key:scale-110"
+												viewBox="0 0 20 20"
+												fill="currentColor"
+											>
+												<path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
+												<path
+													d="M3 5a2 2 0 012-2 3 3 0 003 3h6a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2V5h-2v6z"
+												/>
+											</svg>
+										{/if}
+									</div>
+								</button>
+								<p class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
+									{isCopyingKey ? 'Копирование...' : 'Кликните для копирования ключа'}
+								</p>
+							</div>
+
+							<!-- User ID -->
+							<div class="group">
+								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">ID пользователя</div>
+								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
+									<p class="text-lg text-white font-medium">{user.id || 'Не указано'}</p>
+								</div>
+							</div>
+
+							<!-- Ban Status -->
+							{#if user.is_banned}
+								<div class="sm:col-span-2">
+									<div class="rounded-lg bg-red-500/20 border border-red-500/30 p-6 backdrop-blur-sm transition-all duration-200 hover:bg-red-500/25 hover:border-red-500/40">
+										<div class="flex items-center">
+											<div class="flex-shrink-0">
+												<svg class="h-6 w-6 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+													<path
+														fill-rule="evenodd"
+														d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
+														clip-rule="evenodd"
+													/>
+												</svg>
+											</div>
+											<div class="ml-4">
+												<h3 class="text-sm font-semibold text-red-400 mb-1">Аккаунт заблокирован</h3>
+												{#if user.ban_reason}
+													<p class="text-sm text-red-300">Причина: {user.ban_reason}</p>
+												{/if}
+											</div>
+										</div>
+									</div>
+								</div>
+							{/if}
+						</div>
+					{:else}
+						<div class="flex items-center justify-center py-12">
+							<div class="text-center">
+								<svg
+									class="mx-auto h-12 w-12 text-gray-400"
+									viewBox="0 0 20 20"
+									fill="currentColor"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+								<p class="mt-4 text-gray-400">Не удалось загрузить информацию о пользователе</p>
+								<button
+									onclick={checkAuthenticationStatus}
+									disabled={isCheckingAuth}
+									class="mt-4 flex items-center gap-2 rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+								>
+									{#if isCheckingAuth}
+										<LoadingSpinner size="sm" color="white" inline={true} />
+										<span>Проверка...</span>
+									{:else}
+										<span>Повторить попытку</span>
+									{/if}
+								</button>
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Email Verification Warning -->
+				{#if isAuthenticated() && !isEmailVerified()}
+					<div class="mb-8 rounded-xl bg-yellow-500/20 border border-yellow-500/30 p-6 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-yellow-500/25 hover:border-yellow-500/40 hover:shadow-xl">
+						<div class="flex items-start">
+							<div class="flex-shrink-0">
+								<svg class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+									<path
+										fill-rule="evenodd"
+										d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<div class="ml-4 flex-1">
+								<h3 class="text-sm font-semibold text-yellow-400 mb-2">Требуется подтверждение email</h3>
+								<p class="text-sm text-yellow-300 leading-relaxed mb-4">
+									Для получения полного доступа к функциям системы необходимо подтвердить ваш email
+									адрес.
+								</p>
 								<button
 									onclick={() => goto('/email-verify')}
-									class="rounded-md bg-yellow-600 px-3 py-2 text-sm font-semibold text-white hover:bg-yellow-500"
+									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
 								>
+									<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+										<path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+										<path d="m19 8.839-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+									</svg>
 									Подтвердить email
 								</button>
 							</div>
 						</div>
 					</div>
+				{/if}
+
+				<!-- Project Statistics Card -->
+				<div class="mb-8 rounded-xl bg-white/5 border border-white/10 p-8 backdrop-blur-sm shadow-xl transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-2xl">
+					<div class="flex items-center gap-3 mb-6">
+						<svg class="h-6 w-6 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
+						</svg>
+						<h2 class="text-2xl font-semibold tracking-wide text-white">Статистика проектов</h2>
+					</div>
+					<div class="rounded-lg bg-gray-800/30 border border-gray-700/50 p-6 text-center">
+						<div class="flex flex-col items-center gap-4">
+							<svg class="h-12 w-12 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+							</svg>
+							<div>
+								<p class="text-gray-400 text-lg font-medium mb-1">Статистика будет доступна позже</p>
+								<p class="text-gray-500 text-sm">Здесь будет отображаться информация о ваших проектах</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Action Buttons -->
+				<div class="flex flex-col justify-center gap-4 sm:flex-row">
+					<button
+						onclick={handleLogout}
+						disabled={isLogoutLoading || isRedirecting}
+						class="group flex items-center justify-center gap-3 rounded-xl bg-red-600 border border-red-500 px-8 py-4 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-red-500 hover:border-red-400 hover:shadow-xl hover:shadow-red-500/20 focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98] min-h-[52px]"
+					>
+						{#if isLogoutLoading}
+							<LoadingSpinner size="sm" color="white" inline={true} />
+							<span>Выход...</span>
+						{:else if isRedirecting}
+							<LoadingSpinner size="sm" color="white" inline={true} />
+							<span>Перенаправление...</span>
+						{:else}
+							<svg class="h-5 w-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
+								<path fill-rule="evenodd" d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114L8.704 10.75H18.25A.75.75 0 0019 10z" clip-rule="evenodd" />
+							</svg>
+							<span>Выйти из аккаунта</span>
+						{/if}
+					</button>
+				</div>
+
+				<!-- Security Notice -->
+				<div class="mt-12 text-center">
+					<div class="inline-flex items-center gap-2 rounded-lg bg-gray-800/30 border border-gray-700/50 px-4 py-3 backdrop-blur-sm">
+						<svg class="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+							<path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+						</svg>
+						<div class="text-left">
+							<p class="text-sm text-gray-300 font-medium">
+								Защищенная страница
+							</p>
+							<p class="text-xs text-gray-500">
+								Сессия защищена API токенами • Данные передаются по HTTPS
+							</p>
+						</div>
+					</div>
 				</div>
 			{/if}
-
-			<!-- Project Statistics Card -->
-			<div class="mb-8 rounded-lg bg-white/5 p-8 backdrop-blur-sm">
-				<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">Статистика проектов</h2>
-				<p class="text-gray-400">Статистика будет доступна позже</p>
-			</div>
-
-			<!-- Action Buttons -->
-			<div class="flex flex-col justify-center gap-4 sm:flex-row">
-				<button
-					onclick={handleLogout}
-					disabled={isLoading}
-					class="rounded-md bg-red-600 px-6 py-3 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50"
-				>
-					{isLoading ? 'Выход...' : 'Выйти из аккаунта'}
-				</button>
-			</div>
-
-			<!-- Security Notice -->
-			<div class="mt-8 text-center">
-				<p class="text-sm text-gray-400">
-					Эта страница доступна только авторизованным пользователям.
-					<br />
-					Ваша сессия защищена API токенами и данные передаются по защищенному соединению.
-				</p>
-			</div>
 		</div>
 	</div>
 </ProtectedRoute>
