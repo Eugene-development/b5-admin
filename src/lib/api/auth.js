@@ -20,17 +20,18 @@ export async function loginUser(email, password, remember = false) {
 			password,
 			remember
 		});
-		
+
+		console.log('🔐 Login API response:', response);
 		return {
 			success: true,
-			user: response.user || null,
-			token: response.token || null,
-			message: response.message || 'Login successful'
+			user: response.data.user || null,
+			token: response.data.token || null,
+			message: response.data.message || 'Login successful'
 		};
 	} catch (error) {
 		// Handle specific authentication errors
 		let message = 'Login failed';
-		
+
 		if (error.status === 401) {
 			message = 'Неверный email или пароль';
 		} else if (error.status === 422) {
@@ -40,7 +41,7 @@ export async function loginUser(email, password, remember = false) {
 		} else if (error.status === 0) {
 			message = error.message; // Network error message
 		}
-		
+
 		return {
 			success: false,
 			message: error.message || message,
@@ -63,7 +64,7 @@ export async function loginUser(email, password, remember = false) {
 export async function registerUser(userData) {
 	try {
 		const response = await post(API_CONFIG.endpoints.register, userData);
-		
+
 		return {
 			success: true,
 			user: response.user || null,
@@ -73,7 +74,7 @@ export async function registerUser(userData) {
 	} catch (error) {
 		// Handle specific registration errors
 		let message = 'Registration failed';
-		
+
 		if (error.status === 422) {
 			message = 'Проверьте правильность заполнения формы';
 		} else if (error.status === 409) {
@@ -83,7 +84,7 @@ export async function registerUser(userData) {
 		} else if (error.status === 0) {
 			message = error.message; // Network error message
 		}
-		
+
 		return {
 			success: false,
 			message: error.message || message,
@@ -99,7 +100,7 @@ export async function registerUser(userData) {
 export async function logoutUser() {
 	try {
 		const response = await post(API_CONFIG.endpoints.logout, {}, {}, true);
-		
+
 		return {
 			success: true,
 			message: response.message || 'Logout successful'
@@ -120,7 +121,7 @@ export async function logoutUser() {
 export async function getCurrentUser() {
 	try {
 		const response = await get(API_CONFIG.endpoints.user, {}, true);
-		
+
 		return {
 			success: true,
 			user: response.user || response,
@@ -129,7 +130,7 @@ export async function getCurrentUser() {
 	} catch (error) {
 		// Handle specific user data errors
 		let message = 'Failed to get user data';
-		
+
 		if (error.status === 401) {
 			message = 'Сессия истекла. Необходимо войти в систему заново';
 		} else if (error.status === 403) {
@@ -137,7 +138,7 @@ export async function getCurrentUser() {
 		} else if (error.status === 0) {
 			message = error.message; // Network error message
 		}
-		
+
 		return {
 			success: false,
 			message: error.message || message,
@@ -153,7 +154,7 @@ export async function getCurrentUser() {
 export async function sendEmailVerification() {
 	try {
 		const response = await post(API_CONFIG.endpoints.sendEmailVerification, {}, {}, true);
-		
+
 		return {
 			success: true,
 			message: response.message || 'Verification email sent successfully'
@@ -161,7 +162,7 @@ export async function sendEmailVerification() {
 	} catch (error) {
 		// Handle specific email verification errors
 		let message = 'Failed to send verification email';
-		
+
 		if (error.status === 401) {
 			message = 'Необходимо войти в систему для отправки письма подтверждения';
 		} else if (error.status === 429) {
@@ -171,7 +172,7 @@ export async function sendEmailVerification() {
 		} else if (error.status === 0) {
 			message = error.message; // Network error message
 		}
-		
+
 		return {
 			success: false,
 			message: error.message || message,
@@ -199,7 +200,7 @@ export async function verifyEmail(id, hash, signature) {
 	try {
 		const endpoint = `${API_CONFIG.endpoints.verifyEmail}/${id}/${hash}?signature=${signature}`;
 		const response = await get(endpoint, {}, true);
-		
+
 		return {
 			success: true,
 			message: response.message || 'Email verified successfully'
@@ -207,7 +208,7 @@ export async function verifyEmail(id, hash, signature) {
 	} catch (error) {
 		// Handle specific email verification errors
 		let message = 'Email verification failed';
-		
+
 		if (error.status === 401) {
 			message = 'Ссылка подтверждения недействительна или истекла';
 		} else if (error.status === 404) {
@@ -217,7 +218,7 @@ export async function verifyEmail(id, hash, signature) {
 		} else if (error.status === 0) {
 			message = error.message; // Network error message
 		}
-		
+
 		return {
 			success: false,
 			message: error.message || message,

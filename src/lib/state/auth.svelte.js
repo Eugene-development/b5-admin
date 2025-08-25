@@ -4,22 +4,24 @@
  * Integrates with Laravel Sanctum API for authentication
  */
 
-import { 
-	loginUser, 
-	registerUser, 
-	logoutUser, 
-	getCurrentUser, 
-	sendEmailVerification, 
+console.log('auth.svelte.js - Loading auth module');
+
+import {
+	loginUser,
+	registerUser,
+	logoutUser,
+	getCurrentUser,
+	sendEmailVerification,
 	resendEmailVerification,
-	verifyEmail 
+	verifyEmail
 } from '../api/auth.js';
-import { 
-	getAuthToken, 
-	setAuthToken, 
-	removeAuthToken, 
-	getUserData, 
-	setUserData, 
-	hasAuthToken 
+import {
+	getAuthToken,
+	setAuthToken,
+	removeAuthToken,
+	getUserData,
+	setUserData,
+	hasAuthToken
 } from '../api/config.js';
 
 /**
@@ -28,31 +30,37 @@ import {
 export const authState = $state({
 	// User data
 	user: null,
-	
+
 	// Authentication status
 	isAuthenticated: false,
-	
+
 	// Email verification status
 	emailVerified: false,
-	
+
 	// Loading states
 	loading: false,
 	loginLoading: false,
 	registerLoading: false,
 	logoutLoading: false,
 	emailVerificationLoading: false,
-	
+
 	// Error states
 	error: null,
 	loginError: null,
 	registerError: null,
 	emailVerificationError: null,
-	
+
 	// Token data
 	token: null,
-	
+
 	// Initialization status
 	initialized: false
+});
+
+console.log('auth.svelte.js - authState created:', {
+	isAuthenticated: authState.isAuthenticated,
+	user: authState.user,
+	initialized: authState.initialized
 });
 
 /**
@@ -60,33 +68,52 @@ export const authState = $state({
  * Should be called when the app starts
  */
 export async function initializeAuth() {
-	if (authState.initialized) return;
-	
+	if (authState.initialized) {
+		console.log('initializeAuth - Already initialized, skipping');
+		return;
+	}
+
+	console.log('initializeAuth - Starting initialization, current state:', {
+		isAuthenticated: authState.isAuthenticated,
+		user: authState.user,
+		token: authState.token
+	});
+
 	authState.loading = true;
 	authState.error = null;
-	
+
 	try {
 		// Check if we have a stored token
-		if (hasAuthToken()) {
+		const hasToken = hasAuthToken();
+		const token = getAuthToken();
+		console.log('initializeAuth - Token check:', { hasToken, token });
+
+		if (hasToken) {
 			// Try to get current user data to validate token
+			console.log('initializeAuth - Getting current user...');
 			const result = await getCurrentUser();
-			
+			console.log('initializeAuth - getCurrentUser result:', result);
+
 			if (result.success && result.user) {
 				// Token is valid, restore authentication state
+				console.log('initializeAuth - Setting authenticated state');
 				authState.user = result.user;
 				authState.isAuthenticated = true;
 				authState.emailVerified = result.user.email_verified || false;
 				authState.token = getAuthToken();
-				
+
 				// Store user data
 				setUserData(result.user);
+				console.log('initializeAuth - Authentication restored successfully:', authState.user);
 			} else {
 				// Token is invalid, clear it
+				console.log('initializeAuth - Token invalid, clearing state');
 				removeAuthToken();
 				clearAuthState();
 			}
 		} else {
 			// No token, clear state
+			console.log('initializeAuth - No token found, clearing state');
 			clearAuthState();
 		}
 	} catch (error) {
@@ -97,13 +124,20 @@ export async function initializeAuth() {
 	} finally {
 		authState.loading = false;
 		authState.initialized = true;
+		console.log('initializeAuth - Initialization complete:', {
+			user: authState.user,
+			isAuthenticated: authState.isAuthenticated,
+			initialized: authState.initialized,
+			hasToken: hasAuthToken(),
+			storedToken: getAuthToken()
+		});
 	}
 }
 
 /**
  * Login user with email and password
  * @param {string} email - User email
- * @param {string} password - User password  
+ * @param {string} password - User password
  * @param {boolean} remember - Whether to remember the user
  * @returns {Promise<boolean>} Success status
  */
@@ -111,17 +145,18 @@ export async function login(email, password, remember = false) {
 	authState.loginLoading = true;
 	authState.loginError = null;
 	authState.error = null;
-	
+
 	try {
 		const result = await loginUser(email, password, remember);
-		
+		console.log('🔐 Login API result:', result);
+
 		if (result.success) {
 			// Update auth state
 			authState.user = result.user;
 			authState.isAuthenticated = true;
 			authState.emailVerified = result.user?.email_verified || false;
 			authState.token = result.token?.access_token || null;
-			
+
 			// Store token and user data
 			if (result.token) {
 				setAuthToken(result.token);
@@ -129,7 +164,7 @@ export async function login(email, password, remember = false) {
 			if (result.user) {
 				setUserData(result.user);
 			}
-			
+
 			return true;
 		} else {
 			// Login failed
@@ -162,17 +197,17 @@ export async function register(userData) {
 	authState.registerLoading = true;
 	authState.registerError = null;
 	authState.error = null;
-	
+
 	try {
 		const result = await registerUser(userData);
-		
+
 		if (result.success) {
 			// Update auth state
 			authState.user = result.user;
 			authState.isAuthenticated = true;
 			authState.emailVerified = result.user?.email_verified || false;
 			authState.token = result.token?.access_token || null;
-			
+
 			// Store token and user data
 			if (result.token) {
 				setAuthToken(result.token);
@@ -180,7 +215,7 @@ export async function register(userData) {
 			if (result.user) {
 				setUserData(result.user);
 			}
-			
+
 			return true;
 		} else {
 			// Registration failed
@@ -205,15 +240,15 @@ export async function register(userData) {
 export async function logout() {
 	authState.logoutLoading = true;
 	authState.error = null;
-	
+
 	try {
 		// Call logout API (even if it fails, we'll clear local state)
 		await logoutUser();
-		
+
 		// Clear authentication state
 		clearAuthState();
 		removeAuthToken();
-		
+
 		return true;
 	} catch (error) {
 		console.error('Logout error:', error);
@@ -235,22 +270,22 @@ export async function checkAuth() {
 		clearAuthState();
 		return false;
 	}
-	
+
 	authState.loading = true;
 	authState.error = null;
-	
+
 	try {
 		const result = await getCurrentUser();
-		
+
 		if (result.success && result.user) {
 			// Update user data
 			authState.user = result.user;
 			authState.isAuthenticated = true;
 			authState.emailVerified = result.user.email_verified || false;
-			
+
 			// Update stored user data
 			setUserData(result.user);
-			
+
 			return true;
 		} else {
 			// Token is invalid
@@ -277,10 +312,10 @@ export async function sendEmailVerificationNotification() {
 	authState.emailVerificationLoading = true;
 	authState.emailVerificationError = null;
 	authState.error = null;
-	
+
 	try {
 		const result = await sendEmailVerification();
-		
+
 		if (result.success) {
 			return true;
 		} else {
@@ -290,7 +325,8 @@ export async function sendEmailVerificationNotification() {
 		}
 	} catch (error) {
 		console.error('Send email verification error:', error);
-		authState.emailVerificationError = error.message || 'Произошла ошибка при отправке письма подтверждения';
+		authState.emailVerificationError =
+			error.message || 'Произошла ошибка при отправке письма подтверждения';
 		authState.error = authState.emailVerificationError;
 		return false;
 	} finally {
@@ -306,10 +342,10 @@ export async function resendEmailVerificationNotification() {
 	authState.emailVerificationLoading = true;
 	authState.emailVerificationError = null;
 	authState.error = null;
-	
+
 	try {
 		const result = await resendEmailVerification();
-		
+
 		if (result.success) {
 			return true;
 		} else {
@@ -319,7 +355,8 @@ export async function resendEmailVerificationNotification() {
 		}
 	} catch (error) {
 		console.error('Resend email verification error:', error);
-		authState.emailVerificationError = error.message || 'Произошла ошибка при повторной отправке письма подтверждения';
+		authState.emailVerificationError =
+			error.message || 'Произошла ошибка при повторной отправке письма подтверждения';
 		authState.error = authState.emailVerificationError;
 		return false;
 	} finally {
@@ -338,10 +375,10 @@ export async function verifyEmailAddress(id, hash, signature) {
 	authState.emailVerificationLoading = true;
 	authState.emailVerificationError = null;
 	authState.error = null;
-	
+
 	try {
 		const result = await verifyEmail(id, hash, signature);
-		
+
 		if (result.success) {
 			// Mark email as verified
 			markEmailAsVerified();
@@ -369,7 +406,7 @@ export function markEmailAsVerified() {
 		authState.user.email_verified = true;
 		authState.user.email_verified_at = new Date().toISOString();
 		authState.emailVerified = true;
-		
+
 		// Update stored user data
 		setUserData(authState.user);
 	}
@@ -389,6 +426,12 @@ export function clearError() {
  * Clear authentication state (internal helper)
  */
 function clearAuthState() {
+	console.log('clearAuthState called - before:', {
+		isAuthenticated: authState.isAuthenticated,
+		user: authState.user,
+		token: authState.token
+	});
+
 	authState.user = null;
 	authState.isAuthenticated = false;
 	authState.emailVerified = false;
@@ -397,6 +440,12 @@ function clearAuthState() {
 	authState.loginError = null;
 	authState.registerError = null;
 	authState.emailVerificationError = null;
+
+	console.log('clearAuthState called - after:', {
+		isAuthenticated: authState.isAuthenticated,
+		user: authState.user,
+		token: authState.token
+	});
 }
 
 /**
@@ -404,6 +453,14 @@ function clearAuthState() {
  * @returns {boolean} Whether user is authenticated
  */
 export function isAuthenticated() {
+	console.log('isAuthenticated check:', {
+		isAuthenticated: authState.isAuthenticated,
+		user: authState.user,
+		token: authState.token,
+		hasToken: hasAuthToken(),
+		storedToken: getAuthToken(),
+		storedUser: getUserData()
+	});
 	return authState.isAuthenticated;
 }
 
@@ -428,11 +485,13 @@ export function isEmailVerified() {
  * @returns {boolean} Loading status
  */
 export function isLoading() {
-	return authState.loading || 
-		   authState.loginLoading || 
-		   authState.registerLoading || 
-		   authState.logoutLoading || 
-		   authState.emailVerificationLoading;
+	return (
+		authState.loading ||
+		authState.loginLoading ||
+		authState.registerLoading ||
+		authState.logoutLoading ||
+		authState.emailVerificationLoading
+	);
 }
 
 /**
