@@ -23,6 +23,7 @@
 		isEmailVerified,
 		isLoading
 	} from '../state/auth.svelte.js';
+	import { hasAuthToken, getUserData } from '../api/config.js';
 	import LoadingSpinner from './LoadingSpinner.svelte';
 
 	// Props
@@ -31,40 +32,77 @@
 	// State to prevent flickering during initialization
 	let isInitializing = $state(true);
 
-	// Reactive state for access control
+	// Reactive state for access control with localStorage fallback
 	let hasAccess = $derived(() => {
-		// If still loading or not initialized, don't grant access yet
-		if (!authState.initialized || isLoading() || isInitializing) {
-			return false;
+		// If auth state is initialized, use it directly
+		if (authState.initialized && !isLoading()) {
+			// Check authentication
+			if (!isAuthenticated()) {
+				return false;
+			}
+
+			// Check email verification if required
+			if (requireEmailVerification && !isEmailVerified()) {
+				return false;
+			}
+
+			return true;
 		}
 
-		// Check authentication
-		if (!isAuthenticated()) {
-			return false;
+		// If auth state not ready but we're not initializing, check localStorage directly
+		if (!isInitializing && !authState.initialized) {
+			const hasToken = hasAuthToken();
+			const storedUser = getUserData();
+
+			if (!hasToken || !storedUser) {
+				return false;
+			}
+
+			// Check email verification if required
+			if (requireEmailVerification && !storedUser.email_verified) {
+				return false;
+			}
+
+			return true;
 		}
 
-		// Check email verification if required
-		if (requireEmailVerification && !isEmailVerified()) {
-			return false;
-		}
-
-		return true;
+		// Still initializing, don't grant access yet
+		return false;
 	});
 
 	// Reactive state for determining redirect behavior
 	let shouldRedirect = $derived(() => {
 		// Don't redirect while still initializing or loading
-		if (!authState.initialized || isLoading() || isInitializing) {
+		if (isInitializing || (!authState.initialized && isLoading())) {
 			return false;
 		}
 
-		// Redirect if not authenticated
-		if (!isAuthenticated()) {
+		// If auth state is ready, use it for redirect decisions
+		if (authState.initialized) {
+			// Redirect if not authenticated
+			if (!isAuthenticated()) {
+				return true;
+			}
+
+			// Redirect if email verification is required but not verified
+			if (requireEmailVerification && !isEmailVerified()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		// Auth state not ready, check localStorage
+		const hasToken = hasAuthToken();
+		const storedUser = getUserData();
+
+		// Redirect if no token or user data
+		if (!hasToken || !storedUser) {
 			return true;
 		}
 
 		// Redirect if email verification is required but not verified
-		if (requireEmailVerification && !isEmailVerified()) {
+		if (requireEmailVerification && !storedUser.email_verified) {
 			return true;
 		}
 
@@ -78,12 +116,20 @@
 		// Determine redirect destination
 		let redirectUrl;
 
-		if (!isAuthenticated()) {
+		// Check current auth state or localStorage
+		const isAuthenticatedState = authState.initialized
+			? isAuthenticated()
+			: hasAuthToken() && getUserData();
+		const isEmailVerifiedState = authState.initialized
+			? isEmailVerified()
+			: getUserData()?.email_verified;
+
+		if (!isAuthenticatedState) {
 			// Not authenticated - redirect to login
 			const currentUrl = redirectTo || $page.url.pathname + $page.url.search;
 			const loginUrl = `/login?redirectTo=${encodeURIComponent(currentUrl)}`;
 			redirectUrl = loginUrl;
-		} else if (requireEmailVerification && !isEmailVerified()) {
+		} else if (requireEmailVerification && !isEmailVerifiedState) {
 			// Authenticated but email not verified - redirect to email verification
 			redirectUrl = '/email-verify';
 		}

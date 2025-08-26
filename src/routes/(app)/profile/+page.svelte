@@ -18,6 +18,7 @@
 		isLoading,
 		checkAuth
 	} from '$lib/state/auth.svelte.js';
+	import { getUserData } from '$lib/api/config.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
@@ -34,9 +35,24 @@
 	let authError = $state(null);
 	let isCopyingKey = $state(false);
 
-	// Get user data for display
+	// Get user data for display with localStorage fallback
 	function getUserDisplayData() {
-		return getCurrentUserData();
+		// First try to get from auth state
+		const user = getCurrentUserData();
+		if (user) {
+			return user;
+		}
+
+		// If auth state not ready, fallback to localStorage
+		if (!authState.initialized) {
+			const storedUser = getUserData();
+			if (storedUser) {
+				console.log('profile - Using stored user data as fallback:', storedUser);
+				return storedUser;
+			}
+		}
+
+		return null;
 	}
 
 	// Check URL parameters for notifications
@@ -227,7 +243,7 @@
 						<p class="mt-4 text-lg text-gray-300">{redirectMessage}</p>
 					</div>
 				</div>
-			{:else if isLoading()}
+			{:else if isLoading() && !getUserDisplayData()}
 				<div class="flex min-h-[50vh] items-center justify-center">
 					<div class="text-center">
 						<LoadingSpinner size="lg" color="white" />

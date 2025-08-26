@@ -4,7 +4,7 @@
  * Integrates with Laravel Sanctum API for authentication
  */
 
-console.log('auth.svelte.js - Loading auth module');
+
 
 import {
 	loginUser,
@@ -57,11 +57,7 @@ export const authState = $state({
 	initialized: false
 });
 
-console.log('auth.svelte.js - authState created:', {
-	isAuthenticated: authState.isAuthenticated,
-	user: authState.user,
-	initialized: authState.initialized
-});
+
 
 /**
  * Initialize authentication state from localStorage
@@ -69,45 +65,48 @@ console.log('auth.svelte.js - authState created:', {
  */
 export async function initializeAuth() {
 	if (authState.initialized) {
-		console.log('initializeAuth - Already initialized, skipping');
+
 		return;
 	}
 
-	console.log('initializeAuth - Starting initialization, current state:', {
-		isAuthenticated: authState.isAuthenticated,
-		user: authState.user,
-		token: authState.token
-	});
 
-	authState.loading = true;
-	authState.error = null;
 
-	try {
-		// Check if we have a stored token
-		const hasToken = hasAuthToken();
-		const token = getAuthToken();
-		console.log('initializeAuth - Token check:', { hasToken, token });
+	// Immediately restore from localStorage if available (before setting loading state)
+	const hasToken = hasAuthToken();
+	const token = getAuthToken();
+	const storedUser = getUserData();
+	console.log("storedUser-", storedUser);
 
-		if (hasToken) {
-			// First, try to restore from localStorage
-			const storedUser = getUserData();
-			console.log('initializeAuth - Stored user data:', storedUser);
 
-			if (storedUser) {
-				console.log('initializeAuth - Restoring from localStorage first');
-				authState.user = storedUser;
-				authState.isAuthenticated = true;
-				authState.emailVerified = storedUser.email_verified || false;
-				authState.token = token;
-			} else {
-				console.log('initializeAuth - No stored user data, will try API');
-			}
 
-			// Then try to get fresh data from API (but don't fail if network error)
-			console.log('initializeAuth - Getting current user from API...');
+	// Restore state immediately from localStorage if we have both token and user data
+	if (hasToken && storedUser) {
+
+		authState.user = storedUser;
+		authState.isAuthenticated = true;
+		authState.emailVerified = storedUser.email_verified || false;
+		authState.token = token;
+		authState.initialized = true; // Mark as initialized early to prevent flicker
+
+	} else if (!hasToken) {
+		// No token, clear state immediately
+
+		clearAuthState();
+		authState.initialized = true;
+		return;
+	}
+
+	// Now set loading for background API verification (if we have a token)
+	if (hasToken) {
+		authState.loading = true;
+		authState.error = null;
+
+		try {
+			// Try to get fresh data from API to verify token and update user data
+
 			try {
 				const result = await getCurrentUser();
-				console.log('initializeAuth - getCurrentUser result:', result);
+
 
 				if (result.success && result.user) {
 					// Update with fresh data
@@ -127,59 +126,30 @@ export async function initializeAuth() {
 					clearAuthState();
 				} else if (result.status === 0) {
 					// Network error, keep the restored state if we have it
-					console.log('initializeAuth - Network error, keeping restored state if available');
-					if (!authState.user && storedUser) {
-						console.log('initializeAuth - Setting state from stored user due to network error');
-						authState.user = storedUser;
-						authState.isAuthenticated = true;
-						authState.emailVerified = storedUser.email_verified || false;
-						authState.token = token;
-					}
+					console.log('initializeAuth - Network error, keeping restored state');
+					// State already restored from localStorage above, no need to do anything
 				}
 				// For other errors, keep the restored state
 			} catch (apiError) {
 				console.log('initializeAuth - API call failed, keeping restored state:', apiError);
-				// Keep the state restored from localStorage if we have it
-				if (!authState.user && storedUser) {
-					console.log('initializeAuth - Setting state from stored user due to API exception');
-					authState.user = storedUser;
-					authState.isAuthenticated = true;
-					authState.emailVerified = storedUser.email_verified || false;
-					authState.token = token;
-				}
+				// State already restored from localStorage above, no need to do anything
 			}
-		} else {
-			// No token, clear state
-			console.log('initializeAuth - No token found, clearing state');
-			clearAuthState();
+		} catch (error) {
+			console.error('Error during API verification:', error);
+			// Keep the state already restored from localStorage
+		} finally {
+			authState.loading = false;
 		}
-	} catch (error) {
-		console.error('Error initializing auth:', error);
-		// If we have a token, try to restore from localStorage as fallback
-		const storedUser = getUserData();
-		const token = getAuthToken();
-		if (token && storedUser) {
-			console.log('initializeAuth - Exception occurred, restoring from localStorage as fallback');
-			authState.user = storedUser;
-			authState.isAuthenticated = true;
-			authState.emailVerified = storedUser.email_verified || false;
-			authState.token = token;
-		} else {
-			// Clear invalid state
-			removeAuthToken();
-			clearAuthState();
-		}
-	} finally {
-		authState.loading = false;
-		authState.initialized = true;
-		console.log('initializeAuth - Initialization complete:', {
-			user: authState.user,
-			isAuthenticated: authState.isAuthenticated,
-			initialized: authState.initialized,
-			hasToken: hasAuthToken(),
-			storedToken: getAuthToken()
-		});
 	}
+
+	authState.initialized = true;
+	console.log('initializeAuth - Initialization complete:', {
+		user: authState.user,
+		isAuthenticated: authState.isAuthenticated,
+		initialized: authState.initialized,
+		hasToken: hasAuthToken(),
+		storedToken: getAuthToken()
+	});
 }
 
 /**

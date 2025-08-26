@@ -131,7 +131,7 @@
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Название проекта
+					Имя клиента
 				</th>
 				<th
 					id="col-agent"
