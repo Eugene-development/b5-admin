@@ -9,6 +9,7 @@
 	 * @param {Object} agent - The agent/project object containing id, name, status, etc.
 	 * @param {Function} onBan - Callback function for ban/edit action
 	 * @param {Function} onDelete - Callback function for delete action
+	 * @param {Function} [onView] - Callback function for view action (projects only)
 	 * @param {boolean} [isLoading=false] - Loading state for disabling buttons
 	 * @param {boolean} [mobile=false] - Mobile mode with larger touch targets
 	 * @param {boolean} [compact=false] - Compact mode for tablet view
@@ -18,6 +19,7 @@
 		agent,
 		onBan,
 		onDelete,
+		onView,
 		isLoading = false,
 		mobile = false,
 		compact = false,
@@ -44,6 +46,7 @@
 	// Generate unique IDs for accessibility
 	const banButtonId = `ban-button-${agent.id}`;
 	const deleteButtonId = `delete-button-${agent.id}`;
+	const viewButtonId = `view-button-${agent.id}`;
 
 	// Handle ban/unban or edit action
 	function handleBanAction() {
@@ -59,6 +62,13 @@
 		}
 	}
 
+	// Handle view action
+	function handleViewAction() {
+		if (onView && !isLoading) {
+			onView(agent);
+		}
+	}
+
 	// Handle keyboard navigation
 	function handleKeydown(event, action) {
 		// Allow Enter and Space to trigger actions
@@ -68,6 +78,8 @@
 				handleBanAction();
 			} else if (action === 'delete') {
 				handleDeleteAction();
+			} else if (action === 'view') {
+				handleViewAction();
 			}
 		}
 	}
@@ -91,11 +103,75 @@
 		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
 		return `Delete ${agentIdentifier} permanently`;
 	}
+
+	function getAccessibleViewText(agentName) {
+		if (projectMode) {
+			const projectIdentifier = agentName || `проект ${agent.id}`;
+			return `Просмотреть детали ${projectIdentifier}`;
+		}
+		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
+		return `View details for ${agentIdentifier}`;
+	}
 </script>
 
 {#if mobile}
 	<!-- Mobile Layout - Larger touch targets, full width buttons -->
 	<div class="flex w-full flex-col space-y-2">
+		{#if projectMode && onView}
+			<!-- View Button -->
+			<button
+				type="button"
+				id={viewButtonId}
+				onclick={handleViewAction}
+				onkeydown={(e) => handleKeydown(e, 'view')}
+				class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={isLoading}
+				aria-label={getAccessibleViewText(agent.name)}
+				aria-describedby="{viewButtonId}-description"
+			>
+				{#if isLoading}
+					<svg
+						class="mr-2 h-4 w-4 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
+					<svg
+						class="mr-2 h-5 w-5"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+						/>
+					</svg>
+					Просмотреть
+				{/if}
+			</button>
+		{/if}
+
 		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
@@ -197,6 +273,60 @@
 {:else if compact}
 	<!-- Compact Layout - Smaller buttons for tablet view -->
 	<div class="flex justify-end space-x-1">
+		{#if projectMode && onView}
+			<!-- View Button -->
+			<button
+				type="button"
+				id={viewButtonId}
+				onclick={handleViewAction}
+				onkeydown={(e) => handleKeydown(e, 'view')}
+				class="inline-flex min-h-[36px] items-center rounded-md bg-gray-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={isLoading}
+				aria-label={getAccessibleViewText(agent.name)}
+				aria-describedby="{viewButtonId}-description"
+			>
+				{#if isLoading}
+					<svg
+						class="mr-1 h-3 w-3 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
+					<svg
+						class="h-4 w-4"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+						/>
+					</svg>
+				{/if}
+			</button>
+		{/if}
+
 		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
@@ -298,6 +428,60 @@
 {:else}
 	<!-- Desktop Layout - Original design -->
 	<div class="flex justify-end space-x-2">
+		{#if projectMode && onView}
+			<!-- View Button -->
+			<button
+				type="button"
+				id={viewButtonId}
+				onclick={handleViewAction}
+				onkeydown={(e) => handleKeydown(e, 'view')}
+				class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={isLoading}
+				aria-label={getAccessibleViewText(agent.name)}
+				aria-describedby="{viewButtonId}-description"
+			>
+				{#if isLoading}
+					<svg
+						class="mr-1 h-3 w-3 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
+					<svg
+						class="h-4 w-4"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor"
+						aria-hidden="true"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+						/>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+						/>
+					</svg>
+				{/if}
+			</button>
+		{/if}
+
 		<!-- Ban/Unban or Edit Button -->
 		<button
 			type="button"
@@ -410,4 +594,9 @@
 			? 'Это действие нельзя отменить, проект будет удален навсегда'
 			: 'This action cannot be undone and will permanently remove all agent data'}
 	</div>
+	{#if projectMode && onView}
+		<div id="{viewButtonId}-description" class="sr-only">
+			Откроет окно с детальной информацией о проекте
+		</div>
+	{/if}
 {/if}

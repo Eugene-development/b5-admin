@@ -2,6 +2,7 @@
 	import {
 		ProjectsTable,
 		ProjectEditModal,
+		ProjectViewModal,
 		SearchBar,
 		ConfirmationModal,
 		ToastContainer,
@@ -35,6 +36,10 @@
 	// Edit modal state management
 	let showEditModal = $state(false);
 	let editingProject = $state(null);
+
+	// View modal state management
+	let showViewModal = $state(false);
+	let viewingProject = $state(null);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -85,6 +90,13 @@
 	function handleEditProject(project) {
 		editingProject = project;
 		showEditModal = true;
+		clearAllToasts();
+	}
+
+	// View project handler
+	function handleViewProject(project) {
+		viewingProject = project;
+		showViewModal = true;
 		clearAllToasts();
 	}
 
@@ -172,6 +184,12 @@
 		isActionLoading = false;
 	}
 
+	// Cancel view project
+	function handleCancelViewProject() {
+		showViewModal = false;
+		viewingProject = null;
+	}
+
 	// Remove project from local state after deletion
 	function removeProjectFromList(projectId) {
 		localProjects = localProjects.filter((project) => project.id !== projectId);
@@ -187,15 +205,18 @@
 	}
 
 	// Refresh data from server
-	async function refreshData() {
+	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
 			const projects = await refreshProjects();
 			localProjects = projects;
 			loadError = null;
-			addSuccessToast('Данные успешно обновлены');
+			// Only show success message for manual refresh, not initial load
+			if (!isInitialLoad) {
+				addSuccessToast('Данные успешно обновлены');
+			}
 		} catch (error) {
-			handleApiError(error, 'Не удалось обновить данные');
+			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
 		} finally {
 			isRefreshing = false;
 		}
@@ -223,7 +244,7 @@
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (!localProjects.length && !loadError) {
-			refreshData();
+			refreshData(true); // Pass true to indicate initial load
 		}
 	});
 </script>
@@ -349,6 +370,7 @@
 						isLoading={isActionLoading}
 						onEditProject={handleEditProject}
 						onDeleteProject={handleDeleteProject}
+						onViewProject={handleViewProject}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -382,6 +404,15 @@
 		onSave={handleSaveProject}
 		onCancel={handleCancelEditProject}
 		isLoading={isActionLoading}
+	/>
+{/if}
+
+<!-- Project View Modal -->
+{#if viewingProject}
+	<ProjectViewModal
+		isOpen={showViewModal}
+		project={viewingProject}
+		onClose={handleCancelViewProject}
 	/>
 {/if}
 

@@ -206,20 +206,8 @@
 									class={getNavClasses('/dashboard')}
 									onclick={() => handleMobileNavigation('/dashboard')}
 								>
-									<svg
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
-										class={getIconClasses('/dashboard')}
-									>
-										<path
-											d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Дашборд
 								</button>
@@ -230,20 +218,8 @@
 									class={getNavClasses('/agents')}
 									onclick={() => handleMobileNavigation('/agents')}
 								>
-									<svg
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
-										class={getIconClasses('/agents')}
-									>
-										<path
-											d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/agents')}>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Агенты
 								</button>
@@ -254,20 +230,8 @@
 									class={getNavClasses('/curators')}
 									onclick={() => handleMobileNavigation('/curators')}
 								>
-									<svg
-										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
-										class={getIconClasses('/curators')}
-									>
-										<path
-											d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/curators')}>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Кураторы
 								</button>
@@ -280,18 +244,10 @@
 								>
 									<svg
 										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
+										fill="currentColor"
 										class={getIconClasses('/contractors')}
 									>
-										<path
-											d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Контрагенты
 								</button>
@@ -304,18 +260,10 @@
 								>
 									<svg
 										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
+										fill="currentColor"
 										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 									>
-										<path
-											d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m4.5 4.5V16.5a1.5 1.5 0 0 1 3-1.5m3 3.75h1.5a1.5 1.5 0 0 0 1.5-1.5V16.5a1.5 1.5 0 0 1 3-1.5m-6 3V16.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5m0 0V18a2.25 2.25 0 0 0 4.5 0V16.5h-4.5Z"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Поставщики
 								</button>
@@ -328,18 +276,10 @@
 								>
 									<svg
 										viewBox="0 0 24 24"
-										fill="none"
-										stroke="currentColor"
-										stroke-width="1.5"
-										data-slot="icon"
-										aria-hidden="true"
+										fill="currentColor"
 										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 									>
-										<path
-											d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655-4.653c-.143-.467-.384-.89-.766-1.207m13.5-9.228-4.39 5.584m0 0c.9-.556 2.427-.465 3.494.315a3.8 3.8 0 0 1 .315 3.494M8.5 6.5a5 5 0 1 1-7.071 7.071"
-											stroke-linecap="round"
-											stroke-linejoin="round"
-										/>
+										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Сервис
 								</button>
@@ -521,80 +461,32 @@
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 							<a href="/dashboard" class={getNavClasses('/dashboard')}>
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
-									class={getIconClasses('/dashboard')}
-								>
-									<path
-										d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Дашборд
 							</a>
 						</li>
 						<li>
 							<a href="/agents" class={getNavClasses('/agents')}>
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
-									class={getIconClasses('/agents')}
-								>
-									<path
-										d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/agents')}>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Агенты
 							</a>
 						</li>
 						<li>
 							<a href="/curators" class={getNavClasses('/curators')}>
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
-									class={getIconClasses('/curators')}
-								>
-									<path
-										d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/curators')}>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Кураторы
 							</a>
 						</li>
 						<li>
 							<a href="/contractors" class={getNavClasses('/contractors')}>
-								<svg
-									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
-									class={getIconClasses('/contractors')}
-								>
-									<path
-										d="M2.25 21h19.5m-18-18v18m2.25-18v18m13.5-18v18M6.75 7.5h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H12m-1.5 3H12m-1.5 3H12m3-6h1.5m-1.5 3h1.5m-1.5 3h1.5M3.75 7.5v.75c0 .414.336.75.75.75h.75V7.5h-.75a.75.75 0 0 0-.75.75ZM3.75 12v.75c0 .414.336.75.75.75h.75V12h-.75a.75.75 0 0 0-.75.75Zm0 4.5v.75c0 .414.336.75.75.75h.75v-1.5h-.75a.75.75 0 0 0-.75.75Z"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/contractors')}>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Контрагенты
 							</a>
@@ -606,18 +498,10 @@
 							>
 								<svg
 									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
+									fill="currentColor"
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
-									<path
-										d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m4.5 4.5V16.5a1.5 1.5 0 0 1 3-1.5m3 3.75h1.5a1.5 1.5 0 0 0 1.5-1.5V16.5a1.5 1.5 0 0 1 3-1.5m-6 3V16.5a1.5 1.5 0 0 1 1.5-1.5h1.5a1.5 1.5 0 0 1 1.5 1.5v1.5m0 0V18a2.25 2.25 0 0 0 4.5 0V16.5h-4.5Z"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Поставщики
 							</a>
@@ -629,18 +513,10 @@
 							>
 								<svg
 									viewBox="0 0 24 24"
-									fill="none"
-									stroke="currentColor"
-									stroke-width="1.5"
-									data-slot="icon"
-									aria-hidden="true"
+									fill="currentColor"
 									class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 								>
-									<path
-										d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655-4.653c-.143-.467-.384-.89-.766-1.207m13.5-9.228-4.39 5.584m0 0c.9-.556 2.427-.465 3.494.315a3.8 3.8 0 0 1 .315 3.494M8.5 6.5a5 5 0 1 1-7.071 7.071"
-										stroke-linecap="round"
-										stroke-linejoin="round"
-									/>
+									<circle cx="12" cy="12" r="3" />
 								</svg>
 								Сервис
 							</a>

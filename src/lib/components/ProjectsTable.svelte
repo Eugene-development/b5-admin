@@ -8,6 +8,7 @@
 		isLoading = false,
 		onEditProject,
 		onDeleteProject,
+		onViewProject,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -125,6 +126,15 @@
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
 				<th
+					id="col-number"
+					scope="col"
+					role="columnheader"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					aria-sort="none"
+				>
+					№
+				</th>
+				<th
 					id="col-name"
 					scope="col"
 					role="columnheader"
@@ -132,15 +142,6 @@
 					aria-sort="none"
 				>
 					Имя клиента
-				</th>
-				<th
-					id="col-agent"
-					scope="col"
-					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					aria-sort="none"
-				>
-					Агент
 				</th>
 				<th
 					id="col-city"
@@ -161,23 +162,15 @@
 					Номер договора
 				</th>
 				<th
-					id="col-contract-date"
+					id="col-agent"
 					scope="col"
 					role="columnheader"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Дата заключения
+					Агент
 				</th>
-				<th
-					id="col-amount"
-					scope="col"
-					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					aria-sort="none"
-				>
-					Сумма договора
-				</th>
+
 				<th
 					id="col-rate"
 					scope="col"
@@ -187,15 +180,7 @@
 				>
 					Ставка агенту
 				</th>
-				<th
-					id="col-completion"
-					scope="col"
-					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					aria-sort="none"
-				>
-					Планируемое завершение
-				</th>
+
 				<th id="col-actions" scope="col" role="columnheader" class="relative px-6 py-3">
 					<span class="sr-only">Действия</span>
 				</th>
@@ -204,7 +189,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="9" class="px-6 py-4 text-center" role="cell">
+					<td colspan="7" class="px-6 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных проектов">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -216,7 +201,7 @@
 				</tr>
 			{:else if projects.length === 0}
 				<tr>
-					<td colspan="9" class="px-6 py-4" role="cell">
+					<td colspan="7" class="px-6 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -235,18 +220,18 @@
 						aria-rowindex={index + 2}
 					>
 						<td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400"
+							role="cell"
+							headers="col-number"
+						>
+							{index + 1}
+						</td>
+						<td
 							class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{project.value || ' - '}
-						</td>
-						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-agent"
-						>
-							{getAgentDisplay(project.agent)}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
@@ -265,17 +250,11 @@
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
-							headers="col-contract-date"
+							headers="col-agent"
 						>
-							{formatDate(project.contract_date)}
+							{getAgentDisplay(project.agent)}
 						</td>
-						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-amount"
-						>
-							{formatCurrency(project.contract_amount)}
-						</td>
+
 						<td
 							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 xl:table-cell dark:text-white"
 							role="cell"
@@ -283,17 +262,7 @@
 						>
 							{formatAgentRate(project.agent_percentage, 'percentage')}
 						</td>
-						<td
-							class="whitespace-nowrap px-6 py-4 text-sm"
-							role="cell"
-							headers="col-completion"
-							class:text-red-600={isOverdue(project.planned_completion_date)}
-							class:dark:text-red-400={isOverdue(project.planned_completion_date)}
-							class:text-gray-900={!isOverdue(project.planned_completion_date)}
-							class:dark:text-white={!isOverdue(project.planned_completion_date)}
-						>
-							{formatDate(project.planned_completion_date)}
-						</td>
+
 						<td
 							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 							role="cell"
@@ -303,6 +272,7 @@
 								agent={project}
 								onBan={onEditProject}
 								onDelete={onDeleteProject}
+								onView={onViewProject}
 								{isLoading}
 								projectMode={true}
 							/>
@@ -347,6 +317,14 @@
 					<!-- Project Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
+							<div class="mb-1 flex items-center gap-2">
+								<span
+									class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
+									aria-label="Номер по порядку {index + 1}"
+								>
+									№ {index + 1}
+								</span>
+							</div>
 							<h3
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
@@ -373,6 +351,16 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
+								Номер договора
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{project.contract_name || ' - '}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Агент
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -383,61 +371,11 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Номер договора
+								Ставка агенту
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.contract_name || ' - '}
+								{formatAgentRate(project.agent_percentage, 'percentage')}
 							</dd>
-						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Дата заключения
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatDate(project.contract_date)}
-								</dd>
-							</div>
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Завершение
-								</dt>
-								<dd
-									class="mt-1 text-sm"
-									class:text-red-600={isOverdue(project.planned_completion_date)}
-									class:dark:text-red-400={isOverdue(project.planned_completion_date)}
-									class:text-gray-900={!isOverdue(project.planned_completion_date)}
-									class:dark:text-white={!isOverdue(project.planned_completion_date)}
-								>
-									{formatDate(project.planned_completion_date)}
-								</dd>
-							</div>
-						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Сумма договора
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatCurrency(project.contract_amount)}
-								</dd>
-							</div>
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Ставка агенту
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatAgentRate(project.agent_percentage, 'percentage')}
-								</dd>
-							</div>
 						</div>
 					</dl>
 
@@ -447,6 +385,7 @@
 							agent={project}
 							onBan={onEditProject}
 							onDelete={onDeleteProject}
+							onView={onViewProject}
 							{isLoading}
 							mobile={true}
 							projectMode={true}
@@ -470,13 +409,13 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Название
+								№
 							</th>
 							<th
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Агент
+								Название
 							</th>
 							<th
 								scope="col"
@@ -488,13 +427,7 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Сумма
-							</th>
-							<th
-								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Завершение
+								Агент
 							</th>
 							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
 								<span class="sr-only">Действия</span>
@@ -504,7 +437,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 						{#if isLoading}
 							<tr>
-								<td colspan="6" class="px-4 py-4 text-center">
+								<td colspan="5" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
 										<div
 											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -514,7 +447,7 @@
 							</tr>
 						{:else if projects.length === 0}
 							<tr>
-								<td colspan="6" class="px-4 py-4">
+								<td colspan="5" class="px-4 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -527,30 +460,21 @@
 								</td>
 							</tr>
 						{:else}
-							{#each projects as project (project.id + '-' + project.status + '-' + updateCounter)}
+							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+										{index + 1}
+									</td>
 									<td
 										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
 									>
 										{project.value || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{getAgentDisplay(project.agent)}
-									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{project.city || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{formatCurrency(project.contract_amount)}
-									</td>
-									<td
-										class="whitespace-nowrap px-4 py-4 text-sm"
-										class:text-red-600={isOverdue(project.planned_completion_date)}
-										class:dark:text-red-400={isOverdue(project.planned_completion_date)}
-										class:text-gray-900={!isOverdue(project.planned_completion_date)}
-										class:dark:text-white={!isOverdue(project.planned_completion_date)}
-									>
-										{formatDate(project.planned_completion_date)}
+										{getAgentDisplay(project.agent)}
 									</td>
 									<td
 										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
@@ -559,6 +483,7 @@
 											agent={project}
 											onBan={onEditProject}
 											onDelete={onDeleteProject}
+											onView={onViewProject}
 											{isLoading}
 											compact={true}
 											projectMode={true}

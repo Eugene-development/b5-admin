@@ -170,7 +170,7 @@
 	}
 
 	// Refresh data from server
-	async function refreshData() {
+	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
@@ -180,9 +180,12 @@
 				status: agent.status?.toLowerCase() || 'active'
 			}));
 			loadError = null;
-			addSuccessToast('Данные успешно обновлены');
+			// Only show success message for manual refresh, not initial load
+			if (!isInitialLoad) {
+				addSuccessToast('Данные успешно обновлены');
+			}
 		} catch (error) {
-			handleApiError(error, 'Не удалось обновить данные');
+			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
 		} finally {
 			isRefreshing = false;
 		}
@@ -210,7 +213,7 @@
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (!localAgents.length && !loadError) {
-			refreshData();
+			refreshData(true); // Pass true to indicate initial load
 		}
 	});
 

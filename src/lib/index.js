@@ -2,6 +2,7 @@
 export { default as AgentsTable } from './components/AgentsTable.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';
+export { default as ProjectViewModal } from './components/ProjectViewModal.svelte';
 export { default as SearchBar } from './components/SearchBar.svelte';
 export { default as ActionButtons } from './components/ActionButtons.svelte';
 export { default as ConfirmationModal } from './components/ConfirmationModal.svelte';
