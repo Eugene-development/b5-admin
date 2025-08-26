@@ -208,7 +208,9 @@
 </script>
 
 <ProtectedRoute requireEmailVerification={false}>
-	<div class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
+	<div
+		class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16"
+	>
 		<div class="mx-auto max-w-4xl">
 			<!-- Loading States -->
 			{#if isCheckingAuth}
@@ -235,7 +237,9 @@
 			{:else}
 				<!-- Error Messages -->
 				{#if authError}
-					<div class="mb-8 rounded-xl bg-red-500/20 border border-red-500/30 p-6 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-red-500/25 hover:border-red-500/40">
+					<div
+						class="mb-8 rounded-xl border border-red-500/30 bg-red-500/20 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-red-500/40 hover:bg-red-500/25"
+					>
 						<div class="flex items-start gap-4">
 							<div class="flex-shrink-0">
 								<svg class="h-6 w-6 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -247,31 +251,27 @@
 								</svg>
 							</div>
 							<div class="flex-1">
-								<h3 class="text-sm font-semibold text-red-400 mb-1">Ошибка</h3>
-								<p class="text-sm text-red-300 leading-relaxed">{authError}</p>
+								<h3 class="mb-1 text-sm font-semibold text-red-400">Ошибка</h3>
+								<p class="text-sm leading-relaxed text-red-300">{authError}</p>
 							</div>
 						</div>
 					</div>
 				{/if}
 				<!-- Page Title -->
-				<div class="mx-auto mb-16 text-center">
-					<div class="inline-flex items-center gap-4 mb-4">
-						<div class="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1"></div>
-						<svg class="h-8 w-8 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
-							<path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
-						</svg>
-						<div class="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1"></div>
-					</div>
-					<h1 class="text-4xl font-light tracking-[0.2em] text-white sm:text-6xl lg:text-7xl mb-2">
-						Профиль
+				<!-- <div class="mx-auto mb-16 text-center">
+					<h1 class="mb-2 text-4xl font-light tracking-[0.2em] text-white sm:text-6xl lg:text-7xl">
+						Профиль куратора
 					</h1>
-					<p class="text-gray-400 text-lg font-light tracking-wide">Управление аккаунтом куратора</p>
-				</div>
+				</div> -->
 
 				<!-- Success Notifications -->
 				{#if showSuccessMessage}
-					<div class="fixed top-6 left-1/2 z-50 -translate-x-1/2 transform animate-in fade-in slide-in-from-top-4 duration-300">
-						<div class="rounded-xl bg-green-500/20 border border-green-500/30 p-4 backdrop-blur-md shadow-2xl shadow-green-500/10">
+					<div
+						class="animate-in fade-in slide-in-from-top-4 fixed left-1/2 top-6 z-50 -translate-x-1/2 transform duration-300"
+					>
+						<div
+							class="rounded-xl border border-green-500/30 bg-green-500/20 p-4 shadow-2xl shadow-green-500/10 backdrop-blur-md"
+						>
 							<div class="flex items-center gap-3">
 								<div class="flex-shrink-0">
 									<svg class="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
@@ -282,7 +282,7 @@
 										/>
 									</svg>
 								</div>
-								<p class="text-sm font-medium text-green-300 leading-relaxed">{successMessage}</p>
+								<p class="text-sm font-medium leading-relaxed text-green-300">{successMessage}</p>
 							</div>
 						</div>
 					</div>
@@ -291,12 +291,14 @@
 				<!-- Copy Notifications -->
 				{#if showCopyMessage}
 					<div
-						class="animate-in fade-in slide-in-from-top-4 fixed top-6 left-1/2 z-50 -translate-x-1/2 transform duration-300"
+						class="animate-in fade-in slide-in-from-top-4 fixed left-1/2 top-6 z-50 -translate-x-1/2 transform duration-300"
 					>
 						<div
-							class="rounded-xl border p-4 shadow-2xl backdrop-blur-md {copyMessage.includes('Ошибка') 
-								? 'bg-red-500/20 border-red-500/30 shadow-red-500/10' 
-								: 'bg-blue-500/20 border-blue-500/30 shadow-blue-500/10'}"
+							class="rounded-xl border p-4 shadow-2xl backdrop-blur-md {copyMessage.includes(
+								'Ошибка'
+							)
+								? 'border-red-500/30 bg-red-500/20 shadow-red-500/10'
+								: 'border-blue-500/30 bg-blue-500/20 shadow-blue-500/10'}"
 						>
 							<div class="flex items-center gap-3">
 								<div class="flex-shrink-0">
@@ -311,18 +313,28 @@
 									{:else}
 										<svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
 											<path d="M8 2a1 1 0 000 2h2a1 1 0 100-2H8z" />
-											<path d="M3 5a2 2 0 012-2 3 3 0 003 3h6a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2V5h-2v6z" />
+											<path
+												d="M3 5a2 2 0 012-2 3 3 0 003 3h6a3 3 0 003-3 2 2 0 012 2v6h-4.586l1.293-1.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 000 1.414l3 3a1 1 0 001.414-1.414L10.414 13H15v3a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM15 11h2V5h-2v6z"
+											/>
 										</svg>
 									{/if}
 								</div>
-								<p class="text-sm font-medium leading-relaxed {copyMessage.includes('Ошибка') ? 'text-red-300' : 'text-blue-300'}">{copyMessage}</p>
+								<p
+									class="text-sm font-medium leading-relaxed {copyMessage.includes('Ошибка')
+										? 'text-red-300'
+										: 'text-blue-300'}"
+								>
+									{copyMessage}
+								</p>
 							</div>
 						</div>
 					</div>
 				{/if}
 
 				<!-- User Information Card -->
-				<div class="mb-8 rounded-xl bg-white/5 p-8 backdrop-blur-sm border border-white/10 shadow-xl transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-2xl">
+				<div
+					class="mb-8 rounded-xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:shadow-2xl"
+				>
 					<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">Профиль куратора</h2>
 
 					{#if isLoading() && !getUserDisplayData()}
@@ -337,21 +349,31 @@
 						<div class="grid gap-6 sm:grid-cols-2 lg:gap-8">
 							<!-- Name -->
 							<div class="group">
-								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Имя</div>
-								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
-									<p class="text-lg text-white font-medium">{user.name || 'Не указано'}</p>
+								<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+									Имя
+								</div>
+								<div
+									class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+								>
+									<p class="text-lg font-medium text-white">{user.name || 'Не указано'}</p>
 								</div>
 							</div>
 
 							<!-- Email -->
 							<div class="group">
-								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Email</div>
-								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
+								<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+									Email
+								</div>
+								<div
+									class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+								>
 									<div class="flex items-center gap-3">
-										<p class="text-lg text-white font-medium flex-1">{user.email || 'Не указано'}</p>
+										<p class="flex-1 text-lg font-medium text-white">
+											{user.email || 'Не указано'}
+										</p>
 										{#if user.email_verified}
 											<span
-												class="inline-flex items-center gap-1 rounded-full bg-green-500/20 border border-green-500/30 px-3 py-1 text-xs font-semibold text-green-400 transition-all duration-200 hover:bg-green-500/30"
+												class="inline-flex items-center gap-1 rounded-full border border-green-500/30 bg-green-500/20 px-3 py-1 text-xs font-semibold text-green-400 transition-all duration-200 hover:bg-green-500/30"
 											>
 												<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
 													<path
@@ -364,7 +386,7 @@
 											</span>
 										{:else}
 											<span
-												class="inline-flex items-center gap-1 rounded-full bg-yellow-500/20 border border-yellow-500/30 px-3 py-1 text-xs font-semibold text-yellow-400 transition-all duration-200 hover:bg-yellow-500/30"
+												class="inline-flex items-center gap-1 rounded-full border border-yellow-500/30 bg-yellow-500/20 px-3 py-1 text-xs font-semibold text-yellow-400 transition-all duration-200 hover:bg-yellow-500/30"
 											>
 												<svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
 													<path
@@ -382,28 +404,36 @@
 
 							<!-- City -->
 							<div class="group">
-								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Город</div>
-								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
-									<p class="text-lg text-white font-medium">{user.city || 'Не указано'}</p>
+								<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+									Город
+								</div>
+								<div
+									class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+								>
+									<p class="text-lg font-medium text-white">{user.city || 'Не указано'}</p>
 								</div>
 							</div>
 
 							<!-- Secret Key -->
 							<div class="group">
-								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">Секретный ключ</div>
+								<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+									Секретный ключ
+								</div>
 								<button
 									onclick={copyKey}
 									disabled={isCopyingKey}
-									class="group/key w-full rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]"
+									class="group/key w-full rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 									title="Нажмите для копирования в буфер обмена"
 								>
 									<div class="flex items-center justify-between">
-										<span class="font-mono text-lg text-white font-medium truncate pr-2">{user.key || 'Не указано'}</span>
+										<span class="truncate pr-2 font-mono text-lg font-medium text-white"
+											>{user.key || 'Не указано'}</span
+										>
 										{#if isCopyingKey}
 											<LoadingSpinner size="sm" color="white" inline={true} />
 										{:else}
 											<svg
-												class="h-5 w-5 text-gray-400 transition-all duration-200 group-hover/key:text-indigo-400 group-hover/key:scale-110"
+												class="h-5 w-5 text-gray-400 transition-all duration-200 group-hover/key:scale-110 group-hover/key:text-indigo-400"
 												viewBox="0 0 20 20"
 												fill="currentColor"
 											>
@@ -415,23 +445,31 @@
 										{/if}
 									</div>
 								</button>
-								<p class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
+								<p
+									class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400"
+								>
 									{isCopyingKey ? 'Копирование...' : 'Кликните для копирования ключа'}
 								</p>
 							</div>
 
 							<!-- User ID -->
-							<div class="group">
-								<div class="block text-sm font-medium text-gray-300 mb-2 tracking-wide uppercase">ID пользователя</div>
-								<div class="rounded-lg bg-gray-800/50 px-4 py-3 border border-gray-700/50 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70">
-									<p class="text-lg text-white font-medium">{user.id || 'Не указано'}</p>
+							<!-- <div class="group">
+								<div class="mb-2 block text-sm font-medium uppercase tracking-wide text-gray-300">
+									ID пользователя
 								</div>
-							</div>
+								<div
+									class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+								>
+									<p class="text-lg font-medium text-white">{user.id || 'Не указано'}</p>
+								</div>
+							</div> -->
 
 							<!-- Ban Status -->
 							{#if user.is_banned}
 								<div class="sm:col-span-2">
-									<div class="rounded-lg bg-red-500/20 border border-red-500/30 p-6 backdrop-blur-sm transition-all duration-200 hover:bg-red-500/25 hover:border-red-500/40">
+									<div
+										class="rounded-lg border border-red-500/30 bg-red-500/20 p-6 backdrop-blur-sm transition-all duration-200 hover:border-red-500/40 hover:bg-red-500/25"
+									>
 										<div class="flex items-center">
 											<div class="flex-shrink-0">
 												<svg class="h-6 w-6 text-red-400" viewBox="0 0 20 20" fill="currentColor">
@@ -443,7 +481,9 @@
 												</svg>
 											</div>
 											<div class="ml-4">
-												<h3 class="text-sm font-semibold text-red-400 mb-1">Аккаунт заблокирован</h3>
+												<h3 class="mb-1 text-sm font-semibold text-red-400">
+													Аккаунт заблокирован
+												</h3>
 												{#if user.ban_reason}
 													<p class="text-sm text-red-300">Причина: {user.ban_reason}</p>
 												{/if}
@@ -487,7 +527,9 @@
 
 				<!-- Email Verification Warning -->
 				{#if isAuthenticated() && !isEmailVerified()}
-					<div class="mb-8 rounded-xl bg-yellow-500/20 border border-yellow-500/30 p-6 backdrop-blur-sm shadow-lg transition-all duration-300 hover:bg-yellow-500/25 hover:border-yellow-500/40 hover:shadow-xl">
+					<div
+						class="mb-8 rounded-xl border border-yellow-500/30 bg-yellow-500/20 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 hover:border-yellow-500/40 hover:bg-yellow-500/25 hover:shadow-xl"
+					>
 						<div class="flex items-start">
 							<div class="flex-shrink-0">
 								<svg class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
@@ -499,18 +541,24 @@
 								</svg>
 							</div>
 							<div class="ml-4 flex-1">
-								<h3 class="text-sm font-semibold text-yellow-400 mb-2">Требуется подтверждение email</h3>
-								<p class="text-sm text-yellow-300 leading-relaxed mb-4">
+								<h3 class="mb-2 text-sm font-semibold text-yellow-400">
+									Требуется подтверждение email
+								</h3>
+								<p class="mb-4 text-sm leading-relaxed text-yellow-300">
 									Для получения полного доступа к функциям системы необходимо подтвердить ваш email
 									адрес.
 								</p>
 								<button
 									onclick={() => goto('/email-verify')}
-									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
+									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98]"
 								>
 									<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-										<path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
-										<path d="m19 8.839-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+										<path
+											d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z"
+										/>
+										<path
+											d="m19 8.839-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z"
+										/>
 									</svg>
 									Подтвердить email
 								</button>
@@ -520,21 +568,35 @@
 				{/if}
 
 				<!-- Project Statistics Card -->
-				<div class="mb-8 rounded-xl bg-white/5 border border-white/10 p-8 backdrop-blur-sm shadow-xl transition-all duration-300 hover:bg-white/10 hover:border-white/20 hover:shadow-2xl">
-					<div class="flex items-center gap-3 mb-6">
+				<div
+					class="mb-8 rounded-xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:shadow-2xl"
+				>
+					<!-- <div class="mb-6 flex items-center gap-3">
 						<svg class="h-6 w-6 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
-							<path fill-rule="evenodd" d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z" clip-rule="evenodd" />
+							<path
+								fill-rule="evenodd"
+								d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+								clip-rule="evenodd"
+							/>
 						</svg>
 						<h2 class="text-2xl font-semibold tracking-wide text-white">Статистика проектов</h2>
-					</div>
-					<div class="rounded-lg bg-gray-800/30 border border-gray-700/50 p-6 text-center">
+					</div> -->
+					<div class="rounded-lg border border-gray-700/50 bg-gray-800/30 p-6 text-center">
 						<div class="flex flex-col items-center gap-4">
 							<svg class="h-12 w-12 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-								<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+								<path
+									fill-rule="evenodd"
+									d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 							<div>
-								<p class="text-gray-400 text-lg font-medium mb-1">Статистика будет доступна позже</p>
-								<p class="text-gray-500 text-sm">Здесь будет отображаться информация о ваших проектах</p>
+								<p class="mb-1 text-lg font-medium text-gray-400">
+									Статистика будет доступна позже
+								</p>
+								<p class="text-sm text-gray-500">
+									Здесь будет отображаться информация о ваших проектах
+								</p>
 							</div>
 						</div>
 					</div>
@@ -545,7 +607,7 @@
 					<button
 						onclick={handleLogout}
 						disabled={isLogoutLoading || isRedirecting}
-						class="group flex items-center justify-center gap-3 rounded-xl bg-red-600 border border-red-500 px-8 py-4 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:bg-red-500 hover:border-red-400 hover:shadow-xl hover:shadow-red-500/20 focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98] min-h-[52px]"
+						class="group flex min-h-[52px] items-center justify-center gap-3 rounded-xl border border-red-500 bg-red-600 px-8 py-4 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						{#if isLogoutLoading}
 							<LoadingSpinner size="sm" color="white" inline={true} />
@@ -554,9 +616,21 @@
 							<LoadingSpinner size="sm" color="white" inline={true} />
 							<span>Перенаправление...</span>
 						{:else}
-							<svg class="h-5 w-5 transition-transform duration-200 group-hover:scale-110" viewBox="0 0 20 20" fill="currentColor">
-								<path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z" clip-rule="evenodd" />
-								<path fill-rule="evenodd" d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114L8.704 10.75H18.25A.75.75 0 0019 10z" clip-rule="evenodd" />
+							<svg
+								class="h-5 w-5 transition-transform duration-200 group-hover:scale-110"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
+									clip-rule="evenodd"
+								/>
+								<path
+									fill-rule="evenodd"
+									d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114L8.704 10.75H18.25A.75.75 0 0019 10z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 							<span>Выйти из аккаунта</span>
 						{/if}
@@ -565,14 +639,18 @@
 
 				<!-- Security Notice -->
 				<div class="mt-12 text-center">
-					<div class="inline-flex items-center gap-2 rounded-lg bg-gray-800/30 border border-gray-700/50 px-4 py-3 backdrop-blur-sm">
+					<div
+						class="inline-flex items-center gap-2 rounded-lg border border-gray-700/50 bg-gray-800/30 px-4 py-3 backdrop-blur-sm"
+					>
 						<svg class="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-							<path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+							<path
+								fill-rule="evenodd"
+								d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+								clip-rule="evenodd"
+							/>
 						</svg>
 						<div class="text-left">
-							<p class="text-sm text-gray-300 font-medium">
-								Защищенная страница
-							</p>
+							<p class="text-sm font-medium text-gray-300">Защищенная страница</p>
 							<p class="text-xs text-gray-500">
 								Сессия защищена API токенами • Данные передаются по HTTPS
 							</p>

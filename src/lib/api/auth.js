@@ -125,6 +125,7 @@ export async function getCurrentUser() {
 		return {
 			success: true,
 			user: response.user || response,
+			status: 200,
 			message: 'User data retrieved successfully'
 		};
 	} catch (error) {
@@ -141,6 +142,7 @@ export async function getCurrentUser() {
 
 		return {
 			success: false,
+			status: error.status ?? null,
 			message: error.message || message,
 			errors: error.data?.errors || {}
 		};

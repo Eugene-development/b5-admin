@@ -8,9 +8,15 @@
 
 	// Global authentication initialization
 	onMount(async () => {
+		console.log('Root layout onMount - starting');
 		console.log('Root layout onMount - calling initializeAuth');
-		await initializeAuth();
-		console.log('Root layout onMount - initializeAuth completed');
+		try {
+			await initializeAuth();
+			console.log('Root layout onMount - initializeAuth completed successfully');
+		} catch (error) {
+			console.error('Root layout onMount - initializeAuth failed:', error);
+		}
+		console.log('Root layout onMount - completed');
 	});
 </script>
 

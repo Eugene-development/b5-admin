@@ -264,14 +264,14 @@
 								type="button"
 								onclick={refreshData}
 								disabled={isRefreshing}
-								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
 								aria-label="Refresh agents data from server"
 								aria-describedby="refresh-button-description"
 							>
 								{#if isRefreshing}
 									<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
 								{/if}
-								{isRefreshing ? 'Обновляю...' : 'Обновить'}
+								{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
 							</button>
 							<div id="refresh-button-description" class="sr-only">
 								Обновить данные агентов с сервера

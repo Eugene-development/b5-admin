@@ -89,27 +89,64 @@ export async function initializeAuth() {
 		console.log('initializeAuth - Token check:', { hasToken, token });
 
 		if (hasToken) {
-			// Try to get current user data to validate token
-			console.log('initializeAuth - Getting current user...');
-			const result = await getCurrentUser();
-			console.log('initializeAuth - getCurrentUser result:', result);
+			// First, try to restore from localStorage
+			const storedUser = getUserData();
+			console.log('initializeAuth - Stored user data:', storedUser);
 
-			if (result.success && result.user) {
-				// Token is valid, restore authentication state
-				console.log('initializeAuth - Setting authenticated state');
-				authState.user = result.user;
+			if (storedUser) {
+				console.log('initializeAuth - Restoring from localStorage first');
+				authState.user = storedUser;
 				authState.isAuthenticated = true;
-				authState.emailVerified = result.user.email_verified || false;
-				authState.token = getAuthToken();
-
-				// Store user data
-				setUserData(result.user);
-				console.log('initializeAuth - Authentication restored successfully:', authState.user);
+				authState.emailVerified = storedUser.email_verified || false;
+				authState.token = token;
 			} else {
-				// Token is invalid, clear it
-				console.log('initializeAuth - Token invalid, clearing state');
-				removeAuthToken();
-				clearAuthState();
+				console.log('initializeAuth - No stored user data, will try API');
+			}
+
+			// Then try to get fresh data from API (but don't fail if network error)
+			console.log('initializeAuth - Getting current user from API...');
+			try {
+				const result = await getCurrentUser();
+				console.log('initializeAuth - getCurrentUser result:', result);
+
+				if (result.success && result.user) {
+					// Update with fresh data
+					console.log('initializeAuth - Updating with fresh API data');
+					authState.user = result.user;
+					authState.isAuthenticated = true;
+					authState.emailVerified = result.user.email_verified || false;
+					authState.token = getAuthToken();
+
+					// Update stored user data
+					setUserData(result.user);
+					console.log('initializeAuth - Authentication updated successfully:', authState.user);
+				} else if (result.status === 401 || result.status === 403) {
+					// Token is invalid, clear it
+					console.log('initializeAuth - Token invalid, clearing state');
+					removeAuthToken();
+					clearAuthState();
+				} else if (result.status === 0) {
+					// Network error, keep the restored state if we have it
+					console.log('initializeAuth - Network error, keeping restored state if available');
+					if (!authState.user && storedUser) {
+						console.log('initializeAuth - Setting state from stored user due to network error');
+						authState.user = storedUser;
+						authState.isAuthenticated = true;
+						authState.emailVerified = storedUser.email_verified || false;
+						authState.token = token;
+					}
+				}
+				// For other errors, keep the restored state
+			} catch (apiError) {
+				console.log('initializeAuth - API call failed, keeping restored state:', apiError);
+				// Keep the state restored from localStorage if we have it
+				if (!authState.user && storedUser) {
+					console.log('initializeAuth - Setting state from stored user due to API exception');
+					authState.user = storedUser;
+					authState.isAuthenticated = true;
+					authState.emailVerified = storedUser.email_verified || false;
+					authState.token = token;
+				}
 			}
 		} else {
 			// No token, clear state
@@ -118,9 +155,20 @@ export async function initializeAuth() {
 		}
 	} catch (error) {
 		console.error('Error initializing auth:', error);
-		// Clear invalid state
-		removeAuthToken();
-		clearAuthState();
+		// If we have a token, try to restore from localStorage as fallback
+		const storedUser = getUserData();
+		const token = getAuthToken();
+		if (token && storedUser) {
+			console.log('initializeAuth - Exception occurred, restoring from localStorage as fallback');
+			authState.user = storedUser;
+			authState.isAuthenticated = true;
+			authState.emailVerified = storedUser.email_verified || false;
+			authState.token = token;
+		} else {
+			// Clear invalid state
+			removeAuthToken();
+			clearAuthState();
+		}
 	} finally {
 		authState.loading = false;
 		authState.initialized = true;
@@ -271,6 +319,17 @@ export async function checkAuth() {
 		return false;
 	}
 
+	// If we don't have user data in state but have token, restore from localStorage first
+	if (!authState.user && hasAuthToken()) {
+		const storedUser = getUserData();
+		if (storedUser) {
+			console.log('checkAuth - Restoring user from localStorage');
+			authState.user = storedUser;
+			authState.isAuthenticated = true;
+			authState.emailVerified = storedUser.email_verified || false;
+		}
+	}
+
 	authState.loading = true;
 	authState.error = null;
 
@@ -287,14 +346,32 @@ export async function checkAuth() {
 			setUserData(result.user);
 
 			return true;
-		} else {
+		} else if (result.status === 0) {
+			// Network error, keep current/stored state if present
+			console.log('checkAuth - Network error, keeping current state');
+			return authState.isAuthenticated;
+		} else if (result.status === 401 || result.status === 403) {
 			// Token is invalid
+			console.log('checkAuth - Token invalid, clearing state');
 			clearAuthState();
 			removeAuthToken();
 			return false;
+		} else {
+			// Other errors, keep current state
+			console.log('checkAuth - API error, keeping current state');
+			return authState.isAuthenticated;
 		}
 	} catch (error) {
 		console.error('Check auth error:', error);
+		// If network error, try to keep stored state
+		const storedUser = getUserData();
+		if (storedUser && hasAuthToken()) {
+			console.log('checkAuth - Exception occurred, keeping stored state');
+			authState.user = storedUser;
+			authState.isAuthenticated = true;
+			authState.emailVerified = storedUser.email_verified || false;
+			return true;
+		}
 		// Token is likely invalid
 		clearAuthState();
 		removeAuthToken();
