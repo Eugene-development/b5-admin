@@ -1,6 +1,8 @@
 import { gql, request } from 'graphql-request';
+import { gql, request } from 'graphql-request';
 import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
+import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
 // GraphQL queries and mutations
 const USERS_QUERY = gql`
@@ -61,7 +63,7 @@ async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQ
 			...authHeaders
 		};
 
-		const result = await request(import.meta.env.VITE_B5_API_URL, query, variables, headers);
+		const result = await request(GRAPHQL_ENDPOINT, query, variables, headers);
 
 		clearTimeout(timeoutId);
 		return result;

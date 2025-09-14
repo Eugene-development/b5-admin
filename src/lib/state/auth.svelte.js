@@ -163,11 +163,11 @@ export async function login(email, password, remember = false) {
 		console.log('🔐 Login API result:', result);
 
 		if (result.success) {
-			// Update auth state
-			authState.user = result.user;
-			authState.isAuthenticated = true;
+			// Update auth state - add safety checks
+			authState.user = result.user || null;
+			authState.isAuthenticated = !!result.user;
 			authState.emailVerified = result.user?.email_verified || false;
-			authState.token = result.token?.access_token || null;
+			authState.token = result.token?.access_token || result.token || null;
 
 			// Store token and user data
 			if (result.token) {

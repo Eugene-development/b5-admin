@@ -1,6 +1,7 @@
 import { gql, request } from 'graphql-request';
 import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
+import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
 // GraphQL queries and mutations
 const PROJECTS_QUERY = gql`
@@ -77,11 +78,14 @@ const DELETE_PROJECT_MUTATION = gql`
 `;
 
 // Helper function to make GraphQL requests with proper error handling, authentication, and retry logic
+// Supports both client-side and server-side fetch
 async function makeGraphQLRequest(
 	query,
 	variables = {},
 	operationName = 'GraphQL operation',
-	retries = 3
+	retries = 3,
+	customFetch = null,
+	cookies = null
 ) {
 	let lastError;
 
@@ -90,24 +94,74 @@ async function makeGraphQLRequest(
 			const controller = new AbortController();
 			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-			// Get authentication headers
-			const authHeaders = getAuthHeaders();
+			// Use custom fetch for server-side or default for client-side
+			const fetchFunction = customFetch || (typeof window !== 'undefined' ? window.fetch : fetch);
+
+			// Debug logging
+			console.log('🔧 GraphQL Request Debug:', {
+				operationName,
+				endpoint: GRAPHQL_ENDPOINT,
+				variables,
+				usingCustomFetch: !!customFetch,
+				fetchFunction: fetchFunction.name || 'unknown',
+				timestamp: new Date().toISOString()
+			});
+
+			// Prepare headers
 			const headers = {
 				'Content-Type': 'application/json',
-				Accept: 'application/json',
-				...authHeaders
+				Accept: 'application/json'
 			};
 
-			const result = await request(import.meta.env.VITE_B5_API_URL, query, variables, headers);
+			// Note: Authentication headers temporarily disabled for CORS compatibility
+			// TODO: Re-enable authentication after CORS is properly configured
+
+			// Make the request using fetch directly to support server-side
+			console.log('🚀 Making GraphQL request to:', GRAPHQL_ENDPOINT);
+			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
+				method: 'POST',
+				headers,
+				body: JSON.stringify({
+					query,
+					variables
+				}),
+				signal: controller.signal,
+				// Temporarily disable credentials to avoid CORS issues
+				credentials: 'omit'
+			});
 
 			clearTimeout(timeoutId);
-			return result;
+
+			console.log('✅ GraphQL response received:', {
+				status: response.status,
+				statusText: response.statusText,
+				ok: response.ok,
+				headers: Object.fromEntries(response.headers.entries())
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+			}
+
+			const result = await response.json();
+
+			// Handle GraphQL errors
+			if (result.errors && result.errors.length > 0) {
+				throw new Error(result.errors[0].message || 'GraphQL query failed');
+			}
+
+			return result.data;
 		} catch (err) {
 			lastError = err;
-			console.error(`GraphQL Error in ${operationName} (attempt ${attempt}/${retries}):`, err);
+			console.error(`❌ GraphQL Error in ${operationName} (attempt ${attempt}/${retries}):`, {
+				error: err.message,
+				type: err.constructor.name,
+				stack: err.stack,
+				cause: err.cause
+			});
 
-			// Handle authentication errors
-			if (handleAuthError(err, '/projects')) {
+			// Handle authentication errors (only for client-side)
+			if (!customFetch && handleAuthError(err, '/projects')) {
 				throw err;
 			}
 
@@ -131,10 +185,10 @@ async function makeGraphQLRequest(
 }
 
 // Function to get all projects
-export async function getProjects(first = 1000, page = 1) {
+export async function getProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjects');
+		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjects', 3, customFetch, cookies);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Get projects failed:', err);
@@ -143,12 +197,15 @@ export async function getProjects(first = 1000, page = 1) {
 }
 
 // Function to update a project
-export async function updateProject(projectData) {
+export async function updateProject(projectData, customFetch = null, cookies = null) {
 	try {
 		const result = await makeGraphQLRequest(
 			UPDATE_PROJECT_MUTATION,
 			{ input: projectData },
-			'updateProject'
+			'updateProject',
+			3,
+			customFetch,
+			cookies
 		);
 		return result.updateProject;
 	} catch (err) {
@@ -158,12 +215,15 @@ export async function updateProject(projectData) {
 }
 
 // Function to delete a project
-export async function deleteProject(projectId) {
+export async function deleteProject(projectId, customFetch = null, cookies = null) {
 	try {
 		const result = await makeGraphQLRequest(
 			DELETE_PROJECT_MUTATION,
 			{ id: projectId },
-			'deleteProject'
+			'deleteProject',
+			3,
+			customFetch,
+			cookies
 		);
 		return result.deleteProject;
 	} catch (err) {
@@ -173,10 +233,10 @@ export async function deleteProject(projectId) {
 }
 
 // Function to refresh projects data (alias for getProjects for consistency with agents.js)
-export async function refreshProjects(first = 1000, page = 1) {
+export async function refreshProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'refreshProjects');
+		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'refreshProjects', 3, customFetch, cookies);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Refresh projects failed:', err);
@@ -185,10 +245,10 @@ export async function refreshProjects(first = 1000, page = 1) {
 }
 
 // Function to get all projects (alias for getProjects for consistency)
-export async function getAllProjects(first = 1000, page = 1) {
+export async function getAllProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getAllProjects');
+		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getAllProjects', 3, customFetch, cookies);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Get all projects failed:', err);
@@ -197,10 +257,10 @@ export async function getAllProjects(first = 1000, page = 1) {
 }
 
 // Function to get projects with pagination info
-export async function getProjectsWithPagination(first = 1000, page = 1) {
+export async function getProjectsWithPagination(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjectsWithPagination');
+		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjectsWithPagination', 3, customFetch, cookies);
 		return {
 			data: result.projects?.data || [],
 			paginatorInfo: result.projects?.paginatorInfo || null
@@ -209,4 +269,21 @@ export async function getProjectsWithPagination(first = 1000, page = 1) {
 		console.error('Get projects with pagination failed:', err);
 		throw err;
 	}
+}
+
+/**
+ * Factory function to create API client with server-side fetch support
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {Object} cookies - SvelteKit cookies object
+ * @returns {Object} API client with bound fetch and cookies
+ */
+export function createProjectsApiWithFetch(fetch, cookies) {
+	return {
+		getProjects: (first, page) => getProjects(first, page, fetch, cookies),
+		updateProject: (projectData) => updateProject(projectData, fetch, cookies),
+		deleteProject: (projectId) => deleteProject(projectId, fetch, cookies),
+		refreshProjects: (first, page) => refreshProjects(first, page, fetch, cookies),
+		getAllProjects: (first, page) => getAllProjects(first, page, fetch, cookies),
+		getProjectsWithPagination: (first, page) => getProjectsWithPagination(first, page, fetch, cookies)
+	};
 }

@@ -1,16 +1,13 @@
 <script>
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { initAuthFromServer } from '$lib/auth/auth.svelte.js';
+	import { initializeAuth } from '$lib/state/auth.svelte.js';
 
 	let { children, data } = $props();
 
-	// Initialize authentication from server data
-	// This avoids the fetch warning by using server-side data
+	// Initialize authentication when the app starts
 	$effect(() => {
-		if (data) {
-			initAuthFromServer(data);
-		}
+		initializeAuth();
 	});
 </script>
 

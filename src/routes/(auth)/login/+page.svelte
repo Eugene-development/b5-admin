@@ -2,10 +2,9 @@
 	import {
 		login,
 		authState,
-		clearErrors,
-		setErrors,
-		clearErrorFields
-	} from '$lib/auth/auth.svelte.js';
+		clearError,
+		isLoading
+	} from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
@@ -57,12 +56,14 @@
 	 */
 	async function handleSubmit(event) {
 		event.preventDefault();
-		clearErrors();
+		clearError();
 		clientErrors = {};
 		if (!validateForm()) return;
 		try {
-			await login(email, password);
-			goto(returnUrl);
+			const success = await login(email, password, remember);
+			if (success) {
+				goto(returnUrl);
+			}
 		} catch (error) {
 			console.error('Login failed:', error);
 		}
@@ -77,7 +78,7 @@
 			delete newErrors[field];
 			clientErrors = newErrors;
 		}
-		clearErrorFields(field);
+		clearError();
 	}
 
 	/**
@@ -87,8 +88,12 @@
 		if (clientErrors[field] && clientErrors[field].length > 0) {
 			return clientErrors[field][0];
 		}
-		if (authState.errors[field] && authState.errors[field].length > 0) {
-			return authState.errors[field][0];
+		// Check for server errors - new auth system stores errors differently
+		if (field === 'email' && authState.loginError) {
+			return authState.loginError;
+		}
+		if (field === 'password' && authState.loginError) {
+			return authState.loginError;
 		}
 		return null;
 	}
@@ -155,11 +160,22 @@
 			<!-- Форма -->
 			<div class="space-y-6 p-8">
 				<!-- General error messages using ErrorDisplay component -->
-				<ErrorDisplay
-					errors={authState.errors}
-					showFirst={true}
-					className="general-error-display"
-				/>
+				{#if authState.error || authState.loginError}
+					<div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+						<div class="flex">
+							<div class="flex-shrink-0">
+								<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+								</svg>
+							</div>
+							<div class="ml-3">
+								<p class="text-sm text-red-800 dark:text-red-200">
+									{authState.error || authState.loginError}
+								</p>
+							</div>
+						</div>
+					</div>
+				{/if}
 
 				<form class="space-y-6" onsubmit={handleSubmit}>
 					<!-- Email поле -->
@@ -193,7 +209,7 @@
 								required
 								bind:value={email}
 								oninput={() => handleInputChange('email')}
-								disabled={authState.isLoading}
+								disabled={isLoading()}
 								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('email')}
 								class:focus:ring-red-500={getFieldError('email')}
@@ -201,12 +217,12 @@
 								placeholder="example@mail.ru"
 							/>
 						</div>
-						<!-- Field-specific errors using ErrorDisplay component -->
-						<ErrorDisplay
-							errors={{ ...clientErrors, ...authState.errors }}
-							field="email"
-							className="field-error"
-						/>
+						<!-- Field-specific errors -->
+						{#if getFieldError('email')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('email')}
+							</p>
+						{/if}
 					</div>
 
 					<!-- Password поле -->
@@ -243,7 +259,7 @@
 								required
 								bind:value={password}
 								oninput={() => handleInputChange('password')}
-								disabled={authState.isLoading}
+								disabled={isLoading()}
 								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('password')}
 								class:focus:ring-red-500={getFieldError('password')}
@@ -280,12 +296,12 @@
 								</svg>
 							</button>
 						</div>
-						<!-- Field-specific errors using ErrorDisplay component -->
-						<ErrorDisplay
-							errors={{ ...clientErrors, ...authState.errors }}
-							field="password"
-							className="field-error"
-						/>
+						<!-- Field-specific errors -->
+						{#if getFieldError('password')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('password')}
+							</p>
+						{/if}
 					</div>
 
 					<!-- Дополнительные опции -->
@@ -309,11 +325,11 @@
 					<!-- Кнопка входа -->
 					<button
 						type="submit"
-						disabled={authState.isLoading}
+						disabled={isLoading()}
 						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 					>
 						<div class="flex items-center justify-center space-x-2">
-							{#if authState.isLoading}
+							{#if isLoading()}
 								<svg
 									class="h-5 w-5 animate-spin text-white"
 									xmlns="http://www.w3.org/2000/svg"

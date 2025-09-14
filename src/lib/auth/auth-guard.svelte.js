@@ -5,7 +5,8 @@
 
 import { redirect } from '@sveltejs/kit';
 import { browser } from '$app/environment';
-import { authState, getUser, clearAuthState } from './auth.svelte.js';
+import { authState, getCurrentUserData } from '../state/auth.svelte.js';
+import { hasAuthToken, getUserData } from '../api/config.js';
 
 /**
  * Initialize authentication state on app startup
@@ -15,9 +16,20 @@ import { authState, getUser, clearAuthState } from './auth.svelte.js';
  * @returns {Promise<Object|null>} User data if authenticated, null otherwise
  */
 export async function initializeAuth() {
-	// Auth state is now initialized from server data
-	// Return current auth state without making fetch requests
-	return authState.user;
+	// Return current auth state or fallback to localStorage
+	if (authState.initialized) {
+		return authState.user;
+	}
+	
+	// Fallback to localStorage if auth state not initialized
+	const hasToken = hasAuthToken();
+	const storedUser = getUserData();
+	
+	if (hasToken && storedUser) {
+		return storedUser;
+	}
+	
+	return null;
 }
 
 /**
@@ -26,7 +38,15 @@ export async function initializeAuth() {
  * @returns {boolean} True if user is authenticated
  */
 export function isAuthenticated() {
-	return authState.isAuthenticated;
+	// First check if auth state is initialized and has auth status
+	if (authState.initialized) {
+		return authState.isAuthenticated;
+	}
+	
+	// Fallback to localStorage check if auth state not initialized
+	const hasToken = hasAuthToken();
+	const storedUser = getUserData();
+	return hasToken && storedUser;
 }
 
 /**
@@ -71,11 +91,22 @@ export function createAuthLoad(options = {}) {
 	const { redirectTo = '/login', requireAuth = true } = options;
 
 	return async ({ url, route }) => {
-		// Auth state is now initialized from server load function
-		// No need for client-side initialization
-
-		// Check authentication requirement
-		if (requireAuth && !authState.isAuthenticated) {
+		// Check authentication requirement with fallback to localStorage
+		let isAuth = false;
+		let userData = null;
+		
+		if (authState.initialized) {
+			isAuth = authState.isAuthenticated;
+			userData = authState.user;
+		} else {
+			// Fallback to localStorage check if auth state not initialized
+			const hasToken = hasAuthToken();
+			const storedUser = getUserData();
+			isAuth = hasToken && storedUser;
+			userData = storedUser;
+		}
+		
+		if (requireAuth && !isAuth) {
 			// Store the intended destination for post-login redirect
 			const returnTo = url.pathname + url.search;
 			const loginUrl = `${redirectTo}?returnTo=${encodeURIComponent(returnTo)}`;
@@ -84,8 +115,8 @@ export function createAuthLoad(options = {}) {
 
 		// Return user data for the route
 		return {
-			user: authState.user,
-			isAuthenticated: authState.isAuthenticated
+			user: userData,
+			isAuthenticated: isAuth
 		};
 	};
 }
@@ -102,11 +133,20 @@ export function createGuestLoad(options = {}) {
 	const { redirectTo = '/dashboard' } = options;
 
 	return async ({ url }) => {
-		// Auth state is now initialized from server load function
-		// No need for client-side initialization
+		// Check authentication with fallback to localStorage
+		let isAuth = false;
+		
+		if (authState.initialized) {
+			isAuth = authState.isAuthenticated;
+		} else {
+			// Fallback to localStorage check
+			const hasToken = hasAuthToken();
+			const storedUser = getUserData();
+			isAuth = hasToken && storedUser;
+		}
 
 		// Redirect authenticated users
-		if (authState.isAuthenticated) {
+		if (isAuth) {
 			throw redirect(302, redirectTo);
 		}
 
@@ -160,15 +200,24 @@ export async function authMiddleware({ event, resolve }) {
 export async function navigationGuard(pathname, options = {}) {
 	const { requireAuth = false, requireGuest = false } = options;
 
-	// Auth state is now initialized from server load function
-	// No need for client-side initialization
+	// Check authentication with fallback to localStorage
+	let isAuth = false;
+	
+	if (authState.initialized) {
+		isAuth = authState.isAuthenticated;
+	} else {
+		// Fallback to localStorage check
+		const hasToken = hasAuthToken();
+		const storedUser = getUserData();
+		isAuth = hasToken && storedUser;
+	}
 
 	// Check authentication requirements
-	if (requireAuth && !authState.isAuthenticated) {
+	if (requireAuth && !isAuth) {
 		return false;
 	}
 
-	if (requireGuest && authState.isAuthenticated) {
+	if (requireGuest && isAuth) {
 		return false;
 	}
 

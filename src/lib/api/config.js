@@ -3,9 +3,11 @@
  * Manages endpoints and settings for Laravel Sanctum integration
  */
 
+import { AUTH_API_URL } from '../config/api.js';
+
 // API Configuration
 export const API_CONFIG = {
-	baseUrl: import.meta.env.VITE_API_AUTH,
+	baseUrl: AUTH_API_URL,
 	timeout: 10000, // 10 seconds
 	endpoints: {
 		// Authentication endpoints

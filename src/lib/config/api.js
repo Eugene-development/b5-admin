@@ -58,6 +58,10 @@ function getApiConfig() {
 export const config = getApiConfig();
 export const { API_BASE_URL, AUTH_API_URL, FRONTEND_URL } = config;
 
+// GraphQL endpoint for convenience
+export const GRAPHQL_ENDPOINT = `${API_BASE_URL}/graphql`;
+export const AUTH_ENDPOINT = `${AUTH_API_URL}/api`;
+
 // Debug logging in development
 if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
 	console.log('🔧 API Config Debug:', {

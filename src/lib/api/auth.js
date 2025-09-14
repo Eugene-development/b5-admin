@@ -24,9 +24,9 @@ export async function loginUser(email, password, remember = false) {
 		console.log('🔐 Login API response:', response);
 		return {
 			success: true,
-			user: response.data.user || null,
-			token: response.data.token || null,
-			message: response.data.message || 'Login successful'
+			user: response.user || response.data?.user || null,
+			token: response.token || response.data?.token || null,
+			message: response.message || response.data?.message || 'Login successful'
 		};
 	} catch (error) {
 		// Handle specific authentication errors
@@ -67,9 +67,9 @@ export async function registerUser(userData) {
 
 		return {
 			success: true,
-			user: response.user || null,
-			token: response.token || null,
-			message: response.message || 'Registration successful'
+			user: response.user || response.data?.user || null,
+			token: response.token || response.data?.token || null,
+			message: response.message || response.data?.message || 'Registration successful'
 		};
 	} catch (error) {
 		// Handle specific registration errors
@@ -124,7 +124,7 @@ export async function getCurrentUser() {
 
 		return {
 			success: true,
-			user: response.user || response,
+			user: response.user || response.data?.user || response,
 			status: 200,
 			message: 'User data retrieved successfully'
 		};
