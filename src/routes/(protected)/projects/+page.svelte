@@ -216,7 +216,10 @@
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
@@ -365,7 +368,7 @@
 						</div>
 					{/if}
 
-					<ProjectsTable
+					<!-- <ProjectsTable
 						projects={filteredProjects}
 						isLoading={isActionLoading}
 						onEditProject={handleEditProject}
@@ -374,7 +377,7 @@
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
-					/>
+					/> -->
 				</main>
 			</div>
 		</ErrorBoundary>
