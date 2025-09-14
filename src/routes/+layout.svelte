@@ -18,5 +18,6 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-<!-- Render children directly since auth is initialized from server -->
-{@render children?.()}
+<div class="min-h-screen">
+	{@render children?.()}
+</div>

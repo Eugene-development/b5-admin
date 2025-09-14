@@ -11,22 +11,9 @@ export async function load({ fetch }) {
 		// Create API clients with SvelteKit fetch
 		const { auth, initCsrf } = createApiClients(fetch);
 
-		// Initialize CSRF token on server
-		await initCsrf();
-
-		// Check if user is authenticated
-		try {
-			const user = await auth.get('/api/user');
-			return {
-				user,
-				isAuthenticated: true
-			};
-		} catch (error) {
-			// User not authenticated or error occurred
-			if (error.status !== 401) {
-				console.log('Authentication check failed:', error.message);
-			}
-		}
+		// Skip server-side auth checks to prevent session creation
+		// Authentication will be handled client-side
+		console.log('🔧 Skipping server-side auth checks to prevent session creation');
 
 		return {
 			user: null,

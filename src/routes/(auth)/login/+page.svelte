@@ -105,7 +105,7 @@
 </svelte:head>
 
 <!-- Современная карточка авторизации -->
-<div class="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 p-4">
+<div class="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
 	<div class="relative">
 		<!-- Стеклянная морфизм карточка -->
 		<div
@@ -131,7 +131,12 @@
 						<div
 							class="inline-flex h-20 w-20 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
 						>
-							<svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg
+								class="h-10 w-10 text-white"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -150,7 +155,11 @@
 			<!-- Форма -->
 			<div class="space-y-6 p-8">
 				<!-- General error messages using ErrorDisplay component -->
-				<ErrorDisplay errors={authState.errors} showFirst={true} className="general-error-display" />
+				<ErrorDisplay
+					errors={authState.errors}
+					showFirst={true}
+					className="general-error-display"
+				/>
 
 				<form class="space-y-6" onsubmit={handleSubmit}>
 					<!-- Email поле -->
@@ -159,7 +168,9 @@
 							Email адрес
 						</label>
 						<div class="group relative">
-							<div class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
 								<svg
 									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-indigo-500"
 									fill="none"
@@ -207,7 +218,9 @@
 							Пароль
 						</label>
 						<div class="group relative">
-							<div class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
 								<svg
 									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-indigo-500"
 									fill="none"
@@ -353,4 +366,3 @@
 		</div>
 	</div>
 </div>
-
