@@ -657,7 +657,7 @@
 	</div>
 </div>
 
-<div class="lg:pl-72">
+<div class="h-screen bg-gray-900 lg:pl-72">
 	<div class="sticky top-0 z-40 lg:mx-auto lg:max-w-full">
 		<div
 			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
@@ -805,7 +805,7 @@
 		</div>
 	</div>
 
-	<main class="py-4">
+	<main class="bg-gray-900 py-4">
 		<div class="mx-auto px-4 sm:px-6 lg:px-8">
 			{@render children?.()}
 		</div>

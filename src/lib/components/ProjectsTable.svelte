@@ -186,7 +186,7 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
 			{#if isLoading}
 				<tr>
 					<td colspan="7" class="px-6 py-4 text-center" role="cell">

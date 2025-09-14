@@ -1,10 +1,5 @@
 <script>
-	import {
-		login,
-		authState,
-		clearError,
-		isLoading
-	} from '$lib/state/auth.svelte.js';
+	import { login, authState, clearError, isLoading } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
@@ -105,13 +100,13 @@
 </script>
 
 <svelte:head>
-	<title>Вход в систему - B5 Admin</title>
+	<title>Вход в систему</title>
 	<meta name="description" content="Войдите в административную панель" />
 </svelte:head>
 
 <!-- Современная карточка авторизации -->
-<div class="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-	<div class="relative">
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+	<div class="relative w-full max-w-2xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div
 			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-900/80"
@@ -153,19 +148,23 @@
 					</div>
 
 					<h1 class="mb-2 text-3xl font-bold text-white">BONUS.BAND</h1>
-					<p class="text-lg text-white/90">Вход в систему управления агентами</p>
+					<p class="text-lg text-white/90">Вход в систему управления</p>
 				</div>
 			</div>
 
 			<!-- Форма -->
-			<div class="space-y-6 p-8">
+			<div class="space-y-6 p-8 md:p-12">
 				<!-- General error messages using ErrorDisplay component -->
 				{#if authState.error || authState.loginError}
 					<div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
 						<div class="flex">
 							<div class="flex-shrink-0">
 								<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+									<path
+										fill-rule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+										clip-rule="evenodd"
+									/>
 								</svg>
 							</div>
 							<div class="ml-3">

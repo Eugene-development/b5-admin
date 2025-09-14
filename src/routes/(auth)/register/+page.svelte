@@ -1,6 +1,7 @@
 <script>
-	import { register, authState, clearErrors, setErrors } from '$lib/auth/auth.svelte.js';
+	import { register, authState, clearError, isLoading } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
 
 	// Form state
@@ -8,12 +9,13 @@
 	let email = $state('');
 	let password = $state('');
 	let passwordConfirmation = $state('');
+	let remember = $state(false);
 	let clientErrors = $state({});
 	let showPassword = $state(false);
 	let showPasswordConfirmation = $state(false);
 
-	// Props
-	let redirectTo = '/dashboard';
+	// Get return URL from query parameters for redirect after registration
+	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/dashboard');
 
 	/**
 	 * Validate name field
@@ -74,12 +76,14 @@
 	 */
 	async function handleSubmit(event) {
 		event.preventDefault();
-		clearErrors();
+		clearError();
 		clientErrors = {};
 		if (!validateForm()) return;
 		try {
-			await register(name, email, password, passwordConfirmation);
-			goto(redirectTo);
+			const success = await register(name, email, password, passwordConfirmation);
+			if (success) {
+				goto(returnUrl);
+			}
 		} catch (error) {
 			console.error('Registration failed:', error);
 		}
@@ -88,30 +92,13 @@
 	/**
 	 * Handle input changes to clear field-specific errors
 	 */
-	async function handleInputChange(field) {
+	function handleInputChange(field) {
 		if (clientErrors[field]) {
 			const newErrors = { ...clientErrors };
 			delete newErrors[field];
 			clientErrors = newErrors;
 		}
-		if (authState.errors[field]) {
-			const newErrors = { ...authState.errors };
-			delete newErrors[field];
-			clearErrors();
-			if (Object.keys(newErrors).length > 0) {
-				setErrors(newErrors);
-			}
-		}
-		if (field === 'password' && passwordConfirmation) {
-			const confirmationError = validatePasswordConfirmation(password, passwordConfirmation);
-			if (confirmationError) {
-				clientErrors = { ...clientErrors, password_confirmation: [confirmationError] };
-			} else {
-				const newErrors = { ...clientErrors };
-				delete newErrors.password_confirmation;
-				clientErrors = newErrors;
-			}
-		}
+		clearError();
 	}
 
 	/**
@@ -121,8 +108,18 @@
 		if (clientErrors[field] && clientErrors[field].length > 0) {
 			return clientErrors[field][0];
 		}
-		if (authState.errors[field] && authState.errors[field].length > 0) {
-			return authState.errors[field][0];
+		// Check for server errors - new auth system stores errors differently
+		if (field === 'name' && authState.registerError) {
+			return authState.registerError;
+		}
+		if (field === 'email' && authState.registerError) {
+			return authState.registerError;
+		}
+		if (field === 'password' && authState.registerError) {
+			return authState.registerError;
+		}
+		if (field === 'password_confirmation' && authState.registerError) {
+			return authState.registerError;
 		}
 		return null;
 	}
@@ -139,13 +136,13 @@
 </script>
 
 <svelte:head>
-	<title>Регистрация - B5 Admin</title>
+	<title>Регистрация в системе</title>
 	<meta name="description" content="Создайте новый аккаунт в административной панели" />
 </svelte:head>
 
 <!-- Современная карточка регистрации -->
-<div class="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-	<div class="relative">
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+	<div class="relative w-full max-w-2xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div
 			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-900/80"
@@ -192,13 +189,28 @@
 			</div>
 
 			<!-- Форма регистрации -->
-			<div class="space-y-6 p-8">
-				<!-- General error messages using ErrorDisplay component -->
-				<ErrorDisplay
-					errors={authState.errors}
-					showFirst={true}
-					className="general-error-display"
-				/>
+			<div class="space-y-6 p-8 md:p-12">
+				<!-- General error messages -->
+				{#if authState.error || authState.registerError}
+					<div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+						<div class="flex">
+							<div class="flex-shrink-0">
+								<svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+									<path
+										fill-rule="evenodd"
+										d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							</div>
+							<div class="ml-3">
+								<p class="text-sm text-red-800 dark:text-red-200">
+									{authState.error || authState.registerError}
+								</p>
+							</div>
+						</div>
+					</div>
+				{/if}
 
 				<form class="space-y-6" onsubmit={handleSubmit}>
 					<!-- Name поле -->
@@ -232,7 +244,7 @@
 								required
 								bind:value={name}
 								oninput={() => handleInputChange('name')}
-								disabled={authState.isLoading}
+								disabled={isLoading()}
 								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('name')}
 								class:focus:ring-red-500={getFieldError('name')}
@@ -240,12 +252,12 @@
 								placeholder="Введите ваше полное имя"
 							/>
 						</div>
-						<!-- Field-specific errors using ErrorDisplay component -->
-						<ErrorDisplay
-							errors={{ ...clientErrors, ...authState.errors }}
-							field="name"
-							className="field-error"
-						/>
+						<!-- Field-specific errors -->
+						{#if getFieldError('name')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('name')}
+							</p>
+						{/if}
 					</div>
 
 					<!-- Email поле -->
@@ -279,7 +291,7 @@
 								required
 								bind:value={email}
 								oninput={() => handleInputChange('email')}
-								disabled={authState.isLoading}
+								disabled={isLoading()}
 								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('email')}
 								class:focus:ring-red-500={getFieldError('email')}
@@ -287,207 +299,214 @@
 								placeholder="example@mail.ru"
 							/>
 						</div>
-						<!-- Password поле -->
-						<div class="space-y-2">
-							<label
-								for="password"
-								class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-							>
-								Пароль
-							</label>
-							<div class="group relative">
-								<div
-									class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
-								>
-									<svg
-										class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-										/>
-									</svg>
-								</div>
-								<input
-									id="password"
-									name="password"
-									type={showPassword ? 'text' : 'password'}
-									autocomplete="new-password"
-									required
-									bind:value={password}
-									oninput={() => handleInputChange('password')}
-									disabled={authState.isLoading}
-									class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-									class:border-red-300={getFieldError('password')}
-									class:focus:ring-red-500={getFieldError('password')}
-									class:focus:border-red-500={getFieldError('password')}
-									placeholder="Минимум 8 символов"
-								/>
-								<button
-									type="button"
-									onclick={togglePasswordVisibility}
-									class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
-								>
-									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										{#if showPassword}
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-											/>
-										{:else}
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-											/>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-											/>
-										{/if}
-									</svg>
-								</button>
-							</div>
-							<!-- Field-specific errors using ErrorDisplay component -->
-							<ErrorDisplay
-								errors={{ ...clientErrors, ...authState.errors }}
-								field="password"
-								className="field-error"
-							/>
-						</div>
-
-						<!-- Password Confirmation поле -->
-						<div class="space-y-2">
-							<label
-								for="password_confirmation"
-								class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-							>
-								Подтверждение пароля
-							</label>
-							<div class="group relative">
-								<div
-									class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
-								>
-									<svg
-										class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
-										fill="none"
-										stroke="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-										/>
-									</svg>
-								</div>
-								<input
-									id="password_confirmation"
-									name="password_confirmation"
-									type={showPasswordConfirmation ? 'text' : 'password'}
-									autocomplete="new-password"
-									required
-									bind:value={passwordConfirmation}
-									oninput={() => handleInputChange('password_confirmation')}
-									disabled={authState.isLoading}
-									class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-									class:border-red-300={getFieldError('password_confirmation')}
-									class:focus:ring-red-500={getFieldError('password_confirmation')}
-									class:focus:border-red-500={getFieldError('password_confirmation')}
-									placeholder="Повторите пароль"
-								/>
-								<button
-									type="button"
-									onclick={togglePasswordConfirmationVisibility}
-									class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
-								>
-									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										{#if showPasswordConfirmation}
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-											/>
-										{:else}
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-											/>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-											/>
-										{/if}
-									</svg>
-								</button>
-							</div>
-							<!-- Field-specific errors using ErrorDisplay component -->
-							<ErrorDisplay
-								errors={{ ...clientErrors, ...authState.errors }}
-								field="password_confirmation"
-								className="field-error"
-							/>
-						</div>
-
-						<!-- Кнопка регистрации -->
-						<button
-							type="submit"
-							disabled={authState.isLoading}
-							class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-						>
-							<div class="flex items-center justify-center space-x-2">
-								{#if authState.isLoading}
-									<svg
-										class="h-5 w-5 animate-spin text-white"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-									<span>Создание аккаунта...</span>
-								{:else}
-									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-										/>
-									</svg>
-									<span>Создать аккаунт</span>
-								{/if}
-							</div>
-						</button>
+						<!-- Field-specific errors -->
+						{#if getFieldError('email')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('email')}
+							</p>
+						{/if}
 					</div>
+
+					<!-- Password поле -->
+					<div class="space-y-2">
+						<label
+							for="password"
+							class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+						>
+							Пароль
+						</label>
+						<div class="group relative">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
+								<svg
+									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+									/>
+								</svg>
+							</div>
+							<input
+								id="password"
+								name="password"
+								type={showPassword ? 'text' : 'password'}
+								autocomplete="new-password"
+								required
+								bind:value={password}
+								oninput={() => handleInputChange('password')}
+								disabled={isLoading()}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class:border-red-300={getFieldError('password')}
+								class:focus:ring-red-500={getFieldError('password')}
+								class:focus:border-red-500={getFieldError('password')}
+								placeholder="Минимум 8 символов"
+							/>
+							<button
+								type="button"
+								onclick={togglePasswordVisibility}
+								class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+							>
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									{#if showPassword}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+										/>
+									{:else}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+										/>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+										/>
+									{/if}
+								</svg>
+							</button>
+						</div>
+						<!-- Field-specific errors -->
+						{#if getFieldError('password')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('password')}
+							</p>
+						{/if}
+					</div>
+
+					<!-- Password Confirmation поле -->
+					<div class="space-y-2">
+						<label
+							for="password_confirmation"
+							class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+						>
+							Подтверждение пароля
+						</label>
+						<div class="group relative">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
+								<svg
+									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+									/>
+								</svg>
+							</div>
+							<input
+								id="password_confirmation"
+								name="password_confirmation"
+								type={showPasswordConfirmation ? 'text' : 'password'}
+								autocomplete="new-password"
+								required
+								bind:value={passwordConfirmation}
+								oninput={() => handleInputChange('password_confirmation')}
+								disabled={isLoading()}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class:border-red-300={getFieldError('password_confirmation')}
+								class:focus:ring-red-500={getFieldError('password_confirmation')}
+								class:focus:border-red-500={getFieldError('password_confirmation')}
+								placeholder="Повторите пароль"
+							/>
+							<button
+								type="button"
+								onclick={togglePasswordConfirmationVisibility}
+								class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+							>
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									{#if showPasswordConfirmation}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+										/>
+									{:else}
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+										/>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+										/>
+									{/if}
+								</svg>
+							</button>
+						</div>
+						<!-- Field-specific errors -->
+						{#if getFieldError('password_confirmation')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('password_confirmation')}
+							</p>
+						{/if}
+					</div>
+
+					<!-- Кнопка регистрации -->
+					<button
+						type="submit"
+						disabled={isLoading()}
+						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+					>
+						<div class="flex items-center justify-center space-x-2">
+							{#if isLoading()}
+								<svg
+									class="h-5 w-5 animate-spin text-white"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
+								</svg>
+								<span>Создание аккаунта...</span>
+							{:else}
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+									/>
+								</svg>
+								<span>Создать аккаунт</span>
+							{/if}
+						</div>
+					</button>
 				</form>
 
 				<!-- Ссылка на вход -->
