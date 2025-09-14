@@ -1,0 +1,131 @@
+import { gql, request } from 'graphql-request';
+import { getAuthHeaders } from './config.js';
+import { handleAuthError } from '$lib/utils/authErrorHandler.js';
+
+// GraphQL queries and mutations
+const USERS_QUERY = gql`
+	{
+		users {
+			id
+			city
+			name
+			email
+			email_verified_at
+			created_at
+			updated_at
+			status
+		}
+	}
+`;
+
+const BAN_USER_MUTATION = gql`
+	mutation BanUser($id: ID!) {
+		banUser(id: $id) {
+			id
+			status
+		}
+	}
+`;
+
+const UNBAN_USER_MUTATION = gql`
+	mutation UnbanUser($id: ID!) {
+		unbanUser(id: $id) {
+			id
+			status
+		}
+	}
+`;
+
+const DELETE_USER_MUTATION = gql`
+	mutation DeleteUser($id: ID!) {
+		deleteUser(id: $id) {
+			id
+			name
+			email
+			deleted
+		}
+	}
+`;
+
+// Helper function to make GraphQL requests with proper error handling and authentication
+async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQL operation') {
+	try {
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
+		// Get authentication headers
+		const authHeaders = getAuthHeaders();
+		const headers = {
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
+			...authHeaders
+		};
+
+		const result = await request(import.meta.env.VITE_B5_API_URL, query, variables, headers);
+
+		clearTimeout(timeoutId);
+		return result;
+	} catch (err) {
+		console.error(`GraphQL Error in ${operationName}:`, err);
+		
+		// Handle authentication errors
+		handleAuthError(err, '/agents');
+		
+		throw err;
+	}
+}
+
+// Function to ban a user
+export async function banUser(agentId) {
+	try {
+		const result = await makeGraphQLRequest(BAN_USER_MUTATION, { id: agentId }, 'banUser');
+		return result.banUser;
+	} catch (err) {
+		console.error('Ban request failed:', err);
+		throw err;
+	}
+}
+
+// Function to unban a user
+export async function unbanUser(agentId) {
+	try {
+		const result = await makeGraphQLRequest(UNBAN_USER_MUTATION, { id: agentId }, 'unbanUser');
+		return result.unbanUser;
+	} catch (err) {
+		console.error('Unban request failed:', err);
+		throw err;
+	}
+}
+
+// Function to delete a user
+export async function deleteUser(agentId) {
+	try {
+		const result = await makeGraphQLRequest(DELETE_USER_MUTATION, { id: agentId }, 'deleteUser');
+		return result.deleteUser;
+	} catch (err) {
+		console.error('Delete request failed:', err);
+		throw err;
+	}
+}
+
+// Function to refresh users data
+export async function refreshUsers() {
+	try {
+		const result = await makeGraphQLRequest(USERS_QUERY, {}, 'refreshUsers');
+		return result.users || [];
+	} catch (err) {
+		console.error('Refresh users failed:', err);
+		throw err;
+	}
+}
+
+// Function to get all users (for initial load)
+export async function getAllUsers() {
+	try {
+		const result = await makeGraphQLRequest(USERS_QUERY, {}, 'getAllUsers');
+		return result.users || [];
+	} catch (err) {
+		console.error('Get all users failed:', err);
+		throw err;
+	}
+}
