@@ -3,6 +3,8 @@ import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
+
+
 // GraphQL queries and mutations
 const PROJECTS_QUERY = gql`
 	query GetProjects($first: Int!, $page: Int) {
@@ -95,7 +97,7 @@ async function makeGraphQLRequest(
 			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
 			// Use custom fetch for server-side or default for client-side
-			const fetchFunction = customFetch || (typeof window !== 'undefined' ? window.fetch : fetch);
+			const fetchFunction = customFetch || (typeof window !== 'undefined' ? window.fetch : globalThis.fetch);
 
 			// Debug logging
 			console.log('🔧 GraphQL Request Debug:', {

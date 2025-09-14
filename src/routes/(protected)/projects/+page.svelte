@@ -368,7 +368,7 @@
 						</div>
 					{/if}
 
-					<!-- <ProjectsTable
+					<ProjectsTable
 						projects={filteredProjects}
 						isLoading={isActionLoading}
 						onEditProject={handleEditProject}
@@ -377,7 +377,7 @@
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
-					/> -->
+					/>
 				</main>
 			</div>
 		</ErrorBoundary>

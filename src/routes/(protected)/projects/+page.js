@@ -6,7 +6,7 @@
  */
 
 import { getProjectsWithPagination } from '$lib/api/projects.js';
-import { authState } from '$lib/auth/auth.svelte.js';
+import { authState } from '$lib/state/auth.svelte.js';
 import { browser } from '$app/environment';
 
 /**
@@ -187,10 +187,10 @@ export async function load({ fetch }) {
 			setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 seconds
 		});
 
-		// Load projects data - use window.fetch for client-side loading
-		console.log('🔍 About to call getProjectsWithPagination without custom fetch');
+		// Load projects data - use SvelteKit fetch for proper SSR support
+		console.log('🔍 About to call getProjectsWithPagination with SvelteKit fetch');
 		const projectsResult = await Promise.race([
-			getProjectsWithPagination(1000, 1), // Use default fetch (no custom fetch)
+			getProjectsWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
 			timeoutPromise
 		]);
 		console.log('✅ getProjectsWithPagination completed successfully:', projectsResult);
