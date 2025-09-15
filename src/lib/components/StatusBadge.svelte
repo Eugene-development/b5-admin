@@ -21,7 +21,7 @@
 			case 'unverified':
 				return '-';
 			case 'banned':
-				return 'Блок';
+				return 'Забанен';
 			default:
 				return status;
 		}
