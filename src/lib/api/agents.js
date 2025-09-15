@@ -64,6 +64,8 @@ async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQ
 
 		// Use custom fetch if provided (for SvelteKit SSR support)
 		const requestConfig = customFetch ? { fetch: customFetch } : {};
+		
+		// Use the configured GraphQL endpoint (now with status field support)
 		const result = await request(GRAPHQL_ENDPOINT, query, variables, headers, requestConfig);
 
 		clearTimeout(timeoutId);
