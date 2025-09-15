@@ -172,11 +172,13 @@
 <!-- Show loading spinner while initializing or during auth operations -->
 {#if !authState.initialized || isLoading() || isInitializing}
 	<div class="flex min-h-screen items-center justify-center">
-		<LoadingSpinner />
+		<!-- <LoadingSpinner /> -->
 	</div>
 	<!-- Show protected content if access is granted -->
 {:else if hasAccess}
-	{@render children()}
+	<div class="animate-fade">
+		{@render children()}
+	</div>
 	<!-- Show nothing while redirecting (component will redirect) -->
 {:else}
 	<div class="flex min-h-screen items-center justify-center">
