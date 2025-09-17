@@ -243,11 +243,13 @@
 
 <!-- Modal backdrop and container -->
 {#if isOpen && project}
-	<div class="fixed inset-0 z-50 overflow-y-auto">
+	<div
+		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Backdrop -->
 			<div
-				class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity dark:bg-gray-900 dark:bg-opacity-75"
+				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
 				onclick={handleBackdropClick}
 				aria-hidden="true"
 			></div>

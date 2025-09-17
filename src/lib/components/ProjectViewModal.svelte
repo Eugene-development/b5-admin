@@ -128,7 +128,7 @@
 
 {#if isOpen && project}
 	<div
-		class="animate-fade animate-duration-50 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
 		bind:this={modalElement}
 		onclick={handleBackdropClick}
 		onkeydown={handleBackdropKeydown}
