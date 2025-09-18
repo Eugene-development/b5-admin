@@ -31,7 +31,7 @@
 	<div class="mx-auto max-w-4xl">
 		<div class="rounded-lg bg-white p-8 shadow-lg">
 			<div class="mb-8 text-center">
-				<h1 class="mb-4 text-4xl font-bold text-gray-900">Test Page</h1>
+				<h1 class="mb-4 text-4xl font-bold text-gray-900">Test-2 Page</h1>
 				<p class="text-lg text-gray-600">
 					This page is only accessible from admin.bonus.band domain
 				</p>

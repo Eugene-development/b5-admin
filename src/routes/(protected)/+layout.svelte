@@ -12,11 +12,15 @@
 		isAuthenticated,
 		getCurrentUserData
 	} from '$lib/state/auth.svelte.js';
+	import { shouldShowNavItem, getNavigationVisibility } from '$lib/utils/domainAccess.svelte.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
 	let { children } = $props();
+
+	// Get navigation visibility reactively
+	const navigationVisibility = $derived(getNavigationVisibility());
 
 	// Function to check if a route is active
 	function isActiveRoute(route) {
@@ -458,19 +462,36 @@
 			<ul role="list" class="flex flex-1 flex-col gap-y-7">
 				<li>
 					<ul role="list" class="-mx-2 space-y-1">
-						<li>
-							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-							<button
-								type="button"
-								class={getNavClasses('/test')}
-								onclick={() => handleMobileNavigation('/test')}
-							>
-								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
-									<circle cx="12" cy="12" r="3" />
-								</svg>
-								test
-							</button>
-						</li>
+						{#if navigationVisibility.showTest}
+							<li>
+								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
+								<button
+									type="button"
+									class={getNavClasses('/test')}
+									onclick={() => handleMobileNavigation('/test')}
+								>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/test')}>
+										<circle cx="12" cy="12" r="3" />
+									</svg>
+									test
+								</button>
+							</li>
+						{/if}
+						{#if navigationVisibility.showTest2}
+							<li>
+								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
+								<button
+									type="button"
+									class={getNavClasses('/test2')}
+									onclick={() => handleMobileNavigation('/test2')}
+								>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/test2')}>
+										<circle cx="12" cy="12" r="3" />
+									</svg>
+									test2
+								</button>
+							</li>
+						{/if}
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 							<a href="/dashboard" class={getNavClasses('/dashboard')}>

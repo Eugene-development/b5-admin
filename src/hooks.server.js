@@ -4,7 +4,6 @@
  */
 
 import { authMiddleware } from '$lib/auth/auth-guard.svelte.js';
-import { error } from '@sveltejs/kit';
 
 /**
  * Check if the current domain is allowed to access a specific route
@@ -14,27 +13,17 @@ import { error } from '@sveltejs/kit';
  */
 function isDomainAllowed(hostname, pathname) {
 	// Define routes that require admin domain access
-	const adminOnlyRoutes = ['/test'];
-
+	const adminOnlyRoutes = ['/test', '/test2'];
+	
 	// Check if the current route requires admin domain
 	const requiresAdminDomain = adminOnlyRoutes.some((route) => pathname.startsWith(route));
-
-	console.log(`🔍 Route requires admin domain: ${requiresAdminDomain}`);
-
+	
 	if (requiresAdminDomain) {
 		// Only allow admin.bonus.band for admin-only routes
 		// Also allow localhost for development
-		const isAdminDomain = hostname === 'admin.bonus.band';
-		const isLocalhost = hostname.startsWith('localhost');
-		const isLocalIP = hostname.startsWith('127.0.0.1');
-
-		console.log(`🔍 isAdminDomain: ${isAdminDomain}`);
-		console.log(`🔍 isLocalhost: ${isLocalhost}`);
-		console.log(`🔍 isLocalIP: ${isLocalIP}`);
-
-		return isAdminDomain || isLocalhost || isLocalIP;
+		return hostname === 'admin.bonus.band' || hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
 	}
-
+	
 	// All other routes are accessible from any domain
 	return true;
 }
@@ -49,17 +38,9 @@ export async function handle({ event, resolve }) {
 	const { url } = event;
 	const hostname = url.hostname;
 	const pathname = url.pathname;
-
-	// Debug logging
-	console.log(`🔍 Domain Check - Hostname: ${hostname}, Pathname: ${pathname}`);
-	console.log(`🔍 Headers Host: ${event.request.headers.get('host')}`);
-	console.log(`🔍 URL toString: ${url.toString()}`);
-
-	const domainAllowed = isDomainAllowed(hostname, pathname);
-	console.log(`🔍 Domain allowed: ${domainAllowed}`);
-
+	
 	// Check domain access control first
-	if (!domainAllowed) {
+	if (!isDomainAllowed(hostname, pathname)) {
 		// Return 403 Forbidden for unauthorized domain access
 		return new Response(
 			`<!DOCTYPE html>
@@ -78,7 +59,7 @@ export async function handle({ event, resolve }) {
 </head>
 <body>
 	<div class="container">
-		<h1>🚫 Доступ запрещен</h1>
+		<h1>🚫 Access Denied</h1>
 		<p>This page is only accessible from the admin domain.</p>
 		<div class="domain-info">
 			<p><strong>Current domain:</strong> ${hostname}</p>
@@ -96,7 +77,7 @@ export async function handle({ event, resolve }) {
 			}
 		);
 	}
-
+	
 	// Apply authentication middleware
 	return await authMiddleware({ event, resolve });
 }

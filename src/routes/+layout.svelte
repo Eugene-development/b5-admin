@@ -2,12 +2,14 @@
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import { initializeAuth } from '$lib/state/auth.svelte.js';
+	import { initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 
 	let { children, data } = $props();
 
-	// Initialize authentication when the app starts
+	// Initialize authentication and domain detection when the app starts
 	$effect(() => {
 		initializeAuth();
+		initializeDomainDetection();
 	});
 </script>
 
