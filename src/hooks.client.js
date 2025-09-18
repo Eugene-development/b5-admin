@@ -32,7 +32,6 @@ export async function handleError({ error, event }) {
 
 /**
  * Handle client-side navigation with authentication checks
- * Requirements: 3.4, 4.3, 5.1
  */
 export async function beforeNavigate({ from, to, cancel }) {
 	// Skip navigation checks for external URLs or same page
