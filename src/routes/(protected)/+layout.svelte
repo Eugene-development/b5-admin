@@ -460,6 +460,19 @@
 					<ul role="list" class="-mx-2 space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
+							<button
+								type="button"
+								class={getNavClasses('/test')}
+								onclick={() => handleMobileNavigation('/test')}
+							>
+								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
+									<circle cx="12" cy="12" r="3" />
+								</svg>
+								test
+							</button>
+						</li>
+						<li>
+							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 							<a href="/dashboard" class={getNavClasses('/dashboard')}>
 								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
 									<circle cx="12" cy="12" r="3" />
