@@ -7,6 +7,7 @@
 	// Form state
 	let name = $state('');
 	let email = $state('');
+	let phone = $state('');
 	let password = $state('');
 	let passwordConfirmation = $state('');
 	let remember = $state(false);
@@ -55,6 +56,16 @@
 	}
 
 	/**
+	 * Validate phone field (optional)
+	 */
+	function validatePhone(phone) {
+		if (!phone) return null; // Phone is optional
+		const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,20}$/;
+		if (!phoneRegex.test(phone)) return 'Please enter a valid phone number';
+		return null;
+	}
+
+	/**
 	 * Validate form fields
 	 */
 	function validateForm() {
@@ -63,6 +74,8 @@
 		if (nameError) errors.name = [nameError];
 		const emailError = validateEmail(email);
 		if (emailError) errors.email = [emailError];
+		const phoneError = validatePhone(phone);
+		if (phoneError) errors.phone = [phoneError];
 		const passwordError = validatePassword(password);
 		if (passwordError) errors.password = [passwordError];
 		const passwordConfirmationError = validatePasswordConfirmation(password, passwordConfirmation);
@@ -80,7 +93,13 @@
 		clientErrors = {};
 		if (!validateForm()) return;
 		try {
-			const success = await register(name, email, password, passwordConfirmation);
+			const success = await register({
+				name,
+				email,
+				phone,
+				password,
+				password_confirmation: passwordConfirmation
+			});
 			if (success) {
 				goto(returnUrl);
 			}
@@ -113,6 +132,9 @@
 			return authState.registerError;
 		}
 		if (field === 'email' && authState.registerError) {
+			return authState.registerError;
+		}
+		if (field === 'phone' && authState.registerError) {
 			return authState.registerError;
 		}
 		if (field === 'password' && authState.registerError) {
@@ -303,6 +325,52 @@
 						{#if getFieldError('email')}
 							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
 								{getFieldError('email')}
+							</p>
+						{/if}
+					</div>
+
+					<!-- Phone поле -->
+					<div class="space-y-2">
+						<label for="phone" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+							Телефон (необязательно)
+						</label>
+						<div class="group relative">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
+								<svg
+									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+									/>
+								</svg>
+							</div>
+							<input
+								id="phone"
+								name="phone"
+								type="tel"
+								autocomplete="tel"
+								bind:value={phone}
+								oninput={() => handleInputChange('phone')}
+								disabled={isLoading()}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class:border-red-300={getFieldError('phone')}
+								class:focus:ring-red-500={getFieldError('phone')}
+								class:focus:border-red-500={getFieldError('phone')}
+								placeholder="+7 (900) 123-45-67"
+							/>
+						</div>
+						<!-- Field-specific errors -->
+						{#if getFieldError('phone')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('phone')}
 							</p>
 						{/if}
 					</div>

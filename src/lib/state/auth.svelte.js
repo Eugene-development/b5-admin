@@ -199,6 +199,7 @@ export async function login(email, password, remember = false) {
  * @param {Object} userData - User registration data
  * @param {string} userData.name - User name
  * @param {string} userData.email - User email
+ * @param {string} userData.phone - User phone (optional)
  * @param {string} userData.password - User password
  * @param {string} userData.password_confirmation - Password confirmation
  * @param {string} userData.city - User city
