@@ -187,14 +187,9 @@
 					<!-- Логотип -->
 					<div class="mb-6">
 						<div
-							class="inline-flex h-20 w-20 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
+							class="inline-flex h-12 w-14 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
 						>
-							<svg
-								class="h-10 w-10 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+							<svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -205,8 +200,8 @@
 						</div>
 					</div>
 
-					<h1 class="mb-2 text-3xl font-bold text-white">BONUS.BAND</h1>
-					<p class="text-lg text-white/90">Создание нового аккаунта</p>
+					<h1 class="mb-2 text-4xl font-bold text-white">Регистрация</h1>
+					<!-- <p class="text-lg text-white/90">Создание нового аккаунта</p> -->
 				</div>
 			</div>
 
@@ -236,7 +231,7 @@
 
 				<form class="space-y-6" onsubmit={handleSubmit}>
 					<!-- Name поле -->
-					<div class="space-y-2">
+					<div class="space-y-1.5">
 						<label for="name" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 							Полное имя
 						</label>
@@ -267,7 +262,7 @@
 								bind:value={name}
 								oninput={() => handleInputChange('name')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('name')}
 								class:focus:ring-red-500={getFieldError('name')}
 								class:focus:border-red-500={getFieldError('name')}
@@ -283,7 +278,7 @@
 					</div>
 
 					<!-- Email поле -->
-					<div class="space-y-2">
+					<div class="space-y-1">
 						<label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 							Email адрес
 						</label>
@@ -314,7 +309,7 @@
 								bind:value={email}
 								oninput={() => handleInputChange('email')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('email')}
 								class:focus:ring-red-500={getFieldError('email')}
 								class:focus:border-red-500={getFieldError('email')}
@@ -330,7 +325,7 @@
 					</div>
 
 					<!-- Phone поле -->
-					<div class="space-y-2">
+					<div class="space-y-1">
 						<label for="phone" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 							Телефон (необязательно)
 						</label>
@@ -360,7 +355,7 @@
 								bind:value={phone}
 								oninput={() => handleInputChange('phone')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('phone')}
 								class:focus:ring-red-500={getFieldError('phone')}
 								class:focus:border-red-500={getFieldError('phone')}
@@ -376,7 +371,7 @@
 					</div>
 
 					<!-- Password поле -->
-					<div class="space-y-2">
+					<div class="space-y-1">
 						<label
 							for="password"
 							class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
@@ -410,7 +405,7 @@
 								bind:value={password}
 								oninput={() => handleInputChange('password')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('password')}
 								class:focus:ring-red-500={getFieldError('password')}
 								class:focus:border-red-500={getFieldError('password')}
@@ -455,7 +450,7 @@
 					</div>
 
 					<!-- Password Confirmation поле -->
-					<div class="space-y-2">
+					<div class="space-y-1">
 						<label
 							for="password_confirmation"
 							class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
@@ -489,7 +484,7 @@
 								bind:value={passwordConfirmation}
 								oninput={() => handleInputChange('password_confirmation')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('password_confirmation')}
 								class:focus:ring-red-500={getFieldError('password_confirmation')}
 								class:focus:border-red-500={getFieldError('password_confirmation')}
@@ -537,7 +532,7 @@
 					<button
 						type="submit"
 						disabled={isLoading()}
-						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 px-6 py-3 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 					>
 						<div class="flex items-center justify-center space-x-2">
 							{#if isLoading()}

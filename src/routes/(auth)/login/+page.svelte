@@ -129,14 +129,9 @@
 					<!-- Логотип -->
 					<div class="mb-6">
 						<div
-							class="inline-flex h-20 w-20 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
+							class="inline-flex h-12 w-14 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
 						>
-							<svg
-								class="h-10 w-10 text-white"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-							>
+							<svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -147,8 +142,8 @@
 						</div>
 					</div>
 
-					<h1 class="mb-2 text-3xl font-bold text-white">BONUS.BAND</h1>
-					<p class="text-lg text-white/90">Вход в систему управления</p>
+					<h1 class="mb-2 text-3xl font-bold text-white">Вход в систему</h1>
+					<!-- <p class="text-lg text-white/90">Вход в систему управления</p> -->
 				</div>
 			</div>
 
@@ -178,7 +173,7 @@
 
 				<form class="space-y-6" onsubmit={handleSubmit}>
 					<!-- Email поле -->
-					<div class="space-y-2">
+					<div class="space-y-1.5">
 						<label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
 							Email адрес
 						</label>
@@ -225,7 +220,7 @@
 					</div>
 
 					<!-- Password поле -->
-					<div class="space-y-2">
+					<div class="space-y-1.5">
 						<label
 							for="password"
 							class="block text-sm font-semibold text-gray-700 dark:text-gray-300"

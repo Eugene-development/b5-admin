@@ -24,11 +24,11 @@
 	 */
 	function validateEmail(email) {
 		if (!email) {
-			return 'Email is required';
+			return 'Email обязателен';
 		}
 		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 		if (!emailRegex.test(email)) {
-			return 'Please enter a valid email address';
+			return 'Пожалуйста, введите корректный email';
 		}
 		return null;
 	}
@@ -40,10 +40,10 @@
 	 */
 	function validatePassword(password) {
 		if (!password) {
-			return 'Password is required';
+			return 'Пароль обязателен';
 		}
 		if (password.length < 6) {
-			return 'Password must be at least 6 characters long';
+			return 'Пароль должен содержать минимум 6 символов';
 		}
 		return null;
 	}

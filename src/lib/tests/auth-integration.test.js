@@ -47,21 +47,21 @@ describe('Authentication Integration Tests', () => {
 	beforeEach(() => {
 		// Reset all mocks
 		vi.clearAllMocks();
-		
+
 		// Clear auth state
 		clearAuthState();
-		
+
 		// Setup mock HTTP client
 		mockHttpClient = {
 			post: vi.fn(),
 			get: vi.fn()
 		};
 		createHttpClient.mockReturnValue(mockHttpClient);
-		
+
 		// Reset global mocks
 		global.mockGoto.mockClear();
 		global.fetch.mockClear();
-		
+
 		// Reset document cookie
 		document.cookie = '';
 	});
@@ -81,7 +81,7 @@ describe('Authentication Integration Tests', () => {
 				email: 'john@example.com',
 				created_at: '2025-01-23T10:00:00.000000Z'
 			};
-			
+
 			mockHttpClient.post.mockResolvedValue({
 				success: true,
 				user: mockUser
@@ -136,7 +136,7 @@ describe('Authentication Integration Tests', () => {
 					password: ['The password must be at least 8 characters.']
 				}
 			};
-			
+
 			mockHttpClient.post.mockRejectedValue(validationError);
 			handleApiError.mockReturnValue({
 				email: ['The email has already been taken.'],
@@ -216,7 +216,7 @@ describe('Authentication Integration Tests', () => {
 				name: 'John Doe',
 				email: 'john@example.com'
 			};
-			
+
 			mockHttpClient.post.mockResolvedValue({
 				success: true,
 				user: mockUser
@@ -256,7 +256,7 @@ describe('Authentication Integration Tests', () => {
 			// Reset mocks for logout
 			vi.clearAllMocks();
 			global.mockGoto.mockClear();
-			
+
 			// Mock successful logout
 			mockHttpClient.post.mockResolvedValue({ success: true });
 
@@ -286,7 +286,7 @@ describe('Authentication Integration Tests', () => {
 			const authError = new Error('Invalid credentials');
 			authError.status = 401;
 			authError.data = { message: 'Invalid credentials' };
-			
+
 			mockHttpClient.post.mockRejectedValue(authError);
 			handleApiError.mockReturnValue({
 				auth: ['Invalid credentials']
@@ -361,7 +361,7 @@ describe('Authentication Integration Tests', () => {
 				name: 'John Doe',
 				email: 'john@example.com'
 			};
-			
+
 			mockHttpClient.get.mockResolvedValue({
 				success: true,
 				user: mockUser
@@ -396,7 +396,7 @@ describe('Authentication Integration Tests', () => {
 			// Mock network error
 			const networkError = new Error('Network error: Failed to fetch');
 			mockHttpClient.get.mockRejectedValue(networkError);
-			
+
 			handleApiError.mockReturnValue({
 				network: ['Network connection failed']
 			});
@@ -416,7 +416,7 @@ describe('Authentication Integration Tests', () => {
 		it('should initialize CSRF before authentication requests', async () => {
 			// Mock CSRF initialization
 			api.initCsrf.mockResolvedValue();
-			
+
 			// Mock successful login
 			const mockUser = { id: 1, email: 'john@example.com' };
 			mockHttpClient.post.mockResolvedValue({
@@ -437,7 +437,9 @@ describe('Authentication Integration Tests', () => {
 			api.initCsrf.mockRejectedValue(csrfError);
 
 			// Attempt login and expect error
-			await expect(login('john@example.com', 'password123')).rejects.toThrow('Failed to initialize CSRF protection');
+			await expect(login('john@example.com', 'password123')).rejects.toThrow(
+				'Failed to initialize CSRF protection'
+			);
 
 			// Verify login request was not made
 			expect(mockHttpClient.post).not.toHaveBeenCalled();
@@ -446,7 +448,7 @@ describe('Authentication Integration Tests', () => {
 		it('should include CSRF token in requests', async () => {
 			// Set up CSRF token in cookie
 			document.cookie = 'XSRF-TOKEN=test-csrf-token';
-			
+
 			// Mock successful operations
 			api.initCsrf.mockResolvedValue();
 			mockHttpClient.post.mockResolvedValue({
@@ -474,7 +476,7 @@ describe('Authentication Integration Tests', () => {
 					password: ['The password field is required.']
 				}
 			};
-			
+
 			mockHttpClient.post.mockRejectedValue(validationError);
 			handleApiError.mockReturnValue({
 				email: ['The email field is required.'],
@@ -503,7 +505,7 @@ describe('Authentication Integration Tests', () => {
 			api.initCsrf.mockResolvedValue();
 			const networkError = new Error('Network error: Failed to fetch');
 			mockHttpClient.post.mockRejectedValue(networkError);
-			
+
 			handleApiError.mockReturnValue({
 				network: ['Unable to connect to the server. Please check your internet connection.']
 			});
@@ -533,7 +535,7 @@ describe('Authentication Integration Tests', () => {
 			// Mock slow API response
 			api.initCsrf.mockResolvedValue();
 			let resolveLogin;
-			const loginPromise = new Promise(resolve => {
+			const loginPromise = new Promise((resolve) => {
 				resolveLogin = resolve;
 			});
 			mockHttpClient.post.mockReturnValue(loginPromise);
@@ -589,7 +591,7 @@ describe('Authentication Integration Tests', () => {
 			expect(mockHttpClient.post).not.toHaveBeenCalled();
 
 			// Verify error message
-			expect(container.textContent).toContain('Please enter a valid email address');
+			expect(container.textContent).toContain('Пожалуйста, введите корректный email');
 		});
 
 		it('should validate password length on client side', async () => {
@@ -610,13 +612,13 @@ describe('Authentication Integration Tests', () => {
 			expect(mockHttpClient.post).not.toHaveBeenCalled();
 
 			// Verify error message
-			expect(container.textContent).toContain('Password must be at least 6 characters long');
+			expect(container.textContent).toContain('Пароль должен содержать минимум 6 символов');
 		});
 
 		it('should clear field errors when user starts typing', async () => {
 			// Set up initial error state
 			const { container } = render(LoginForm);
-			
+
 			// Simulate server error state
 			authState.errors = {
 				email: ['The email field is required.'],
@@ -640,7 +642,7 @@ describe('Authentication Integration Tests', () => {
 
 			// Render logout button with confirmation
 			const { container } = render(LogoutButton, {
-				props: { 
+				props: {
 					showConfirmation: true,
 					redirectTo: '/login'
 				}
@@ -676,7 +678,7 @@ describe('Authentication Integration Tests', () => {
 
 			// Render logout button with confirmation
 			const { container } = render(LogoutButton, {
-				props: { 
+				props: {
 					showConfirmation: true,
 					redirectTo: '/login'
 				}
