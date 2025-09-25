@@ -3,8 +3,6 @@ import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
-
-
 // GraphQL queries and mutations
 const PROJECTS_QUERY = gql`
 	query GetProjects($first: Int!, $page: Int) {
@@ -12,7 +10,7 @@ const PROJECTS_QUERY = gql`
 			data {
 				id
 				value
-				agent_id
+				user_id
 				agent {
 					id
 					name
@@ -50,7 +48,7 @@ const UPDATE_PROJECT_MUTATION = gql`
 		updateProject(input: $input) {
 			id
 			value
-			agent_id
+			user_id
 			agent {
 				id
 				name
@@ -97,7 +95,8 @@ async function makeGraphQLRequest(
 			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
 			// Use custom fetch for server-side or default for client-side
-			const fetchFunction = customFetch || (typeof window !== 'undefined' ? window.fetch : globalThis.fetch);
+			const fetchFunction =
+				customFetch || (typeof window !== 'undefined' ? window.fetch : globalThis.fetch);
 
 			// Debug logging
 			console.log('🔧 GraphQL Request Debug:', {
@@ -190,7 +189,14 @@ async function makeGraphQLRequest(
 export async function getProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjects', 3, customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			PROJECTS_QUERY,
+			variables,
+			'getProjects',
+			3,
+			customFetch,
+			cookies
+		);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Get projects failed:', err);
@@ -238,7 +244,14 @@ export async function deleteProject(projectId, customFetch = null, cookies = nul
 export async function refreshProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'refreshProjects', 3, customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			PROJECTS_QUERY,
+			variables,
+			'refreshProjects',
+			3,
+			customFetch,
+			cookies
+		);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Refresh projects failed:', err);
@@ -250,7 +263,14 @@ export async function refreshProjects(first = 1000, page = 1, customFetch = null
 export async function getAllProjects(first = 1000, page = 1, customFetch = null, cookies = null) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getAllProjects', 3, customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			PROJECTS_QUERY,
+			variables,
+			'getAllProjects',
+			3,
+			customFetch,
+			cookies
+		);
 		return result.projects?.data || [];
 	} catch (err) {
 		console.error('Get all projects failed:', err);
@@ -259,10 +279,22 @@ export async function getAllProjects(first = 1000, page = 1, customFetch = null,
 }
 
 // Function to get projects with pagination info
-export async function getProjectsWithPagination(first = 1000, page = 1, customFetch = null, cookies = null) {
+export async function getProjectsWithPagination(
+	first = 1000,
+	page = 1,
+	customFetch = null,
+	cookies = null
+) {
 	try {
 		const variables = { first, page };
-		const result = await makeGraphQLRequest(PROJECTS_QUERY, variables, 'getProjectsWithPagination', 3, customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			PROJECTS_QUERY,
+			variables,
+			'getProjectsWithPagination',
+			3,
+			customFetch,
+			cookies
+		);
 		return {
 			data: result.projects?.data || [],
 			paginatorInfo: result.projects?.paginatorInfo || null
@@ -286,6 +318,7 @@ export function createProjectsApiWithFetch(fetch, cookies) {
 		deleteProject: (projectId) => deleteProject(projectId, fetch, cookies),
 		refreshProjects: (first, page) => refreshProjects(first, page, fetch, cookies),
 		getAllProjects: (first, page) => getAllProjects(first, page, fetch, cookies),
-		getProjectsWithPagination: (first, page) => getProjectsWithPagination(first, page, fetch, cookies)
+		getProjectsWithPagination: (first, page) =>
+			getProjectsWithPagination(first, page, fetch, cookies)
 	};
 }

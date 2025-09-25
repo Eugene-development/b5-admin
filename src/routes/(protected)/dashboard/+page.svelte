@@ -5,8 +5,10 @@
 <ProtectedRoute>
 	{#snippet children()}
 		<div>
-			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-			<p class="mt-4 text-gray-600 dark:text-gray-400">Добро пожаловать в административную панель B5-Admin.</p>
+			<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Дашборд</h1>
+			<p class="mt-4 text-gray-600 dark:text-gray-400">
+				Добро пожаловать в административную систему BonClick.
+			</p>
 		</div>
 	{/snippet}
 </ProtectedRoute>

@@ -28,7 +28,7 @@ const ERROR_TYPES = {
  */
 function categorizeError(error) {
 	const message = error.message?.toLowerCase() || '';
-	
+
 	if (message.includes('network') || message.includes('fetch')) {
 		return ERROR_TYPES.NETWORK;
 	}
@@ -44,7 +44,7 @@ function categorizeError(error) {
 	if (message.includes('graphql') || message.includes('api')) {
 		return ERROR_TYPES.API;
 	}
-	
+
 	return ERROR_TYPES.UNKNOWN;
 }
 
@@ -78,12 +78,12 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 function createProjectsFallbackData() {
 	return {
 		projects: [],
-		stats: { 
-			total: 0, 
-			active: 0, 
-			inactive: 0, 
-			totalContractAmount: 0, 
-			averageContractAmount: 0 
+		stats: {
+			total: 0,
+			active: 0,
+			inactive: 0,
+			totalContractAmount: 0,
+			averageContractAmount: 0
 		},
 		pagination: {
 			currentPage: 1,
@@ -108,17 +108,17 @@ function validateProjectsData(projectsResult) {
 	if (!projectsResult || typeof projectsResult !== 'object') {
 		return false;
 	}
-	
+
 	if (!Array.isArray(projectsResult.data)) {
 		return false;
 	}
-	
+
 	// Validate pagination info structure
 	const paginatorInfo = projectsResult.paginatorInfo;
 	if (paginatorInfo && typeof paginatorInfo !== 'object') {
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -172,12 +172,9 @@ function calculateProjectStats(projects) {
 /** @type {import('./$types').PageLoad} */
 export async function load({ fetch }) {
 	const startTime = Date.now();
-	
-	// Check if we're in browser - for SSR safety
-	if (!browser) {
-		// Return fallback data for SSR
-		return createProjectsFallbackData();
-	}
+
+	// Allow data loading in both browser and server contexts
+	// The fetch function passed by SvelteKit will handle server/client contexts appropriately
 
 	// Since auth is handled client-side and the check might not be ready yet,
 	// we'll proceed with the API call and let the API handle authentication errors
@@ -227,18 +224,17 @@ export async function load({ fetch }) {
 			isLoading: false,
 			loadTime
 		};
-
 	} catch (apiError) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
-		
+
 		console.error('Failed to load projects data:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
-		
+
 		// Return error state with detailed information for graceful error handling
 		const fallbackData = createProjectsFallbackData();
 		return {

@@ -446,19 +446,14 @@
 	<div
 		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-900"
 	>
-		<!-- <div class="flex h-16 shrink-0 items-center">
+		<!-- <div class="flex h-20 shrink-0 items-center">
 			<img
-				src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+				src="https://storage.yandexcloud.net/bonus/logo/logoBC.png"
 				alt="Your Company"
-				class="h-8 w-auto dark:hidden"
-			/>
-			<img
-				src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-				alt="Your Company"
-				class="not-dark:hidden h-8 w-auto"
+				class="h-12 w-auto"
 			/>
 		</div> -->
-		<nav class="mt-20 flex flex-1 flex-col">
+		<nav class="mt-8 flex flex-1 flex-col">
 			<ul role="list" class="flex flex-1 flex-col gap-y-7">
 				<li>
 					<ul role="list" class="-mx-2 space-y-1">
