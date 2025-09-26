@@ -7,6 +7,7 @@
 	// Form state
 	let name = $state('');
 	let email = $state('');
+	let city = $state('');
 	let phone = $state('');
 	let password = $state('');
 	let passwordConfirmation = $state('');
@@ -56,6 +57,16 @@
 	}
 
 	/**
+	 * Validate city field (optional)
+	 */
+	function validateCity(city) {
+		if (!city) return null; // City is optional
+		if (city.length < 2) return 'Название города должно содержать минимум 2 символа';
+		if (city.length > 255) return 'Название города слишком длинное';
+		return null;
+	}
+
+	/**
 	 * Validate phone field (optional)
 	 */
 	function validatePhone(phone) {
@@ -74,6 +85,8 @@
 		if (nameError) errors.name = [nameError];
 		const emailError = validateEmail(email);
 		if (emailError) errors.email = [emailError];
+		const cityError = validateCity(city);
+		if (cityError) errors.city = [cityError];
 		const phoneError = validatePhone(phone);
 		if (phoneError) errors.phone = [phoneError];
 		const passwordError = validatePassword(password);
@@ -93,13 +106,24 @@
 		clientErrors = {};
 		if (!validateForm()) return;
 		try {
-			const success = await register({
+			// Подготавливаем данные формы, правильно обрабатывая пустые поля
+			const formData = {
 				name,
 				email,
-				phone,
 				password,
 				password_confirmation: passwordConfirmation
-			});
+			};
+
+			// Добавляем необязательные поля только если они заполнены
+			if (city && city.trim() !== '') {
+				formData.city = city.trim();
+			}
+
+			if (phone && phone.trim() !== '') {
+				formData.phone = phone.trim();
+			}
+
+			const success = await register(formData);
 			if (success) {
 				goto(returnUrl);
 			}
@@ -127,22 +151,25 @@
 		if (clientErrors[field] && clientErrors[field].length > 0) {
 			return clientErrors[field][0];
 		}
-		// Check for server errors - new auth system stores errors differently
-		if (field === 'name' && authState.registerError) {
+
+		// Check for server errors from auth state
+		if (authState.errors && authState.errors[field] && authState.errors[field].length > 0) {
+			return authState.errors[field][0];
+		}
+
+		// Legacy server error handling
+		if (
+			(field === 'name' ||
+				field === 'email' ||
+				field === 'city' ||
+				field === 'phone' ||
+				field === 'password' ||
+				field === 'password_confirmation') &&
+			authState.registerError
+		) {
 			return authState.registerError;
 		}
-		if (field === 'email' && authState.registerError) {
-			return authState.registerError;
-		}
-		if (field === 'phone' && authState.registerError) {
-			return authState.registerError;
-		}
-		if (field === 'password' && authState.registerError) {
-			return authState.registerError;
-		}
-		if (field === 'password_confirmation' && authState.registerError) {
-			return authState.registerError;
-		}
+
 		return null;
 	}
 
@@ -320,6 +347,58 @@
 						{#if getFieldError('email')}
 							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
 								{getFieldError('email')}
+							</p>
+						{/if}
+					</div>
+
+					<!-- City поле -->
+					<div class="space-y-1">
+						<label for="city" class="block text-sm font-semibold text-gray-700 dark:text-gray-300">
+							Город (необязательно)
+						</label>
+						<div class="group relative">
+							<div
+								class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+							>
+								<svg
+									class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+									/>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+									/>
+								</svg>
+							</div>
+							<input
+								id="city"
+								name="city"
+								type="text"
+								autocomplete="address-level2"
+								bind:value={city}
+								oninput={() => handleInputChange('city')}
+								disabled={isLoading()}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-3 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class:border-red-300={getFieldError('city')}
+								class:focus:ring-red-500={getFieldError('city')}
+								class:focus:border-red-500={getFieldError('city')}
+								placeholder="Москва"
+							/>
+						</div>
+						<!-- Field-specific errors -->
+						{#if getFieldError('city')}
+							<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{getFieldError('city')}
 							</p>
 						{/if}
 					</div>

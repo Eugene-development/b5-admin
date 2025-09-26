@@ -57,7 +57,8 @@ export async function loginUser(email, password, remember = false) {
  * @param {string} userData.email - User email
  * @param {string} userData.password - User password
  * @param {string} userData.password_confirmation - Password confirmation
- * @param {string} userData.city - User city
+ * @param {string} userData.city - User city (optional)
+ * @param {string} userData.phone - User phone (optional)
  * @param {boolean} userData.terms_accepted - Terms acceptance
  * @returns {Promise<Object>} Registration response
  */

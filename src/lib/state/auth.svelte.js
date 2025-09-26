@@ -45,6 +45,7 @@ export const authState = $state({
 
 	// Error states
 	error: null,
+	errors: {},
 	loginError: null,
 	registerError: null,
 	emailVerificationError: null,
@@ -234,12 +235,14 @@ export async function register(userData) {
 			// Registration failed
 			authState.registerError = result.message;
 			authState.error = result.message;
+			authState.errors = result.errors || {};
 			return false;
 		}
 	} catch (error) {
 		console.error('Registration error:', error);
 		authState.registerError = error.message || 'Произошла ошибка при регистрации';
 		authState.error = authState.registerError;
+		authState.errors = error.errors || {};
 		return false;
 	} finally {
 		authState.registerLoading = false;
@@ -459,6 +462,7 @@ export function markEmailAsVerified() {
  */
 export function clearError() {
 	authState.error = null;
+	authState.errors = {};
 	authState.loginError = null;
 	authState.registerError = null;
 	authState.emailVerificationError = null;
@@ -479,6 +483,7 @@ function clearAuthState() {
 	authState.emailVerified = false;
 	authState.token = null;
 	authState.error = null;
+	authState.errors = {};
 	authState.loginError = null;
 	authState.registerError = null;
 	authState.emailVerificationError = null;
