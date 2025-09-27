@@ -129,10 +129,10 @@
 					<!-- Логотип -->
 					<div class="mb-4 lg:mb-6">
 						<div
-							class="w-13 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-12 lg:w-14"
+							class="w-13 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
 						>
 							<svg
-								class="h-4 w-4 text-white lg:h-5 lg:w-5"
+								class="h-4 w-4 text-white lg:h-8 lg:w-8"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"

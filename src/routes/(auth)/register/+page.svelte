@@ -214,10 +214,10 @@
 					<!-- Логотип -->
 					<div class="mb-4 md:mb-5 lg:mb-6">
 						<div
-							class="w-13 md:h-11.5 md:w-13.5 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-12 lg:w-14"
+							class="w-13 md:h-11.5 md:w-13.5 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
 						>
 							<svg
-								class="md:h-4.5 md:w-4.5 h-4 w-4 text-white lg:h-5 lg:w-5"
+								class="h-4 w-4 text-white md:h-5 md:w-5 lg:h-8 lg:w-8"
 								fill="none"
 								stroke="currentColor"
 								viewBox="0 0 24 24"
@@ -318,13 +318,13 @@
 								{/if}
 							</div>
 
-							<!-- Email поле -->
+							<!-- Phone поле -->
 							<div class="space-y-1">
 								<label
-									for="email"
+									for="phone"
 									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
 								>
-									Email адрес
+									Телефон (необязательно)
 								</label>
 								<div class="group relative">
 									<div
@@ -340,34 +340,36 @@
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+												d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
 											/>
 										</svg>
 									</div>
 									<input
-										id="email"
-										name="email"
-										type="email"
-										autocomplete="email"
-										required
-										bind:value={email}
-										oninput={() => handleInputChange('email')}
+										id="phone"
+										name="phone"
+										type="tel"
+										autocomplete="tel"
+										bind:value={phone}
+										oninput={() => handleInputChange('phone')}
 										disabled={isLoading()}
 										class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('email')}
-										class:focus:ring-red-500={getFieldError('email')}
-										class:focus:border-red-500={getFieldError('email')}
-										placeholder="example@mail.ru"
+										class:border-red-300={getFieldError('phone')}
+										class:focus:ring-red-500={getFieldError('phone')}
+										class:focus:border-red-500={getFieldError('phone')}
+										placeholder="+7 (900) 123-45-67"
 									/>
 								</div>
 								<!-- Field-specific errors -->
-								{#if getFieldError('email')}
+								{#if getFieldError('phone')}
 									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('email')}
+										{getFieldError('phone')}
 									</p>
 								{/if}
 							</div>
+						</div>
 
+						<!-- Правый столбец -->
+						<div class="space-y-4 md:space-y-5 lg:space-y-6">
 							<!-- City поле -->
 							<div class="space-y-1">
 								<label
@@ -422,17 +424,14 @@
 									</p>
 								{/if}
 							</div>
-						</div>
 
-						<!-- Правый столбец -->
-						<div class="space-y-4 md:space-y-5 lg:space-y-6">
-							<!-- Phone поле -->
+							<!-- Email поле -->
 							<div class="space-y-1">
 								<label
-									for="phone"
+									for="email"
 									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
 								>
-									Телефон (необязательно)
+									Email адрес
 								</label>
 								<div class="group relative">
 									<div
@@ -448,190 +447,194 @@
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+												d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
 											/>
 										</svg>
 									</div>
 									<input
-										id="phone"
-										name="phone"
-										type="tel"
-										autocomplete="tel"
-										bind:value={phone}
-										oninput={() => handleInputChange('phone')}
+										id="email"
+										name="email"
+										type="email"
+										autocomplete="email"
+										required
+										bind:value={email}
+										oninput={() => handleInputChange('email')}
 										disabled={isLoading()}
 										class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('phone')}
-										class:focus:ring-red-500={getFieldError('phone')}
-										class:focus:border-red-500={getFieldError('phone')}
-										placeholder="+7 (900) 123-45-67"
+										class:border-red-300={getFieldError('email')}
+										class:focus:ring-red-500={getFieldError('email')}
+										class:focus:border-red-500={getFieldError('email')}
+										placeholder="example@mail.ru"
 									/>
 								</div>
 								<!-- Field-specific errors -->
-								{#if getFieldError('phone')}
+								{#if getFieldError('email')}
 									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('phone')}
+										{getFieldError('email')}
 									</p>
 								{/if}
 							</div>
+						</div>
+					</div>
 
-							<!-- Password поле -->
-							<div class="space-y-1">
-								<label
-									for="password"
-									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+					<!-- Поля паролей - всегда внизу -->
+					<div class="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-2 lg:gap-6">
+						<!-- Password поле -->
+						<div class="space-y-1">
+							<label
+								for="password"
+								class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+							>
+								Пароль
+							</label>
+							<div class="group relative">
+								<div
+									class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
 								>
-									Пароль
-								</label>
-								<div class="group relative">
-									<div
-										class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+									<svg
+										class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
 									>
-										<svg
-											class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+										/>
+									</svg>
+								</div>
+								<input
+									id="password"
+									name="password"
+									type={showPassword ? 'text' : 'password'}
+									autocomplete="new-password"
+									required
+									bind:value={password}
+									oninput={() => handleInputChange('password')}
+									disabled={isLoading()}
+									class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+									class:border-red-300={getFieldError('password')}
+									class:focus:ring-red-500={getFieldError('password')}
+									class:focus:border-red-500={getFieldError('password')}
+									placeholder="Минимум 8 символов"
+								/>
+								<button
+									type="button"
+									onclick={togglePasswordVisibility}
+									class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+								>
+									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										{#if showPassword}
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+												d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
 											/>
-										</svg>
-									</div>
-									<input
-										id="password"
-										name="password"
-										type={showPassword ? 'text' : 'password'}
-										autocomplete="new-password"
-										required
-										bind:value={password}
-										oninput={() => handleInputChange('password')}
-										disabled={isLoading()}
-										class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('password')}
-										class:focus:ring-red-500={getFieldError('password')}
-										class:focus:border-red-500={getFieldError('password')}
-										placeholder="Минимум 8 символов"
-									/>
-									<button
-										type="button"
-										onclick={togglePasswordVisibility}
-										class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
-									>
-										<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											{#if showPassword}
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-												/>
-											{:else}
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-												/>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-												/>
-											{/if}
-										</svg>
-									</button>
-								</div>
-								<!-- Field-specific errors -->
-								{#if getFieldError('password')}
-									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('password')}
-									</p>
-								{/if}
-							</div>
-
-							<!-- Password Confirmation поле -->
-							<div class="space-y-1">
-								<label
-									for="password_confirmation"
-									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-								>
-									Подтверждение пароля
-								</label>
-								<div class="group relative">
-									<div
-										class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
-									>
-										<svg
-											class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
+										{:else}
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+												d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
 											/>
-										</svg>
-									</div>
-									<input
-										id="password_confirmation"
-										name="password_confirmation"
-										type={showPasswordConfirmation ? 'text' : 'password'}
-										autocomplete="new-password"
-										required
-										bind:value={passwordConfirmation}
-										oninput={() => handleInputChange('password_confirmation')}
-										disabled={isLoading()}
-										class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('password_confirmation')}
-										class:focus:ring-red-500={getFieldError('password_confirmation')}
-										class:focus:border-red-500={getFieldError('password_confirmation')}
-										placeholder="Повторите пароль"
-									/>
-									<button
-										type="button"
-										onclick={togglePasswordConfirmationVisibility}
-										class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
-									>
-										<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											{#if showPasswordConfirmation}
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
-												/>
-											{:else}
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-												/>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-												/>
-											{/if}
-										</svg>
-									</button>
-								</div>
-								<!-- Field-specific errors -->
-								{#if getFieldError('password_confirmation')}
-									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('password_confirmation')}
-									</p>
-								{/if}
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+											/>
+										{/if}
+									</svg>
+								</button>
 							</div>
+							<!-- Field-specific errors -->
+							{#if getFieldError('password')}
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+									{getFieldError('password')}
+								</p>
+							{/if}
+						</div>
+
+						<!-- Password Confirmation поле -->
+						<div class="space-y-1">
+							<label
+								for="password_confirmation"
+								class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
+							>
+								Подтверждение пароля
+							</label>
+							<div class="group relative">
+								<div
+									class="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4"
+								>
+									<svg
+										class="h-5 w-5 text-gray-400 transition-colors group-focus-within:text-emerald-500"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+										/>
+									</svg>
+								</div>
+								<input
+									id="password_confirmation"
+									name="password_confirmation"
+									type={showPasswordConfirmation ? 'text' : 'password'}
+									autocomplete="new-password"
+									required
+									bind:value={passwordConfirmation}
+									oninput={() => handleInputChange('password_confirmation')}
+									disabled={isLoading()}
+									class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+									class:border-red-300={getFieldError('password_confirmation')}
+									class:focus:ring-red-500={getFieldError('password_confirmation')}
+									class:focus:border-red-500={getFieldError('password_confirmation')}
+									placeholder="Повторите пароль"
+								/>
+								<button
+									type="button"
+									onclick={togglePasswordConfirmationVisibility}
+									class="absolute inset-y-0 right-0 z-10 flex items-center pr-4 text-gray-400 transition-colors hover:text-gray-600 dark:hover:text-gray-300"
+								>
+									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										{#if showPasswordConfirmation}
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+											/>
+										{:else}
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+											/>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+											/>
+										{/if}
+									</svg>
+								</button>
+							</div>
+							<!-- Field-specific errors -->
+							{#if getFieldError('password_confirmation')}
+								<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+									{getFieldError('password_confirmation')}
+								</p>
+							{/if}
 						</div>
 					</div>
 
