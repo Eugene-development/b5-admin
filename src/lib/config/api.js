@@ -1,9 +1,10 @@
 /**
  * API Configuration
- * Reads configuration from browser environment or uses defaults
+ * Reads configuration from environment variables with compile-time replacement
  */
 
 import { browser } from '$app/environment';
+import { dev } from '$app/environment';
 
 // Default configuration for development
 const DEFAULT_CONFIG = {
@@ -12,42 +13,44 @@ const DEFAULT_CONFIG = {
 	FRONTEND_URL: 'http://localhost:5137' // b5-agent frontend
 };
 
-// Production fallback configuration 
-const PRODUCTION_FALLBACK = {
-	API_BASE_URL: 'https://api.bonus.band',
-	AUTH_API_URL: 'https://auth.bonus5.ru',
-	FRONTEND_URL: 'https://admin.bonus.band'
-};
-
 /**
  * Get API configuration
  * Priority order:
- * 1. Browser: window.__APP_CONFIG__ (set by entrypoint.sh)
- * 2. Server production: environment variables from Docker secrets
- * 3. Server production fallback: hardcoded production URLs
- * 4. Development: localhost defaults
+ * 1. Compile-time environment variables (VITE_*)
+ * 2. Runtime environment variables for server-side (production)
+ * 3. Development defaults
  */
 function getApiConfig() {
-	// Browser environment: use window config set by entrypoint.sh
-	if (browser && typeof window !== 'undefined' && window.__APP_CONFIG__) {
-		return {
-			API_BASE_URL: window.__APP_CONFIG__.API_BASE_URL || DEFAULT_CONFIG.API_BASE_URL,
-			AUTH_API_URL: window.__APP_CONFIG__.AUTH_API_URL || DEFAULT_CONFIG.AUTH_API_URL,
-			FRONTEND_URL: window.__APP_CONFIG__.FRONTEND_URL || DEFAULT_CONFIG.FRONTEND_URL
-		};
+	// Try to use compile-time Vite environment variables first
+	const viteConfig = {
+		API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+		AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL,
+		FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL
+	};
+
+	// Check if all required Vite environment variables are available
+	if (viteConfig.API_BASE_URL && viteConfig.AUTH_API_URL && viteConfig.FRONTEND_URL) {
+		return viteConfig;
 	}
 
-	// Server-side rendering: use environment variables or fallback
+	// Fallback to global __APP_ENV__ if available (defined in vite.config.js)
+	if (typeof globalThis !== 'undefined' && globalThis.__APP_ENV__) {
+		const envConfig = globalThis.__APP_ENV__;
+		if (envConfig.API_BASE_URL && envConfig.AUTH_API_URL && envConfig.FRONTEND_URL) {
+			return envConfig;
+		}
+	}
+
+	// Server-side rendering: try runtime environment variables for production
 	if (!browser && typeof process !== 'undefined') {
-		const isProduction = process.env.NODE_ENV === 'production';
-		
-		if (isProduction) {
-			// In production, use environment variables set by entrypoint.sh, then fallback
-			return {
-				API_BASE_URL: process.env.PUBLIC_API_BASE_URL || PRODUCTION_FALLBACK.API_BASE_URL,
-				AUTH_API_URL: process.env.PUBLIC_AUTH_API_URL || PRODUCTION_FALLBACK.AUTH_API_URL,
-				FRONTEND_URL: process.env.PUBLIC_FRONTEND_URL || PRODUCTION_FALLBACK.FRONTEND_URL
-			};
+		const runtimeConfig = {
+			API_BASE_URL: process.env.VITE_API_BASE_URL || process.env.PUBLIC_API_BASE_URL,
+			AUTH_API_URL: process.env.VITE_AUTH_API_URL || process.env.PUBLIC_AUTH_API_URL,
+			FRONTEND_URL: process.env.VITE_FRONTEND_URL || process.env.PUBLIC_FRONTEND_URL
+		};
+
+		if (runtimeConfig.API_BASE_URL && runtimeConfig.AUTH_API_URL && runtimeConfig.FRONTEND_URL) {
+			return runtimeConfig;
 		}
 	}
 
@@ -63,11 +66,17 @@ export const GRAPHQL_ENDPOINT = `${API_BASE_URL}/graphql`;
 export const AUTH_ENDPOINT = `${AUTH_API_URL}/api`;
 
 // Debug logging in development
-if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
+if (dev || (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production')) {
 	console.log('🔧 API Config Debug:', {
 		browser,
+		dev,
 		NODE_ENV: typeof process !== 'undefined' ? process.env.NODE_ENV : 'undefined',
-		hasWindowConfig: browser && typeof window !== 'undefined' && !!window.__APP_CONFIG__,
+		viteEnvVars: {
+			API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
+			AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL,
+			FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL
+		},
+		hasGlobalAppEnv: typeof globalThis !== 'undefined' && !!globalThis.__APP_ENV__,
 		config
 	});
 }

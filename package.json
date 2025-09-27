@@ -4,8 +4,10 @@
 	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
+		"dev": "vite dev --mode development",
+		"dev:prod": "vite dev --mode production",
+		"build": "vite build --mode production",
+		"build:dev": "vite build --mode development",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"format": "prettier --write .",
