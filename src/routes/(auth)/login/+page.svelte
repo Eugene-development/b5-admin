@@ -106,14 +106,14 @@
 
 <!-- Современная карточка авторизации -->
 <div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-	<div class="relative w-full max-w-2xl">
+	<div class="animate-fade-in-up relative w-full max-w-2xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div
 			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-900/80"
 		>
 			<!-- Заголовок с градиентом -->
 			<div
-				class="relative bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-8 text-center"
+				class="animate-fade-in-down relative bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-6 text-center lg:p-8"
 			>
 				<!-- Декоративные элементы -->
 				<div
@@ -127,11 +127,16 @@
 
 				<div class="relative z-10">
 					<!-- Логотип -->
-					<div class="mb-6">
+					<div class="mb-4 lg:mb-6">
 						<div
-							class="inline-flex h-12 w-14 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm"
+							class="w-13 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-12 lg:w-14"
 						>
-							<svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<svg
+								class="h-4 w-4 text-white lg:h-5 lg:w-5"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -142,13 +147,13 @@
 						</div>
 					</div>
 
-					<h1 class="mb-2 text-3xl font-bold text-white">Вход в систему</h1>
+					<h1 class="mb-1 text-3xl font-bold text-white lg:mb-2 lg:text-3xl">Вход в систему</h1>
 					<!-- <p class="text-lg text-white/90">Вход в систему управления</p> -->
 				</div>
 			</div>
 
 			<!-- Форма -->
-			<div class="space-y-6 p-8 md:p-12">
+			<div class="animate-fade-in-up space-y-6 p-8 md:p-12" style="animation-delay: 0.2s;">
 				<!-- General error messages using ErrorDisplay component -->
 				{#if authState.error || authState.loginError}
 					<div class="rounded-md bg-red-50 p-4 dark:bg-red-900/20">
