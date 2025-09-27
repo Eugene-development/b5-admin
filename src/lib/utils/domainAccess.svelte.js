@@ -13,6 +13,8 @@ export const domainState = $state({
 	hostname: '',
 	isAdminDomain: false,
 	isRegularDomain: false,
+	isRubonusDomain: false,
+	isDRubonusDomain: false,
 	isLocalhost: false,
 	initialized: false
 });
@@ -23,19 +25,23 @@ export const domainState = $state({
  */
 export function initializeDomainDetection() {
 	if (!browser) return;
-	
+
 	const hostname = window.location.hostname;
-	
+
 	domainState.hostname = hostname;
 	domainState.isAdminDomain = hostname === 'admin.bonus.band';
 	domainState.isRegularDomain = hostname === 'bonus.band';
+	domainState.isRubonusDomain = hostname === 'rubonus.info';
+	domainState.isDRubonusDomain = hostname === 'd.rubonus.info';
 	domainState.isLocalhost = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
 	domainState.initialized = true;
-	
+
 	console.log('🌐 Domain detection initialized:', {
 		hostname,
 		isAdminDomain: domainState.isAdminDomain,
 		isRegularDomain: domainState.isRegularDomain,
+		isRubonusDomain: domainState.isRubonusDomain,
+		isDRubonusDomain: domainState.isDRubonusDomain,
 		isLocalhost: domainState.isLocalhost
 	});
 }
@@ -49,32 +55,95 @@ export function hasAdminAccess() {
 		// Fallback check if state not initialized
 		if (browser) {
 			const hostname = window.location.hostname;
-			return hostname === 'admin.bonus.band' || hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
+			return (
+				hostname === 'admin.bonus.band' ||
+				hostname.startsWith('localhost') ||
+				hostname.startsWith('127.0.0.1')
+			);
 		}
 		return false;
 	}
-	
+
 	return domainState.isAdminDomain || domainState.isLocalhost;
 }
 
 /**
- * Check if a specific navigation item should be visible
+ * Get domain-specific page configurations
+ */
+export function getDomainPageConfig() {
+	return {
+		'rubonus.info': ['/actions', '/tz', '/projects'],
+		'bonus.band': [
+			'/projects',
+			'/actions',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/tz',
+			'/bz',
+			'/finance',
+			'/documentation'
+		],
+		'd.rubonus.info': ['/bz', '/suppliers'],
+		'admin.bonus.band': [
+			'/agents',
+			'/curators',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/clients',
+			'/projects',
+			'/finance',
+			'/tz',
+			'/bz',
+			'/actions',
+			'/documentation'
+		],
+		localhost: [
+			'/agents',
+			'/curators',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/clients',
+			'/projects',
+			'/finance',
+			'/tz',
+			'/bz',
+			'/actions',
+			'/documentation'
+		] // For development
+	};
+}
+
+/**
+ * Check if a specific navigation item should be visible for current domain
  * @param {string} path - The navigation path to check
  * @returns {boolean} True if the navigation item should be visible
  */
 export function shouldShowNavItem(path) {
-	// Define admin-only navigation items
-	const adminOnlyPaths = ['/test', '/test2'];
-	
-	// Check if this path requires admin access
-	const requiresAdminAccess = adminOnlyPaths.some(adminPath => path.startsWith(adminPath));
-	
-	if (requiresAdminAccess) {
-		return hasAdminAccess();
+	if (!domainState.initialized && browser) {
+		// Fallback initialization if needed
+		initializeDomainDetection();
 	}
-	
-	// All other navigation items are visible to everyone
-	return true;
+
+	const hostname = domainState.hostname;
+	const pageConfig = getDomainPageConfig();
+
+	// Common pages for all domains
+	const commonPages = ['/dashboard', '/profile', '/settings'];
+	if (commonPages.some((commonPath) => path.startsWith(commonPath))) {
+		return true;
+	}
+
+	// Check localhost for development
+	if (domainState.isLocalhost) {
+		return pageConfig['localhost']?.some((allowedPath) => path.startsWith(allowedPath)) || false;
+	}
+
+	// Check specific domain pages
+	const allowedPages = pageConfig[hostname] || [];
+	return allowedPages.some((allowedPath) => path.startsWith(allowedPath));
 }
 
 /**
@@ -82,15 +151,24 @@ export function shouldShowNavItem(path) {
  * @returns {Object} Navigation configuration object
  */
 export function getNavigationConfig() {
-	const showAdminItems = hasAdminAccess();
-	
+	const hostname = domainState.hostname;
+	const pageConfig = getDomainPageConfig();
+	const allowedPages = pageConfig[hostname] || [];
+
 	return {
-		showAdminItems,
-		adminOnlyItems: ['/test', '/test2'],
-		currentDomain: domainState.hostname,
-		domainType: domainState.isAdminDomain ? 'admin' : 
-		           domainState.isRegularDomain ? 'regular' : 
-		           domainState.isLocalhost ? 'localhost' : 'unknown'
+		currentDomain: hostname,
+		allowedPages,
+		domainType: domainState.isAdminDomain
+			? 'admin'
+			: domainState.isRegularDomain
+				? 'bonus.band'
+				: domainState.isRubonusDomain
+					? 'rubonus.info'
+					: domainState.isDRubonusDomain
+						? 'd.rubonus.info'
+						: domainState.isLocalhost
+							? 'localhost'
+							: 'unknown'
 	};
 }
 
@@ -100,11 +178,30 @@ export function getNavigationConfig() {
  * @returns {Object} Navigation visibility configuration
  */
 export function getNavigationVisibility() {
+	const config = getNavigationConfig();
+
 	return {
-		showTest: shouldShowNavItem('/test'),
-		showTest2: shouldShowNavItem('/test2'),
+		// Main navigation sections
+		showAgents: shouldShowNavItem('/agents'),
+		showCurators: shouldShowNavItem('/curators'),
+		showContractors: shouldShowNavItem('/contractors'),
+		showSuppliers: shouldShowNavItem('/suppliers'),
+		showServices: shouldShowNavItem('/services'),
+
+		// Analytics section
+		showClients: shouldShowNavItem('/clients'),
+		showProjects: shouldShowNavItem('/projects'),
+		showFinance: shouldShowNavItem('/finance'),
+
+		// Additional pages
+		showActions: shouldShowNavItem('/actions'),
+		showTz: shouldShowNavItem('/tz'),
+		showBz: shouldShowNavItem('/bz'),
+		showDocumentation: shouldShowNavItem('/documentation'),
+
+		// Legacy admin access and config
 		hasAdminAccess: hasAdminAccess(),
-		config: getNavigationConfig()
+		config
 	};
 }
 
@@ -116,9 +213,6 @@ export function debugDomainState() {
 	console.log('🔍 Domain State Debug:', {
 		...domainState,
 		hasAdminAccess: hasAdminAccess(),
-		navigationVisibility: {
-			showTest: shouldShowNavItem('/test'),
-			showTest2: shouldShowNavItem('/test2')
-		}
+		navigationVisibility: getNavigationVisibility()
 	});
 }

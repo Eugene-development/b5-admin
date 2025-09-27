@@ -5,30 +5,87 @@
 import { authMiddleware } from '$lib/auth/auth-guard.svelte.js';
 
 /**
+ * Get domain-specific page configurations (same as in domainAccess.svelte.js)
+ */
+function getDomainPageConfig() {
+	return {
+		'rubonus.info': ['/actions', '/tz', '/projects'],
+		'bonus.band': [
+			'/projects',
+			'/actions',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/tz',
+			'/bz',
+			'/finance',
+			'/documentation'
+		],
+		'd.rubonus.info': ['/bz', '/suppliers'],
+		'admin.bonus.band': [
+			'/agents',
+			'/curators',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/clients',
+			'/projects',
+			'/finance',
+			'/tz',
+			'/bz',
+			'/actions',
+			'/documentation'
+		],
+		localhost: [
+			'/agents',
+			'/curators',
+			'/contractors',
+			'/suppliers',
+			'/services',
+			'/clients',
+			'/projects',
+			'/finance',
+			'/tz',
+			'/bz',
+			'/actions',
+			'/documentation'
+		] // For development
+	};
+}
+
+/**
  * Check if the current domain is allowed to access a specific route
  * @param {string} hostname - Request hostname
  * @param {string} pathname - Request pathname
  * @returns {boolean} True if access is allowed
  */
 function isDomainAllowed(hostname, pathname) {
-	// Define routes that require admin domain access
-	const adminOnlyRoutes = ['/test', '/test2'];
-
-	// Check if the current route requires admin domain
-	const requiresAdminDomain = adminOnlyRoutes.some((route) => pathname.startsWith(route));
-
-	if (requiresAdminDomain) {
-		// Only allow admin.bonus.band for admin-only routes
-		// Also allow localhost for development
-		return (
-			hostname === 'admin.bonus.band' ||
-			hostname.startsWith('localhost') ||
-			hostname.startsWith('127.0.0.1')
-		);
+	// Common pages accessible from all domains
+	const commonPages = [
+		'/dashboard',
+		'/profile',
+		'/settings',
+		'/login',
+		'/register',
+		'/email-verify',
+		'/health',
+		'/'
+	];
+	if (commonPages.some((commonPath) => pathname.startsWith(commonPath))) {
+		return true;
 	}
 
-	// All other routes are accessible from any domain
-	return true;
+	// Check localhost for development (allow all pages)
+	if (hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1')) {
+		return true;
+	}
+
+	// Get domain-specific configuration
+	const pageConfig = getDomainPageConfig();
+	const allowedPages = pageConfig[hostname] || [];
+
+	// Check if the current route is allowed for this domain
+	return allowedPages.some((allowedPath) => pathname.startsWith(allowedPath));
 }
 
 /**
