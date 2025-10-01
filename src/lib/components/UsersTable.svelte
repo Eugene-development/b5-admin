@@ -195,7 +195,7 @@
 					</td>
 				</tr>
 			{:else}
-				{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
+				{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 					<tr
 						class="transition-colors duration-150 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800"
 						aria-rowindex={index + 2}
@@ -212,41 +212,41 @@
 							role="cell"
 							headers="col-id"
 						>
-							{agent.id}
+							{user.id}
 						</td>
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
-							{agent.name || 'Not specified'}
+							{user.name || 'Not specified'}
 						</td>
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
-							{agent.email}
+							{user.email}
 						</td>
 						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-verified">
-							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
+							<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 						</td>
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-city"
 						>
-							{agent.city || 'Не указан'}
+							{user.city || 'Не указан'}
 						</td>
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
-							{formatDate(agent.created_at)}
+							{formatDate(user.created_at)}
 						</td>
 						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-status">
-							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
+							{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
 								<StatusBadge status="verified" text="Активен" />
@@ -257,7 +257,7 @@
 							role="cell"
 							headers="col-actions"
 						>
-							<ActionButtons {agent} onBan={onBanAgent} onDelete={onDeleteAgent} {isLoading} />
+							<ActionButtons user={user} onBan={onBanUser} onDelete={onDeleteUser} {isLoading} />
 						</td>
 					</tr>
 				{/each}
@@ -283,15 +283,15 @@
 			/>
 		</div>
 	{:else}
-		<div class="space-y-4" role="list" aria-label="Agents list">
-			{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
+		<div class="space-y-4" role="list" aria-label="Users list">
+			{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 				<div
 					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
 					role="listitem"
-					aria-labelledby="agent-{agent.id}-name"
-					aria-describedby="agent-{agent.id}-details"
+					aria-labelledby="user-{user.id}-name"
+					aria-describedby="user-{user.id}-details"
 				>
-					<!-- Agent Header -->
+					<!-- User Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<div class="mb-1 flex items-center gap-2">
@@ -303,31 +303,31 @@
 								</span>
 							</div>
 							<h3
-								id="agent-{agent.id}-name"
+								id="user-{user.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{agent.name || 'Not specified'}
+								{user.name || 'Not specified'}
 							</h3>
 							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-								{agent.email}
+								{user.email}
 							</p>
 							<div class="mt-1 flex items-center gap-2">
 								<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
-								<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
+								<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 							</div>
 						</div>
 						<div class="ml-3 flex-shrink-0">
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-								aria-label="Agent ID {agent.id}"
+								aria-label="User ID {user.id}"
 							>
-								ID: {agent.id}
+								ID: {user.id}
 							</span>
 						</div>
 					</div>
 
-					<!-- Agent Details Grid -->
-					<dl id="agent-{agent.id}-details" class="mb-4 grid grid-cols-2 gap-3">
+					<!-- User Details Grid -->
+					<dl id="user-{user.id}-details" class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
@@ -335,7 +335,7 @@
 								Город
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{agent.city || 'Не указан'}
+								{user.city || 'Не указан'}
 							</dd>
 						</div>
 						<div>
@@ -345,7 +345,7 @@
 								Регистрация
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(agent.created_at)}
+								{formatDate(user.created_at)}
 							</dd>
 						</div>
 					</dl>
@@ -354,7 +354,7 @@
 					<div class="mb-4 flex flex-wrap gap-2">
 						<div class="flex items-center">
 							<span class="mr-2 text-xs font-medium text-gray-500 dark:text-gray-400">Статус:</span>
-							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
+							{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
 								<StatusBadge status="verified" text="Активен" />
@@ -365,9 +365,9 @@
 					<!-- Action Buttons -->
 					<div class="flex justify-end border-t border-gray-200 pt-3 dark:border-gray-600">
 						<ActionButtons
-							{agent}
-							onBan={onBanAgent}
-							onDelete={onDeleteAgent}
+							user={user}
+							onBan={onBanUser}
+							onDelete={onDeleteUser}
 							{isLoading}
 							mobile={true}
 						/>
@@ -448,7 +448,7 @@
 								</td>
 							</tr>
 						{:else}
-							{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
+							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
 										{index + 1}
@@ -456,34 +456,34 @@
 									<td
 										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
 									>
-										{agent.id}
+										{user.id}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{agent.name || 'Not specified'}
+										{user.name || 'Not specified'}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{agent.email}
+										{user.email}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{agent.city || 'Не указан'}
+										{user.city || 'Не указан'}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm">
 										<div class="flex flex-col space-y-1">
-											{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
+											{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 												<StatusBadge status="banned" />
 											{:else}
 												<StatusBadge status="verified" text="Активен" />
 											{/if}
-											<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
+											<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 										</div>
 									</td>
 									<td
 										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
 									>
 										<ActionButtons
-											{agent}
-											onBan={onBanAgent}
-											onDelete={onDeleteAgent}
+											user={user}
+											onBan={onBanUser}
+											onDelete={onDeleteUser}
 											{isLoading}
 											compact={true}
 										/>

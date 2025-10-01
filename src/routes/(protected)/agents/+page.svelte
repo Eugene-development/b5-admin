@@ -1,6 +1,6 @@
 <script>
 	import {
-		AgentsTable,
+		UsersTable,
 		SearchBar,
 		ConfirmationModal,
 		ToastContainer,
@@ -37,11 +37,11 @@
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local agents state for updates - normalize status to lowercase
-	let localAgents = $state([
-		...(data?.agents || []).map((agent) => ({
-			...agent,
-			status: agent.status?.toLowerCase() || 'active'
+	// Local users state for updates - normalize status to lowercase
+	let localUsers = $state([
+		...(data?.agents || []).map((user) => ({
+			...user,
+			status: user.status?.toLowerCase() || 'active'
 		}))
 	]);
 
@@ -51,17 +51,17 @@
 	// Check for server-side load errors
 	let loadError = $state(data?.error || null);
 
-	// Computed filteredAgents reactive statement
-	let filteredAgents = $derived.by(() => {
+	// Computed filteredUsers reactive statement
+	let filteredUsers = $derived.by(() => {
 		if (!searchTerm.trim()) {
-			return localAgents;
+			return localUsers;
 		}
 
 		const term = searchTerm.toLowerCase().trim();
-		return localAgents.filter((agent) => {
-			const name = (agent.name || '').toLowerCase();
-			const email = (agent.email || '').toLowerCase();
-			const city = (agent.city || '').toLowerCase();
+		return localUsers.filter((user) => {
+			const name = (user.name || '').toLowerCase();
+			const email = (user.email || '').toLowerCase();
+			const city = (user.city || '').toLowerCase();
 
 			return name.includes(term) || email.includes(term) || city.includes(term);
 		});
@@ -72,16 +72,16 @@
 		searchTerm = term;
 	}
 
-	// Ban agent handler with confirmation
-	function handleBanAgent(agent) {
-		const isBanned = agent.status === 'banned';
+	// Ban user handler with confirmation
+	function handleBanUser(user) {
+		const isBanned = user.status === 'banned';
 		confirmAction = {
 			type: isBanned ? 'unban' : 'ban',
-			agent: agent,
+			user: user,
 			title: isBanned ? 'Разбанить агента' : 'Забанить агента',
 			message: isBanned
-				? `Вы уверены, что хотите разбанить агента "${agent.name || agent.email}"? Агент снова сможет получить доступ к системе.`
-				: `Вы уверены, что хотите забанить агента "${agent.name || agent.email}"? Агент потеряет доступ к системе.`,
+				? `Вы уверены, что хотите разбанить агента "${user.name || user.email}"? Агент снова сможет получить доступ к системе.`
+				: `Вы уверены, что хотите забанить агента "${user.name || user.email}"? Агент потеряет доступ к системе.`,
 			confirmText: isBanned ? 'Разбанить' : 'Забанить',
 			isDestructive: !isBanned
 		};
@@ -89,13 +89,13 @@
 		clearAllToasts();
 	}
 
-	// Delete agent handler with confirmation
-	function handleDeleteAgent(agent) {
+	// Delete user handler with confirmation
+	function handleDeleteUser(user) {
 		confirmAction = {
 			type: 'delete',
-			agent: agent,
+			user: user,
 			title: 'Удалить агента',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить агента "${agent.name || agent.email}"? Это действие нельзя отменить. Все данные агента будут потеряны.`,
+			message: `Вы уверены, что хотите НАВСЕГДА удалить агента "${user.name || user.email}"? Это действие нельзя отменить. Все данные агента будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -110,27 +110,27 @@
 		isActionLoading = true;
 
 		try {
-			const { type, agent } = confirmAction;
+			const { type, user } = confirmAction;
 
 			// Use retry mechanism for critical operations
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
-						const result = await banUser(agent.id);
+						const result = await banUser(user.id);
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'banned';
-						updateAgentStatus(agent.id, status);
-						addSuccessToast(`Агент "${agent.name || agent.email}" успешно забанен.`);
+						updateUserStatus(user.id, status);
+						addSuccessToast(`Агент "${user.name || user.email}" успешно забанен.`);
 					} else if (type === 'unban') {
-						const result = await unbanUser(agent.id);
+						const result = await unbanUser(user.id);
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'active';
-						updateAgentStatus(agent.id, status);
-						addSuccessToast(`Агент "${agent.name || agent.email}" успешно разбанен.`);
+						updateUserStatus(user.id, status);
+						addSuccessToast(`Агент "${user.name || user.email}" успешно разбанен.`);
 					} else if (type === 'delete') {
-						await deleteUser(agent.id);
-						removeAgentFromList(agent.id);
-						addSuccessToast(`Агент "${agent.name || agent.email}" успешно удален.`);
+						await deleteUser(user.id);
+						removeUserFromList(user.id);
+						addSuccessToast(`Агент "${user.name || user.email}" успешно удален.`);
 					}
 				},
 				2,
@@ -153,20 +153,20 @@
 		isActionLoading = false;
 	}
 
-	// Update agent status in local state
-	function updateAgentStatus(agentId, newStatus) {
+	// Update user status in local state
+	function updateUserStatus(userId, newStatus) {
 		// Create completely new array with new objects to ensure reactivity
-		localAgents = localAgents.map((agent) =>
-			agent.id === agentId ? { ...agent, status: newStatus } : agent
+		localUsers = localUsers.map((user) =>
+			user.id === userId ? { ...user, status: newStatus } : user
 		);
 
 		// Force reactivity update
 		updateCounter++;
 	}
 
-	// Remove agent from local state after deletion
-	function removeAgentFromList(agentId) {
-		localAgents = localAgents.filter((agent) => agent.id !== agentId);
+	// Remove user from local state after deletion
+	function removeUserFromList(userId) {
+		localUsers = localUsers.filter((user) => user.id !== userId);
 	}
 
 	// Refresh data from server
@@ -175,9 +175,9 @@
 		try {
 			const users = await refreshUsers();
 			// Normalize status to lowercase
-			localAgents = users.map((agent) => ({
-				...agent,
-				status: agent.status?.toLowerCase() || 'active'
+			localUsers = users.map((user) => ({
+				...user,
+				status: user.status?.toLowerCase() || 'active'
 			}));
 			loadError = null;
 			// Only show success message for manual refresh, not initial load
@@ -212,20 +212,20 @@
 		}
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
-		if (!localAgents.length && !loadError) {
+		if (!localUsers.length && !loadError) {
 			refreshData(true); // Pass true to indicate initial load
 		}
 	});
 
-	// Debug function to manually set agent status (for testing)
-	function debugSetAgentStatus(agentId, status) {
-		console.log('Debug: Manually setting agent status:', { agentId, status });
-		updateAgentStatus(agentId, status);
+	// Debug function to manually set user status (for testing)
+	function debugSetUserStatus(userId, status) {
+		console.log('Debug: Manually setting user status:', { userId, status });
+		updateUserStatus(userId, status);
 	}
 
 	// Make debug function available globally for testing
 	if (typeof window !== 'undefined') {
-		window.debugSetAgentStatus = debugSetAgentStatus;
+		window.debugSetUserStatus = debugSetUserStatus;
 	}
 </script>
 
@@ -337,21 +337,21 @@
 							aria-live="polite"
 							aria-atomic="true"
 						>
-							{#if filteredAgents.length === 0}
+							{#if filteredUsers.length === 0}
 								<p>Агенты не найдены</p>
-								<!-- {:else if filteredAgents.length === 1}
+								<!-- {:else if filteredUsers.length === 1}
 							<p>Найдена 1 запись по запросу "{searchTerm}"</p> -->
 							{:else}
-								<p>Найдено {filteredAgents.length} поз. по запросу "{searchTerm}"</p>
+								<p>Найдено {filteredUsers.length} поз. по запросу "{searchTerm}"</p>
 							{/if}
 						</div>
 					{/if}
 
-					<AgentsTable
-						agents={filteredAgents}
+					<UsersTable
+						users={filteredUsers}
 						isLoading={isActionLoading}
-						onBanAgent={handleBanAgent}
-						onDeleteAgent={handleDeleteAgent}
+						onBanUser={handleBanUser}
+						onDeleteUser={handleDeleteUser}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}

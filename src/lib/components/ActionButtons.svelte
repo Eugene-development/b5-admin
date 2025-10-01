@@ -17,6 +17,7 @@
 	 */
 	let {
 		agent,
+		user,
 		onBan,
 		onDelete,
 		onView,
@@ -26,46 +27,49 @@
 		projectMode = false
 	} = $props();
 
-	// Determine if agent is currently banned - using correct Svelte 5 syntax
+	// Use user if provided, otherwise fall back to agent for backward compatibility
+	const entity = user || agent;
+
+	// Determine if entity is currently banned - using correct Svelte 5 syntax
 	const isBanned = $derived(
 		!projectMode &&
-			(agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended')
+			(entity.status === 'banned' || entity.status === 'inactive' || entity.status === 'suspended')
 	);
 
 	// Debug effect to log the current state
 	$effect(() => {
 		if (projectMode) {
-			console.log(`🎯 ActionButtons Project ${agent.id}: name="${agent.name}"`);
+			console.log(`🎯 ActionButtons Project ${entity.id}: name="${entity.name}"`);
 		} else {
 			console.log(
-				`🎯 ActionButtons Agent ${agent.id}: status="${agent.status}", isBanned=${isBanned}, buttonText="${isBanned ? 'Разбанить' : 'Забанить'}"`
+				`🎯 ActionButtons User ${entity.id}: status="${entity.status}", isBanned=${isBanned}, buttonText="${isBanned ? 'Разбанить' : 'Забанить'}"`
 			);
 		}
 	});
 
 	// Generate unique IDs for accessibility
-	const banButtonId = `ban-button-${agent.id}`;
-	const deleteButtonId = `delete-button-${agent.id}`;
-	const viewButtonId = `view-button-${agent.id}`;
+	const banButtonId = `ban-button-${entity.id}`;
+	const deleteButtonId = `delete-button-${entity.id}`;
+	const viewButtonId = `view-button-${entity.id}`;
 
 	// Handle ban/unban or edit action
 	function handleBanAction() {
 		if (onBan && !isLoading) {
-			onBan(agent);
+			onBan(entity);
 		}
 	}
 
 	// Handle delete action
 	function handleDeleteAction() {
 		if (onDelete && !isLoading) {
-			onDelete(agent);
+			onDelete(entity);
 		}
 	}
 
 	// Handle view action
 	function handleViewAction() {
 		if (onView && !isLoading) {
-			onView(agent);
+			onView(entity);
 		}
 	}
 
@@ -85,32 +89,32 @@
 	}
 
 	// Get accessible button text
-	function getAccessibleBanText(isBanned, agentName) {
+	function getAccessibleBanText(isBanned, entityName) {
 		if (projectMode) {
-			const projectIdentifier = agentName || `проект ${agent.id}`;
+			const projectIdentifier = entityName || `проект ${entity.id}`;
 			return `Редактировать ${projectIdentifier}`;
 		}
 		const action = isBanned ? 'Unban' : 'Ban';
-		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
-		return `${action} ${agentIdentifier}`;
+		const entityIdentifier = entityName || entity.email || `user ${entity.id}`;
+		return `${action} ${entityIdentifier}`;
 	}
 
-	function getAccessibleDeleteText(agentName) {
+	function getAccessibleDeleteText(entityName) {
 		if (projectMode) {
-			const projectIdentifier = agentName || `проект ${agent.id}`;
+			const projectIdentifier = entityName || `проект ${entity.id}`;
 			return `Удалить ${projectIdentifier} навсегда`;
 		}
-		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
-		return `Delete ${agentIdentifier} permanently`;
+		const entityIdentifier = entityName || entity.email || `user ${entity.id}`;
+		return `Delete ${entityIdentifier} permanently`;
 	}
 
-	function getAccessibleViewText(agentName) {
+	function getAccessibleViewText(entityName) {
 		if (projectMode) {
-			const projectIdentifier = agentName || `проект ${agent.id}`;
+			const projectIdentifier = entityName || `проект ${entity.id}`;
 			return `Просмотреть детали ${projectIdentifier}`;
 		}
-		const agentIdentifier = agentName || agent.email || `agent ${agent.id}`;
-		return `View details for ${agentIdentifier}`;
+		const entityIdentifier = entityName || entity.email || `user ${entity.id}`;
+		return `View details for ${entityIdentifier}`;
 	}
 </script>
 
@@ -126,7 +130,7 @@
 				onkeydown={(e) => handleKeydown(e, 'view')}
 				class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(agent.name)}
+				aria-label={getAccessibleViewText(entity.name)}
 				aria-describedby="{viewButtonId}-description"
 			>
 				{#if isLoading}
@@ -183,7 +187,7 @@
 					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
 					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, agent.name)}
+			aria-label={getAccessibleBanText(isBanned, entity.name)}
 			aria-describedby={`${banButtonId}-description`}
 		>
 			{#if isLoading}
@@ -261,7 +265,7 @@
 			onkeydown={(e) => handleKeydown(e, 'delete')}
 			class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(agent.name)}
+			aria-label={getAccessibleDeleteText(entity.name)}
 			aria-describedby={`${deleteButtonId}-description`}
 		>
 			{#if isLoading}
@@ -311,7 +315,7 @@
 				onkeydown={(e) => handleKeydown(e, 'view')}
 				class="inline-flex min-h-[36px] items-center rounded-md bg-gray-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(agent.name)}
+				aria-label={getAccessibleViewText(entity.name)}
 				aria-describedby="{viewButtonId}-description"
 			>
 				{#if isLoading}
@@ -368,7 +372,7 @@
 					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, agent.name)}
+			aria-label={getAccessibleBanText(isBanned, entity.name)}
 			aria-describedby={`${banButtonId}-description`}
 		>
 			{#if isLoading}
@@ -446,7 +450,7 @@
 			onkeydown={(e) => handleKeydown(e, 'delete')}
 			class="inline-flex min-h-[36px] items-center rounded-md bg-red-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(agent.name)}
+			aria-label={getAccessibleDeleteText(entity.name)}
 			aria-describedby={`${deleteButtonId}-description`}
 		>
 			{#if isLoading}
@@ -496,7 +500,7 @@
 				onkeydown={(e) => handleKeydown(e, 'view')}
 				class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(agent.name)}
+				aria-label={getAccessibleViewText(entity.name)}
 				aria-describedby="{viewButtonId}-description"
 			>
 				{#if isLoading}
@@ -553,7 +557,7 @@
 					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
 					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
 			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, agent.name)}
+			aria-label={getAccessibleBanText(isBanned, entity.name)}
 			aria-describedby={`${banButtonId}-description`}
 		>
 			{#if isLoading}
@@ -631,7 +635,7 @@
 			onkeydown={(e) => handleKeydown(e, 'delete')}
 			class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(agent.name)}
+			aria-label={getAccessibleDeleteText(entity.name)}
 			aria-describedby={`${deleteButtonId}-description`}
 		>
 			{#if isLoading}

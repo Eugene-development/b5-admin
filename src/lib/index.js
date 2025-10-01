@@ -18,6 +18,8 @@ export { HttpClient, api, createHttpClient, initCsrf } from './utils/http-client
 
 // place files you want to import through the `$lib` alias in this folder.
 export { default as AgentsTable } from './components/AgentsTable.svelte';
+export { default as UsersTable } from './components/UsersTable.svelte';
+export { default as CompanyTable } from './components/CompanyTable.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';
 export { default as ProjectViewModal } from './components/ProjectViewModal.svelte';
