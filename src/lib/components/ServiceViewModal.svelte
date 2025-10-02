@@ -14,23 +14,56 @@
 			onClose();
 		}
 	}
+
+	// Handle body scroll when modal is open/closed
+	$effect(() => {
+		if (isOpen) {
+			// Prevent body scroll when modal is open
+			document.body.style.overflow = 'hidden';
+		} else {
+			// Restore body scroll when modal is closed
+			document.body.style.overflow = '';
+		}
+
+		// Cleanup on component unmount
+		return () => {
+			document.body.style.overflow = '';
+		};
+	});
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
 {#if isOpen && service}
 	<!-- Modal backdrop -->
 	<div
-		class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-		onclick={handleBackdropClick}
+		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+		aria-labelledby="modal-title"
 		role="dialog"
 		aria-modal="true"
-		aria-labelledby="modal-title"
 	>
-		<!-- Modal content -->
 		<div
-			class="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl dark:bg-gray-800"
+			class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
 		>
+			<!-- Background overlay -->
+			<div
+				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
+				onclick={handleBackdropClick}
+				onkeydown={handleKeydown}
+				tabindex="0"
+				role="button"
+				aria-label="Close modal"
+				aria-hidden="true"
+			></div>
+
+			<!-- Modal panel -->
+			<div
+				class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 dark:bg-gray-800"
+				onclick={(e) => e.stopPropagation()}
+				onkeydown={handleKeydown}
+				tabindex="0"
+				role="dialog"
+			>
 			<!-- Modal header -->
 			<div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
 				<h2 id="modal-title" class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -203,6 +236,7 @@
 						Закрыть
 					</button>
 				</div>
+			</div>
 			</div>
 		</div>
 	</div>

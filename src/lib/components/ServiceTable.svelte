@@ -70,9 +70,7 @@
 		style="min-width: 1000px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица управления сервисами с {services.length} сервис{services.length === 1
-				? 'ом'
-				: 'ами'}
+			Таблица управления сервисами с {services.length} сервис{services.length === 1 ? 'ом' : 'ами'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
