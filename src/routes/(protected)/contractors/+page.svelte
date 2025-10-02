@@ -6,7 +6,8 @@
 		ToastContainer,
 		ErrorBoundary,
 		LoadingSpinner,
-		EmptyState
+		EmptyState,
+		CompanyViewModal
 	} from '$lib';
 	import {
 		toasts,
@@ -28,6 +29,10 @@
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
+
+	// View modal state
+	let showViewModal = $state(false);
+	let selectedCompany = $state(null);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -104,6 +109,18 @@
 		};
 		showConfirmModal = true;
 		clearAllToasts();
+	}
+
+	// View contractor handler
+	function handleViewContractor(contractor) {
+		selectedCompany = contractor;
+		showViewModal = true;
+	}
+
+	// Close view modal
+	function closeViewModal() {
+		showViewModal = false;
+		selectedCompany = null;
 	}
 
 	// Execute confirmed action with retry mechanism
@@ -259,6 +276,7 @@
 						isLoading={isActionLoading}
 						onBanCompany={handleBanContractor}
 						onDeleteCompany={handleDeleteContractor}
+						onViewCompany={handleViewContractor}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -283,6 +301,13 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
+
+<!-- Company View Modal -->
+<CompanyViewModal
+	isOpen={showViewModal}
+	company={selectedCompany}
+	onClose={closeViewModal}
+/>
 
 <!-- Toast Notifications -->
 <ToastContainer toasts={$toasts} position="top-center" />

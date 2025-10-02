@@ -78,6 +78,7 @@ export function getDomainPageConfig() {
 			'/actions',
 			'/contractors',
 			'/suppliers',
+			'/delivery',
 			'/services',
 			'/tz',
 			'/bz',
@@ -90,6 +91,7 @@ export function getDomainPageConfig() {
 			'/curators',
 			'/contractors',
 			'/suppliers',
+			'/delivery',
 			'/services',
 			'/clients',
 			'/projects',
@@ -104,6 +106,7 @@ export function getDomainPageConfig() {
 			'/curators',
 			'/contractors',
 			'/suppliers',
+			'/delivery',
 			'/services',
 			'/clients',
 			'/projects',
@@ -186,6 +189,7 @@ export function getNavigationVisibility() {
 		showCurators: shouldShowNavItem('/curators'),
 		showContractors: shouldShowNavItem('/contractors'),
 		showSuppliers: shouldShowNavItem('/suppliers'),
+		showDelivery: shouldShowNavItem('/delivery'),
 		showServices: shouldShowNavItem('/services'),
 
 		// Analytics section

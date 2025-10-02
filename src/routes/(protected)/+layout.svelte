@@ -284,6 +284,24 @@
 									</button>
 								</li>
 							{/if}
+							{#if navigationVisibility.showDelivery}
+								<li>
+									<button
+										type="button"
+										class={getNavClasses('/delivery')}
+										onclick={() => handleMobileNavigation('/delivery')}
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											class={getIconClasses('/suppliers')}
+										>
+											<circle cx="12" cy="12" r="3" />
+										</svg>
+										Доставка
+									</button>
+								</li>
+							{/if}
 							{#if navigationVisibility.showServices}
 								<li>
 									<button
@@ -589,6 +607,16 @@
 										<circle cx="12" cy="12" r="3" />
 									</svg>
 									Поставщики
+								</a>
+							</li>
+						{/if}
+						{#if navigationVisibility.showDelivery}
+							<li>
+								<a href="/delivery" class={getNavClasses('/delivery')}>
+									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/suppliers')}>
+										<circle cx="12" cy="12" r="3" />
+									</svg>
+									Доставка
 								</a>
 							</li>
 						{/if}
@@ -939,7 +967,7 @@
 	</div>
 
 	<main class="bg-gray-900 py-4">
-		<div class="mx-auto px-4 sm:px-6 lg:px-8">
+		<div class="px-4 sm:px-6 lg:px-8">
 			{@render children?.()}
 		</div>
 	</main>

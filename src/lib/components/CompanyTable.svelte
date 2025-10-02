@@ -8,6 +8,7 @@
 		isLoading = false,
 		onBanCompany,
 		onDeleteCompany,
+		onViewCompany,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -25,7 +26,9 @@
 
 	// Get company status for StatusBadge
 	function getCompanyStatus(company) {
-		return company.status === 'banned' || company.status === 'inactive' || company.status === 'suspended'
+		return company.status === 'banned' ||
+			company.status === 'inactive' ||
+			company.status === 'suspended'
 			? 'banned'
 			: 'active';
 	}
@@ -68,94 +71,75 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+<div class="w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
 	<table
 		id={tableId}
-		class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"
+		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
 		aria-labelledby={tableCaptionId}
 		aria-describedby={tableDescriptionId}
 		style="min-width: 1200px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица управления компаниями с {companies.length} компани{companies.length === 1 ? 'ей' : 'ями'}
+			Таблица управления компаниями с {companies.length} компани{companies.length === 1
+				? 'ей'
+				: 'ями'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 60px;"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 80px; width: 80px;"
 				>
 					ID
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 150px;"
+					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 250px;"
 				>
 					Компания
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 200px;"
-				>
-					Юр название
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 120px;"
-				>
-					ИНН
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 180px;"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 200px; width: 200px;"
 				>
 					Почта
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 130px;"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 150px; width: 150px;"
 				>
 					Телефон
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 150px;"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 180px; width: 180px;"
 				>
 					Контактное лицо
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 120px;"
-				>
-					Регион
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 100px;"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 100px; width: 100px;"
 				>
 					Статус
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 100px;"
+					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 80px; width: 80px;"
 				>
 					Бан
 				</th>
-				<th 
-					scope="col" 
-					class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400 whitespace-nowrap"
-					style="min-width: 180px;"
+				<th
+					scope="col"
+					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 160px; width: 160px;"
 				>
 					Действия
 				</th>
@@ -164,7 +148,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="11" class="px-4 py-4 text-center" role="cell">
+					<td colspan="8" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных компаний">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -176,7 +160,7 @@
 				</tr>
 			{:else if companies.length === 0}
 				<tr>
-					<td colspan="11" class="px-4 py-4" role="cell">
+					<td colspan="8" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -190,81 +174,55 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{company.id}
 						</td>
-						<td
-							class="px-4 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;"
-						>
-							<div class="truncate" title={company.name || 'Не указано'}>
+						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="break-words pr-4 leading-relaxed">
 								{company.name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;"
-						>
-							<div class="truncate" title={company.legal_name || 'Не указано'}>
-								{company.legal_name || 'Не указано'}
-							</div>
-						</td>
-						<td
-							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{company.inn || 'Не указан'}
-						</td>
-						<td
-							class="px-4 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							style="max-width: 180px; overflow: hidden; text-overflow: ellipsis;"
-						>
-							<div class="truncate" title={company.email || 'Не указана'}>
+							<div class="pr-4" title={company.email || 'Не указана'}>
 								{company.email || 'Не указана'}
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{company.phone || 'Не указан'}
+							<div class="pr-4" title={company.phone || 'Не указан'}>
+								{company.phone || 'Не указан'}
+							</div>
 						</td>
 						<td
-							class="px-4 py-4 text-sm text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
-							style="max-width: 150px; overflow: hidden; text-overflow: ellipsis;"
 						>
-							<div class="truncate" title={company.contact_person || 'Не указано'}>
+							<div class="pr-4" title={company.contact_person || 'Не указано'}>
 								{company.contact_person || 'Не указано'}
 							</div>
 						</td>
-						<td
-							class="px-4 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							style="max-width: 120px; overflow: hidden; text-overflow: ellipsis;"
-						>
-							<div class="truncate" title={company.region || 'Не указан'}>
-								{company.region || 'Не указан'}
-							</div>
-						</td>
-						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell">
+						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
 							<StatusBadge status={getCompanyStatus(company)} />
 						</td>
-						<td class="whitespace-nowrap px-4 py-4 text-center" role="cell">
+						<td class="whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanCompany(company)}
 								disabled={isLoading}
 								class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-									{getCompanyStatus(company) === 'banned' 
-										? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600' 
-										: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
-								aria-label={getCompanyStatus(company) === 'banned' ? 'Разбанить компанию' : 'Забанить компанию'}
+									{getCompanyStatus(company) === 'banned'
+									? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
+									: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
+								aria-label={getCompanyStatus(company) === 'banned'
+									? 'Разбанить компанию'
+									: 'Забанить компанию'}
 							>
 								{#if isLoading}
 									<svg
@@ -274,7 +232,14 @@
 										viewBox="0 0 24 24"
 										aria-hidden="true"
 									>
-										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
 										<path
 											class="opacity-75"
 											fill="currentColor"
@@ -308,19 +273,22 @@
 										stroke="currentColor"
 										aria-hidden="true"
 									>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M20 12H4"
+										/>
 									</svg>
 								{/if}
 							</button>
 						</td>
-						<td
-							class="relative whitespace-nowrap py-4 px-4 text-center"
-							role="cell"
-						>
+						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button
 									type="button"
+									onclick={() => onViewCompany && onViewCompany(company)}
 									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 									aria-label="Просмотреть компанию {company.name || company.id}"
 								>
@@ -384,7 +352,14 @@
 											viewBox="0 0 24 24"
 											aria-hidden="true"
 										>
-											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
 											<path
 												class="opacity-75"
 												fill="currentColor"
@@ -441,15 +416,17 @@
 					<!-- Company Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="truncate text-sm font-medium text-gray-900 dark:text-white">
+							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
 								{company.name || 'Не указано'}
 							</h3>
-							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
+							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
 								{company.legal_name || 'Юр. название не указано'}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
-							<span class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+							<span
+								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+							>
 								ID: {company.id}
 							</span>
 						</div>
@@ -458,23 +435,9 @@
 					<!-- Company Details Grid -->
 					<dl class="mb-4 grid grid-cols-2 gap-3">
 						<div>
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-								ИНН
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{company.inn || 'Не указан'}
-							</dd>
-						</div>
-						<div>
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-								Регион
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{company.region || 'Не указан'}
-							</dd>
-						</div>
-						<div>
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Почта
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -482,7 +445,9 @@
 							</dd>
 						</div>
 						<div>
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Телефон
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -490,7 +455,9 @@
 							</dd>
 						</div>
 						<div class="col-span-2">
-							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Контактное лицо
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -500,7 +467,9 @@
 					</dl>
 
 					<!-- Status and Actions -->
-					<div class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600">
+					<div
+						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
+					>
 						<div class="flex items-center space-x-2">
 							<StatusBadge status={getCompanyStatus(company)} />
 							<button
@@ -508,9 +477,9 @@
 								onclick={() => onBanCompany(company)}
 								disabled={isLoading}
 								class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-									{getCompanyStatus(company) === 'banned' 
-										? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700' 
-										: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
+									{getCompanyStatus(company) === 'banned'
+									? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
+									: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
 							>
 								{#if isLoading}
 									<svg
@@ -520,7 +489,14 @@
 										viewBox="0 0 24 24"
 										aria-hidden="true"
 									>
-										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
 										<path
 											class="opacity-75"
 											fill="currentColor"
@@ -554,7 +530,12 @@
 										stroke="currentColor"
 										aria-hidden="true"
 									>
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M20 12H4"
+										/>
 									</svg>
 								{/if}
 							</button>
@@ -563,6 +544,7 @@
 							<!-- View Button -->
 							<button
 								type="button"
+								onclick={() => onViewCompany && onViewCompany(company)}
 								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 							>
 								<svg
@@ -623,7 +605,14 @@
 										viewBox="0 0 24 24"
 										aria-hidden="true"
 									>
-										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
 										<path
 											class="opacity-75"
 											fill="currentColor"

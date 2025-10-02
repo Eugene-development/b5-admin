@@ -6,7 +6,8 @@
 		ToastContainer,
 		ErrorBoundary,
 		LoadingSpinner,
-		EmptyState
+		EmptyState,
+		UserViewModal
 	} from '$lib';
 	import {
 		toasts,
@@ -28,6 +29,10 @@
 	// Action state management
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
+
+	// View modal state
+	let showViewModal = $state(false);
+	let selectedUser = $state(null);
 	let confirmAction = $state(null);
 
 	// Error boundary state
@@ -101,6 +106,18 @@
 		};
 		showConfirmModal = true;
 		clearAllToasts();
+	}
+
+	// View user handler
+	function handleViewUser(user) {
+		selectedUser = user;
+		showViewModal = true;
+	}
+
+	// Close view modal
+	function closeViewModal() {
+		showViewModal = false;
+		selectedUser = null;
 	}
 
 	// Execute confirmed action with retry mechanism
@@ -352,6 +369,7 @@
 						isLoading={isActionLoading}
 						onBanUser={handleBanUser}
 						onDeleteUser={handleDeleteUser}
+						onViewUser={handleViewUser}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -376,6 +394,13 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
+
+<!-- User View Modal -->
+<UserViewModal
+	isOpen={showViewModal}
+	user={selectedUser}
+	onClose={closeViewModal}
+/>
 
 <!-- Toast Notifications -->
 <ToastContainer toasts={$toasts} position="top-center" />

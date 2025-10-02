@@ -8,6 +8,7 @@
 		isLoading = false,
 		onBanUser,
 		onDeleteUser,
+		onViewUser,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -257,7 +258,7 @@
 							role="cell"
 							headers="col-actions"
 						>
-							<ActionButtons user={user} onBan={onBanUser} onDelete={onDeleteUser} {isLoading} />
+							<ActionButtons user={user} onBan={onBanUser} onDelete={onDeleteUser} onView={onViewUser} {isLoading} />
 						</td>
 					</tr>
 				{/each}
@@ -368,6 +369,7 @@
 							user={user}
 							onBan={onBanUser}
 							onDelete={onDeleteUser}
+							onView={onViewUser}
 							{isLoading}
 							mobile={true}
 						/>
@@ -484,6 +486,7 @@
 											user={user}
 											onBan={onBanUser}
 											onDelete={onDeleteUser}
+											onView={onViewUser}
 											{isLoading}
 											compact={true}
 										/>

@@ -121,7 +121,7 @@
 {#if mobile}
 	<!-- Mobile Layout - Larger touch targets, actions in one row -->
 	<div class="flex w-full flex-row justify-end space-x-2">
-		{#if projectMode && onView}
+		{#if onView}
 			<!-- View Button -->
 			<button
 				type="button"
@@ -306,7 +306,7 @@
 {:else if compact}
 	<!-- Compact Layout - Smaller buttons for tablet view -->
 	<div class="flex justify-end space-x-1">
-		{#if projectMode && onView}
+		{#if onView}
 			<!-- View Button -->
 			<button
 				type="button"
@@ -491,7 +491,7 @@
 {:else}
 	<!-- Desktop Layout - Original design -->
 	<div class="flex justify-end space-x-2">
-		{#if projectMode && onView}
+		{#if onView}
 			<!-- View Button -->
 			<button
 				type="button"
@@ -687,9 +687,11 @@
 			? 'Это действие нельзя отменить, проект будет удален навсегда'
 			: 'This action cannot be undone and will permanently remove all agent data'}
 	</div>
-	{#if projectMode && onView}
+	{#if onView}
 		<div id="{viewButtonId}-description" class="sr-only">
-			Откроет окно с детальной информацией о проекте
+			{projectMode 
+				? 'Откроет окно с детальной информацией о проекте'
+				: 'Откроет окно с детальной информацией о пользователе'}
 		</div>
 	{/if}
 {/if}
