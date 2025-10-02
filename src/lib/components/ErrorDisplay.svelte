@@ -12,37 +12,27 @@
 
 	/**
 	 * @type {Object} errors - Errors object with field-specific messages
-	 */
-	export let errors = {};
-
-	/**
 	 * @type {string} field - Specific field to display errors for (optional)
-	 */
-	export let field = null;
-
-	/**
 	 * @type {boolean} showFirst - Show only the first error message
-	 */
-	export let showFirst = false;
-
-	/**
 	 * @type {string} className - Additional CSS classes
-	 */
-	export let className = '';
-
-	/**
 	 * @type {string} separator - Separator for multiple error messages
 	 */
-	export let separator = ' ';
+	let { 
+		errors = {},
+		field = null,
+		showFirst = false,
+		className = '',
+		separator = ' '
+	} = $props();
 
 	// Reactive computed values
-	$: displayMessages = createDisplayMessages(errors, separator);
-	$: hasAnyErrors = hasErrors(errors);
-	$: firstError = showFirst ? getFirstErrorMessage(errors) : null;
+	let displayMessages = $derived(createDisplayMessages(errors, separator));
+	let hasAnyErrors = $derived(hasErrors(errors));
+	let firstError = $derived(showFirst ? getFirstErrorMessage(errors) : null);
 
 	// Get errors for specific field or all errors
-	$: fieldErrors = field ? errors[field] || [] : errors;
-	$: fieldDisplayMessage = field ? displayMessages[field] : null;
+	let fieldErrors = $derived(field ? errors[field] || [] : errors);
+	let fieldDisplayMessage = $derived(field ? displayMessages[field] : null);
 </script>
 
 {#if hasAnyErrors}

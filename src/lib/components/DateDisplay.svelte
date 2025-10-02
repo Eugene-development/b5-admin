@@ -2,13 +2,15 @@
 	import { formatDate } from '../utils/formatters.js';
 	import { getDateUrgencyClasses, getRelativeTime } from '../utils/dateUtils.js';
 
-	export let date = null;
-	export let showRelative = false;
-	export let className = '';
+	let { 
+		date = null,
+		showRelative = false,
+		className = ''
+	} = $props();
 
-	$: formattedDate = formatDate(date);
-	$: urgencyClasses = getDateUrgencyClasses(date);
-	$: relativeTime = showRelative ? getRelativeTime(date) : '';
+	let formattedDate = $derived(formatDate(date));
+	let urgencyClasses = $derived(getDateUrgencyClasses(date));
+	let relativeTime = $derived(showRelative ? getRelativeTime(date) : '');
 </script>
 
 <div class="inline-flex flex-col {className}">

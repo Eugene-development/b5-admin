@@ -1,13 +1,15 @@
 <script>
 	import { formatAgentDisplay } from '../utils/formatters.js';
 
-	export let agent = null;
-	export let showId = false;
-	export let clickable = false;
-	export let className = '';
+	let { 
+		agent = null,
+		showId = false,
+		clickable = false,
+		className = ''
+	} = $props();
 
-	$: displayText = formatAgentDisplay(agent);
-	$: isAssigned = agent && (agent.name || agent.email);
+	let displayText = $derived(formatAgentDisplay(agent));
+	let isAssigned = $derived(agent && (agent.name || agent.email));
 
 	function handleAgentClick() {
 		if (clickable && agent && agent.id) {
@@ -33,7 +35,7 @@
 					<button
 						type="button"
 						class="m-0 cursor-pointer border-none bg-transparent p-0 text-left text-sm font-medium text-gray-900 hover:text-blue-600"
-						on:click={handleAgentClick}
+						onclick={handleAgentClick}
 					>
 						{agent.name || agent.email}
 					</button>

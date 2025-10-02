@@ -3,6 +3,18 @@
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
+	import {
+		ToastContainer,
+		ErrorBoundary
+	} from '$lib';
+	import {
+		toasts,
+		addSuccessToast,
+		addErrorToast,
+		handleApiError,
+		clearAllToasts
+	} from '$lib/utils/toastStore.js';
+	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
 	let hasAccess = $state(false);
@@ -12,6 +24,13 @@
 	let hasSearched = $state(false);
 	let filteredOrders = $state([]);
 	let updateCounter = $state(0);
+
+	// Error boundary state
+	let hasError = $state(false);
+	let errorBoundaryError = $state(null);
+
+	// Check for server-side load errors
+	let loadError = $state(data?.error || null);
 
 	// Initialize domain detection and check access
 	onMount(() => {
@@ -67,11 +86,9 @@
 			filteredOrders = filteredOrders.filter(o => o.id !== order.id);
 			updateCounter++;
 			
-			// Показать уведомление об успешном удалении
-			console.log(`Заказ #${order.id} успешно удален`);
+			addSuccessToast(`Заказ #${order.id} успешно удален`);
 		} catch (error) {
-			console.error('Error deleting order:', error);
-			alert('Ошибка при удалении заказа');
+			handleApiError(error, 'Ошибка при удалении заказа');
 		} finally {
 			isLoading = false;
 		}
@@ -96,11 +113,45 @@
 			clearSearch();
 		}
 	}
+
+	// Handle error boundary errors
+	function handleErrorBoundaryError(error) {
+		hasError = true;
+		errorBoundaryError = error;
+		handleApiError(error, 'Критическая ошибка');
+	}
+
+	// Retry from error boundary
+	async function retryFromErrorBoundary() {
+		hasError = false;
+		errorBoundaryError = null;
+		// Reinitialize access check
+		initializeDomainDetection();
+		hasAccess = hasOrderAccess();
+	}
+
+	// Handle initial load error
+	onMount(() => {
+		if (loadError) {
+			addErrorToast(loadError.message, { duration: 0 });
+		}
+	});
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} />
 
-{#if !hasAccess}
+<ProtectedRoute>
+	{#snippet children()}
+		<ErrorBoundary
+			{hasError}
+			error={errorBoundaryError}
+			onError={handleErrorBoundaryError}
+			onRetry={retryFromErrorBoundary}
+			fallbackTitle="Order Page Error"
+			fallbackMessage="An error occurred while loading the order page."
+			showDetails={true}
+		>
+			{#if !hasAccess}
 	<div class="flex min-h-[400px] items-center justify-center">
 		<div class="text-center">
 			<div class="mx-auto h-12 w-12 text-gray-400">
@@ -241,6 +292,12 @@
 			onDeleteOrder={handleDeleteOrder}
 			onEditOrder={handleEditOrder}
 		/>
+		</div>
 	</div>
-</div>
-{/if}
+	{/if}
+		</ErrorBoundary>
+	{/snippet}
+</ProtectedRoute>
+
+<!-- Toast Notifications -->
+<ToastContainer toasts={$toasts} position="top-center" />

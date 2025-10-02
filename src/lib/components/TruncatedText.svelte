@@ -1,15 +1,17 @@
 <script>
 	import { truncateText, isTruncated } from '../utils/formatters.js';
 
-	export let text = '';
-	export let maxLength = 100;
-	export let className = '';
-	export let tooltipClassName = 'bg-gray-900 text-white text-sm rounded px-2 py-1 shadow-lg';
+	let { 
+		text = '',
+		maxLength = 100,
+		className = '',
+		tooltipClassName = 'bg-gray-900 text-white text-sm rounded px-2 py-1 shadow-lg'
+	} = $props();
 
-	$: displayText = truncateText(text, maxLength);
-	$: showTooltip = isTruncated(text, maxLength);
+	let displayText = $derived(truncateText(text, maxLength));
+	let showTooltip = $derived(isTruncated(text, maxLength));
 
-	let showTooltipState = false;
+	let showTooltipState = $state(false);
 	let tooltipElement;
 </script>
 
@@ -18,10 +20,10 @@
 		<button
 			type="button"
 			class="font-inherit m-0 cursor-help border-none bg-transparent p-0 text-inherit"
-			on:mouseenter={() => (showTooltipState = true)}
-			on:mouseleave={() => (showTooltipState = false)}
-			on:focus={() => (showTooltipState = true)}
-			on:blur={() => (showTooltipState = false)}
+			onmouseenter={() => (showTooltipState = true)}
+			onmouseleave={() => (showTooltipState = false)}
+			onfocus={() => (showTooltipState = true)}
+			onblur={() => (showTooltipState = false)}
 			aria-label={`Полный текст: ${text}`}
 		>
 			{displayText}

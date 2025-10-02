@@ -21,14 +21,14 @@
 	 */
 
 	// Component state
-	let verificationStatus = 'pending'; // 'pending', 'verifying', 'success', 'error'
-	let resendCooldown = 0;
-	let resendTimer = null;
+	let verificationStatus = $state('pending'); // 'pending', 'verifying', 'success', 'error'
+	let resendCooldown = $state(0);
+	let resendTimer = $state(null);
 
 	// Reactive state
-	$: user = authState.user;
-	$: loading = authState.emailVerificationLoading;
-	$: error = authState.emailVerificationError;
+	let user = $derived(authState.user);
+	let loading = $derived(authState.emailVerificationLoading);
+	let error = $derived(authState.emailVerificationError);
 
 	/**
 	 * Initialize component and handle verification

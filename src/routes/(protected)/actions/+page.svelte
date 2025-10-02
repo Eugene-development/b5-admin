@@ -1,78 +1,58 @@
 <script>
-	import { onMount } from 'svelte';
+	import { invalidateAll } from '$app/navigation';
 	import ActionTable from '$lib/components/ActionTable.svelte';
 	import ActionViewModal from '$lib/components/ActionViewModal.svelte';
+	import {
+		ToastContainer,
+		ErrorBoundary
+	} from '$lib';
+	import {
+		toasts,
+		addSuccessToast,
+		addErrorToast,
+		handleApiError,
+		clearAllToasts
+	} from '$lib/utils/toastStore.js';
+	import { onMount } from 'svelte';
+	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+
+	/** @type {import('./$types').PageData} */
+	let { data } = $props();
 
 	// State management
-	let actions = [];
-	let isLoading = false;
-	let isRefreshing = false;
-	let searchTerm = '';
-	let hasSearched = false;
-	let updateCounter = 0;
+	let actions = $state(data.actions);
+	let allActions = $state(data.actions); // Keep original data for filtering
+	let isLoading = $state(false);
+	let isRefreshing = $state(false);
+	let searchTerm = $state('');
+	let hasSearched = $state(false);
+	let updateCounter = $state(0);
 
 	// Modal state
-	let selectedAction = null;
-	let isViewModalOpen = false;
+	let selectedAction = $state(null);
+	let isViewModalOpen = $state(false);
 
-	// Mock data for demonstration
-	const mockActions = [
-		{
-			id: 1,
-			company_name: 'ООО "Рога и Копыта"',
-			action_name: 'Скидка 20% на все товары',
-			phone: '+7 (495) 123-45-67',
-			contact_person: 'Иванов Иван Иванович',
-			region: 'Москва',
-			start_date: '2025-02-01',
-			end_date: '2025-02-28',
-			description: 'Специальная акция для постоянных клиентов. Скидка действует на весь ассортимент товаров.',
-			comment: 'Акция проводится в рамках празднования 10-летия компании',
-			created_at: '2025-01-15',
-			updated_at: '2025-01-20'
-		},
-		{
-			id: 2,
-			company_name: 'ИП Петров',
-			action_name: 'Бесплатная доставка',
-			phone: '+7 (812) 987-65-43',
-			contact_person: 'Петров Петр Петрович',
-			region: 'Санкт-Петербург',
-			start_date: '2025-02-10',
-			end_date: '2025-03-10',
-			description: 'Бесплатная доставка при заказе от 3000 рублей',
-			comment: 'Тестовая акция для оценки эффективности',
-			created_at: '2025-01-18',
-			updated_at: '2025-01-25'
-		},
-		{
-			id: 3,
-			company_name: 'ООО "Техносервис"',
-			action_name: '2+1 на ремонт техники',
-			phone: '+7 (495) 555-12-34',
-			contact_person: 'Сидорова Анна Владимировна',
-			region: 'Московская область',
-			start_date: '2025-02-15',
-			end_date: '2025-04-15',
-			description: 'При заказе ремонта двух устройств, третье - бесплатно',
-			comment: 'Акция действует только для бытовой техники',
-			created_at: '2025-01-22',
-			updated_at: '2025-01-30'
-		}
-	];
+	// Error boundary state
+	let hasError = $state(false);
+	let errorBoundaryError = $state(null);
 
-	onMount(() => {
-		loadActions();
+	// Check for server-side load errors
+	let loadError = $state(data?.error || null);
+
+	// Update actions when data changes
+	$effect(() => {
+		actions = data.actions;
+		allActions = data.actions;
 	});
 
-	function loadActions() {
+	async function loadActions() {
 		isLoading = true;
-		// Simulate API call
-		setTimeout(() => {
-			actions = mockActions;
-			isLoading = false;
+		try {
+			await invalidateAll();
 			updateCounter++;
-		}, 500);
+		} finally {
+			isLoading = false;
+		}
 	}
 
 	function handleViewAction(action) {
@@ -102,16 +82,17 @@
 	function handleSearch() {
 		hasSearched = true;
 		isLoading = true;
-		
+
 		setTimeout(() => {
 			if (searchTerm.trim()) {
-				actions = mockActions.filter(action => 
-					action.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					action.action_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					action.region.toLowerCase().includes(searchTerm.toLowerCase())
+				actions = allActions.filter(
+					(action) =>
+						action.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						action.action_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+						action.region.toLowerCase().includes(searchTerm.toLowerCase())
 				);
 			} else {
-				actions = mockActions;
+				actions = allActions;
 				hasSearched = false;
 			}
 			isLoading = false;
@@ -122,21 +103,44 @@
 	function clearSearch() {
 		searchTerm = '';
 		hasSearched = false;
-		actions = mockActions;
+		actions = allActions;
 		updateCounter++;
 	}
 
-	function refreshData() {
+	async function refreshData() {
 		isRefreshing = true;
-		// Simulate API call
-		setTimeout(() => {
-			actions = mockActions;
-			isRefreshing = false;
+		try {
+			await invalidateAll();
+			actions = allActions;
 			updateCounter++;
-			// В реальном приложении здесь будет показано уведомление об успешном обновлении
-			console.log('Данные успешно обновлены');
-		}, 800);
+			addSuccessToast('Данные успешно обновлены');
+		} catch (error) {
+			handleApiError(error, 'Не удалось обновить данные');
+		} finally {
+			isRefreshing = false;
+		}
 	}
+
+	// Handle error boundary errors
+	function handleErrorBoundaryError(error) {
+		hasError = true;
+		errorBoundaryError = error;
+		handleApiError(error, 'Критическая ошибка');
+	}
+
+	// Retry from error boundary
+	async function retryFromErrorBoundary() {
+		hasError = false;
+		errorBoundaryError = null;
+		await refreshData();
+	}
+
+	// Handle initial load error
+	onMount(() => {
+		if (loadError) {
+			addErrorToast(loadError.message, { duration: 0 });
+		}
+	});
 </script>
 
 <svelte:head>
@@ -144,13 +148,26 @@
 	<meta name="description" content="Управление акциями системы" />
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+<ProtectedRoute>
+	{#snippet children()}
+		<ErrorBoundary
+			{hasError}
+			error={errorBoundaryError}
+			onError={handleErrorBoundaryError}
+			onRetry={retryFromErrorBoundary}
+			fallbackTitle="Actions Page Error"
+			fallbackMessage="An error occurred while loading the actions page."
+			showDetails={true}
+		>
+			<div class="min-h-screen bg-gray-50 dark:bg-gray-900">
 	<div class="px-4 py-8 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-7xl">
 			<!-- Header with Refresh Button -->
-			<div class="mb-8 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+			<div
+				class="mb-8 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+			>
 				<div class="flex-auto">
-					<h1 class="text-3xl font-bold text-gray-900 dark:text-white sm:text-2xl">Акции</h1>
+					<h1 class="text-3xl font-bold text-gray-900 sm:text-2xl dark:text-white">Акции</h1>
 					<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
 						Управление акциями и промо-кампаниями системы
 					</p>
@@ -195,13 +212,13 @@
 			<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 				<!-- Search -->
 				<div class="flex flex-1 items-center space-x-4">
-					<div class="relative flex-1 max-w-md">
+					<div class="relative max-w-md flex-1">
 						<input
 							type="text"
 							bind:value={searchTerm}
 							oninput={handleSearch}
 							placeholder="Поиск по компании, акции или региону..."
-							class="block w-full rounded-md border-gray-300 pl-10 pr-3 py-2 text-sm placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+							class="block w-full rounded-md border-gray-300 py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
 						/>
 						<div class="absolute inset-y-0 left-0 flex items-center pl-3">
 							<svg
@@ -244,7 +261,12 @@
 							viewBox="0 0 24 24"
 							stroke="currentColor"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 4v16m8-8H4"
+							/>
 						</svg>
 						Добавить акцию
 					</button>
@@ -257,7 +279,11 @@
 					{#if actions.length === 0}
 						Акции не найдены по запросу "{searchTerm}"
 					{:else}
-						Найдено {actions.length} акци{actions.length === 1 ? 'я' : actions.length < 5 ? 'и' : 'й'} по запросу "{searchTerm}"
+						Найдено {actions.length} акци{actions.length === 1
+							? 'я'
+							: actions.length < 5
+								? 'и'
+								: 'й'} по запросу "{searchTerm}"
 					{/if}
 				</div>
 			{/if}
@@ -273,15 +299,15 @@
 				onEditAction={handleEditAction}
 				onDeleteAction={handleDeleteAction}
 			/>
+			</div>
 		</div>
 	</div>
-</div>
+		</ErrorBoundary>
+	{/snippet}
+</ProtectedRoute>
 
 <!-- View Modal -->
-<ActionViewModal
-	action={selectedAction}
-	isOpen={isViewModalOpen}
-	onClose={closeViewModal}
-/>
+<ActionViewModal action={selectedAction} isOpen={isViewModalOpen} onClose={closeViewModal} />
 
-
+<!-- Toast Notifications -->
+<ToastContainer toasts={$toasts} position="top-center" />

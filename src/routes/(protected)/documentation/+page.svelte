@@ -3,8 +3,8 @@
 	import { onMount } from 'svelte';
 	import DomainAccessInfo from '$lib/components/DomainAccessInfo.svelte';
 
-	let currentDomain = '';
-	let fullUrl = '';
+	let currentDomain = $state('');
+	let fullUrl = $state('');
 
 	onMount(() => {
 		currentDomain = window.location.hostname;

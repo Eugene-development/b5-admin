@@ -1,24 +1,26 @@
 <script>
 	import { formatCurrency, formatAgentRate } from '../utils/formatters.js';
 
-	export let amount = null;
-	export let currency = 'RUB';
-	export let type = 'currency'; // 'currency' | 'agent_rate'
-	export let rateType = 'percentage'; // for agent_rate type
-	export let className = '';
-	export let size = 'normal'; // 'small' | 'normal' | 'large'
+	let { 
+		amount = null,
+		currency = 'RUB',
+		type = 'currency', // 'currency' | 'agent_rate'
+		rateType = 'percentage', // for agent_rate type
+		className = '',
+		size = 'normal' // 'small' | 'normal' | 'large'
+	} = $props();
 
-	$: formattedValue = type === 'agent_rate' 
+	let formattedValue = $derived(type === 'agent_rate' 
 		? formatAgentRate(amount, rateType)
-		: formatCurrency(amount, currency);
+		: formatCurrency(amount, currency));
 
-	$: sizeClasses = {
+	let sizeClasses = $derived({
 		small: 'text-sm',
 		normal: 'text-base',
 		large: 'text-lg font-semibold'
-	}[size];
+	}[size]);
 
-	$: isZeroOrEmpty = !amount || amount === 0;
+	let isZeroOrEmpty = $derived(!amount || amount === 0);
 </script>
 
 <span 
