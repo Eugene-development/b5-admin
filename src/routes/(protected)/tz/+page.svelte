@@ -20,7 +20,8 @@
 			id: 1,
 			curator: 'Иванов Иван Иванович',
 			curator_phone: '+7 (999) 123-45-67',
-			description: 'Разработка веб-приложения для управления заказами. Необходимо создать систему с возможностью добавления, редактирования и удаления заказов.',
+			description:
+				'Разработка веб-приложения для управления заказами. Необходимо создать систему с возможностью добавления, редактирования и удаления заказов.',
 			sketch_file: '/files/sketch1.pdf',
 			sketch_filename: 'sketch_v1.pdf',
 			comment: 'Срочный проект, требуется завершить до конца месяца',
@@ -119,7 +120,9 @@
 		<div class="mb-8">
 			<div class="md:flex md:items-center md:justify-between">
 				<div class="min-w-0 flex-1">
-					<h1 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:truncate sm:text-3xl">
+					<h1
+						class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+					>
 						Техзадания
 					</h1>
 					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -132,7 +135,9 @@
 						class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 					>
 						<svg class="-ml-0.5 mr-1.5 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-							<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+							<path
+								d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"
+							/>
 						</svg>
 						Создать ТЗ
 					</button>
@@ -148,7 +153,11 @@
 					<div class="relative">
 						<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 							<svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-								<path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
+								<path
+									fill-rule="evenodd"
+									d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z"
+									clip-rule="evenodd"
+								/>
 							</svg>
 						</div>
 						<input
@@ -166,7 +175,7 @@
 		</div>
 
 		<!-- Table -->
-		<div class="bg-white dark:bg-gray-800 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
+		<div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl dark:bg-gray-800">
 			<TzTable
 				{tzList}
 				{isLoading}
@@ -182,10 +191,4 @@
 </div>
 
 <!-- View Modal -->
-<TzViewModal
-	isOpen={isViewModalOpen}
-	tz={selectedTz}
-	onClose={closeViewModal}
-/>
-
-
+<TzViewModal isOpen={isViewModalOpen} tz={selectedTz} onClose={closeViewModal} />

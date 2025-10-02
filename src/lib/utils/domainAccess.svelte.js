@@ -68,11 +68,40 @@ export function hasAdminAccess() {
 }
 
 /**
+ * Check if current domain has access to order page
+ * Only admin.bonus.band, bonus.band, and rubonus.info domains have access
+ * @returns {boolean} True if current domain can access order page
+ */
+export function hasOrderAccess() {
+	if (!domainState.initialized) {
+		// Fallback check if state not initialized
+		if (browser) {
+			const hostname = window.location.hostname;
+			return (
+				hostname === 'admin.bonus.band' ||
+				hostname === 'bonus.band' ||
+				hostname === 'rubonus.info' ||
+				hostname.startsWith('localhost') ||
+				hostname.startsWith('127.0.0.1')
+			);
+		}
+		return false;
+	}
+
+	return (
+		domainState.isAdminDomain ||
+		domainState.isRegularDomain ||
+		domainState.isRubonusDomain ||
+		domainState.isLocalhost
+	);
+}
+
+/**
  * Get domain-specific page configurations
  */
 export function getDomainPageConfig() {
 	return {
-		'rubonus.info': ['/actions', '/tz', '/projects'],
+		'rubonus.info': ['/actions', '/tz', '/projects', '/order'],
 		'bonus.band': [
 			'/projects',
 			'/actions',
@@ -81,11 +110,11 @@ export function getDomainPageConfig() {
 			'/delivery',
 			'/services',
 			'/tz',
-			'/bz',
 			'/finance',
-			'/documentation'
+			'/documentation',
+			'/order'
 		],
-		'd.rubonus.info': ['/bz', '/suppliers'],
+		'd.rubonus.info': ['/suppliers'],
 		'admin.bonus.band': [
 			'/agents',
 			'/curators',
@@ -97,9 +126,9 @@ export function getDomainPageConfig() {
 			'/projects',
 			'/finance',
 			'/tz',
-			'/bz',
 			'/actions',
-			'/documentation'
+			'/documentation',
+			'/order'
 		],
 		localhost: [
 			'/agents',
@@ -112,9 +141,9 @@ export function getDomainPageConfig() {
 			'/projects',
 			'/finance',
 			'/tz',
-			'/bz',
 			'/actions',
-			'/documentation'
+			'/documentation',
+			'/order'
 		] // For development
 	};
 }
@@ -200,8 +229,8 @@ export function getNavigationVisibility() {
 		// Additional pages
 		showActions: shouldShowNavItem('/actions'),
 		showTz: shouldShowNavItem('/tz'),
-		showBz: shouldShowNavItem('/bz'),
 		showDocumentation: shouldShowNavItem('/documentation'),
+		showOrder: hasOrderAccess(),
 
 		// Legacy admin access and config
 		hasAdminAccess: hasAdminAccess(),

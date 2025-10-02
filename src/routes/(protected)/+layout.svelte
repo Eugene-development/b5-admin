@@ -362,6 +362,25 @@
 									</button>
 								</li>
 							{/if}
+							{#if navigationVisibility.showOrder}
+								<li>
+									<button
+										type="button"
+										class={getNavClasses('/order')}
+										onclick={() => handleMobileNavigation('/order')}
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											class={getIconClasses('/documentation')}
+										>
+											<circle cx="12" cy="12" r="3" />
+										</svg>
+										Заказы
+									</button>
+								</li>
+							{/if}
+
 							{#if navigationVisibility.showDocumentation}
 								<li>
 									<button
@@ -660,6 +679,20 @@
 								</a>
 							</li>
 						{/if}
+						{#if navigationVisibility.showOrder}
+							<li>
+								<a href="/order" class={getNavClasses('/order')}>
+									<svg
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											class={getIconClasses('/documentation')}
+										>
+											<circle cx="12" cy="12" r="3" />
+										</svg>
+									Заказы
+								</a>
+							</li>
+						{/if}
 						{#if navigationVisibility.showDocumentation}
 							<li>
 								<a href="/documentation" class={getNavClasses('/documentation')}>
@@ -674,6 +707,7 @@
 								</a>
 							</li>
 						{/if}
+						
 					</ul>
 				</li>
 				{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
