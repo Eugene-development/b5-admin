@@ -45,11 +45,14 @@
 		allActions = data.actions;
 	});
 
-	async function loadActions() {
+	async function loadServices() {
 		isLoading = true;
 		try {
 			await invalidateAll();
+			addSuccessToast('Данные успешно обновлены');
 			updateCounter++;
+		} catch (error) {
+			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
 			isLoading = false;
 		}
@@ -163,30 +166,32 @@
 	<div class="px-4 py-8 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-7xl">
 			<!-- Header with Refresh Button -->
-			<div
-				class="mb-8 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-			>
-				<div class="flex-auto">
-					<h1 class="text-3xl font-bold text-gray-900 sm:text-2xl dark:text-white">Акции</h1>
-					<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-						Управление акциями и промо-кампаниями системы
-					</p>
+			<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
+				<div class="flex items-center justify-between">
+					<div>
+						<h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Акции</h1>
+						<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+							Управление акциями и промо-кампаниями системы
+						</p>
+					</div>
+					<!-- <div class="ml-4 flex items-center space-x-2">
+						<span class="text-sm text-gray-500 dark:text-gray-400">Всего действий: {actions.length}</span>
+					</div> -->
 				</div>
-				<div class="flex-none">
+				<div class="flex items-center space-x-3">
+					<!-- Refresh Button -->
 					<button
 						type="button"
-						onclick={refreshData}
-						disabled={isRefreshing}
-						class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-						aria-label="Обновить данные акций с сервера"
+						on:click={loadServices}
+						disabled={isLoading}
+						class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 					>
-						{#if isRefreshing}
+						{#if isLoading}
 							<svg
 								class="mr-2 h-4 w-4 animate-spin"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
-								aria-hidden="true"
 							>
 								<circle
 									class="opacity-25"
@@ -202,27 +207,9 @@
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-						{/if}
-						{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
-					</button>
-				</div>
-			</div>
-
-			<!-- Search and Actions Bar -->
-			<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-				<!-- Search -->
-				<div class="flex flex-1 items-center space-x-4">
-					<div class="relative max-w-md flex-1">
-						<input
-							type="text"
-							bind:value={searchTerm}
-							oninput={handleSearch}
-							placeholder="Поиск по компании, акции или региону..."
-							class="block w-full rounded-md border-gray-300 py-2 pl-10 pr-3 text-sm placeholder-gray-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-						/>
-						<div class="absolute inset-y-0 left-0 flex items-center pl-3">
+						{:else}
 							<svg
-								class="h-5 w-5 text-gray-400"
+								class="mr-2 h-4 w-4"
 								xmlns="http://www.w3.org/2000/svg"
 								fill="none"
 								viewBox="0 0 24 24"
@@ -232,27 +219,17 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									stroke-width="2"
-									d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-								/>
+									d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+								></path>
 							</svg>
-						</div>
-					</div>
-					{#if hasSearched}
-						<button
-							type="button"
-							onclick={clearSearch}
-							class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
-						>
-							Очистить
-						</button>
-					{/if}
-				</div>
-
-				<!-- Add Action Button -->
-				<div class="flex items-center space-x-3">
+						{/if}
+						Обновить
+					</button>
+					<!-- Add Action Button -->
 					<button
 						type="button"
-						class="inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+						on:click={() => (showAddModal = true)}
+						class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						<svg
 							class="mr-2 h-4 w-4"
@@ -260,6 +237,7 @@
 							fill="none"
 							viewBox="0 0 24 24"
 							stroke="currentColor"
+							aria-hidden="true"
 						>
 							<path
 								stroke-linecap="round"
@@ -270,12 +248,59 @@
 						</svg>
 						Добавить акцию
 					</button>
+					
+				</div>
+			</div>
+			
+			<!-- Separator -->
+			<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+			<!-- Search and Filters -->
+			<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+				<div class="flex flex-1 items-center space-x-4">
+					<!-- Search Input -->
+					<div class="relative flex-1 max-w-md">
+						<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+							<svg
+								class="h-5 w-5 text-gray-400"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+								/>
+							</svg>
+						</div>
+						<input
+							id="action-search"
+							type="text"
+							bind:value={searchTerm}
+							on:input={handleSearch}
+							placeholder="Поиск по компании, акции или региону..."
+							class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 sm:text-sm sm:leading-6"
+						/>
+					</div>
+					{#if hasSearched}
+						<button
+							type="button"
+							on:click={clearSearch}
+							class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+						>
+							Очистить
+						</button>
+					{/if}
 				</div>
 			</div>
 
 			<!-- Results Summary -->
 			{#if hasSearched}
-				<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+				<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
 					{#if actions.length === 0}
 						Акции не найдены по запросу "{searchTerm}"
 					{:else}
@@ -289,16 +314,18 @@
 			{/if}
 
 			<!-- Actions Table -->
-			<ActionTable
-				{actions}
-				{isLoading}
-				{searchTerm}
-				{hasSearched}
-				{updateCounter}
-				onViewAction={handleViewAction}
-				onEditAction={handleEditAction}
-				onDeleteAction={handleDeleteAction}
-			/>
+			<div class="mt-8">
+				<ActionTable
+					{actions}
+					{isLoading}
+					{searchTerm}
+					{hasSearched}
+					{updateCounter}
+					onViewAction={handleViewAction}
+					onEditAction={handleEditAction}
+					onDeleteAction={handleDeleteAction}
+				/>
+			</div>
 			</div>
 		</div>
 	</div>
