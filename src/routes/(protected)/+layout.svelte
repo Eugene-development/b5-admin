@@ -884,7 +884,7 @@
 			<div aria-hidden="true" class="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-900"></div>
 
 			<div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-				<form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
+				<!-- <form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
 					<input
 						name="search"
 						placeholder="Поиск"
@@ -905,9 +905,9 @@
 							fill-rule="evenodd"
 						/>
 					</svg>
-				</form>
+				</form> -->
 				<div class="flex items-center gap-x-4 lg:gap-x-6">
-					<button
+					<!-- <button
 						type="button"
 						class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 dark:hover:text-white"
 					>
@@ -927,30 +927,28 @@
 								stroke-linejoin="round"
 							/>
 						</svg>
-					</button>
+					</button> -->
 
-					<!-- Separator -->
 					<div
 						aria-hidden="true"
 						class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200 dark:lg:bg-white/10"
 					></div>
 
-					<!-- Profile dropdown -->
 					{#if isAuthenticated()}
 						<el-dropdown class="relative">
 							<button class="relative flex items-center">
 								<span class="absolute -inset-1.5"></span>
 								<span class="sr-only">Open user menu</span>
-								<img
+								<!-- <img
 									src={getUserAvatar()}
 									alt="User avatar"
 									class="size-8 rounded-full bg-gray-50 outline -outline-offset-1 outline-black/5 dark:bg-gray-800 dark:outline-white/10"
-								/>
+								/> -->
 								<span class="hidden lg:flex lg:items-center">
 									<span
 										aria-hidden="true"
 										class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white"
-										>{getUserDisplayName()}</span
+										>Вы вошли под аккаунтом: {getUserDisplayName()}</span
 									>
 									<svg
 										viewBox="0 0 20 20"

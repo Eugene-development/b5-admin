@@ -218,13 +218,31 @@
 								</dd>
 							</div>
 
-							{#if company.created_at}
+							{#if company.website}
 								<div>
 									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-										Дата создания
+										Веб-сайт
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(company.created_at)}
+										<a 
+											href={company.website} 
+											target="_blank" 
+											rel="noopener noreferrer"
+											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+										>
+											{company.website}
+										</a>
+									</dd>
+								</div>
+							{/if}
+
+							{#if company.address}
+								<div>
+									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										Адрес
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{company.address}
 									</dd>
 								</div>
 							{/if}
@@ -232,36 +250,18 @@
 					</div>
 
 					<!-- Additional Information -->
-					{#if company.description || company.website || company.address}
+					{#if company.description || company.created_at}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
 							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Дополнительная информация</h5>
 							
 							<div class="mt-4 space-y-4">
-								{#if company.website}
+								{#if company.created_at}
 									<div>
 										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-											Веб-сайт
+											Дата регистрации
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											<a 
-												href={company.website} 
-												target="_blank" 
-												rel="noopener noreferrer"
-												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-											>
-												{company.website}
-											</a>
-										</dd>
-									</div>
-								{/if}
-
-								{#if company.address}
-									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-											Адрес
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{company.address}
+											{formatDate(company.created_at)}
 										</dd>
 									</div>
 								{/if}
