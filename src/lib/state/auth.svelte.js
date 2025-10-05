@@ -213,6 +213,11 @@ export async function register(userData) {
 	authState.error = null;
 
 	try {
+		// Initialize CSRF protection before making registration request
+		console.log('🔒 Initializing CSRF protection...');
+		await initCsrf();
+		console.log('✅ CSRF protection initialized');
+
 		const result = await registerUser(userData);
 
 		if (result.success) {
