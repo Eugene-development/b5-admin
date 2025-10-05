@@ -22,7 +22,7 @@
 	// Form data state
 	let formData = $state({
 		name: '',
-		city: '',
+		region: '',
 		description: '',
 		contract_number: '',
 		contract_date: '',
@@ -42,7 +42,7 @@
 		if (project && isOpen) {
 			formData = {
 				name: project.value || '', // map value to name for UI
-				city: project.city || '',
+				region: project.region || '',
 				description: project.description || '',
 				contract_number: project.contract_name || '', // map contract_name to contract_number for UI
 				contract_date: project.contract_date ? project.contract_date.split('T')[0] : '',
@@ -88,8 +88,8 @@
 			const nameTrimmed = (formData.name || '').trim();
 			if (nameTrimmed !== '') updatedData.value = nameTrimmed;
 
-			const cityTrimmed = (formData.city || '').trim();
-			if (cityTrimmed !== '') updatedData.city = cityTrimmed;
+			const regionTrimmed = (formData.region || '').trim();
+			if (regionTrimmed !== '') updatedData.region = regionTrimmed;
 
 			const descriptionTrimmed = (formData.description || '').trim();
 			if (descriptionTrimmed !== '') updatedData.description = descriptionTrimmed;
@@ -305,27 +305,27 @@
 						{/if}
 					</div>
 
-					<!-- City -->
+					<!-- Region -->
 					<div>
 						<label
-							for="project-city"
+							for="project-region"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Город
+							Регион
 						</label>
 						<input
 							type="text"
-							id="project-city"
-							value={formData.city}
-							oninput={(e) => handleInputChange('city', e.target.value)}
+							id="project-region"
+							value={formData.region}
+							oninput={(e) => handleInputChange('region', e.target.value)}
 							disabled={isLoading}
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
-							aria-describedby={errors.city ? 'project-city-error' : undefined}
-							aria-invalid={errors.city ? 'true' : 'false'}
+							aria-describedby={errors.region ? 'project-region-error' : undefined}
+							aria-invalid={errors.region ? 'true' : 'false'}
 						/>
-						{#if errors.city}
-							<p id="project-city-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
-								{errors.city}
+						{#if errors.region}
+							<p id="project-region-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{errors.region}
 							</p>
 						{/if}
 					</div>

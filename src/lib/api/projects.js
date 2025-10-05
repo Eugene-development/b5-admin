@@ -15,10 +15,10 @@ const PROJECTS_QUERY = gql`
 					id
 					name
 					email
-					city
+					region
 					status
 				}
-				city
+				region
 				description
 				is_active
 				contract_name
@@ -54,7 +54,7 @@ const UPDATE_PROJECT_MUTATION = gql`
 				name
 				email
 			}
-			city
+			region
 			description
 			is_active
 			contract_name

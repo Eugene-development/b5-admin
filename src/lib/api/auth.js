@@ -57,7 +57,7 @@ export async function loginUser(email, password, remember = false) {
  * @param {string} userData.email - User email
  * @param {string} userData.password - User password
  * @param {string} userData.password_confirmation - Password confirmation
- * @param {string} userData.city - User city (optional)
+ * @param {string} userData.region - User region (optional)
  * @param {string} userData.phone - User phone (optional)
  * @param {boolean} userData.terms_accepted - Terms acceptance
  * @returns {Promise<Object>} Registration response
@@ -196,13 +196,12 @@ export async function resendEmailVerification() {
  * Verify email address using verification link parameters
  * @param {string} id - User ID from verification link
  * @param {string} hash - Hash from verification link
- * @param {string} signature - Signature from verification link
  * @returns {Promise<Object>} Email verification response
  */
-export async function verifyEmail(id, hash, signature) {
+export async function verifyEmail(id, hash) {
 	try {
-		const endpoint = `${API_CONFIG.endpoints.verifyEmail}/${id}/${hash}?signature=${signature}`;
-		const response = await get(endpoint, {}, true);
+		const endpoint = `${API_CONFIG.endpoints.verifyEmail}/${id}/${hash}`;
+		const response = await get(endpoint, {}, false);
 
 		return {
 			success: true,
@@ -213,6 +212,8 @@ export async function verifyEmail(id, hash, signature) {
 		let message = 'Email verification failed';
 
 		if (error.status === 401) {
+			message = 'Ссылка подтверждения недействительна или истекла';
+		} else if (error.status === 403) {
 			message = 'Ссылка подтверждения недействительна или истекла';
 		} else if (error.status === 404) {
 			message = 'Ссылка подтверждения не найдена';

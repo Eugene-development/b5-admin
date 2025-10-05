@@ -182,7 +182,7 @@
 					<!-- Refresh Button -->
 					<button
 						type="button"
-						on:click={loadServices}
+						onclick={loadServices}
 						disabled={isLoading}
 						class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 					>
@@ -228,7 +228,7 @@
 					<!-- Add Action Button -->
 					<button
 						type="button"
-						on:click={() => (showAddModal = true)}
+						onclick={() => (showAddModal = true)}
 						class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						<svg
@@ -281,7 +281,7 @@
 							id="action-search"
 							type="text"
 							bind:value={searchTerm}
-							on:input={handleSearch}
+							oninput={handleSearch}
 							placeholder="Поиск по компании, акции или региону..."
 							class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 sm:text-sm sm:leading-6"
 						/>
@@ -289,7 +289,7 @@
 					{#if hasSearched}
 						<button
 							type="button"
-							on:click={clearSearch}
+							onclick={clearSearch}
 							class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 						>
 							Очистить

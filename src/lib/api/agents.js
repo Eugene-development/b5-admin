@@ -8,7 +8,7 @@ const USERS_QUERY = gql`
 	{
 		users {
 			id
-			city
+			region
 			name
 			email
 			email_verified_at

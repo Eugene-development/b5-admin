@@ -25,12 +25,11 @@ This page handles email verification for B5-Admin users. It supports both automa
 The page accepts the following URL parameters for email verification links:
 
 - `id` - User ID from the verification email
-- `hash` - Hash from the verification email  
-- `signature` - Signature from the verification email
+- `hash` - Hash from the verification email
 
 Example verification URL:
 ```
-/email-verify?id=123&hash=abc123&signature=def456
+/email-verify?id=123&hash=abc123
 ```
 
 ## States

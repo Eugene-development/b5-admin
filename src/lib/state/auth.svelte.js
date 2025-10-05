@@ -203,7 +203,7 @@ export async function login(email, password, remember = false) {
  * @param {string} userData.phone - User phone (optional)
  * @param {string} userData.password - User password
  * @param {string} userData.password_confirmation - Password confirmation
- * @param {string} userData.city - User city
+ * @param {string} userData.region - User region
  * @param {boolean} userData.terms_accepted - Terms acceptance
  * @returns {Promise<boolean>} Success status
  */
@@ -418,16 +418,15 @@ export async function resendEmailVerificationNotification() {
  * Verify email address using verification link parameters
  * @param {string} id - User ID from verification link
  * @param {string} hash - Hash from verification link
- * @param {string} signature - Signature from verification link
  * @returns {Promise<boolean>} Success status
  */
-export async function verifyEmailAddress(id, hash, signature) {
+export async function verifyEmailAddress(id, hash) {
 	authState.emailVerificationLoading = true;
 	authState.emailVerificationError = null;
 	authState.error = null;
 
 	try {
-		const result = await verifyEmail(id, hash, signature);
+		const result = await verifyEmail(id, hash);
 
 		if (result.success) {
 			// Mark email as verified

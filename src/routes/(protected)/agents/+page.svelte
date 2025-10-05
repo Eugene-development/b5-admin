@@ -66,9 +66,9 @@
 		return localUsers.filter((user) => {
 			const name = (user.name || '').toLowerCase();
 			const email = (user.email || '').toLowerCase();
-			const city = (user.city || '').toLowerCase();
+			const region = (user.region || '').toLowerCase();
 
-			return name.includes(term) || email.includes(term) || city.includes(term);
+			return name.includes(term) || email.includes(term) || region.includes(term);
 		});
 	});
 

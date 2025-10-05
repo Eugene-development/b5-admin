@@ -144,13 +144,13 @@
 					Имя клиента
 				</th>
 				<th
-					id="col-city"
+					id="col-region"
 					scope="col"
 					role="columnheader"
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Город
+					Регион
 				</th>
 				<th
 					id="col-contract"
@@ -236,9 +236,9 @@
 						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
-							headers="col-city"
+							headers="col-region"
 						>
-							{project.city || ' - '}
+							{project.region || ' - '}
 						</td>
 						<td
 							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 lg:table-cell dark:text-white"
@@ -332,7 +332,7 @@
 								{project.value || ' - '}
 							</h3>
 							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-								{project.city || ' - '}
+								{project.region || ' - '}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
@@ -421,7 +421,7 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Город
+								Регион
 							</th>
 							<th
 								scope="col"
@@ -471,7 +471,7 @@
 										{project.value || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{project.city || ' - '}
+										{project.region || ' - '}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{getAgentDisplay(project.agent)}

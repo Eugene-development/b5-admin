@@ -37,36 +37,35 @@
 		// Clear any previous errors
 		clearError();
 
-		// Check if user is authenticated
-		if (!isAuthenticated()) {
-			// Redirect to login with return URL
-			const returnUrl = encodeURIComponent($page.url.pathname + $page.url.search);
-			goto(`/login?redirectTo=${returnUrl}`);
-			return;
-		}
-
-		// Check if email is already verified
-		if (user?.email_verified) {
-			verificationStatus = 'success';
-			addSuccessToast('Ваш email уже подтвержден');
-			// Redirect to dashboard after a short delay
-			setTimeout(() => {
-				goto('/dashboard');
-			}, 2000);
-			return;
-		}
-
-		// Check if this is a verification link (has id, hash, signature parameters)
+		// Check if this is a verification link (has id and hash parameters)
 		const urlParams = $page.url.searchParams;
 		const id = urlParams.get('id');
 		const hash = urlParams.get('hash');
-		const signature = urlParams.get('signature');
 
-		if (id && hash && signature) {
-			// This is a verification link, process it
-			await handleVerificationLink(id, hash, signature);
+		if (id && hash) {
+			// This is a verification link, process it immediately
+			await handleVerificationLink(id, hash);
 		} else {
-			// This is a manual visit to the verification page
+			// No verification parameters provided
+			// Check if user is authenticated
+			if (!isAuthenticated()) {
+				// Not authenticated and no verification link - redirect to login
+				goto('/login');
+				return;
+			}
+
+			// Check if email is already verified
+			if (user?.email_verified) {
+				verificationStatus = 'success';
+				addSuccessToast('Ваш email уже подтвержден');
+				// Redirect to dashboard after a short delay
+				setTimeout(() => {
+					goto('/dashboard');
+				}, 2000);
+				return;
+			}
+
+			// Authenticated user without verification link - show pending state
 			verificationStatus = 'pending';
 		}
 	});
@@ -74,19 +73,23 @@
 	/**
 	 * Handle verification link processing
 	 */
-	async function handleVerificationLink(id, hash, signature) {
+	async function handleVerificationLink(id, hash) {
 		verificationStatus = 'verifying';
 
 		try {
-			const success = await verifyEmailAddress(id, hash, signature);
+			const success = await verifyEmailAddress(id, hash);
 
 			if (success) {
 				verificationStatus = 'success';
 				addSuccessToast('Email успешно подтвержден!');
 				
-				// Redirect to dashboard after success
+				// Redirect based on authentication status
 				setTimeout(() => {
-					goto('/dashboard');
+					if (isAuthenticated()) {
+						goto('/dashboard');
+					} else {
+						goto('/login?verified=true');
+					}
 				}, 2000);
 			} else {
 				verificationStatus = 'error';
@@ -292,14 +295,22 @@
 						Email подтвержден!
 					</h3>
 					<p class="text-sm text-gray-600 mb-6">
-						Ваш email адрес успешно подтвержден. Теперь у вас есть полный доступ к административной панели.
+						{#if isAuthenticated()}
+							Ваш email адрес успешно подтвержден. Теперь у вас есть полный доступ к административной панели.
+						{:else}
+							Ваш email адрес успешно подтвержден. Теперь вы можете войти в систему.
+						{/if}
 					</p>
 					<button
 						type="button"
-						onclick={goToDashboard}
+						onclick={isAuthenticated() ? goToDashboard : goToLogin}
 						class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
 					>
-						Перейти в панель управления
+						{#if isAuthenticated()}
+							Перейти в панель управления
+						{:else}
+							Перейти к входу
+						{/if}
 					</button>
 				</div>
 

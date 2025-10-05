@@ -174,10 +174,10 @@
 
 							<div>
 								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-									Город
+									Регион
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{user.city || 'Не указан'}
+									{user.region || 'Не указан'}
 								</dd>
 							</div>
 

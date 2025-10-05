@@ -141,13 +141,13 @@
 					<!-- Подтверждена -->
 				</th>
 				<th
-					id="col-city"
+					id="col-region"
 					scope="col"
 					role="columnheader"
 					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Город
+					Регион
 				</th>
 				<th
 					id="col-registration"
@@ -234,9 +234,9 @@
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
-							headers="col-city"
+							headers="col-region"
 						>
-							{agent.city || 'Не указан'}
+							{agent.region || 'Не указан'}
 						</td>
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
@@ -332,10 +332,10 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Город
+								Регион
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{agent.city || 'Не указан'}
+								{agent.region || 'Не указан'}
 							</dd>
 						</div>
 						<div>
@@ -414,7 +414,7 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Город
+								Регион
 							</th>
 							<th
 								scope="col"
@@ -465,7 +465,7 @@
 										{agent.email}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{agent.city || 'Не указан'}
+										{agent.region || 'Не указан'}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm">
 										<div class="flex flex-col space-y-1">

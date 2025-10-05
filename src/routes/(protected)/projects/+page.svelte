@@ -66,14 +66,14 @@
 		const term = searchTerm.toLowerCase().trim();
 		return localProjects.filter((project) => {
 			const name = (project.name || '').toLowerCase();
-			const city = (project.city || '').toLowerCase();
+			const region = (project.region || '').toLowerCase();
 			const contractNumber = (project.contract_number || '').toLowerCase();
 			const agentName = (project.agent?.name || '').toLowerCase();
 			const agentEmail = (project.agent?.email || '').toLowerCase();
 
 			return (
 				name.includes(term) ||
-				city.includes(term) ||
+				region.includes(term) ||
 				contractNumber.includes(term) ||
 				agentName.includes(term) ||
 				agentEmail.includes(term)

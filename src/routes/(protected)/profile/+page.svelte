@@ -418,15 +418,15 @@
 								</div>
 							</div>
 
-							<!-- City -->
+							<!-- Region -->
 							<div class="group">
 								<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
-									Город
+									Регион
 								</div>
 								<div
 									class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
 								>
-									<p class="text-lg font-medium text-white">{user.city || 'Не указано'}</p>
+									<p class="text-lg font-medium text-white">{user.region || 'Не указано'}</p>
 								</div>
 							</div>
 
