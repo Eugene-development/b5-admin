@@ -7,7 +7,7 @@
 	// Form state
 	let name = $state('');
 	let email = $state('');
-	let city = $state('');
+	let region = $state('');
 	let phone = $state('');
 	let password = $state('');
 	let passwordConfirmation = $state('');
@@ -57,12 +57,12 @@
 	}
 
 	/**
-	 * Validate city field (optional)
+	 * Validate region field (optional)
 	 */
-	function validateCity(city) {
-		if (!city) return null; // City is optional
-		if (city.length < 2) return 'Название города должно содержать минимум 2 символа';
-		if (city.length > 255) return 'Название города слишком длинное';
+	function validateRegion(region) {
+		if (!region) return null; // Region is optional
+		if (region.length < 2) return 'Название региона должно содержать минимум 2 символа';
+		if (region.length > 255) return 'Название региона слишком длинное';
 		return null;
 	}
 
@@ -85,8 +85,8 @@
 		if (nameError) errors.name = [nameError];
 		const emailError = validateEmail(email);
 		if (emailError) errors.email = [emailError];
-		const cityError = validateCity(city);
-		if (cityError) errors.city = [cityError];
+		const regionError = validateRegion(region);
+		if (regionError) errors.region = [regionError];
 		const phoneError = validatePhone(phone);
 		if (phoneError) errors.phone = [phoneError];
 		const passwordError = validatePassword(password);
@@ -115,8 +115,8 @@
 			};
 
 			// Добавляем необязательные поля только если они заполнены
-			if (city && city.trim() !== '') {
-				formData.city = city.trim();
+			if (region && region.trim() !== '') {
+				formData.region = region.trim();
 			}
 
 			if (phone && phone.trim() !== '') {
@@ -161,7 +161,7 @@
 		if (
 			(field === 'name' ||
 				field === 'email' ||
-				field === 'city' ||
+				field === 'region' ||
 				field === 'phone' ||
 				field === 'password' ||
 				field === 'password_confirmation') &&
@@ -370,13 +370,13 @@
 
 						<!-- Правый столбец -->
 						<div class="space-y-4 md:space-y-5 lg:space-y-6">
-							<!-- City поле -->
+							<!-- Region поле -->
 							<div class="space-y-1">
 								<label
-									for="city"
+									for="region"
 									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
 								>
-									Город (необязательно)
+									Регион (необязательно)
 								</label>
 								<div class="group relative">
 									<div
@@ -403,24 +403,24 @@
 										</svg>
 									</div>
 									<input
-										id="city"
-										name="city"
+										id="region"
+										name="region"
 										type="text"
-										autocomplete="address-level2"
-										bind:value={city}
-										oninput={() => handleInputChange('city')}
+										autocomplete="address-level1"
+										bind:value={region}
+										oninput={() => handleInputChange('region')}
 										disabled={isLoading()}
 										class="md:py-2.75 w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('city')}
-										class:focus:ring-red-500={getFieldError('city')}
-										class:focus:border-red-500={getFieldError('city')}
-										placeholder="Москва"
+										class:border-red-300={getFieldError('region')}
+										class:focus:ring-red-500={getFieldError('region')}
+										class:focus:border-red-500={getFieldError('region')}
+										placeholder="Московская область"
 									/>
 								</div>
 								<!-- Field-specific errors -->
-								{#if getFieldError('city')}
+								{#if getFieldError('region')}
 									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('city')}
+										{getFieldError('region')}
 									</p>
 								{/if}
 							</div>
