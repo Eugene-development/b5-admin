@@ -61,10 +61,9 @@ async function handleResponse(response) {
 		// Handle specific error cases
 		switch (response.status) {
 			case 401:
-				// Unauthorized - clear token and redirect to login
-				removeAuthToken();
-				goto('/login');
-				throw new ApiError('Unauthorized access', 401, data);
+				// Unauthorized - just throw error, let caller handle redirect
+				// Don't auto-redirect here as it interferes with login flow
+				throw new ApiError(data.message || 'Unauthorized access', 401, data);
 
 			case 422:
 				// Validation errors

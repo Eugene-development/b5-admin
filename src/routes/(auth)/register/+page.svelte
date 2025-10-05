@@ -17,7 +17,8 @@
 	let showPasswordConfirmation = $state(false);
 
 	// Get return URL from query parameters for redirect after registration
-	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/dashboard');
+	// Default to email-verify page to require email verification
+	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/email-verify');
 
 	/**
 	 * Validate name field

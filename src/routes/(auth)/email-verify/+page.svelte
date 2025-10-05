@@ -7,7 +7,8 @@
 		isAuthenticated, 
 		resendEmailVerificationNotification, 
 		verifyEmailAddress,
-		clearError 
+		clearError,
+		logout 
 	} from '$lib/state/auth.svelte.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import LoadingOverlay from '$lib/components/LoadingOverlay.svelte';
@@ -150,6 +151,14 @@
 		goto('/login');
 	}
 
+	/**
+	 * Handle logout
+	 */
+	async function handleLogout() {
+		await logout();
+		goto('/login');
+	}
+
 	// Cleanup timer on component destroy
 	onMount(() => {
 		return () => {
@@ -222,19 +231,28 @@
 					</div>
 
 					<h3 class="text-lg font-medium text-gray-900 mb-2">
-						Проверьте вашу почту
+						Требуется подтверждение email
 					</h3>
 					
+					<p class="text-sm text-gray-600 mb-4">
+						Для доступа к административной панели необходимо подтвердить ваш email адрес.
+					</p>
+
 					<p class="text-sm text-gray-600 mb-6">
 						Мы отправили письмо с подтверждением на адрес:
 						<br>
 						<strong class="text-gray-900">{user?.email || 'ваш email'}</strong>
 					</p>
 
-					<p class="text-xs text-gray-500 mb-6">
-						Перейдите по ссылке в письме для подтверждения вашего email адреса.
-						Если письмо не пришло, проверьте папку "Спам".
-					</p>
+					<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
+						<h4 class="text-sm font-medium text-blue-900 mb-2">Как подтвердить email:</h4>
+						<ol class="text-xs text-blue-800 space-y-1 list-decimal list-inside">
+							<li>Проверьте почтовый ящик (и папку "Спам")</li>
+							<li>Найдите письмо от BONUS5</li>
+							<li>Нажмите на кнопку "Подтвердить Email"</li>
+							<li>Вы автоматически получите доступ к панели</li>
+						</ol>
+					</div>
 
 					<!-- Resend button -->
 					<button
@@ -256,14 +274,24 @@
 						{/if}
 					</button>
 
-					<!-- Back to dashboard button -->
-					<button
-						type="button"
-						onclick={goToDashboard}
-						class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-					>
-						Вернуться в панель управления
-					</button>
+					<!-- Logout button for authenticated users -->
+					{#if isAuthenticated()}
+						<button
+							type="button"
+							onclick={handleLogout}
+							class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							Выйти из системы
+						</button>
+					{:else}
+						<button
+							type="button"
+							onclick={goToLogin}
+							class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+						>
+							Вернуться к входу
+						</button>
+					{/if}
 				</div>
 
 			{:else if verificationStatus === 'verifying'}

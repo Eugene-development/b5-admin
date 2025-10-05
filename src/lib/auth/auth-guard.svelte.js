@@ -84,11 +84,16 @@ export function requireGuest(redirectTo = '/dashboard') {
  * @param {Object} options - Configuration options
  * @param {string} options.redirectTo - Path to redirect unauthenticated users
  * @param {boolean} options.requireAuth - Whether authentication is required
+ * @param {boolean} options.requireEmailVerification - Whether email verification is required
  * @param {boolean} options.initializeOnLoad - Whether to initialize auth state
  * @returns {Function} SvelteKit load function
  */
 export function createAuthLoad(options = {}) {
-	const { redirectTo = '/login', requireAuth = true } = options;
+	const { 
+		redirectTo = '/login', 
+		requireAuth = true, 
+		requireEmailVerification = false 
+	} = options;
 
 	return async ({ url, route }) => {
 		// Check authentication requirement with fallback to localStorage
@@ -113,10 +118,17 @@ export function createAuthLoad(options = {}) {
 			throw redirect(302, loginUrl);
 		}
 
+		// Check email verification requirement
+		if (requireEmailVerification && isAuth && userData && !userData.email_verified) {
+			// User is authenticated but email not verified
+			throw redirect(302, '/email-verify');
+		}
+
 		// Return user data for the route
 		return {
 			user: userData,
-			isAuthenticated: isAuth
+			isAuthenticated: isAuth,
+			emailVerified: userData?.email_verified || false
 		};
 	};
 }

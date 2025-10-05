@@ -57,7 +57,14 @@
 		try {
 			const success = await login(email, password, remember);
 			if (success) {
-				goto(returnUrl);
+				// Check if email is verified
+				if (authState.user && !authState.user.email_verified) {
+					// Email not verified - redirect to email verification page
+					goto('/email-verify');
+				} else {
+					// Email verified - proceed to intended destination
+					goto(returnUrl);
+				}
 			}
 		} catch (error) {
 			console.error('Login failed:', error);
