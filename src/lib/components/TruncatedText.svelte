@@ -1,7 +1,7 @@
 <script>
 	import { truncateText, isTruncated } from '../utils/formatters.js';
 
-	let { 
+	let {
 		text = '',
 		maxLength = 100,
 		className = '',
@@ -12,7 +12,7 @@
 	let showTooltip = $derived(isTruncated(text, maxLength));
 
 	let showTooltipState = $state(false);
-	let tooltipElement;
+	let tooltipElement = $state();
 </script>
 
 <div class="relative inline-block {className}">
