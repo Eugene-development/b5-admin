@@ -69,7 +69,7 @@ export function hasAdminAccess() {
 
 /**
  * Check if current domain has access to order page
- * Only admin.bonus.band, bonus.band, and rubonus.info domains have access
+ * Only admin.bonus.band and bonus.band domains have access
  * @returns {boolean} True if current domain can access order page
  */
 export function hasOrderAccess() {
@@ -80,7 +80,6 @@ export function hasOrderAccess() {
 			return (
 				hostname === 'admin.bonus.band' ||
 				hostname === 'bonus.band' ||
-				hostname === 'rubonus.info' ||
 				hostname.startsWith('localhost') ||
 				hostname.startsWith('127.0.0.1')
 			);
@@ -91,7 +90,6 @@ export function hasOrderAccess() {
 	return (
 		domainState.isAdminDomain ||
 		domainState.isRegularDomain ||
-		domainState.isRubonusDomain ||
 		domainState.isLocalhost
 	);
 }
@@ -101,7 +99,7 @@ export function hasOrderAccess() {
  */
 export function getDomainPageConfig() {
 	return {
-		'rubonus.info': ['/actions', '/tz', '/projects', '/order'],
+		'rubonus.info': ['/actions', '/tz', '/projects', '/finance'],
 		'bonus.band': [
 			'/projects',
 			'/actions',
@@ -229,6 +227,7 @@ export function getNavigationVisibility() {
 		// Additional pages
 		showActions: shouldShowNavItem('/actions'),
 		showTz: shouldShowNavItem('/tz'),
+		showBz: shouldShowNavItem('/bz'),
 		showDocumentation: shouldShowNavItem('/documentation'),
 		showOrder: hasOrderAccess(),
 

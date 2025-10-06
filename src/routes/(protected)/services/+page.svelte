@@ -3,7 +3,7 @@
 	import ServiceTable from '$lib/components/ServiceTable.svelte';
 	import ServiceViewModal from '$lib/components/ServiceViewModal.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { ToastContainer, ErrorBoundary } from '$lib';
+	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
 		addSuccessToast,
@@ -287,5 +287,4 @@
 <!-- View Modal -->
 <ServiceViewModal service={selectedService} isOpen={isViewModalOpen} onClose={closeViewModal} />
 
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />
+

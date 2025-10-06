@@ -3,7 +3,6 @@
 	import {
 		SearchBar,
 		ConfirmationModal,
-		ToastContainer,
 		ErrorBoundary,
 		LoadingSpinner,
 		EmptyState,
@@ -396,5 +395,4 @@
 	onClose={closeViewModal}
 />
 
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />
+

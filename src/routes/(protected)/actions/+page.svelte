@@ -3,7 +3,6 @@
 	import ActionTable from '$lib/components/ActionTable.svelte';
 	import ActionViewModal from '$lib/components/ActionViewModal.svelte';
 	import {
-		ToastContainer,
 		ErrorBoundary
 	} from '$lib';
 	import {
@@ -336,5 +335,4 @@
 <!-- View Modal -->
 <ActionViewModal action={selectedAction} isOpen={isViewModalOpen} onClose={closeViewModal} />
 
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />
+

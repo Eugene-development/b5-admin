@@ -5,7 +5,6 @@
 		ProjectViewModal,
 		SearchBar,
 		ConfirmationModal,
-		ToastContainer,
 		ErrorBoundary,
 		LoadingSpinner,
 		EmptyState
@@ -419,5 +418,4 @@
 	/>
 {/if}
 
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />
+

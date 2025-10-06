@@ -4,7 +4,6 @@
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
 	import {
-		ToastContainer,
 		ErrorBoundary
 	} from '$lib';
 	import {
@@ -181,7 +180,7 @@
 			</div>
 			<h3 class="mt-2 text-sm font-semibold text-gray-900 dark:text-white">Доступ запрещен</h3>
 			<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-				Страница заказов доступна только с доменов admin.bonus.band, bonus.band и rubonus.info
+				Страница заказов доступна только с доменов admin.bonus.band и bonus.band
 			</p>
 		</div>
 	</div>
@@ -358,6 +357,3 @@
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>
-
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />

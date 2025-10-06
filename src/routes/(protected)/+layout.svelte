@@ -13,7 +13,8 @@
 		getCurrentUserData
 	} from '$lib/state/auth.svelte.js';
 	import { shouldShowNavItem, getNavigationVisibility } from '$lib/utils/domainAccess.svelte.js';
-	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
+	import { addSuccessToast, addErrorToast, toasts } from '$lib/utils/toastStore.js';
+	import { ToastContainer } from '$lib';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 
@@ -504,7 +505,7 @@
 
 									<button
 										onclick={handleLogout}
-										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										class="group -mx-2 flex w-full cursor-pointer gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 									>
 										<svg
 											viewBox="0 0 24 24"
@@ -683,12 +684,12 @@
 							<li>
 								<a href="/order" class={getNavClasses('/order')}>
 									<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/documentation')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
+										viewBox="0 0 24 24"
+										fill="currentColor"
+										class={getIconClasses('/documentation')}
+									>
+										<circle cx="12" cy="12" r="3" />
+									</svg>
 									Бланк Заказа
 								</a>
 							</li>
@@ -707,7 +708,6 @@
 								</a>
 							</li>
 						{/if}
-						
 					</ul>
 				</li>
 				{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
@@ -808,7 +808,7 @@
 										stroke-width="1.5"
 										data-slot="icon"
 										aria-hidden="true"
-										class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										class="size-6 shrink-0 cursor-pointer text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
 									>
 										<path
 											d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
@@ -853,7 +853,7 @@
 </div>
 
 <div class="h-screen bg-gray-900 lg:pl-72">
-	<div class="sticky top-0 z-40 lg:mx-auto lg:max-w-full">
+	<div class="sticky top-0 z-20 lg:mx-auto lg:max-w-full">
 		<div
 			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
 		>
@@ -884,7 +884,7 @@
 			<div aria-hidden="true" class="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-900"></div>
 
 			<div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-				<!-- <form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
+				<form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
 					<input
 						name="search"
 						placeholder="Поиск"
@@ -905,9 +905,9 @@
 							fill-rule="evenodd"
 						/>
 					</svg>
-				</form> -->
+				</form>
 				<div class="flex items-center gap-x-4 lg:gap-x-6">
-					<!-- <button
+					<button
 						type="button"
 						class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500 dark:hover:text-white"
 					>
@@ -927,7 +927,7 @@
 								stroke-linejoin="round"
 							/>
 						</svg>
-					</button> -->
+					</button>
 
 					<div
 						aria-hidden="true"
@@ -1004,3 +1004,6 @@
 		</div>
 	</main>
 </div>
+
+<!-- Toast notifications container at the top level -->
+<ToastContainer toasts={$toasts} position="top-center" />

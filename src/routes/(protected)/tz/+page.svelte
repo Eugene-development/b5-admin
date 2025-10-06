@@ -1,7 +1,7 @@
 <script>
 	import TzTable from '$lib/components/TzTable.svelte';
 	import TzViewModal from '$lib/components/TzViewModal.svelte';
-	import { ToastContainer, ErrorBoundary } from '$lib';
+	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
 		addSuccessToast,
@@ -270,5 +270,4 @@
 <!-- View Modal -->
 <TzViewModal isOpen={isViewModalOpen} tz={selectedTz} onClose={closeViewModal} />
 
-<!-- Toast Notifications -->
-<ToastContainer toasts={$toasts} position="top-center" />
+

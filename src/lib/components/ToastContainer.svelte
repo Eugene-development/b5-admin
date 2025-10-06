@@ -21,12 +21,12 @@
 
 	// Position configurations
 	const positionClasses = {
-		'top-right': 'fixed top-4 right-4 z-50',
-		'top-left': 'fixed top-4 left-4 z-50',
-		'bottom-right': 'fixed bottom-4 right-4 z-50',
-		'bottom-left': 'fixed bottom-4 left-4 z-50',
-		'top-center': 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50',
-		'bottom-center': 'fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50'
+		'top-right': 'fixed top-4 right-4',
+		'top-left': 'fixed top-4 left-4',
+		'bottom-right': 'fixed bottom-4 right-4',
+		'bottom-left': 'fixed bottom-4 left-4',
+		'top-center': 'fixed top-20 left-1/2 lg:left-[calc(50vw+9rem)] -translate-x-1/2',
+		'bottom-center': 'fixed bottom-4 left-1/2 lg:left-[calc(50vw+9rem)] -translate-x-1/2'
 	};
 
 	// Limit the number of visible toasts
@@ -43,7 +43,7 @@
 </script>
 
 {#if visibleToasts.length > 0}
-	<div class="{positionClasses[position]} {additionalClasses}">
+	<div class="z-[9999] {positionClasses[position]} {additionalClasses}" style="z-index: 9999;">
 		<div class="flex w-96 max-w-md flex-col space-y-2">
 			{#each visibleToasts as toast (toast.id)}
 				<div class="transform transition-all duration-300 ease-in-out">
