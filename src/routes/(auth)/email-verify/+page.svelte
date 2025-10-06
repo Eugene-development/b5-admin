@@ -2,24 +2,15 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { 
-		authState, 
-		isAuthenticated, 
-		resendEmailVerificationNotification, 
+	import {
+		authState,
+		isAuthenticated,
+		resendEmailVerificationNotification,
 		verifyEmailAddress,
 		clearError,
-		logout 
+		logout
 	} from '$lib/state/auth.svelte.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
-	import LoadingOverlay from '$lib/components/LoadingOverlay.svelte';
-
-	/**
-	 * Email Verification Page
-	 * 
-	 * Handles email verification for B5-Admin users.
-	 * Supports both verification link processing and manual resend functionality.
-	 * Redirects unauthenticated users to login page.
-	 */
 
 	// Component state
 	let verificationStatus = $state('pending'); // 'pending', 'verifying', 'success', 'error'
@@ -35,38 +26,29 @@
 	 * Initialize component and handle verification
 	 */
 	onMount(async () => {
-		// Clear any previous errors
 		clearError();
 
-		// Check if this is a verification link (has id and hash parameters)
 		const urlParams = $page.url.searchParams;
 		const id = urlParams.get('id');
 		const hash = urlParams.get('hash');
 
 		if (id && hash) {
-			// This is a verification link, process it immediately
 			await handleVerificationLink(id, hash);
 		} else {
-			// No verification parameters provided
-			// Check if user is authenticated
 			if (!isAuthenticated()) {
-				// Not authenticated and no verification link - redirect to login
 				goto('/login');
 				return;
 			}
 
-			// Check if email is already verified
 			if (user?.email_verified) {
 				verificationStatus = 'success';
 				addSuccessToast('Ваш email уже подтвержден');
-				// Redirect to dashboard after a short delay
 				setTimeout(() => {
 					goto('/dashboard');
-				}, 2000);
+				}, 5000);
 				return;
 			}
 
-			// Authenticated user without verification link - show pending state
 			verificationStatus = 'pending';
 		}
 	});
@@ -83,15 +65,14 @@
 			if (success) {
 				verificationStatus = 'success';
 				addSuccessToast('Email успешно подтвержден!');
-				
-				// Redirect based on authentication status
+
 				setTimeout(() => {
 					if (isAuthenticated()) {
 						goto('/dashboard');
 					} else {
 						goto('/login?verified=true');
 					}
-				}, 2000);
+				}, 5000);
 			} else {
 				verificationStatus = 'error';
 				addErrorToast(error || 'Не удалось подтвердить email');
@@ -126,8 +107,8 @@
 	 * Start cooldown timer for resend button
 	 */
 	function startResendCooldown() {
-		resendCooldown = 60; // 60 seconds cooldown
-		
+		resendCooldown = 60;
+
 		resendTimer = setInterval(() => {
 			resendCooldown--;
 			if (resendCooldown <= 0) {
@@ -170,235 +151,368 @@
 </script>
 
 <svelte:head>
-	<title>Подтверждение Email - B5 Admin</title>
-	<meta name="description" content="Подтверждение email адреса для доступа к административной панели B5" />
+	<title>Подтверждение Email</title>
+	<meta
+		name="description"
+		content="Подтверждение email адреса для доступа к административной панели"
+	/>
 </svelte:head>
 
-<!-- Loading overlay -->
-<LoadingOverlay 
-	show={loading && verificationStatus === 'verifying'} 
-	message="Подтверждение email адреса..." 
-/>
-
-<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-	<div class="sm:mx-auto sm:w-full sm:max-w-md">
-		<!-- Logo -->
-		<div class="flex justify-center">
-			<div class="flex items-center space-x-2">
-				<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-					<span class="text-white font-bold text-sm">B5</span>
+<!-- Современная карточка подтверждения email -->
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+	<div class="animate-fade-in-up relative w-full max-w-2xl">
+		<!-- Стеклянная морфизм карточка -->
+		<div
+			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-900/80"
+		>
+			<!-- Заголовок с градиентом -->
+			<div
+				class="animate-fade-in-down relative bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 p-6 text-center lg:p-8"
+			>
+				<!-- Декоративные элементы -->
+				<div
+					class="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-rose-600/90 to-pink-600/90"
+				></div>
+				<div class="absolute left-0 top-0 h-full w-full opacity-10">
+					<div
+						class="h-full w-full bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"
+					></div>
 				</div>
-				<span class="text-xl font-semibold text-gray-900">Admin</span>
-			</div>
-		</div>
 
-		<!-- Title -->
-		<h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-			Подтверждение Email
-		</h2>
-		
-		<!-- Subtitle based on status -->
-		{#if verificationStatus === 'pending'}
-			<p class="mt-2 text-center text-sm text-gray-600">
-				Для завершения регистрации необходимо подтвердить ваш email адрес
-			</p>
-		{:else if verificationStatus === 'verifying'}
-			<p class="mt-2 text-center text-sm text-gray-600">
-				Обрабатываем ваш запрос на подтверждение...
-			</p>
-		{:else if verificationStatus === 'success'}
-			<p class="mt-2 text-center text-sm text-green-600">
-				Ваш email адрес успешно подтвержден!
-			</p>
-		{:else if verificationStatus === 'error'}
-			<p class="mt-2 text-center text-sm text-red-600">
-				Произошла ошибка при подтверждении email
-			</p>
-		{/if}
-	</div>
-
-	<div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-		<div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-			
-			{#if verificationStatus === 'pending'}
-				<!-- Pending verification state -->
-				<div class="text-center">
-					<!-- Email icon -->
-					<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-						<svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-						</svg>
-					</div>
-
-					<h3 class="text-lg font-medium text-gray-900 mb-2">
-						Требуется подтверждение email
-					</h3>
-					
-					<p class="text-sm text-gray-600 mb-4">
-						Для доступа к административной панели необходимо подтвердить ваш email адрес.
-					</p>
-
-					<p class="text-sm text-gray-600 mb-6">
-						Мы отправили письмо с подтверждением на адрес:
-						<br>
-						<strong class="text-gray-900">{user?.email || 'ваш email'}</strong>
-					</p>
-
-					<div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 text-left">
-						<h4 class="text-sm font-medium text-blue-900 mb-2">Как подтвердить email:</h4>
-						<ol class="text-xs text-blue-800 space-y-1 list-decimal list-inside">
-							<li>Проверьте почтовый ящик (и папку "Спам")</li>
-							<li>Найдите письмо от BONUS5</li>
-							<li>Нажмите на кнопку "Подтвердить Email"</li>
-							<li>Вы автоматически получите доступ к панели</li>
-						</ol>
-					</div>
-
-					<!-- Resend button -->
-					<button
-						type="button"
-						onclick={handleResendVerification}
-						disabled={loading || resendCooldown > 0}
-						class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed mb-4"
-					>
-						{#if loading}
-							<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+				<div class="relative z-10">
+					<!-- Логотип -->
+					<div class="mb-4 lg:mb-6">
+						<div
+							class="w-13 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
+						>
+							<svg
+								class="h-4 w-4 text-white lg:h-8 lg:w-8"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+								/>
 							</svg>
-							Отправляем...
-						{:else if resendCooldown > 0}
-							Повторить через {resendCooldown}с
-						{:else}
-							Отправить письмо повторно
-						{/if}
-					</button>
+						</div>
+					</div>
 
-					<!-- Logout button for authenticated users -->
-					{#if isAuthenticated()}
-						<button
-							type="button"
-							onclick={handleLogout}
-							class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+					<h1 class="mb-1 text-3xl font-bold text-white lg:mb-2 lg:text-3xl">
+						Подтверждение Email
+					</h1>
+				</div>
+			</div>
+
+			<!-- Контент -->
+			<div class="animate-fade-in-up space-y-6 p-8 md:p-12" style="animation-delay: 0.2s;">
+				{#if verificationStatus === 'pending'}
+					<!-- Pending verification state -->
+					<div class="text-center">
+						<!-- <h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
+							Требуется подтверждение email
+						</h3> -->
+
+						<p class="mb-4 text-gray-600 dark:text-gray-400">
+							Для доступа к административной панели необходимо подтвердить email. Проверьте вашу
+							почту:
+							<strong class="text-orange-600 dark:text-orange-400"
+								>{user?.email || 'ваш email'}</strong
+							>
+						</p>
+
+						<div
+							class="mb-6 rounded-2xl border-2 border-orange-200/50 bg-orange-50/50 p-6 text-left backdrop-blur-sm dark:border-orange-700/50 dark:bg-orange-900/20"
 						>
-							Выйти из системы
-						</button>
-					{:else}
-						<button
-							type="button"
-							onclick={goToLogin}
-							class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-						>
-							Вернуться к входу
-						</button>
-					{/if}
-				</div>
+							<h4 class="mb-3 font-semibold text-orange-900 dark:text-orange-300">
+								Как подтвердить email:
+							</h4>
+							<ol class="space-y-2 text-sm text-orange-800 dark:text-orange-400">
+								<li class="flex items-start">
+									<span
+										class="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-900 dark:bg-orange-800 dark:text-orange-200"
+										>1</span
+									>
+									<span>Проверьте почтовый ящик (возможно и папку "Спам")</span>
+								</li>
+								<li class="flex items-start">
+									<span
+										class="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-900 dark:bg-orange-800 dark:text-orange-200"
+										>2</span
+									>
+									<span>Найдите письмо от команды BONUS 5</span>
+								</li>
+								<li class="flex items-start">
+									<span
+										class="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-900 dark:bg-orange-800 dark:text-orange-200"
+										>3</span
+									>
+									<span class="text-sm">Нажмите на яркую кнопку "Подтвердить Email"</span>
+								</li>
+								<!-- <li class="flex items-start">
+									<span
+										class="mr-2 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-orange-200 text-xs font-bold text-orange-900 dark:bg-orange-800 dark:text-orange-200"
+										>4</span
+									>
+									<span>Вы автоматически получите доступ к панели</span>
+								</li> -->
+							</ol>
+						</div>
 
-			{:else if verificationStatus === 'verifying'}
-				<!-- Verifying state -->
-				<div class="text-center">
-					<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
-						<svg class="animate-spin h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-						</svg>
-					</div>
-					<h3 class="text-lg font-medium text-gray-900 mb-2">
-						Подтверждаем ваш email...
-					</h3>
-					<p class="text-sm text-gray-600">
-						Пожалуйста, подождите
-					</p>
-				</div>
-
-			{:else if verificationStatus === 'success'}
-				<!-- Success state -->
-				<div class="text-center">
-					<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-						<svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-medium text-gray-900 mb-2">
-						Email подтвержден!
-					</h3>
-					<p class="text-sm text-gray-600 mb-6">
-						{#if isAuthenticated()}
-							Ваш email адрес успешно подтвержден. Теперь у вас есть полный доступ к административной панели.
-						{:else}
-							Ваш email адрес успешно подтвержден. Теперь вы можете войти в систему.
-						{/if}
-					</p>
-					<button
-						type="button"
-						onclick={isAuthenticated() ? goToDashboard : goToLogin}
-						class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-					>
-						{#if isAuthenticated()}
-							Перейти в панель управления
-						{:else}
-							Перейти к входу
-						{/if}
-					</button>
-				</div>
-
-			{:else if verificationStatus === 'error'}
-				<!-- Error state -->
-				<div class="text-center">
-					<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-						<svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</div>
-					<h3 class="text-lg font-medium text-gray-900 mb-2">
-						Ошибка подтверждения
-					</h3>
-					<p class="text-sm text-gray-600 mb-6">
-						{error || 'Не удалось подтвердить ваш email адрес. Возможно, ссылка устарела или недействительна.'}
-					</p>
-					
-					<!-- Action buttons -->
-					<div class="space-y-3">
+						<!-- Resend button -->
 						<button
 							type="button"
 							onclick={handleResendVerification}
 							disabled={loading || resendCooldown > 0}
-							class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+							class="mb-4 w-full transform cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-orange-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 						>
-							{#if loading}
-								<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-								</svg>
-								Отправляем...
-							{:else if resendCooldown > 0}
-								Повторить через {resendCooldown}с
-							{:else}
-								Отправить новое письмо
-							{/if}
+							<div class="flex items-center justify-center space-x-2">
+								{#if loading}
+									<svg
+										class="h-5 w-5 animate-spin text-white"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
+										<path
+											class="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
+									</svg>
+									<span class="text-sm sm:text-base">Отправляем...</span>
+								{:else if resendCooldown > 0}
+									<span class="text-sm sm:text-base">Повторить через {resendCooldown}с</span>
+								{:else}
+									<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+										/>
+									</svg>
+									<span class="text-sm sm:text-base">Отправить письмо повторно</span>
+								{/if}
+							</div>
 						</button>
-						
+
+						<!-- Logout/Login button -->
+						{#if isAuthenticated()}
+							<button
+								type="button"
+								onclick={handleLogout}
+								class="w-full cursor-pointer rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+							>
+								Выйти из системы
+							</button>
+						{:else}
+							<button
+								type="button"
+								onclick={goToLogin}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+							>
+								Вернуться ко входу
+							</button>
+						{/if}
+					</div>
+				{:else if verificationStatus === 'verifying'}
+					<!-- Verifying state -->
+					<div class="text-center">
+						<div
+							class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-orange-100 to-pink-100 dark:from-orange-900/30 dark:to-pink-900/30"
+						>
+							<svg
+								class="h-10 w-10 animate-spin text-orange-600 dark:text-orange-400"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+							>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								></circle>
+								<path
+									class="opacity-75"
+									fill="currentColor"
+									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+								></path>
+							</svg>
+						</div>
+						<h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
+							Подтверждаем ваш email...
+						</h3>
+						<p class="text-gray-600 dark:text-gray-400">Пожалуйста, подождите</p>
+					</div>
+				{:else if verificationStatus === 'success'}
+					<!-- Success state -->
+					<div class="text-center">
+						<div
+							class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30"
+						>
+							<svg
+								class="h-10 w-10 text-green-600 dark:text-green-400"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M5 13l4 4L19 7"
+								/>
+							</svg>
+						</div>
+						<h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
+							Email подтвержден!
+						</h3>
+						<p class="mb-6 text-gray-600 dark:text-gray-400">
+							{#if isAuthenticated()}
+								Ваш email адрес успешно подтвержден. Теперь у вас есть полный доступ к
+								административной панели.
+							{:else}
+								Ваш email адрес успешно подтвержден. Теперь вы можете войти в систему.
+							{/if}
+						</p>
 						<button
 							type="button"
-							onclick={goToLogin}
-							class="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+							onclick={isAuthenticated() ? goToDashboard : goToLogin}
+							class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-500/20 active:scale-[0.98]"
 						>
-							Вернуться к входу
+							<div class="flex items-center justify-center space-x-2">
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M13 7l5 5m0 0l-5 5m5-5H6"
+									/>
+								</svg>
+								<span>
+									{#if isAuthenticated()}
+										Перейти в панель управления
+									{:else}
+										Перейти к входу
+									{/if}
+								</span>
+							</div>
 						</button>
 					</div>
+				{:else if verificationStatus === 'error'}
+					<!-- Error state -->
+					<div class="text-center">
+						<div
+							class="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-100 to-rose-100 dark:from-red-900/30 dark:to-rose-900/30"
+						>
+							<svg
+								class="h-10 w-10 text-red-600 dark:text-red-400"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M6 18L18 6M6 6l12 12"
+								/>
+							</svg>
+						</div>
+						<h3 class="mb-3 text-2xl font-bold text-gray-900 dark:text-white">
+							Ошибка подтверждения
+						</h3>
+						<p class="mb-6 text-gray-600 dark:text-gray-400">
+							{error ||
+								'Не удалось подтвердить ваш email адрес. Возможно, ссылка устарела или недействительна.'}
+						</p>
+
+						<!-- Action buttons -->
+						<div class="space-y-3">
+							<button
+								type="button"
+								onclick={handleResendVerification}
+								disabled={loading || resendCooldown > 0}
+								class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-orange-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+							>
+								<div class="flex items-center justify-center space-x-2">
+									{#if loading}
+										<svg
+											class="h-5 w-5 animate-spin text-white"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+										>
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
+											<path
+												class="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+										<span>Отправляем...</span>
+									{:else if resendCooldown > 0}
+										<span>Повторить через {resendCooldown}с</span>
+									{:else}
+										<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+											/>
+										</svg>
+										<span>Отправить новое письмо</span>
+									{/if}
+								</div>
+							</button>
+
+							<button
+								type="button"
+								onclick={goToLogin}
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+							>
+								Вернуться к входу
+							</button>
+						</div>
+					</div>
+				{/if}
+
+				<!-- Additional help text -->
+				<div class="border-t border-gray-200/50 pt-6 text-center dark:border-gray-700/50">
+					<p class="text-xs text-gray-500 dark:text-gray-400">
+						Если у вас возникли проблемы с подтверждением email,
+						<a
+							href="mailto:support@bonus5.ru"
+							class="font-semibold text-orange-600 transition-colors hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300"
+						>
+							свяжитесь с поддержкой
+						</a>
+					</p>
 				</div>
-			{/if}
-
-		</div>
-
-		<!-- Additional help text -->
-		<div class="mt-6 text-center">
-			<p class="text-xs text-gray-500">
-				Если у вас возникли проблемы с подтверждением email, 
-				<a href="mailto:support@bonus5.ru" class="text-blue-600 hover:text-blue-500">
-					свяжитесь с поддержкой
-				</a>
-			</p>
+			</div>
 		</div>
 	</div>
 </div>
