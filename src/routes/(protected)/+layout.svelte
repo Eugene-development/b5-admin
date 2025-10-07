@@ -381,25 +381,6 @@
 									</button>
 								</li>
 							{/if}
-
-							{#if navigationVisibility.showDocumentation}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/documentation')}
-										onclick={() => handleMobileNavigation('/documentation')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/documentation')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Документация
-									</button>
-								</li>
-							{/if}
 						</ul>
 					</li>
 					{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
@@ -474,6 +455,31 @@
 										</svg>
 										Профиль
 									</button>
+
+									{#if navigationVisibility.showDocumentation}
+										<button
+											type="button"
+											class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+											onclick={() => handleMobileNavigation('/documentation')}
+										>
+											<svg
+												viewBox="0 0 24 24"
+												fill="none"
+												stroke="currentColor"
+												stroke-width="1.5"
+												data-slot="icon"
+												aria-hidden="true"
+												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+											>
+												<path
+													d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+													stroke-linecap="round"
+													stroke-linejoin="round"
+												/>
+											</svg>
+											Документация
+										</button>
+									{/if}
 
 									<button
 										type="button"
@@ -694,20 +700,6 @@
 								</a>
 							</li>
 						{/if}
-						{#if navigationVisibility.showDocumentation}
-							<li>
-								<a href="/documentation" class={getNavClasses('/documentation')}>
-									<svg
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										class={getIconClasses('/documentation')}
-									>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Документация
-								</a>
-							</li>
-						{/if}
 					</ul>
 				</li>
 				{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
@@ -769,6 +761,30 @@
 									</svg>
 									Профиль
 								</a>
+
+								{#if navigationVisibility.showDocumentation}
+									<a
+										href="/documentation"
+										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									>
+										<svg
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="1.5"
+											data-slot="icon"
+											aria-hidden="true"
+											class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
+										>
+											<path
+												d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+											/>
+										</svg>
+										Документация
+									</a>
+								{/if}
 
 								<a
 									href="/settings"
