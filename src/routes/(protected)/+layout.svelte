@@ -200,7 +200,7 @@
 			</div>
 
 			<!-- Navigation content -->
-			<nav class="mt-8 flex flex-1 flex-col overflow-y-auto">
+			<nav class="mt-8 flex flex-1 flex-col max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden">
 				<ul role="list" class="flex flex-1 flex-col gap-y-7">
 					<li>
 						<ul role="list" class="-mx-2 space-y-1">
@@ -579,7 +579,7 @@
 				class="h-12 w-auto"
 			/>
 		</div> -->
-		<nav class="mt-8 flex flex-1 flex-col">
+		<nav class="mt-8 flex flex-1 flex-col max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden">
 			<ul role="list" class="flex flex-1 flex-col gap-y-7">
 				<li>
 					<ul role="list" class="-mx-2 space-y-1">
