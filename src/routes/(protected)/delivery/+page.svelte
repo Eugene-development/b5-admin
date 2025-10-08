@@ -303,7 +303,7 @@
 							</button>
 							<button
 								type="button"
-								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<svg
 									class="mr-2 h-4 w-4"
@@ -389,10 +389,4 @@
 {/if}
 
 <!-- Company View Modal -->
-<CompanyViewModal
-	isOpen={showViewModal}
-	company={selectedCompany}
-	onClose={closeViewModal}
-/>
-
-
+<CompanyViewModal isOpen={showViewModal} company={selectedCompany} onClose={closeViewModal} />

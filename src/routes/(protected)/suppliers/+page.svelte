@@ -69,8 +69,14 @@
 			const region = (supplier.region || '').toLowerCase();
 			const contactPerson = (supplier.contact_person || '').toLowerCase();
 
-			return name.includes(term) || legalName.includes(term) || email.includes(term) || 
-				   inn.includes(term) || region.includes(term) || contactPerson.includes(term);
+			return (
+				name.includes(term) ||
+				legalName.includes(term) ||
+				email.includes(term) ||
+				inn.includes(term) ||
+				region.includes(term) ||
+				contactPerson.includes(term)
+			);
 		});
 	});
 
@@ -191,7 +197,10 @@
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
@@ -232,9 +241,14 @@
 		>
 			<div class="space-y-6 bg-gray-900">
 				<main id="main-content" aria-labelledby="page-title">
-					<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+					<div
+						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+					>
 						<div class="flex-auto">
-							<h1 id="page-title" class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white">
+							<h1
+								id="page-title"
+								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+							>
 								Поставщики
 							</h1>
 						</div>
@@ -287,7 +301,7 @@
 							</button>
 							<button
 								type="button"
-								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<svg
 									class="mr-2 h-4 w-4"
@@ -316,11 +330,22 @@
 
 					<!-- Results summary -->
 					{#if searchTerm.trim()}
-						<div class="py-2 text-sm text-gray-600 dark:text-gray-400" role="status" aria-live="polite" aria-atomic="true">
+						<div
+							class="py-2 text-sm text-gray-600 dark:text-gray-400"
+							role="status"
+							aria-live="polite"
+							aria-atomic="true"
+						>
 							{#if filteredSuppliers.length === 0}
 								<p>Поставщики не найдены</p>
 							{:else}
-								<p>Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1 ? '' : filteredSuppliers.length < 5 ? 'а' : 'ов'} по запросу "{searchTerm}"</p>
+								<p>
+									Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1
+										? ''
+										: filteredSuppliers.length < 5
+											? 'а'
+											: 'ов'} по запросу "{searchTerm}"
+								</p>
 							{/if}
 						</div>
 					{/if}
@@ -357,10 +382,4 @@
 {/if}
 
 <!-- Company View Modal -->
-<CompanyViewModal
-	isOpen={showViewModal}
-	company={selectedCompany}
-	onClose={closeViewModal}
-/>
-
-
+<CompanyViewModal isOpen={showViewModal} company={selectedCompany} onClose={closeViewModal} />

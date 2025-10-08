@@ -20,18 +20,18 @@
 	<div class="animate-fade-in-up w-full max-w-6xl text-center">
 		<!-- Главная карточка -->
 		<div
-			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-12 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-900/80"
+			class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-900/80"
 		>
 			<!-- Домен большими буквами с градиентом -->
 			<h1
-				class="mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-5xl font-extrabold uppercase text-transparent md:text-6xl lg:text-8xl dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+				class="mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-3xl font-extrabold uppercase text-transparent sm:text-5xl md:text-6xl lg:text-8xl dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
 				style="filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3)) drop-shadow(0 0 40px rgba(168, 85, 247, 0.2));"
 			>
 				{domainState.hostname || 'Loading...'}
 			</h1>
 
 			<!-- Подпись -->
-			<p class="mb-12 text-xl text-gray-600 md:text-xl lg:mb-16 dark:text-gray-400">
+			<p class="mb-12 text-lg text-gray-600 sm:text-xl md:text-xl lg:mb-16 dark:text-gray-400">
 				Система управлением проектами и бонусами
 			</p>
 

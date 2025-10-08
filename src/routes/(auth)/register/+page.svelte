@@ -213,7 +213,7 @@
 
 				<div class="relative z-10">
 					<!-- Логотип -->
-					<div class="mb-4 md:mb-5 lg:mb-6">
+					<div class="mb-4 hidden sm:block md:mb-5 lg:mb-6">
 						<div
 							class="w-13 md:h-11.5 md:w-13.5 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
 						>
