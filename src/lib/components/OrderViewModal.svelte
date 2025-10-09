@@ -1,4 +1,6 @@
 <script>
+	import { formatPhone } from '$lib/utils/formatters.js';
+	
 	let { order, onClose } = $props();
 
 	// Format date helper function
@@ -162,7 +164,7 @@
 										href="tel:{order.phone}"
 										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 									>
-										{order.phone}
+										{formatPhone(order.phone)}
 									</a>
 								{:else}
 									Не указан

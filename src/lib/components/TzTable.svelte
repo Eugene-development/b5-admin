@@ -1,6 +1,7 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		tzList = [],
@@ -185,8 +186,8 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={tz.curator_phone || 'Не указан'}>
-								{tz.curator_phone || 'Не указан'}
+							<div class="pr-4" title={formatPhone(tz.curator_phone)}>
+								{formatPhone(tz.curator_phone)}
 							</div>
 						</td>
 

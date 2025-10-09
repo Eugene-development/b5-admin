@@ -2,6 +2,7 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import ActionButtons from './ActionButtons.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		companies = [],
@@ -196,8 +197,8 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={company.phone || 'Не указан'}>
-								{company.phone || 'Не указан'}
+							<div class="pr-4" title={formatPhone(company.phone)}>
+								{formatPhone(company.phone)}
 							</div>
 						</td>
 						<td
@@ -451,7 +452,7 @@
 								Телефон
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{company.phone || 'Не указан'}
+								{formatPhone(company.phone)}
 							</dd>
 						</div>
 						<div class="col-span-2">

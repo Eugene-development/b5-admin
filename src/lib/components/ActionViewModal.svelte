@@ -1,4 +1,6 @@
 <script>
+	import { formatPhone } from '$lib/utils/formatters.js';
+	
 	let { action, isOpen = false, onClose } = $props();
 
 	// Format date helper function
@@ -120,7 +122,7 @@
 						<div>
 							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Телефон</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.phone || 'Не указан'}
+								{formatPhone(action.phone)}
 							</dd>
 						</div>
 

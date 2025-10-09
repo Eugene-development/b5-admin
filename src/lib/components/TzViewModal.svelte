@@ -1,4 +1,6 @@
 <script>
+	import { formatPhone } from '$lib/utils/formatters.js';
+	
 	let { isOpen = false, tz = null, onClose } = $props();
 
 	// Handle file download
@@ -170,7 +172,7 @@
 											href="tel:{tz.curator_phone}"
 											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 										>
-											{tz.curator_phone}
+											{formatPhone(tz.curator_phone)}
 										</a>
 									{:else}
 										Не указан

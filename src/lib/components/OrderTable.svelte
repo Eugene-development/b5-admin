@@ -1,6 +1,7 @@
 <script>
 	import EmptyState from './EmptyState.svelte';
 	import OrderViewModal from './OrderViewModal.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		orders = [],
@@ -168,8 +169,8 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={order.phone || 'Не указан'}>
-								{order.phone || 'Не указан'}
+							<div class="pr-4" title={formatPhone(order.phone)}>
+								{formatPhone(order.phone)}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
@@ -341,7 +342,7 @@
 								Телефон
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.phone || 'Не указан'}
+								{formatPhone(order.phone)}
 							</dd>
 						</div>
 						<div>

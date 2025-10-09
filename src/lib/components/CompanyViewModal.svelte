@@ -1,5 +1,6 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		isOpen = false,
@@ -201,7 +202,7 @@
 											href="tel:{company.phone}" 
 											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 										>
-											{company.phone}
+											{formatPhone(company.phone)}
 										</a>
 									{:else}
 										Не указан

@@ -1,6 +1,7 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		services = [],
@@ -184,8 +185,8 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={service.phone || 'Не указан'}>
-								{service.phone || 'Не указан'}
+							<div class="pr-4" title={formatPhone(service.phone)}>
+								{formatPhone(service.phone)}
 							</div>
 						</td>
 						<td
@@ -436,7 +437,7 @@ bile Card View -->
 								Телефон
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{service.phone || 'Не указан'}
+								{formatPhone(service.phone)}
 							</dd>
 						</div>
 						<div>
