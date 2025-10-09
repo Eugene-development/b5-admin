@@ -273,7 +273,7 @@
 						Редактировать проект
 					</h3>
 					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Обновите информацию о проекте "{project.name}"
+						Обновите информацию о проекте "{project.value}"
 					</p>
 				</div>
 

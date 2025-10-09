@@ -71,7 +71,7 @@
 	$effect(() => {
 		console.log(
 			'ProjectsTable received projects:',
-			projects.map((p) => ({ id: p.id, name: p.name, status: p.status }))
+			projects.map((p) => ({ id: p.id, value: p.value, status: p.status }))
 		);
 	});
 
