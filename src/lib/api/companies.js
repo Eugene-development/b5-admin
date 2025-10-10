@@ -183,6 +183,176 @@ export async function createCompanyEmail(companyId, emailData) {
 }
 
 /**
+ * Update an existing company
+ * @param {Object} companyData - Company data to update
+ * @returns {Promise<Object>} Updated company
+ */
+export async function updateCompany(companyData) {
+	const mutation = `
+		mutation UpdateCompany($input: UpdateCompanyInput!) {
+			updateCompany(input: $input) {
+				id
+				name
+				legal_name
+				inn
+				region
+				bun
+				is_active
+				created_at
+				updated_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					input: {
+						id: companyData.id,
+						name: companyData.name || undefined,
+						legal_name: companyData.legal_name || undefined,
+						inn: companyData.inn || undefined,
+						region: companyData.region || undefined,
+						bun: companyData.bun,
+						is_active: companyData.is_active
+					}
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update company');
+		}
+
+		return result.data.updateCompany;
+	} catch (error) {
+		handleApiError(error, 'Не удалось обновить компанию');
+		throw error;
+	}
+}
+
+/**
+ * Ban or unban a company
+ * @param {string} companyId - Company ID
+ * @param {boolean} shouldBan - True to ban, false to unban
+ * @returns {Promise<Object>} Updated company
+ */
+export async function toggleCompanyBan(companyId, shouldBan) {
+	const mutation = `
+		mutation UpdateCompany($input: UpdateCompanyInput!) {
+			updateCompany(input: $input) {
+				id
+				name
+				legal_name
+				inn
+				region
+				bun
+				is_active
+				created_at
+				updated_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					input: {
+						id: companyId,
+						bun: shouldBan
+					}
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update company ban status');
+		}
+
+		return result.data.updateCompany;
+	} catch (error) {
+		handleApiError(error, shouldBan ? 'Не удалось забанить компанию' : 'Не удалось разбанить компанию');
+		throw error;
+	}
+}
+
+/**
+ * Delete a company
+ * @param {string} companyId - Company ID
+ * @returns {Promise<Object>} Deleted company
+ */
+export async function deleteCompany(companyId) {
+	const mutation = `
+		mutation DeleteCompany($id: ID!) {
+			deleteCompany(id: $id) {
+				id
+				name
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					id: companyId
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to delete company');
+		}
+
+		return result.data.deleteCompany;
+	} catch (error) {
+		handleApiError(error, 'Не удалось удалить компанию');
+		throw error;
+	}
+}
+
+/**
  * Refresh companies list
  * @returns {Promise<Array>} List of companies
  */

@@ -7,7 +7,8 @@
 		ErrorBoundary,
 		LoadingSpinner,
 		EmptyState,
-		CompanyViewModal
+		CompanyViewModal,
+		CompanyEditModal
 	} from '$lib';
 	import {
 		toasts,
@@ -23,6 +24,9 @@
 		createCompany,
 		createCompanyPhone,
 		createCompanyEmail,
+		updateCompany,
+		toggleCompanyBan,
+		deleteCompany,
 		refreshCompanies
 	} from '$lib/api/companies.js';
 
@@ -42,6 +46,10 @@
 
 	// Add modal state
 	let showAddModal = $state(false);
+
+	// Edit modal state
+	let showEditModal = $state(false);
+	let editingCompany = $state(null);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -101,10 +109,10 @@
 		confirmAction = {
 			type: isBanned ? 'unban' : 'ban',
 			company: supplier,
-			title: isBanned ? 'Разбанить поставщика' : 'Забанить поставщика',
+			title: isBanned ? 'Разбанить компанию' : 'Забанить компанию',
 			message: isBanned
-				? `Вы уверены, что хотите разбанить поставщика "${supplier.name || supplier.email}"? Поставщик снова сможет получить доступ к системе.`
-				: `Вы уверены, что хотите забанить поставщика "${supplier.name || supplier.email}"? Поставщик потеряет доступ к системе.`,
+				? `Вы уверены, что хотите разбанить компанию "${supplier.name}"? Компания снова сможет получить доступ к системе.`
+				: `Вы уверены, что хотите забанить компанию "${supplier.name}"? Компания потеряет доступ к системе.`,
 			confirmText: isBanned ? 'Разбанить' : 'Забанить',
 			isDestructive: !isBanned
 		};
@@ -117,8 +125,8 @@
 		confirmAction = {
 			type: 'delete',
 			company: supplier,
-			title: 'Удалить поставщика',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить поставщика "${supplier.name || supplier.email}"? Это действие нельзя отменить. Все данные поставщика будут потеряны.`,
+			title: 'Удалить компанию',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить компанию "${supplier.name}"? Это действие нельзя отменить. Все данные компании будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -145,7 +153,7 @@
 	}
 
 	// Save new company
-	async function handleSaveCompany(data) {
+	async function handleSaveNewCompany(data) {
 		isActionLoading = true;
 
 		try {
@@ -192,6 +200,62 @@
 		isActionLoading = false;
 	}
 
+	// Open edit modal
+	function handleEditCompany(company) {
+		editingCompany = company;
+		showEditModal = true;
+		clearAllToasts();
+	}
+
+	// Save company changes (edit)
+	async function handleUpdateCompany(updatedCompanyData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					const updatedCompany = await updateCompany(updatedCompanyData);
+
+					// Update in local list
+					localSuppliers = localSuppliers.map((supplier) =>
+						supplier.id === updatedCompany.id
+							? {
+									...updatedCompany,
+									status: updatedCompany.bun
+										? 'banned'
+										: updatedCompany.is_active
+											? 'active'
+											: 'inactive',
+									phone: supplier.phone,
+									email: supplier.email,
+									contact_person: supplier.contact_person,
+									phones: supplier.phones,
+									emails: supplier.emails
+								}
+							: supplier
+					);
+
+					addSuccessToast(`Компания "${updatedCompany.name}" успешно обновлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to update company:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			editingCompany = null;
+		}
+	}
+
+	// Cancel edit company
+	function handleCancelEditCompany() {
+		showEditModal = false;
+		editingCompany = null;
+		isActionLoading = false;
+	}
+
 	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
@@ -205,17 +269,17 @@
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
-						// В реальном приложении здесь будет API запрос
+						const updatedCompany = await toggleCompanyBan(company.id, true);
 						updateSupplierStatus(company.id, 'banned');
-						addSuccessToast(`Поставщик "${company.name || company.email}" успешно забанен.`);
+						addSuccessToast(`Компания "${company.name}" успешно забанена.`);
 					} else if (type === 'unban') {
-						// В реальном приложении здесь будет API запрос
+						const updatedCompany = await toggleCompanyBan(company.id, false);
 						updateSupplierStatus(company.id, 'active');
-						addSuccessToast(`Поставщик "${company.name || company.email}" успешно разбанен.`);
+						addSuccessToast(`Компания "${company.name}" успешно разбанена.`);
 					} else if (type === 'delete') {
-						// В реальном приложении здесь будет API запрос
+						await deleteCompany(company.id);
 						removeSupplierFromList(company.id);
-						addSuccessToast(`Поставщик "${company.name || company.email}" успешно удален.`);
+						addSuccessToast(`Компания "${company.name}" успешно удалена.`);
 					}
 				},
 				2,
@@ -425,6 +489,7 @@
 						onBanCompany={handleBanSupplier}
 						onDeleteCompany={handleDeleteSupplier}
 						onViewCompany={handleViewSupplier}
+						onEditCompany={handleEditCompany}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -456,7 +521,18 @@
 <!-- Company Add Modal -->
 <CompanyAddModal
 	isOpen={showAddModal}
-	onSave={handleSaveCompany}
+	onSave={handleSaveNewCompany}
 	onCancel={handleCancelAddCompany}
 	isLoading={isActionLoading}
 />
+
+<!-- Company Edit Modal -->
+{#if editingCompany}
+	<CompanyEditModal
+		isOpen={showEditModal}
+		company={editingCompany}
+		onSave={handleUpdateCompany}
+		onCancel={handleCancelEditCompany}
+		isLoading={isActionLoading}
+	/>
+{/if}

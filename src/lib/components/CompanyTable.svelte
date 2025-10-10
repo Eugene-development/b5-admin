@@ -10,6 +10,7 @@
 		onBanCompany,
 		onDeleteCompany,
 		onViewCompany,
+		onEditCompany,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -318,6 +319,7 @@
 								<!-- Edit Button -->
 								<button
 									type="button"
+									onclick={() => onEditCompany && onEditCompany(company)}
 									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 									aria-label="Редактировать компанию {company.name || company.id}"
 								>
@@ -574,6 +576,7 @@
 							<!-- Edit Button -->
 							<button
 								type="button"
+								onclick={() => onEditCompany && onEditCompany(company)}
 								aria-label="Редактировать компанию {company.name || company.id}"
 								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 							>
