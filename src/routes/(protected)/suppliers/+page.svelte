@@ -1,5 +1,6 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
+	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
@@ -18,6 +19,12 @@
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import {
+		createCompany,
+		createCompanyPhone,
+		createCompanyEmail,
+		refreshCompanies
+	} from '$lib/api/companies.js';
 
 	let { data } = $props();
 
@@ -32,6 +39,9 @@
 	// View modal state
 	let showViewModal = $state(false);
 	let selectedCompany = $state(null);
+
+	// Add modal state
+	let showAddModal = $state(false);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -128,6 +138,60 @@
 		selectedCompany = null;
 	}
 
+	// Open add modal
+	function handleAddCompany() {
+		showAddModal = true;
+		clearAllToasts();
+	}
+
+	// Save new company
+	async function handleSaveCompany(data) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					// Create company
+					const newCompany = await createCompany(data.company);
+
+					// Create phone if provided
+					if (data.phone) {
+						await createCompanyPhone(newCompany.id, data.phone);
+					}
+
+					// Create email if provided
+					if (data.email) {
+						await createCompanyEmail(newCompany.id, data.email);
+					}
+
+					// Add to local list
+					localSuppliers = [
+						...localSuppliers,
+						{
+							...newCompany,
+							status: 'active'
+						}
+					];
+
+					addSuccessToast(`Компания "${newCompany.name}" успешно добавлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to create company:', error);
+		} finally {
+			isActionLoading = false;
+			showAddModal = false;
+		}
+	}
+
+	// Cancel add company
+	function handleCancelAddCompany() {
+		showAddModal = false;
+		isActionLoading = false;
+	}
+
 	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
@@ -190,8 +254,11 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			// В реальном приложении здесь будет API запрос
-			// const suppliers = await refreshSuppliers();
+			const companies = await refreshCompanies();
+			localSuppliers = companies.map((company) => ({
+				...company,
+				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive'
+			}));
 			loadError = null;
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
@@ -301,6 +368,8 @@
 							</button>
 							<button
 								type="button"
+								onclick={handleAddCompany}
+								disabled={isActionLoading}
 								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<svg
@@ -383,3 +452,11 @@
 
 <!-- Company View Modal -->
 <CompanyViewModal isOpen={showViewModal} company={selectedCompany} onClose={closeViewModal} />
+
+<!-- Company Add Modal -->
+<CompanyAddModal
+	isOpen={showAddModal}
+	onSave={handleSaveCompany}
+	onCancel={handleCancelAddCompany}
+	isLoading={isActionLoading}
+/>

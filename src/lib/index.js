@@ -21,6 +21,7 @@ export { default as AgentsTable } from './components/AgentsTable.svelte';
 export { default as UsersTable } from './components/UsersTable.svelte';
 export { default as CompanyTable } from './components/CompanyTable.svelte';
 export { default as CompanyViewModal } from './components/CompanyViewModal.svelte';
+export { default as CompanyAddModal } from './components/CompanyAddModal.svelte';
 export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';

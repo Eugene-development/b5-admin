@@ -91,9 +91,9 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 80px; width: 80px;"
+					style="min-width: 60px; width: 60px;"
 				>
-					ID
+					№
 				</th>
 				<th
 					scope="col"
@@ -178,7 +178,7 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{company.id}
+							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
@@ -428,7 +428,7 @@
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								ID: {company.id}
+								№ {index + 1}
 							</span>
 						</div>
 					</div>
