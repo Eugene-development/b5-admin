@@ -54,12 +54,24 @@ export async function createCompany(companyData) {
 		const result = await response.json();
 
 		if (result.errors) {
-			throw new Error(result.errors[0]?.message || 'Failed to create company');
+			const errorMessage = result.errors[0]?.message || 'Failed to create company';
+			
+			// Check for duplicate INN error
+			if (errorMessage.includes('Duplicate entry') && errorMessage.includes('companies_inn_unique')) {
+				throw new Error('Компания с таким ИНН уже существует в системе');
+			}
+			
+			throw new Error(errorMessage);
 		}
 
 		return result.data.createCompany;
 	} catch (error) {
-		handleApiError(error, 'Не удалось создать компанию');
+		// Check if it's a duplicate INN error
+		if (error.message.includes('Компания с таким ИНН уже существует')) {
+			handleApiError(error, error.message);
+		} else {
+			handleApiError(error, 'Не удалось создать компанию');
+		}
 		throw error;
 	}
 }
@@ -72,8 +84,8 @@ export async function createCompany(companyData) {
  */
 export async function createCompanyPhone(companyId, phoneData) {
 	const mutation = `
-		mutation CreateCompanyPhone($company_id: ID!, $input: CreateCompanyPhoneInput!) {
-			createCompanyPhone(company_id: $company_id, input: $input) {
+		mutation CreateCompanyPhone($input: CreateCompanyPhoneInput!) {
+			createCompanyPhone(input: $input) {
 				id
 				company_id
 				value
@@ -96,8 +108,8 @@ export async function createCompanyPhone(companyId, phoneData) {
 			body: JSON.stringify({
 				query: mutation,
 				variables: {
-					company_id: companyId,
 					input: {
+						company_id: companyId,
 						value: phoneData.value,
 						contact_person: phoneData.contact_person || null,
 						is_primary: phoneData.is_primary || false
@@ -131,8 +143,8 @@ export async function createCompanyPhone(companyId, phoneData) {
  */
 export async function createCompanyEmail(companyId, emailData) {
 	const mutation = `
-		mutation CreateCompanyEmail($company_id: ID!, $input: CreateCompanyEmailInput!) {
-			createCompanyEmail(company_id: $company_id, input: $input) {
+		mutation CreateCompanyEmail($input: CreateCompanyEmailInput!) {
+			createCompanyEmail(input: $input) {
 				id
 				company_id
 				value
@@ -155,8 +167,8 @@ export async function createCompanyEmail(companyId, emailData) {
 			body: JSON.stringify({
 				query: mutation,
 				variables: {
-					company_id: companyId,
 					input: {
+						company_id: companyId,
 						value: emailData.value,
 						contact_person: emailData.contact_person || null,
 						is_primary: emailData.is_primary || false

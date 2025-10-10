@@ -162,22 +162,33 @@
 					// Create company
 					const newCompany = await createCompany(data.company);
 
+					// Arrays to store created phones and emails
+					const phones = [];
+					const emails = [];
+
 					// Create phone if provided
 					if (data.phone) {
-						await createCompanyPhone(newCompany.id, data.phone);
+						const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
+						phones.push(createdPhone);
 					}
 
 					// Create email if provided
 					if (data.email) {
-						await createCompanyEmail(newCompany.id, data.email);
+						const createdEmail = await createCompanyEmail(newCompany.id, data.email);
+						emails.push(createdEmail);
 					}
 
-					// Add to local list
+					// Add to local list with phones and emails
 					localSuppliers = [
 						...localSuppliers,
 						{
 							...newCompany,
-							status: 'active'
+							status: 'active',
+							phones: phones,
+							emails: emails,
+							phone: phones[0]?.value || null,
+							email: emails[0]?.value || null,
+							contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
 						}
 					];
 

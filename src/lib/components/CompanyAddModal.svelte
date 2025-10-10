@@ -79,7 +79,7 @@
 	}
 
 	// Handle save action
-	function handleSave() {
+	async function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			const companyData = {
 				name: formData.name.trim(),
@@ -347,12 +347,16 @@
 								maxlength="12"
 								placeholder="10 или 12 цифр"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
-								aria-describedby={errors.inn ? 'inn-error' : undefined}
+								aria-describedby={errors.inn ? 'inn-error' : 'inn-help'}
 								aria-invalid={errors.inn ? 'true' : 'false'}
 							/>
 							{#if errors.inn}
 								<p id="inn-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
 									{errors.inn}
+								</p>
+							{:else}
+								<p id="inn-help" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+									ИНН должен быть уникальным. Компания с таким ИНН не должна существовать в системе.
 								</p>
 							{/if}
 						</div>
