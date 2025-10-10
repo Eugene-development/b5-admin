@@ -1,7 +1,6 @@
 <script>
 	import EmptyState from './EmptyState.svelte';
 	import OrderViewModal from './OrderViewModal.svelte';
-	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		orders = [],
@@ -85,9 +84,16 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 80px; width: 80px;"
+					style="min-width: 60px; width: 60px;"
 				>
-					ID
+					№
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					Сделка
 				</th>
 				<th
 					scope="col"
@@ -99,16 +105,9 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 150px; width: 150px;"
+					style="min-width: 120px; width: 120px;"
 				>
-					Телефон
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 150px;"
-				>
-					Сделка
+					Срочность
 				</th>
 				<th
 					scope="col"
@@ -155,10 +154,15 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
-							{order.id}
+							{index + 1}
+						</td>
+						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="break-words pr-4 leading-relaxed">
+								{order.deal || 'Не указана'}
+							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
@@ -169,13 +173,24 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={formatPhone(order.phone)}>
-								{formatPhone(order.phone)}
-							</div>
-						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
-								{order.deal || 'Не указана'}
+							<div class="pr-4">
+								{#if order.urgency === 'high'}
+									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+										Высокая
+									</span>
+								{:else if order.urgency === 'medium'}
+									<span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+										Средняя
+									</span>
+								{:else if order.urgency === 'low'}
+									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+										Низкая
+									</span>
+								{:else}
+									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+										Не указана
+									</span>
+								{/if}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
@@ -190,7 +205,7 @@
 									type="button"
 									onclick={() => handleViewOrder(order)}
 									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-									aria-label="Просмотреть заказ {order.id}"
+									aria-label="Просмотреть заказ № {index + 1}"
 								>
 									<svg
 										class="h-4 w-4"
@@ -219,7 +234,7 @@
 									type="button"
 									onclick={() => onEditOrder && onEditOrder(order)}
 									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-									aria-label="Редактировать заказ {order.id}"
+									aria-label="Редактировать заказ № {index + 1}"
 								>
 									<svg
 										class="h-4 w-4"
@@ -243,7 +258,7 @@
 									onclick={() => onDeleteOrder && onDeleteOrder(order)}
 									disabled={isLoading}
 									class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-									aria-label="Удалить заказ {order.id}"
+									aria-label="Удалить заказ № {index + 1}"
 								>
 									{#if isLoading}
 										<svg
@@ -318,17 +333,17 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
-								{order.supplier || 'Поставщик не указан'}
+								{order.deal || 'Сделка не указана'}
 							</h3>
 							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
-								{order.deal || 'Сделка не указана'}
+								{order.supplier || 'Поставщик не указан'}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								ID: {order.id}
+								№ {index + 1}
 							</span>
 						</div>
 					</div>
@@ -339,10 +354,26 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Телефон
+								Срочность
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatPhone(order.phone)}
+								{#if order.urgency === 'high'}
+									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+										Высокая
+									</span>
+								{:else if order.urgency === 'medium'}
+									<span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+										Средняя
+									</span>
+								{:else if order.urgency === 'low'}
+									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+										Низкая
+									</span>
+								{:else}
+									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+										Не указана
+									</span>
+								{/if}
 							</dd>
 						</div>
 						<div>
@@ -366,7 +397,7 @@
 							type="button"
 							onclick={() => handleViewOrder(order)}
 							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-							aria-label="Просмотреть заказ {order.id}"
+							aria-label="Просмотреть заказ № {index + 1}"
 						>
 							<svg
 								class="h-5 w-5"
@@ -395,7 +426,7 @@
 							type="button"
 							onclick={() => onEditOrder && onEditOrder(order)}
 							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-							aria-label="Редактировать заказ {order.id}"
+							aria-label="Редактировать заказ № {index + 1}"
 						>
 							<svg
 								class="h-5 w-5"
@@ -419,7 +450,7 @@
 							onclick={() => onDeleteOrder && onDeleteOrder(order)}
 							disabled={isLoading}
 							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-							aria-label="Удалить заказ {order.id}"
+							aria-label="Удалить заказ № {index + 1}"
 						>
 							{#if isLoading}
 								<svg
