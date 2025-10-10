@@ -2,11 +2,7 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
-	let {
-		isOpen = false,
-		user = null,
-		onClose
-	} = $props();
+	let { isOpen = false, user = null, onClose } = $props();
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -76,9 +72,7 @@
 		role="dialog"
 		aria-modal="true"
 	>
-		<div
-			class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-		>
+		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Background overlay -->
 			<div
 				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
@@ -99,9 +93,14 @@
 				role="dialog"
 			>
 				<!-- Modal header -->
-				<div class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600">
-					<h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white" id="modal-title">
-						Информация о пользователе
+				<div
+					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
+				>
+					<h3
+						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						id="modal-title"
+					>
+						Информация
 					</h3>
 					<button
 						type="button"
@@ -109,7 +108,13 @@
 						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
 						aria-label="Закрыть модальное окно"
 					>
-						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+						<svg
+							class="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</button>
@@ -120,17 +125,17 @@
 					<!-- User header -->
 					<div class="mb-6 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
+							<!-- <h4 class="text-xl font-bold text-gray-900 dark:text-white">
 								{user.name || 'Имя не указано'}
-							</h4>
+							</h4> -->
 							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
 								ID: {user.id}
 							</p>
-							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+							<!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
 								{user.email}
-							</p>
+							</p> -->
 						</div>
-						<div class="ml-4 flex-shrink-0 space-y-2">
+						<div class="ml-4 flex flex-shrink-0 gap-2 space-y-2">
 							<div>
 								<StatusBadge status={getUserStatus(user)} />
 							</div>
@@ -145,10 +150,12 @@
 						<!-- Basic Information -->
 						<div class="space-y-4">
 							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Основная информация</h5>
-							
+
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-									Имя пользователя
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
+									Имя
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{user.name || 'Не указано'}
@@ -156,13 +163,15 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
 									Email
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if user.email}
-										<a 
-											href="mailto:{user.email}" 
+										<a
+											href="mailto:{user.email}"
 											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 										>
 											{user.email}
@@ -174,7 +183,9 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
 									Регион
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -184,12 +195,14 @@
 
 							{#if user.phone}
 								<div>
-									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+									<dt
+										class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									>
 										Телефон
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										<a 
-											href="tel:{user.phone}" 
+										<a
+											href="tel:{user.phone}"
 											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 										>
 											{formatPhone(user.phone)}
@@ -201,10 +214,14 @@
 
 						<!-- Account Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Информация об аккаунте</h5>
-							
+							<h5 class="text-sm font-medium text-gray-900 dark:text-white">
+								Информация об аккаунте
+							</h5>
+
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
 									Статус аккаунта
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -221,7 +238,9 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
 									Email подтвержден
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -231,7 +250,9 @@
 
 							{#if user.email_verified_at}
 								<div>
-									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+									<dt
+										class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									>
 										Дата подтверждения email
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -241,7 +262,9 @@
 							{/if}
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
 									Дата регистрации
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -251,7 +274,9 @@
 
 							{#if user.updated_at}
 								<div>
-									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+									<dt
+										class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									>
 										Последнее обновление
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -265,18 +290,22 @@
 					<!-- Additional Information -->
 					{#if user.bio || user.website || user.address || user.birth_date}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Дополнительная информация</h5>
-							
+							<h5 class="text-sm font-medium text-gray-900 dark:text-white">
+								Дополнительная информация
+							</h5>
+
 							<div class="mt-4 space-y-4">
 								{#if user.website}
 									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										<dt
+											class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+										>
 											Веб-сайт
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											<a 
-												href={user.website} 
-												target="_blank" 
+											<a
+												href={user.website}
+												target="_blank"
 												rel="noopener noreferrer"
 												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 											>
@@ -288,7 +317,9 @@
 
 								{#if user.address}
 									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										<dt
+											class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+										>
 											Адрес
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -299,7 +330,9 @@
 
 								{#if user.birth_date}
 									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										<dt
+											class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+										>
 											Дата рождения
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -310,7 +343,9 @@
 
 								{#if user.bio}
 									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										<dt
+											class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+										>
 											О себе
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
