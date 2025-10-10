@@ -332,9 +332,20 @@
 			const companies = await refreshCompanies();
 			localSuppliers = companies.map((company) => ({
 				...company,
-				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive'
+				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+				// Get primary phone or first phone
+				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
+				// Get primary email or first email
+				email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
+				// Get contact person from primary phone or email
+				contact_person:
+					company.phones?.find((p) => p.is_primary)?.contact_person ||
+					company.emails?.find((e) => e.is_primary)?.contact_person ||
+					company.phones?.[0]?.contact_person ||
+					company.emails?.[0]?.contact_person
 			}));
 			loadError = null;
+			updateCounter++;
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
 			}
