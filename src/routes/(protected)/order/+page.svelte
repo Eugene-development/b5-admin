@@ -5,7 +5,8 @@
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
 	import {
-		ErrorBoundary
+		ErrorBoundary,
+		ConfirmationModal
 	} from '$lib';
 	import {
 		toasts,
@@ -31,6 +32,10 @@
 	// Add modal state
 	let showAddModal = $state(false);
 	let isActionLoading = $state(false);
+	
+	// Confirmation modal state
+	let showConfirmModal = $state(false);
+	let confirmAction = $state(null);
 	
 	// Mock data for companies and projects
 	let companies = $state(data.companies || []);
@@ -87,30 +92,58 @@
 		hasSearched = false;
 	}
 
-	// Handle delete order
-	async function handleDeleteOrder(order) {
-		if (!confirm(`Вы уверены, что хотите удалить заказ #${order.order_number}?`)) {
-			return;
-		}
+	// Handle delete order with confirmation
+	function handleDeleteOrder(order) {
+		confirmAction = {
+			type: 'delete',
+			order: order,
+			title: 'Удалить заказ',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить заказ "${order.order_number}"? Это действие нельзя отменить. Все данные заказа и его позиции будут потеряны.`,
+			confirmText: 'Удалить навсегда',
+			isDestructive: true
+		};
+		showConfirmModal = true;
+		clearAllToasts();
+	}
 
-		isLoading = true;
+	// Execute confirmed action with retry mechanism
+	async function confirmActionHandler() {
+		if (!confirmAction) return;
+
+		isActionLoading = true;
+
 		try {
+			const { type, order } = confirmAction;
+
+			// Use retry mechanism for critical operations
 			await retryOperation(
 				async () => {
-					await deleteOrder(order.id);
-					orders = orders.filter(o => o.id !== order.id);
-					filteredOrders = filteredOrders.filter(o => o.id !== order.id);
-					updateCounter++;
-					addSuccessToast(`Заказ #${order.order_number} успешно удален`);
+					if (type === 'delete') {
+						await deleteOrder(order.id);
+						orders = orders.filter(o => o.id !== order.id);
+						filteredOrders = filteredOrders.filter(o => o.id !== order.id);
+						updateCounter++;
+						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
+					}
 				},
 				2,
 				1000
-			);
+			); // 2 retries with 1 second delay
 		} catch (error) {
-			handleApiError(error, 'Ошибка при удалении заказа');
+			// Error is already handled by handleApiError in retryOperation
+			console.error('Action failed after retries:', error);
 		} finally {
-			isLoading = false;
+			isActionLoading = false;
+			showConfirmModal = false;
+			confirmAction = null;
 		}
+	}
+
+	// Cancel action
+	function cancelAction() {
+		showConfirmModal = false;
+		confirmAction = null;
+		isActionLoading = false;
 	}
 
 	// Handle edit order
@@ -437,4 +470,17 @@
 	isLoading={isActionLoading}
 	{companies}
 	{projects}
+/>
+
+<!-- Confirmation Modal -->
+<ConfirmationModal
+	isOpen={showConfirmModal}
+	title={confirmAction?.title || ''}
+	message={confirmAction?.message || ''}
+	confirmText={confirmAction?.confirmText || 'Подтвердить'}
+	cancelText="Отмена"
+	isDestructive={confirmAction?.isDestructive || false}
+	isLoading={isActionLoading}
+	onConfirm={confirmActionHandler}
+	onCancel={cancelAction}
 />

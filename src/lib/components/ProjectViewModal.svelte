@@ -201,7 +201,7 @@
 						</h4>
 
 						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Название проекта</dt>
+							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Имя клиента</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{project.value || project.name || 'Не указано'}
 							</dd>

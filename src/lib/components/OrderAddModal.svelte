@@ -1,7 +1,14 @@
 <script>
 	import { onMount } from 'svelte';
 
-	let { isOpen = false, onSave, onCancel, isLoading = false, companies = [], projects = [] } = $props();
+	let {
+		isOpen = false,
+		onSave,
+		onCancel,
+		isLoading = false,
+		companies = [],
+		projects = []
+	} = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -12,9 +19,6 @@
 		value: '',
 		company_id: '',
 		project_id: '',
-		order_number: '',
-		delivery_date: '',
-		actual_delivery_date: '',
 		is_active: true,
 		is_urgent: false
 	});
@@ -25,12 +29,17 @@
 	// Form validation state
 	let errors = $state({});
 	let isFormValid = $derived(
-		formData.value.trim() !== '' &&
-			formData.company_id !== '' &&
+		formData.company_id !== '' &&
 			formData.project_id !== '' &&
-			formData.order_number.trim() !== '' &&
 			positions.length > 0 &&
-			positions.every(p => p.value.trim() && p.article.trim() && p.price > 0 && p.count > 0) &&
+			positions.every(
+				(p) =>
+					p.value.trim() &&
+					p.article.trim() &&
+					p.price !== '' &&
+					parseFloat(p.price) > 0 &&
+					p.count > 0
+			) &&
 			Object.keys(errors).length === 0
 	);
 
@@ -41,9 +50,6 @@
 				value: '',
 				company_id: '',
 				project_id: '',
-				order_number: '',
-				delivery_date: '',
-				actual_delivery_date: '',
 				is_active: true,
 				is_urgent: false
 			};
@@ -60,27 +66,20 @@
 				id: Date.now(),
 				value: '',
 				article: '',
-				price: 0,
-				count: 1,
-				supplier: '',
-				expected_delivery_date: '',
-				actual_delivery_date: '',
-				is_active: true,
-				is_urgent: false
+				price: '',
+				count: 1
 			}
 		];
 	}
 
 	// Remove position
 	function removePosition(id) {
-		positions = positions.filter(p => p.id !== id);
+		positions = positions.filter((p) => p.id !== id);
 	}
 
 	// Update position field
 	function updatePosition(id, field, value) {
-		positions = positions.map(p => 
-			p.id === id ? { ...p, [field]: value } : p
-		);
+		positions = positions.map((p) => (p.id === id ? { ...p, [field]: value } : p));
 	}
 
 	// Handle escape key press
@@ -109,24 +108,21 @@
 	async function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			const orderData = {
-				value: formData.value.trim(),
+				value: formData.value.trim() || 'Не указан',
 				company_id: formData.company_id,
 				project_id: formData.project_id,
-				order_number: formData.order_number.trim(),
-				delivery_date: formData.delivery_date || null,
-				actual_delivery_date: formData.actual_delivery_date || null,
 				is_active: formData.is_active,
 				is_urgent: formData.is_urgent,
-				positions: positions.map(p => ({
+				positions: positions.map((p) => ({
 					value: p.value.trim(),
 					article: p.article.trim(),
 					price: parseFloat(p.price),
 					count: parseInt(p.count),
-					supplier: p.supplier.trim() || null,
-					expected_delivery_date: p.expected_delivery_date || null,
-					actual_delivery_date: p.actual_delivery_date || null,
-					is_active: p.is_active,
-					is_urgent: p.is_urgent
+					supplier: null,
+					expected_delivery_date: null,
+					actual_delivery_date: null,
+					is_active: true,
+					is_urgent: false
 				}))
 			};
 
@@ -171,7 +167,9 @@
 </script>
 
 {#if isOpen}
-	<div class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto">
+	<div
+		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<div
 				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
@@ -188,7 +186,10 @@
 				tabindex="-1"
 			>
 				<div class="mb-6">
-					<h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white" id="modal-title">
+					<h3
+						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						id="modal-title"
+					>
 						Добавить заказ
 					</h3>
 					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -200,35 +201,24 @@
 					<!-- Order Information -->
 					<div class="space-y-4">
 						<h4 class="text-sm font-medium text-gray-900 dark:text-white">Информация о заказе</h4>
-						
-						<div>
-							<label for="order-value" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-								Описание заказа <span class="text-red-500">*</span>
-							</label>
-							<input
-								bind:this={firstInputElement}
-								type="text"
-								id="order-value"
-								bind:value={formData.value}
-								disabled={isLoading}
-								required
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-							/>
-						</div>
 
 						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<label for="company-id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Компания <span class="text-red-500">*</span>
+								<label
+									for="company-id"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
+									Поставщик <span class="text-red-500">*</span>
 								</label>
 								<select
+									bind:this={firstInputElement}
 									id="company-id"
 									bind:value={formData.company_id}
 									disabled={isLoading}
 									required
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								>
-									<option value="">Выберите компанию</option>
+									<option value="">Не указан</option>
 									{#each companies as company}
 										<option value={company.id}>{company.name}</option>
 									{/each}
@@ -236,8 +226,11 @@
 							</div>
 
 							<div>
-								<label for="project-id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Проект <span class="text-red-500">*</span>
+								<label
+									for="project-id"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
+									Клиент <span class="text-red-500">*</span>
 								</label>
 								<select
 									id="project-id"
@@ -246,7 +239,7 @@
 									required
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								>
-									<option value="">Выберите проект</option>
+									<option value="">Не указан</option>
 									{#each projects as project}
 										<option value={project.id}>{project.value || project.name}</option>
 									{/each}
@@ -254,46 +247,21 @@
 							</div>
 						</div>
 
-						<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-							<div>
-								<label for="order-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Номер заказа <span class="text-red-500">*</span>
-								</label>
-								<input
-									type="text"
-									id="order-number"
-									bind:value={formData.order_number}
-									disabled={isLoading}
-									required
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								/>
-							</div>
-
-							<div>
-								<label for="delivery-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Планируемая дата поставки
-								</label>
-								<input
-									type="date"
-									id="delivery-date"
-									bind:value={formData.delivery_date}
-									disabled={isLoading}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								/>
-							</div>
-
-							<div>
-								<label for="actual-delivery-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-									Фактическая дата поставки
-								</label>
-								<input
-									type="date"
-									id="actual-delivery-date"
-									bind:value={formData.actual_delivery_date}
-									disabled={isLoading}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								/>
-							</div>
+						<div>
+							<label
+								for="order-value"
+								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							>
+								Комментарий
+							</label>
+							<input
+								type="text"
+								id="order-value"
+								bind:value={formData.value}
+								disabled={isLoading}
+								placeholder="Не указан"
+								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+							/>
 						</div>
 
 						<div class="flex items-center space-x-6">
@@ -332,14 +300,21 @@
 								class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<svg class="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 4v16m8-8H4"
+									/>
 								</svg>
 								Добавить позицию
 							</button>
 						</div>
 
 						{#if positions.length === 0}
-							<div class="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center dark:border-gray-600">
+							<div
+								class="rounded-lg border-2 border-dashed border-gray-300 p-6 text-center dark:border-gray-600"
+							>
 								<p class="text-sm text-gray-500 dark:text-gray-400">
 									Нажмите "Добавить позицию" чтобы добавить товары или услуги в заказ
 								</p>
@@ -359,7 +334,12 @@
 												class="text-red-600 hover:text-red-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
 											>
 												<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M6 18L18 6M6 6l12 12"
+													/>
 												</svg>
 											</button>
 										</div>
@@ -404,7 +384,7 @@
 													disabled={isLoading}
 													required
 													min="0"
-													step="0.01"
+													step="1"
 													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
@@ -423,57 +403,13 @@
 													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
-
-											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-													Поставщик
-												</label>
-												<input
-													type="text"
-													bind:value={position.supplier}
-													oninput={(e) => updatePosition(position.id, 'supplier', e.target.value)}
-													disabled={isLoading}
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-												/>
-											</div>
-
-											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
-													Ожидаемая дата поставки
-												</label>
-												<input
-													type="date"
-													bind:value={position.expected_delivery_date}
-													oninput={(e) => updatePosition(position.id, 'expected_delivery_date', e.target.value)}
-													disabled={isLoading}
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-												/>
-											</div>
 										</div>
 
-										<div class="mt-3 flex items-center space-x-4">
-											<label class="flex items-center">
-												<input
-													type="checkbox"
-													bind:checked={position.is_active}
-													disabled={isLoading}
-													class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
-												/>
-												<span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Активна</span>
-											</label>
-
-											<label class="flex items-center">
-												<input
-													type="checkbox"
-													bind:checked={position.is_urgent}
-													disabled={isLoading}
-													class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
-												/>
-												<span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Срочная</span>
-											</label>
-
-											<div class="ml-auto text-sm font-medium text-gray-900 dark:text-white">
-												Итого: {(position.price * position.count).toFixed(2)} ₽
+										<div class="mt-3 flex items-center justify-end">
+											<div class="text-sm font-medium text-gray-900 dark:text-white">
+												Итого: {position.price && position.count
+													? ((parseFloat(position.price) || 0) * position.count).toFixed(0)
+													: '0'} ₽
 											</div>
 										</div>
 									</div>
@@ -486,7 +422,9 @@
 										Общая сумма заказа:
 									</span>
 									<span class="text-lg font-bold text-gray-900 dark:text-white">
-										{positions.reduce((sum, p) => sum + (p.price * p.count), 0).toFixed(2)} ₽
+										{positions
+											.reduce((sum, p) => sum + (parseFloat(p.price) || 0) * p.count, 0)
+											.toFixed(0)} ₽
 									</span>
 								</div>
 							</div>
@@ -494,16 +432,35 @@
 					</div>
 
 					<!-- Action buttons -->
-					<div class="flex flex-col space-y-3 border-t border-gray-200 pt-6 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse dark:border-gray-700">
+					<div
+						class="flex flex-col space-y-3 border-t border-gray-200 pt-6 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse dark:border-gray-700"
+					>
 						<button
 							type="submit"
 							disabled={isLoading || !isFormValid}
 							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2"
 						>
 							{#if isLoading}
-								<svg class="mr-2 h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+								<svg
+									class="mr-2 h-4 w-4 animate-spin"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
 								</svg>
 							{/if}
 							{isLoading ? 'Сохранение...' : 'Добавить заказ'}

@@ -54,7 +54,7 @@ export async function createOrder(orderData) {
 						value: orderData.value,
 						company_id: orderData.company_id,
 						project_id: orderData.project_id,
-						order_number: orderData.order_number,
+						...(orderData.order_number && { order_number: orderData.order_number }),
 						delivery_date: orderData.delivery_date,
 						actual_delivery_date: orderData.actual_delivery_date,
 						is_active: orderData.is_active,
@@ -122,6 +122,13 @@ export async function getOrders(first = 1000, page = 1) {
 					project {
 						id
 						value
+						region
+						phones {
+							id
+							value
+							contact_person
+							is_primary
+						}
 					}
 					positions {
 						id

@@ -161,7 +161,7 @@
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{order.value || order.deal || 'Не указана'}
+								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
@@ -187,7 +187,7 @@
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{order.order_number || order.comment || 'Нет комментария'}
+								{order.value || order.comment || 'Нет комментария'}
 							</div>
 						</td>
 						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
@@ -325,7 +325,7 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
-								{order.value || order.deal || 'Сделка не указана'}
+								{order.order_number || order.deal || 'Номер не указан'}
 							</h3>
 							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
 								{order.company?.name || order.supplier || 'Поставщик не указан'}
@@ -364,10 +364,10 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Номер заказа
+								Описание
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.order_number || order.comment || 'Не указан'}
+								{order.value || order.comment || 'Не указано'}
 							</dd>
 						</div>
 					</dl>
