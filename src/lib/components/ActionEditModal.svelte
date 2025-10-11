@@ -2,18 +2,19 @@
 	import { onMount } from 'svelte';
 
 	/**
-	 * ActionAddModal Component
+	 * ActionEditModal Component
 	 *
-	 * A modal component for adding new actions from suppliers.
+	 * A modal component for editing existing actions.
 	 * Provides form validation, loading states, and proper accessibility.
 	 *
 	 * @param {boolean} isOpen - Controls modal visibility
-	 * @param {Function} onSave - Callback function for saving new action
+	 * @param {Object} action - Action to edit
+	 * @param {Function} onSave - Callback function for saving updated action
 	 * @param {Function} onCancel - Callback function for cancellation
 	 * @param {boolean} [isLoading=false] - Loading state for save button
 	 * @param {Array} companies - List of companies for selection
 	 */
-	let { isOpen = false, onSave, onCancel, isLoading = false, companies = [] } = $props();
+	let { isOpen = false, action = null, onSave, onCancel, isLoading = false, companies = [] } = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -21,6 +22,7 @@
 
 	// Form data state
 	let formData = $state({
+		id: '',
 		name: '',
 		description: '',
 		start: '',
@@ -34,20 +36,23 @@
 	let isFormValid = $derived(
 		formData.name.trim() !== '' &&
 			formData.description.trim() !== '' &&
+			formData.start !== '' &&
+			formData.end !== '' &&
 			formData.company_id !== '' &&
 			Object.keys(errors).length === 0
 	);
 
-	// Reset form when modal opens
+	// Populate form when action changes or modal opens
 	$effect(() => {
-		if (isOpen) {
+		if (isOpen && action) {
 			formData = {
-				name: '',
-				description: '',
-				start: '',
-				end: '',
-				company_id: '',
-				is_active: false
+				id: action.id,
+				name: action.name || '',
+				description: action.description || '',
+				start: action.start || '',
+				end: action.end || '',
+				company_id: action.company_id || '',
+				is_active: action.is_active || false
 			};
 			errors = {};
 		}
@@ -79,6 +84,7 @@
 	async function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			const actionData = {
+				id: formData.id,
 				name: formData.name.trim(),
 				description: formData.description.trim(),
 				start: formData.start,
@@ -120,28 +126,24 @@
 				break;
 			}
 			case 'start': {
-				// Start date is optional
-				if (value) {
+				if (!value) {
+					newErrors.start = 'Дата начала обязательна';
+				} else {
 					delete newErrors.start;
-					// Validate end date if both exist
+					// Validate end date if it exists
 					if (formData.end && value > formData.end) {
 						newErrors.end = 'Дата окончания должна быть позже даты начала';
 					} else if (formData.end) {
 						delete newErrors.end;
 					}
-				} else {
-					delete newErrors.start;
 				}
 				break;
 			}
 			case 'end': {
-				// End date is optional
-				if (value) {
-					if (formData.start && value < formData.start) {
-						newErrors.end = 'Дата окончания должна быть позже даты начала';
-					} else {
-						delete newErrors.end;
-					}
+				if (!value) {
+					newErrors.end = 'Дата окончания обязательна';
+				} else if (formData.start && value < formData.start) {
+					newErrors.end = 'Дата окончания должна быть позже даты начала';
 				} else {
 					delete newErrors.end;
 				}
@@ -228,7 +230,7 @@
 </script>
 
 <!-- Modal backdrop and container -->
-{#if isOpen}
+{#if isOpen && action}
 	<div
 		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
 	>
@@ -256,10 +258,10 @@
 						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
 						id="modal-title"
 					>
-						Добавить акцию
+						Редактировать акцию
 					</h3>
 					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Заполните информацию о новой акции от поставщика
+						Обновите информацию об акции
 					</p>
 				</div>
 
@@ -355,7 +357,7 @@
 								for="start-date"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Дата начала
+								Дата начала <span class="text-red-500">*</span>
 							</label>
 							<input
 								type="date"
@@ -363,6 +365,7 @@
 								value={formData.start}
 								oninput={(e) => handleInputChange('start', e.target.value)}
 								disabled={isLoading}
+								required
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.start ? 'start-date-error' : undefined}
 								aria-invalid={errors.start ? 'true' : 'false'}
@@ -379,7 +382,7 @@
 								for="end-date"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Дата окончания
+								Дата окончания <span class="text-red-500">*</span>
 							</label>
 							<input
 								type="date"
@@ -387,6 +390,7 @@
 								value={formData.end}
 								oninput={(e) => handleInputChange('end', e.target.value)}
 								disabled={isLoading}
+								required
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.end ? 'end-date-error' : undefined}
 								aria-invalid={errors.end ? 'true' : 'false'}
@@ -447,7 +451,7 @@
 									></path>
 								</svg>
 							{/if}
-							{isLoading ? 'Сохранение...' : 'Добавить акцию'}
+							{isLoading ? 'Сохранение...' : 'Сохранить изменения'}
 						</button>
 
 						<!-- Cancel button -->
@@ -458,7 +462,7 @@
 							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
 						>
 							Отмена
-						</button>
+		</button>
 					</div>
 				</form>
 			</div>

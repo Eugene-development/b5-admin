@@ -3,6 +3,7 @@
 	import ActionTable from '$lib/components/ActionTable.svelte';
 	import ActionViewModal from '$lib/components/ActionViewModal.svelte';
 	import ActionAddModal from '$lib/components/ActionAddModal.svelte';
+	import ActionEditModal from '$lib/components/ActionEditModal.svelte';
 	import {
 		ErrorBoundary
 	} from '$lib';
@@ -14,7 +15,7 @@
 		clearAllToasts,
 		retryOperation
 	} from '$lib/utils/toastStore.js';
-	import { createAction, refreshActions } from '$lib/api/actions.js';
+	import { createAction, updateAction, refreshActions } from '$lib/api/actions.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
@@ -35,6 +36,7 @@
 	let selectedAction = $state(null);
 	let isViewModalOpen = $state(false);
 	let showAddModal = $state(false);
+	let showEditModal = $state(false);
 	let isActionLoading = $state(false);
 
 	// Error boundary state
@@ -70,9 +72,18 @@
 	}
 
 	function handleEditAction(action) {
-		console.log('Edit action:', action);
-		// TODO: Implement edit functionality
-		alert(`Редактирование акции: ${action.action_name}`);
+		// Use original GraphQL data for editing
+		selectedAction = {
+			id: action.id,
+			name: action.action_name,
+			description: action.description,
+			start: action.start_date,
+			end: action.end_date,
+			company_id: action.company_id,
+			is_active: action.is_active
+		};
+		showEditModal = true;
+		clearAllToasts();
 	}
 
 	function handleDeleteAction(action) {
@@ -120,6 +131,36 @@
 	function handleCancelAddAction() {
 		showAddModal = false;
 		isActionLoading = false;
+	}
+
+	// Save updated action
+	async function handleSaveUpdatedAction(actionData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					const updatedAction = await updateAction(actionData);
+					await invalidateAll();
+					addSuccessToast(`Акция "${actionData.name}" успешно обновлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to update action:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			selectedAction = null;
+		}
+	}
+
+	// Cancel edit action
+	function handleCancelEditAction() {
+		showEditModal = false;
+		isActionLoading = false;
+		selectedAction = null;
 	}
 
 	function handleSearch() {
@@ -383,6 +424,16 @@
 	isOpen={showAddModal}
 	onSave={handleSaveNewAction}
 	onCancel={handleCancelAddAction}
+	isLoading={isActionLoading}
+	{companies}
+/>
+
+<!-- Edit Action Modal -->
+<ActionEditModal
+	isOpen={showEditModal}
+	action={selectedAction}
+	onSave={handleSaveUpdatedAction}
+	onCancel={handleCancelEditAction}
 	isLoading={isActionLoading}
 	{companies}
 />

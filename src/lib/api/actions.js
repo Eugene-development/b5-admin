@@ -38,8 +38,8 @@ export async function createAction(actionData) {
 					input: {
 						name: actionData.name,
 						description: actionData.description,
-						start: actionData.start,
-						end: actionData.end,
+						start: actionData.start || null,
+						end: actionData.end || null,
 						company_id: actionData.company_id,
 						is_active: actionData.is_active
 					}
