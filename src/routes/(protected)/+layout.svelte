@@ -31,7 +31,7 @@
 	// Function to get CSS classes for navigation items
 	function getNavClasses(route) {
 		const baseClasses =
-			'group flex gap-x-3 rounded-md p-2 text-base/6 font-semibold w-full text-left';
+			'group flex gap-x-3 rounded-lg px-3 py-2.5 text-base/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -51,7 +51,7 @@
 	// Function to get CSS classes for navigation items with span icons (analytics section)
 	function getNavClassesWithSpan(route) {
 		const baseClasses =
-			'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
+			'group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -205,7 +205,7 @@
 			>
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li>
-						<ul role="list" class="-mx-2 space-y-1">
+						<ul role="list" class="space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 								<button
@@ -399,7 +399,7 @@
 								<div class="mt-2 space-y-1">
 									<button
 										type="button"
-										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										class="group flex w-full gap-x-3 rounded-lg px-3 py-2.5 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 										onclick={() => handleMobileNavigation('/profile')}
 									>
 										<svg
@@ -422,7 +422,7 @@
 
 									<button
 										type="button"
-										class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										class="group flex w-full gap-x-3 rounded-lg px-3 py-2.5 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 										onclick={() => handleMobileNavigation('/settings')}
 									>
 										<svg
@@ -450,7 +450,7 @@
 
 									<button
 										onclick={handleLogout}
-										class="group -mx-2 flex w-full cursor-pointer gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+										class="group flex w-full cursor-pointer gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 									>
 										<svg
 											viewBox="0 0 24 24"
@@ -476,7 +476,7 @@
 							<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 								<button
 									type="button"
-									class="group -mx-2 flex w-full gap-x-3 rounded-md bg-indigo-600 p-2 text-left text-sm/6 font-semibold text-white hover:bg-indigo-500"
+									class="group flex w-full gap-x-3 rounded-lg bg-indigo-600 px-3 py-2.5 text-left text-sm/6 font-semibold text-white hover:bg-indigo-500"
 									onclick={() => handleMobileNavigation('/login')}
 								>
 									<svg
@@ -523,7 +523,7 @@
 		>
 			<ul role="list" class="flex flex-1 flex-col gap-y-3">
 				<li>
-					<ul role="list" class="-mx-2 space-y-1">
+					<ul role="list" class="space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 							<a href="/dashboard" class={getNavClasses('/dashboard')}> Дашборд </a>
@@ -533,7 +533,7 @@
 				{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
-						<ul role="list" class="-mx-2 mt-2 space-y-1">
+						<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showClients}
 								<li>
 									<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
@@ -565,7 +565,7 @@
 				{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
-						<ul role="list" class="-mx-2 mt-2 space-y-1">
+						<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showContractors}
 								<li>
 									<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
@@ -604,7 +604,7 @@
 				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showFinance}
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Процессы</div>
-						<ul role="list" class="-mx-2 mt-2 space-y-1">
+						<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showTz}
 								<li>
 									<a href="/tz" class={getNavClassesWithSpan('/tz')}>
@@ -635,7 +635,7 @@
 				{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
-						<ul role="list" class="-mx-2 mt-2 space-y-1">
+						<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showActions}
 								<li>
 									<a href="/actions" class={getNavClassesWithSpan('/actions')}>
@@ -663,7 +663,7 @@
 							<div class="mt-2 space-y-1">
 								<a
 									href="/profile"
-									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -685,7 +685,7 @@
 
 								<a
 									href="/settings"
-									class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class="group flex gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -712,7 +712,7 @@
 
 								<button
 									onclick={handleLogout}
-									class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
+									class="group flex w-full gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 								>
 									<svg
 										viewBox="0 0 24 24"
@@ -738,7 +738,7 @@
 						<div class="border-t border-gray-200 pt-4 dark:border-white/10">
 							<a
 								href="/login"
-								class="group -mx-2 flex gap-x-3 rounded-md bg-indigo-600 p-2 text-sm/6 font-semibold text-white hover:bg-indigo-500"
+								class="group flex gap-x-3 rounded-lg bg-indigo-600 px-3 py-2.5 text-sm/6 font-semibold text-white hover:bg-indigo-500"
 							>
 								<svg
 									viewBox="0 0 24 24"
