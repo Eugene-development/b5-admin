@@ -27,6 +27,7 @@ export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';
 export { default as ProjectViewModal } from './components/ProjectViewModal.svelte';
+export { default as OrderAddModal } from './components/OrderAddModal.svelte';
 export { default as SearchBar } from './components/SearchBar.svelte';
 export { default as ActionButtons } from './components/ActionButtons.svelte';
 export { default as ConfirmationModal } from './components/ConfirmationModal.svelte';
@@ -50,6 +51,9 @@ export * from './utils/index.js';
 export * from './api/config.js';
 export * from './api/client.js';
 export * from './api/auth.js';
+
+// Export orders API
+export * from './api/orders.js';
 
 // Export authentication state store
 export * from './state/auth.svelte.js';

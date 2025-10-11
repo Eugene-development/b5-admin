@@ -107,21 +107,39 @@
 				<div class="mb-6 flex items-start justify-between">
 					<div class="min-w-0 flex-1">
 						<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-							{order.supplier || 'Поставщик не указан'}
+							{order.company?.name || order.supplier || 'Поставщик не указан'}
 						</h4>
 						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-							Сделка: {order.deal || 'Не указана'}
+							Заказ: {order.value || order.deal || 'Не указан'}
 						</p>
+						{#if order.order_number}
+							<p class="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+								№ {order.order_number}
+							</p>
+						{/if}
 					</div>
-					{#if order.status}
-						<div class="ml-4 flex-shrink-0">
+					<div class="ml-4 flex flex-col gap-2 flex-shrink-0">
+						{#if order.is_urgent}
+							<span
+								class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+							>
+								Срочный
+							</span>
+						{/if}
+						{#if order.is_active !== undefined}
+							<span
+								class="inline-flex items-center rounded-full {order.is_active ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'} px-2.5 py-0.5 text-xs font-medium"
+							>
+								{order.is_active ? 'Активен' : 'Неактивен'}
+							</span>
+						{:else if order.status}
 							<span
 								class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
 							>
 								{order.status}
 							</span>
-						</div>
-					{/if}
+						{/if}
+					</div>
 				</div>
 
 				<!-- Order details grid -->
@@ -134,10 +152,10 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								ID заказа
+								Номер заказа
 							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.id}
+							<dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+								{order.order_number || 'Не указан'}
 							</dd>
 						</div>
 
@@ -145,29 +163,14 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Поставщик
+								Компания
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.supplier || 'Не указан'}
-							</dd>
-						</div>
-
-						<div>
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Телефон
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{#if order.phone}
-									<a
-										href="tel:{order.phone}"
-										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-									>
-										{formatPhone(order.phone)}
-									</a>
-								{:else}
-									Не указан
+								<div>{order.company?.name || order.supplier || 'Не указана'}</div>
+								{#if order.company?.legal_name}
+									<div class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+										{order.company.legal_name}
+									</div>
 								{/if}
 							</dd>
 						</div>
@@ -176,10 +179,21 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Комментарий
+								Проект
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{order.project?.value || 'Не указан'}
+							</dd>
+						</div>
+
+						<div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Описание
 							</dt>
 							<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
-								{order.comment || 'Нет комментария'}
+								{order.value || order.deal || order.comment || 'Нет описания'}
 							</dd>
 						</div>
 					</div>
@@ -188,15 +202,28 @@
 					<div class="space-y-4">
 						<h5 class="text-sm font-medium text-gray-900 dark:text-white">Дополнительная информация</h5>
 
-						{#if order.amount}
+						{#if order.delivery_date}
 							<div>
 								<dt
 									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
-									Сумма заказа
+									Планируемая дата поставки
 								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{order.amount.toLocaleString('ru-RU')} ₽
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{new Date(order.delivery_date).toLocaleDateString('ru-RU')}
+								</dd>
+							</div>
+						{/if}
+
+						{#if order.actual_delivery_date}
+							<div>
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
+									Фактическая дата поставки
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{new Date(order.actual_delivery_date).toLocaleDateString('ru-RU')}
 								</dd>
 							</div>
 						{/if}
@@ -229,8 +256,78 @@
 					</div>
 				</div>
 
-				<!-- Items/Products if available -->
-				{#if order.items && order.items.length > 0}
+				<!-- Positions if available -->
+				{#if order.positions && order.positions.length > 0}
+					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+						<h5 class="text-sm font-medium text-gray-900 dark:text-white mb-4">Позиции заказа</h5>
+
+						<div class="overflow-x-auto">
+							<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+								<thead class="bg-gray-50 dark:bg-gray-700">
+									<tr>
+										<th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+											Наименование
+										</th>
+										<th class="px-3 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+											Артикул
+										</th>
+										<th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+											Цена
+										</th>
+										<th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+											Кол-во
+										</th>
+										<th class="px-3 py-2 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">
+											Итого
+										</th>
+									</tr>
+								</thead>
+								<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+									{#each order.positions as position}
+										<tr>
+											<td class="px-3 py-3 text-sm text-gray-900 dark:text-white">
+												<div class="font-medium">{position.value}</div>
+												{#if position.supplier}
+													<div class="text-xs text-gray-500 dark:text-gray-400">
+														Поставщик: {position.supplier}
+													</div>
+												{/if}
+												{#if position.is_urgent}
+													<span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200 mt-1">
+														Срочная
+													</span>
+												{/if}
+											</td>
+											<td class="px-3 py-3 text-sm text-gray-900 dark:text-white">
+												{position.article}
+											</td>
+											<td class="px-3 py-3 text-sm text-right text-gray-900 dark:text-white">
+												{position.price.toLocaleString('ru-RU')} ₽
+											</td>
+											<td class="px-3 py-3 text-sm text-right text-gray-900 dark:text-white">
+												{position.count}
+											</td>
+											<td class="px-3 py-3 text-sm text-right font-semibold text-gray-900 dark:text-white">
+												{position.total_price.toLocaleString('ru-RU')} ₽
+											</td>
+										</tr>
+									{/each}
+								</tbody>
+								<tfoot class="bg-gray-50 dark:bg-gray-700">
+									<tr>
+										<td colspan="4" class="px-3 py-3 text-sm font-medium text-right text-gray-900 dark:text-white">
+											Общая сумма:
+										</td>
+										<td class="px-3 py-3 text-sm text-right font-bold text-gray-900 dark:text-white">
+											{order.positions.reduce((sum, p) => sum + p.total_price, 0).toLocaleString('ru-RU')} ₽
+										</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+				{:else if order.items && order.items.length > 0}
+					<!-- Fallback for old structure -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
 						<h5 class="text-sm font-medium text-gray-900 dark:text-white">Товары в заказе</h5>
 

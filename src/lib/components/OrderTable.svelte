@@ -161,12 +161,12 @@
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{order.deal || 'Не указана'}
+								{order.value || order.deal || 'Не указана'}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{order.supplier || 'Не указан'}
+								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
 						<td
@@ -174,28 +174,20 @@
 							role="cell"
 						>
 							<div class="pr-4">
-								{#if order.urgency === 'high'}
+								{#if order.is_urgent || order.urgency === 'high'}
 									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
-										Высокая
-									</span>
-								{:else if order.urgency === 'medium'}
-									<span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-										Средняя
-									</span>
-								{:else if order.urgency === 'low'}
-									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-										Низкая
+										Срочный
 									</span>
 								{:else}
 									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-										Не указана
+										Обычный
 									</span>
 								{/if}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{order.comment || 'Нет комментария'}
+								{order.order_number || order.comment || 'Нет комментария'}
 							</div>
 						</td>
 						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
@@ -333,10 +325,10 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
-								{order.deal || 'Сделка не указана'}
+								{order.value || order.deal || 'Сделка не указана'}
 							</h3>
 							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
-								{order.supplier || 'Поставщик не указан'}
+								{order.company?.name || order.supplier || 'Поставщик не указан'}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
@@ -357,21 +349,13 @@
 								Срочность
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{#if order.urgency === 'high'}
+								{#if order.is_urgent || order.urgency === 'high'}
 									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
-										Высокая
-									</span>
-								{:else if order.urgency === 'medium'}
-									<span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-										Средняя
-									</span>
-								{:else if order.urgency === 'low'}
-									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
-										Низкая
+										Срочный
 									</span>
 								{:else}
 									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
-										Не указана
+										Обычный
 									</span>
 								{/if}
 							</dd>
@@ -380,10 +364,10 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Комментарий
+								Номер заказа
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.comment || 'Нет комментария'}
+								{order.order_number || order.comment || 'Не указан'}
 							</dd>
 						</div>
 					</dl>

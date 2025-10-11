@@ -1,5 +1,6 @@
 <script>
 	import OrderTable from '$lib/components/OrderTable.svelte';
+	import OrderAddModal from '$lib/components/OrderAddModal.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
@@ -11,10 +12,12 @@
 		addSuccessToast,
 		addErrorToast,
 		handleApiError,
-		clearAllToasts
+		clearAllToasts,
+		retryOperation
 	} from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import { createOrder, deleteOrder, refreshOrders } from '$lib/api/orders.js';
 
 	let { data } = $props();
 	let hasAccess = $state(false);
@@ -24,6 +27,14 @@
 	let hasSearched = $state(false);
 	let filteredOrders = $state([]);
 	let updateCounter = $state(0);
+	
+	// Add modal state
+	let showAddModal = $state(false);
+	let isActionLoading = $state(false);
+	
+	// Mock data for companies and projects
+	let companies = $state(data.companies || []);
+	let projects = $state(data.projects || []);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -57,8 +68,12 @@
 		filteredOrders = orders.filter(order => {
 			return (
 				order.id.toString().includes(term) ||
+				(order.order_number && order.order_number.toLowerCase().includes(term)) ||
+				(order.value && order.value.toLowerCase().includes(term)) ||
+				(order.company?.name && order.company.name.toLowerCase().includes(term)) ||
+				(order.project?.value && order.project.value.toLowerCase().includes(term)) ||
+				// Поддержка старых полей для обратной совместимости
 				(order.supplier && order.supplier.toLowerCase().includes(term)) ||
-				(order.phone && order.phone.toLowerCase().includes(term)) ||
 				(order.deal && order.deal.toLowerCase().includes(term)) ||
 				(order.comment && order.comment.toLowerCase().includes(term))
 			);
@@ -74,19 +89,23 @@
 
 	// Handle delete order
 	async function handleDeleteOrder(order) {
-		if (!confirm(`Вы уверены, что хотите удалить заказ #${order.id}?`)) {
+		if (!confirm(`Вы уверены, что хотите удалить заказ #${order.order_number}?`)) {
 			return;
 		}
 
 		isLoading = true;
 		try {
-			// Здесь будет запрос к API для удаления заказа
-			// Пока просто удаляем из локального массива
-			orders = orders.filter(o => o.id !== order.id);
-			filteredOrders = filteredOrders.filter(o => o.id !== order.id);
-			updateCounter++;
-			
-			addSuccessToast(`Заказ #${order.id} успешно удален`);
+			await retryOperation(
+				async () => {
+					await deleteOrder(order.id);
+					orders = orders.filter(o => o.id !== order.id);
+					filteredOrders = filteredOrders.filter(o => o.id !== order.id);
+					updateCounter++;
+					addSuccessToast(`Заказ #${order.order_number} успешно удален`);
+				},
+				2,
+				1000
+			);
 		} catch (error) {
 			handleApiError(error, 'Ошибка при удалении заказа');
 		} finally {
@@ -118,7 +137,9 @@
 	async function loadServices() {
 		isLoading = true;
 		try {
-			await invalidateAll();
+			const refreshedOrders = await refreshOrders();
+			orders = refreshedOrders;
+			filteredOrders = refreshedOrders;
 			addSuccessToast('Данные успешно обновлены');
 			updateCounter++;
 		} catch (error) {
@@ -150,6 +171,54 @@
 			addErrorToast(loadError.message, { duration: 0 });
 		}
 	});
+
+	// Open add modal
+	function handleAddOrder() {
+		showAddModal = true;
+		clearAllToasts();
+	}
+
+	// Save new order
+	async function handleSaveNewOrder(orderData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					const newOrder = await createOrder(orderData);
+					
+					// Добавляем информацию о компании и проекте для отображения
+					const company = companies.find(c => c.id === newOrder.company_id);
+					const project = projects.find(p => p.id === newOrder.project_id);
+					
+					const enrichedOrder = {
+						...newOrder,
+						company,
+						project
+					};
+
+					orders = [...orders, enrichedOrder];
+					filteredOrders = [...filteredOrders, enrichedOrder];
+					updateCounter++;
+
+					addSuccessToast(`Заказ #${newOrder.order_number} успешно добавлен`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to create order:', error);
+		} finally {
+			isActionLoading = false;
+			showAddModal = false;
+		}
+	}
+
+	// Cancel add order
+	function handleCancelAddOrder() {
+		showAddModal = false;
+		isActionLoading = false;
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -246,7 +315,9 @@
 				<!-- Add Order Button -->
 				<button
 					type="button"
-					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					onclick={handleAddOrder}
+					disabled={isActionLoading}
+					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<svg
 						class="-ml-0.5 mr-1.5 h-5 w-5"
@@ -357,3 +428,13 @@
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>
+
+<!-- Order Add Modal -->
+<OrderAddModal
+	isOpen={showAddModal}
+	onSave={handleSaveNewOrder}
+	onCancel={handleCancelAddOrder}
+	isLoading={isActionLoading}
+	{companies}
+	{projects}
+/>

@@ -200,7 +200,9 @@
 			</div>
 
 			<!-- Navigation content -->
-			<nav class="mt-8 flex flex-1 flex-col max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden">
+			<nav
+				class="mt-8 flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
+			>
 				<ul role="list" class="flex flex-1 flex-col gap-y-7">
 					<li>
 						<ul role="list" class="-mx-2 space-y-1">
@@ -359,7 +361,7 @@
 										<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/bz')}>
 											<circle cx="12" cy="12" r="3" />
 										</svg>
-										Бланк заказа
+										Заказы
 									</button>
 								</li>
 							{/if}
@@ -377,7 +379,7 @@
 										>
 											<circle cx="12" cy="12" r="3" />
 										</svg>
-										Бланк Заказа
+										Заказы
 									</button>
 								</li>
 							{/if}
@@ -579,7 +581,9 @@
 				class="h-12 w-auto"
 			/>
 		</div> -->
-		<nav class="mt-8 flex flex-1 flex-col max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden">
+		<nav
+			class="mt-8 flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
+		>
 			<ul role="list" class="flex flex-1 flex-col gap-y-7">
 				<li>
 					<ul role="list" class="-mx-2 space-y-1">
@@ -682,7 +686,7 @@
 									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/bz')}>
 										<circle cx="12" cy="12" r="3" />
 									</svg>
-									Бланк заказа
+									Заказы
 								</a>
 							</li>
 						{/if}
@@ -696,7 +700,7 @@
 									>
 										<circle cx="12" cy="12" r="3" />
 									</svg>
-									Бланк Заказа
+									Заказы
 								</a>
 							</li>
 						{/if}
