@@ -19,7 +19,7 @@
 		value: '',
 		company_id: '',
 		project_id: '',
-		is_active: true,
+		is_active: false,
 		is_urgent: false
 	});
 
@@ -50,7 +50,7 @@
 				value: '',
 				company_id: '',
 				project_id: '',
-				is_active: true,
+				is_active: false,
 				is_urgent: false
 			};
 			positions = [];
