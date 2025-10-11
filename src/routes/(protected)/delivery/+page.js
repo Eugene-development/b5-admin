@@ -1,46 +1,91 @@
-// Mock data for delivery companies
-export async function load() {
-	// В реальном приложении здесь будет API запрос
-	const deliveryCompanies = [
-		{
-			id: 1,
-			name: 'ООО "Быстрая доставка"',
-			legal_name: 'Общество с ограниченной ответственностью "Быстрая доставка"',
-			inn: '4444444444',
-			email: 'fast@delivery.com',
-			phone: '+7 (999) 444-44-44',
-			contact_person: 'Быстров Быстр Быстрович',
-			region: 'Москва',
-			status: 'active',
-			created_at: '2024-01-30T12:00:00Z'
-		},
-		{
-			id: 2,
-			name: 'ИП Курьер',
-			legal_name: 'Индивидуальный предприниматель Курьер Курьерский Курьерович',
-			inn: '6666666666',
-			email: 'courier@example.com',
-			phone: '+7 (999) 666-66-66',
-			contact_person: 'Курьер Курьерский Курьерович',
-			region: 'Санкт-Петербург',
-			status: 'active',
-			created_at: '2024-02-05T13:30:00Z'
-		},
-		{
-			id: 3,
-			name: 'ООО "Медленная доставка"',
-			legal_name: 'Общество с ограниченной ответственностью "Медленная доставка"',
-			inn: '7777777777',
-			email: 'slow@delivery.com',
-			phone: '+7 (999) 777-77-77',
-			contact_person: 'Медленов Медлен Медленович',
-			region: 'Краснодар',
-			status: 'suspended',
-			created_at: '2024-01-12T15:45:00Z'
-		}
-	];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/graphql';
 
-	return {
-		deliveryCompanies
-	};
+/**
+ * Load delivery companies from GraphQL API
+ */
+export async function load() {
+	const query = `
+		query GetCompanies {
+			companies(first: 1000) {
+				data {
+					id
+					name
+					legal_name
+					inn
+					region
+					bun
+					is_active
+					created_at
+					updated_at
+					phones {
+						id
+						value
+						contact_person
+						is_primary
+					}
+					emails {
+						id
+						value
+						contact_person
+						is_primary
+					}
+				}
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({ query })
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			console.error('GraphQL errors:', result.errors);
+			return {
+				deliveryCompanies: [],
+				error: {
+					message: result.errors[0]?.message || 'Не удалось загрузить данные',
+					canRetry: true
+				}
+			};
+		}
+
+		// Transform data to match expected format
+		const deliveryCompanies = result.data.companies.data.map((company) => ({
+			...company,
+			status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+			phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
+			email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
+			contact_person:
+				company.phones?.find((p) => p.is_primary)?.contact_person ||
+				company.emails?.find((e) => e.is_primary)?.contact_person ||
+				company.phones?.[0]?.contact_person ||
+				company.emails?.[0]?.contact_person
+		}));
+
+		return {
+			deliveryCompanies
+		};
+	} catch (error) {
+		console.error('Failed to load delivery companies:', error);
+		return {
+			deliveryCompanies: [],
+			error: {
+				message: 'Не удалось загрузить данные компаний доставки',
+				canRetry: true
+			}
+		};
+	}
 }

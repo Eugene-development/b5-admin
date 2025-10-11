@@ -1,52 +1,91 @@
-// Mock data for contractors
-export async function load() {
-	// В реальном приложении здесь будет API запрос
-	const contractors = [
-		{
-			id: 1,
-			name: 'ООО "Подрядчик 1"',
-			legal_name: 'Общество с ограниченной ответственностью "Подрядчик 1"',
-			inn: '1111111111',
-			website: 'https://example.com',
-			address: 'г. Москва, ул. Пушкинская, д. 1',
-			email: 'contractor1@example.com',
-			phone: '+7 (999) 111-11-11',
-			contact_person: 'Козлов Козел Козлович',
-			region: 'Новосибирск',
-			status: 'active',
-			created_at: '2024-01-25T11:45:00Z'
-		},
-		{
-			id: 2,
-			name: 'ИП Строитель',
-			legal_name: 'Индивидуальный предприниматель Строитель Строй Строевич',
-			inn: '2222222222',
-			website: 'https://example.com',
-			address: 'г. Москва, ул. Пушкинская, д. 1',
-			email: 'builder@example.com',
-			phone: '+7 (999) 222-22-22',
-			contact_person: 'Строитель Строй Строевич',
-			region: 'Казань',
-			status: 'active',
-			created_at: '2024-02-10T16:20:00Z'
-		},
-		{
-			id: 3,
-			name: 'ООО "Неактивный подрядчик"',
-			legal_name: 'Общество с ограниченной ответственностью "Неактивный подрядчик"',
-			inn: '3333333333',
-			website: 'https://example.com',
-			address: 'г. Москва, ул. Пушкинская, д. 1',
-			email: 'inactive@example.com',
-			phone: '+7 (999) 333-33-33',
-			contact_person: 'Неактивов Неактив Неактивович',
-			region: 'Ростов-на-Дону',
-			status: 'inactive',
-			created_at: '2024-01-05T08:30:00Z'
-		}
-	];
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/graphql';
 
-	return {
-		contractors
-	};
+/**
+ * Load contractors from GraphQL API
+ */
+export async function load() {
+	const query = `
+		query GetCompanies {
+			companies(first: 1000) {
+				data {
+					id
+					name
+					legal_name
+					inn
+					region
+					bun
+					is_active
+					created_at
+					updated_at
+					phones {
+						id
+						value
+						contact_person
+						is_primary
+					}
+					emails {
+						id
+						value
+						contact_person
+						is_primary
+					}
+				}
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({ query })
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			console.error('GraphQL errors:', result.errors);
+			return {
+				contractors: [],
+				error: {
+					message: result.errors[0]?.message || 'Не удалось загрузить данные',
+					canRetry: true
+				}
+			};
+		}
+
+		// Transform data to match expected format
+		const contractors = result.data.companies.data.map((company) => ({
+			...company,
+			status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+			phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
+			email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
+			contact_person:
+				company.phones?.find((p) => p.is_primary)?.contact_person ||
+				company.emails?.find((e) => e.is_primary)?.contact_person ||
+				company.phones?.[0]?.contact_person ||
+				company.emails?.[0]?.contact_person
+		}));
+
+		return {
+			contractors
+		};
+	} catch (error) {
+		console.error('Failed to load contractors:', error);
+		return {
+			contractors: [],
+			error: {
+				message: 'Не удалось загрузить данные подрядчиков',
+				canRetry: true
+			}
+		};
+	}
 }

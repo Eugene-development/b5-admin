@@ -1,12 +1,14 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
+	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
 		ErrorBoundary,
 		LoadingSpinner,
 		EmptyState,
-		CompanyViewModal
+		CompanyViewModal,
+		CompanyEditModal
 	} from '$lib';
 	import {
 		toasts,
@@ -18,6 +20,15 @@
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import {
+		createCompany,
+		createCompanyPhone,
+		createCompanyEmail,
+		updateCompany,
+		toggleCompanyBan,
+		deleteCompany,
+		refreshCompanies
+	} from '$lib/api/companies.js';
 
 	let { data } = $props();
 
@@ -32,6 +43,13 @@
 	// View modal state
 	let showViewModal = $state(false);
 	let selectedCompany = $state(null);
+
+	// Add modal state
+	let showAddModal = $state(false);
+
+	// Edit modal state
+	let showEditModal = $state(false);
+	let editingCompany = $state(null);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -128,6 +146,112 @@
 		selectedCompany = null;
 	}
 
+	// Open add modal
+	function handleAddCompany() {
+		showAddModal = true;
+		clearAllToasts();
+	}
+
+	// Save new company
+	async function handleSaveNewCompany(data) {
+		isActionLoading = true;
+		try {
+			await retryOperation(
+				async () => {
+					const newCompany = await createCompany(data.company);
+					const phones = [];
+					const emails = [];
+					if (data.phone) {
+						const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
+						phones.push(createdPhone);
+					}
+					if (data.email) {
+						const createdEmail = await createCompanyEmail(newCompany.id, data.email);
+						emails.push(createdEmail);
+					}
+					localDeliveryCompanies = [
+						...localDeliveryCompanies,
+						{
+							...newCompany,
+							status: 'active',
+							phones,
+							emails,
+							phone: phones[0]?.value || null,
+							email: emails[0]?.value || null,
+							contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
+						}
+					];
+					addSuccessToast(`Служба доставки "${newCompany.name}" успешно добавлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to create company:', error);
+		} finally {
+			isActionLoading = false;
+			showAddModal = false;
+		}
+	}
+
+	// Cancel add company
+	function handleCancelAddCompany() {
+		showAddModal = false;
+		isActionLoading = false;
+	}
+
+	// Open edit modal
+	function handleEditCompany(company) {
+		editingCompany = company;
+		showEditModal = true;
+		clearAllToasts();
+	}
+
+	// Save company changes (edit)
+	async function handleUpdateCompany(updatedCompanyData) {
+		isActionLoading = true;
+		try {
+			await retryOperation(
+				async () => {
+					const updatedCompany = await updateCompany(updatedCompanyData);
+					localDeliveryCompanies = localDeliveryCompanies.map((company) =>
+						company.id === updatedCompany.id
+							? {
+									...updatedCompany,
+									status: updatedCompany.bun
+										? 'banned'
+										: updatedCompany.is_active
+											? 'active'
+											: 'inactive',
+									phone: company.phone,
+									email: company.email,
+									contact_person: company.contact_person,
+									phones: company.phones,
+									emails: company.emails
+								}
+							: company
+					);
+					addSuccessToast(`Служба доставки "${updatedCompany.name}" успешно обновлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to update company:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			editingCompany = null;
+		}
+	}
+
+	// Cancel edit company
+	function handleCancelEditCompany() {
+		showEditModal = false;
+		editingCompany = null;
+		isActionLoading = false;
+	}
+
 	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
@@ -141,19 +265,17 @@
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
-						// В реальном приложении здесь будет API запрос
+						await toggleCompanyBan(company.id, true);
 						updateDeliveryCompanyStatus(company.id, 'banned');
-						addSuccessToast(`Служба доставки "${company.name || company.email}" успешно забанена.`);
+						addSuccessToast(`Служба доставки "${company.name}" успешно забанена.`);
 					} else if (type === 'unban') {
-						// В реальном приложении здесь будет API запрос
+						await toggleCompanyBan(company.id, false);
 						updateDeliveryCompanyStatus(company.id, 'active');
-						addSuccessToast(
-							`Служба доставки "${company.name || company.email}" успешно разбанена.`
-						);
+						addSuccessToast(`Служба доставки "${company.name}" успешно разбанена.`);
 					} else if (type === 'delete') {
-						// В реальном приложении здесь будет API запрос
+						await deleteCompany(company.id);
 						removeDeliveryCompanyFromList(company.id);
-						addSuccessToast(`Служба доставки "${company.name || company.email}" успешно удалена.`);
+						addSuccessToast(`Служба доставки "${company.name}" успешно удалена.`);
 					}
 				},
 				2,
@@ -192,9 +314,20 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			// В реальном приложении здесь будет API запрос
-			// const deliveryCompanies = await refreshDeliveryCompanies();
+			const companies = await refreshCompanies();
+			localDeliveryCompanies = companies.map((company) => ({
+				...company,
+				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
+				email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
+				contact_person:
+					company.phones?.find((p) => p.is_primary)?.contact_person ||
+					company.emails?.find((e) => e.is_primary)?.contact_person ||
+					company.phones?.[0]?.contact_person ||
+					company.emails?.[0]?.contact_person
+			}));
 			loadError = null;
+			updateCounter++;
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
 			}
@@ -303,6 +436,8 @@
 							</button>
 							<button
 								type="button"
+								onclick={handleAddCompany}
+								disabled={isActionLoading}
 								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								<svg
@@ -363,6 +498,7 @@
 						onBanCompany={handleBanDeliveryCompany}
 						onDeleteCompany={handleDeleteDeliveryCompany}
 						onViewCompany={handleViewDeliveryCompany}
+						onEditCompany={handleEditCompany}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -390,3 +526,22 @@
 
 <!-- Company View Modal -->
 <CompanyViewModal isOpen={showViewModal} company={selectedCompany} onClose={closeViewModal} />
+
+<!-- Company Add Modal -->
+<CompanyAddModal
+	isOpen={showAddModal}
+	onSave={handleSaveNewCompany}
+	onCancel={handleCancelAddCompany}
+	isLoading={isActionLoading}
+/>
+
+<!-- Company Edit Modal -->
+{#if editingCompany}
+	<CompanyEditModal
+		isOpen={showEditModal}
+		company={editingCompany}
+		onSave={handleUpdateCompany}
+		onCancel={handleCancelEditCompany}
+		isLoading={isActionLoading}
+	/>
+{/if}
