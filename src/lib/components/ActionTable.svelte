@@ -78,9 +78,9 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 80px; width: 80px;"
+					style="min-width: 60px; width: 60px;"
 				>
-					ID
+					№
 				</th>
 				<th
 					scope="col"
@@ -95,13 +95,6 @@
 					style="min-width: 250px;"
 				>
 					Акция
-				</th>
-				<th
-					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					Регион
 				</th>
 				<th
 					scope="col"
@@ -122,7 +115,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="6" class="px-4 py-8 text-center" role="cell">
+					<td colspan="5" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных акций">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -134,7 +127,7 @@
 				</tr>
 			{:else if actions.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="5" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -151,7 +144,7 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{action.id}
+							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
@@ -161,14 +154,6 @@
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
 								{action.action_name || 'Не указано'}
-							</div>
-						</td>
-						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
-							role="cell"
-						>
-							<div class="pr-4" title={action.region || 'Не указан'}>
-								{action.region || 'Не указан'}
 							</div>
 						</td>
 						<td
@@ -331,23 +316,13 @@
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								ID: {action.id}
+								№ {index + 1}
 							</span>
 						</div>
 					</div>
 
 					<!-- Action Details Grid -->
-					<dl class="mb-4 grid grid-cols-2 gap-3">
-						<div>
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Регион
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.region || 'Не указан'}
-							</dd>
-						</div>
+					<dl class="mb-4">
 						<div>
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"

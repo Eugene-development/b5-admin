@@ -23,6 +23,7 @@ export { default as CompanyTable } from './components/CompanyTable.svelte';
 export { default as CompanyViewModal } from './components/CompanyViewModal.svelte';
 export { default as CompanyAddModal } from './components/CompanyAddModal.svelte';
 export { default as CompanyEditModal } from './components/CompanyEditModal.svelte';
+export { default as ActionAddModal } from './components/ActionAddModal.svelte';
 export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';
@@ -54,6 +55,9 @@ export * from './api/auth.js';
 
 // Export orders API
 export * from './api/orders.js';
+
+// Export actions API
+export * from './api/actions.js';
 
 // Export authentication state store
 export * from './state/auth.svelte.js';

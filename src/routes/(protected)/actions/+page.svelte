@@ -2,6 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import ActionTable from '$lib/components/ActionTable.svelte';
 	import ActionViewModal from '$lib/components/ActionViewModal.svelte';
+	import ActionAddModal from '$lib/components/ActionAddModal.svelte';
 	import {
 		ErrorBoundary
 	} from '$lib';
@@ -10,8 +11,10 @@
 		addSuccessToast,
 		addErrorToast,
 		handleApiError,
-		clearAllToasts
+		clearAllToasts,
+		retryOperation
 	} from '$lib/utils/toastStore.js';
+	import { createAction, refreshActions } from '$lib/api/actions.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
@@ -21,6 +24,7 @@
 	// State management
 	let actions = $state(data.actions);
 	let allActions = $state(data.actions); // Keep original data for filtering
+	let companies = $state(data.companies || []); // Companies for action creation
 	let isLoading = $state(false);
 	let isRefreshing = $state(false);
 	let searchTerm = $state('');
@@ -30,6 +34,8 @@
 	// Modal state
 	let selectedAction = $state(null);
 	let isViewModalOpen = $state(false);
+	let showAddModal = $state(false);
+	let isActionLoading = $state(false);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -38,10 +44,11 @@
 	// Check for server-side load errors
 	let loadError = $state(data?.error || null);
 
-	// Update actions when data changes
+	// Update actions and companies when data changes
 	$effect(() => {
 		actions = data.actions;
 		allActions = data.actions;
+		companies = data.companies || [];
 	});
 
 	async function loadServices() {
@@ -81,6 +88,40 @@
 		selectedAction = null;
 	}
 
+	// Open add modal
+	function handleAddAction() {
+		showAddModal = true;
+		clearAllToasts();
+	}
+
+	// Save new action
+	async function handleSaveNewAction(actionData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					const newAction = await createAction(actionData);
+					await invalidateAll();
+					addSuccessToast(`Акция "${actionData.name}" успешно добавлена.`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to create action:', error);
+		} finally {
+			isActionLoading = false;
+			showAddModal = false;
+		}
+	}
+
+	// Cancel add action
+	function handleCancelAddAction() {
+		showAddModal = false;
+		isActionLoading = false;
+	}
+
 	function handleSearch() {
 		hasSearched = true;
 		isLoading = true;
@@ -112,8 +153,9 @@
 	async function refreshData() {
 		isRefreshing = true;
 		try {
-			await invalidateAll();
-			actions = allActions;
+			const refreshedActions = await refreshActions();
+			actions = refreshedActions;
+			allActions = refreshedActions;
 			updateCounter++;
 			addSuccessToast('Данные успешно обновлены');
 		} catch (error) {
@@ -227,8 +269,9 @@
 					<!-- Add Action Button -->
 					<button
 						type="button"
-						onclick={() => (showAddModal = true)}
-						class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+						onclick={handleAddAction}
+						disabled={isActionLoading}
+						class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 					>
 						<svg
 							class="mr-2 h-4 w-4"
@@ -335,4 +378,11 @@
 <!-- View Modal -->
 <ActionViewModal action={selectedAction} isOpen={isViewModalOpen} onClose={closeViewModal} />
 
-
+<!-- Add Action Modal -->
+<ActionAddModal
+	isOpen={showAddModal}
+	onSave={handleSaveNewAction}
+	onCancel={handleCancelAddAction}
+	isLoading={isActionLoading}
+	{companies}
+/>
