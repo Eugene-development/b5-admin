@@ -1,6 +1,7 @@
 <script>
 	import OrderTable from '$lib/components/OrderTable.svelte';
 	import OrderAddModal from '$lib/components/OrderAddModal.svelte';
+	import OrderEditModal from '$lib/components/OrderEditModal.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
@@ -18,7 +19,7 @@
 	} from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import { createOrder, deleteOrder, refreshOrders } from '$lib/api/orders.js';
+	import { createOrder, deleteOrder, refreshOrders, updateOrder } from '$lib/api/orders.js';
 
 	let { data } = $props();
 	let hasAccess = $state(false);
@@ -32,6 +33,10 @@
 	// Add modal state
 	let showAddModal = $state(false);
 	let isActionLoading = $state(false);
+	
+	// Edit modal state
+	let showEditModal = $state(false);
+	let editingOrder = $state(null);
 	
 	// Confirmation modal state
 	let showConfirmModal = $state(false);
@@ -148,9 +153,9 @@
 
 	// Handle edit order
 	function handleEditOrder(order) {
-		// Здесь будет логика редактирования заказа
-		console.log('Edit order:', order);
-		alert(`Редактирование заказа #${order.id} (функция в разработке)`);
+		editingOrder = order;
+		showEditModal = true;
+		clearAllToasts();
 	}
 
 	// Handle keyboard shortcuts
@@ -250,6 +255,94 @@
 	// Cancel add order
 	function handleCancelAddOrder() {
 		showAddModal = false;
+		isActionLoading = false;
+	}
+
+	// Save edited order
+	async function handleSaveEditedOrder(orderData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					// Import position API functions
+					const { updateOrderPosition, deleteOrderPosition, createOrderPosition } = await import('$lib/api/orders.js');
+					
+					// Update order basic info
+					const updatedOrder = await updateOrder({
+						id: orderData.id,
+						value: orderData.value,
+						company_id: orderData.company_id,
+						project_id: orderData.project_id,
+						order_number: orderData.order_number,
+						delivery_date: orderData.delivery_date,
+						actual_delivery_date: orderData.actual_delivery_date,
+						is_active: orderData.is_active,
+						is_urgent: orderData.is_urgent
+					});
+					
+					// Delete removed positions
+					if (orderData.deletedPositionIds && orderData.deletedPositionIds.length > 0) {
+						await Promise.all(
+							orderData.deletedPositionIds.map(id => deleteOrderPosition(id))
+						);
+					}
+					
+					// Process positions
+					for (const position of orderData.positions) {
+						if (position.isExisting) {
+							// Update existing position
+							await updateOrderPosition({
+								id: position.id,
+								value: position.value,
+								article: position.article,
+								price: position.price,
+								count: position.count,
+								is_active: position.is_active,
+								is_urgent: position.is_urgent
+							});
+						} else {
+							// Create new position
+							await createOrderPosition({
+								order_id: orderData.id,
+								value: position.value,
+								article: position.article,
+								price: position.price,
+								count: position.count,
+								is_active: position.is_active,
+								is_urgent: position.is_urgent
+							});
+						}
+					}
+					
+					// Refresh the full order to get all positions
+					const refreshedOrders = await refreshOrders();
+					const fullOrder = refreshedOrders.find(o => o.id === orderData.id);
+					
+					if (fullOrder) {
+						orders = orders.map(o => o.id === fullOrder.id ? fullOrder : o);
+						filteredOrders = filteredOrders.map(o => o.id === fullOrder.id ? fullOrder : o);
+					}
+					
+					updateCounter++;
+					addSuccessToast(`Заказ #${updatedOrder.order_number} успешно обновлен`);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to update order:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			editingOrder = null;
+		}
+	}
+
+	// Cancel edit order
+	function handleCancelEditOrder() {
+		showEditModal = false;
+		editingOrder = null;
 		isActionLoading = false;
 	}
 </script>
@@ -467,6 +560,17 @@
 	isOpen={showAddModal}
 	onSave={handleSaveNewOrder}
 	onCancel={handleCancelAddOrder}
+	isLoading={isActionLoading}
+	{companies}
+	{projects}
+/>
+
+<!-- Order Edit Modal -->
+<OrderEditModal
+	isOpen={showEditModal}
+	order={editingOrder}
+	onSave={handleSaveEditedOrder}
+	onCancel={handleCancelEditOrder}
 	isLoading={isActionLoading}
 	{companies}
 	{projects}

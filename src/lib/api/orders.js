@@ -400,3 +400,166 @@ export async function getProjectsForDropdown() {
 		throw error;
 	}
 }
+
+/**
+ * Update an order position
+ * @param {Object} positionData - Position data to update
+ * @returns {Promise<Object>} Updated position
+ */
+export async function updateOrderPosition(positionData) {
+	const mutation = `
+		mutation UpdateOrderPosition($input: UpdateOrderPositionInput!) {
+			updateOrderPosition(input: $input) {
+				id
+				order_id
+				value
+				article
+				price
+				count
+				total_price
+				supplier
+				expected_delivery_date
+				actual_delivery_date
+				is_active
+				is_urgent
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					input: positionData
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update position');
+		}
+
+		return result.data.updateOrderPosition;
+	} catch (error) {
+		handleApiError(error, 'Не удалось обновить позицию');
+		throw error;
+	}
+}
+
+/**
+ * Delete an order position
+ * @param {string} positionId - Position ID
+ * @returns {Promise<Object>} Deleted position
+ */
+export async function deleteOrderPosition(positionId) {
+	const mutation = `
+		mutation DeleteOrderPosition($id: ID!) {
+			deleteOrderPosition(id: $id) {
+				id
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					id: positionId
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to delete position');
+		}
+
+		return result.data.deleteOrderPosition;
+	} catch (error) {
+		handleApiError(error, 'Не удалось удалить позицию');
+		throw error;
+	}
+}
+
+/**
+ * Create a new order position
+ * @param {Object} positionData - Position data with order_id
+ * @returns {Promise<Object>} Created position
+ */
+export async function createOrderPosition(positionData) {
+	const mutation = `
+		mutation CreateOrderPosition($input: CreateSingleOrderPositionInput!) {
+			createOrderPosition(input: $input) {
+				id
+				order_id
+				value
+				article
+				price
+				count
+				total_price
+				supplier
+				expected_delivery_date
+				actual_delivery_date
+				is_active
+				is_urgent
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					input: positionData
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to create position');
+		}
+
+		return result.data.createOrderPosition;
+	} catch (error) {
+		handleApiError(error, 'Не удалось создать позицию');
+		throw error;
+	}
+}
