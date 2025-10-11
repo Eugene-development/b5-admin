@@ -1,6 +1,4 @@
 <script>
-	import { formatPhone } from '$lib/utils/formatters.js';
-	
 	let { action, isOpen = false, onClose } = $props();
 
 	// Format date helper function
@@ -54,9 +52,7 @@
 		role="dialog"
 		aria-modal="true"
 	>
-		<div
-			class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-		>
+		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Background overlay -->
 			<div
 				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
@@ -76,139 +72,166 @@
 				tabindex="0"
 				role="dialog"
 			>
-			<!-- Modal header -->
-			<div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
-				<div>
-					<h2 id="modal-title" class="text-xl font-semibold text-gray-900 dark:text-white">
-						Детали акции
-					</h2>
-					<p id="modal-description" class="text-sm text-gray-500 dark:text-gray-400">
-						ID: {action.id}
-					</p>
-				</div>
-				<button
-					type="button"
-					onclick={onClose}
-					class="rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:hover:bg-gray-700 dark:hover:text-gray-300"
-					aria-label="Закрыть модальное окно"
+				<!-- Modal header -->
+				<div
+					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
 				>
-					<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
-				</button>
-			</div>
+					<h3
+						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						id="modal-title"
+					>
+						Просмотр акции
+					</h3>
+					<button
+						type="button"
+						onclick={onClose}
+						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
+						aria-label="Закрыть модальное окно"
+					>
+						<svg
+							class="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</button>
+				</div>
 
-			<!-- Modal body -->
-			<div class="px-6 py-4">
-				<div class="grid gap-6 md:grid-cols-2">
-					<!-- Основная информация -->
-					<div class="space-y-4">
-						<h3 class="text-lg font-medium text-gray-900 dark:text-white">Основная информация</h3>
-						
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Компания</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.company_name || 'Не указано'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Название акции</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.action_name || 'Не указано'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Телефон</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatPhone(action.phone)}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Контактное лицо</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.contact_person || 'Не указано'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Регион</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{action.region || 'Не указан'}
-							</dd>
+				<!-- Modal content -->
+				<div class="mt-6">
+					<!-- Action header -->
+					<div class="mb-6 flex items-start justify-between">
+						<div class="min-w-0 flex-1">
+							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
+								{action.action_name || 'Название не указано'}
+							</h4>
 						</div>
 					</div>
 
-					<!-- Период и детали -->
-					<div class="space-y-4">
-						<h3 class="text-lg font-medium text-gray-900 dark:text-white">Период и детали</h3>
-						
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Период проведения</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{#if action.start_date && action.end_date}
-									с {formatDate(action.start_date)} по {formatDate(action.end_date)}
-								{:else if action.start_date}
-									с {formatDate(action.start_date)}
-								{:else if action.end_date}
-									до {formatDate(action.end_date)}
-								{:else}
-									Не указан
-								{/if}
-							</dd>
+					<!-- Action details grid -->
+					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+						<!-- Basic Information -->
+						<div class="space-y-4">
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Основная информация:
+							</h5>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Компания
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{action.company_name || 'Не указана'}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Название акции
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{action.action_name || 'Не указано'}
+								</dd>
+							</div>
+
+							{#if action.description}
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Описание
+									</dt>
+									<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+										{action.description}
+									</dd>
+								</div>
+							{/if}
+
+							{#if action.comment}
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Комментарий
+									</dt>
+									<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+										{action.comment}
+									</dd>
+								</div>
+							{/if}
 						</div>
 
-						{#if action.description}
-							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Описание</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white leading-relaxed">
-									{action.description}
-								</dd>
-							</div>
-						{/if}
+						<!-- Period and Details -->
+						<div class="space-y-4">
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Период и детали:
+							</h5>
 
-						{#if action.comment}
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Комментарий</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white leading-relaxed">
-									{action.comment}
-								</dd>
-							</div>
-						{/if}
-
-						{#if action.created_at}
-							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата создания</dt>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Период проведения
+								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatDate(action.created_at)}
+									{#if action.start_date && action.end_date}
+										с {formatDate(action.start_date)} по {formatDate(action.end_date)}
+									{:else if action.start_date}
+										с {formatDate(action.start_date)}
+									{:else if action.end_date}
+										до {formatDate(action.end_date)}
+									{:else}
+										Не указан
+									{/if}
 								</dd>
 							</div>
-						{/if}
 
-						{#if action.updated_at}
-							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Последнее обновление</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatDate(action.updated_at)}
-								</dd>
-							</div>
-						{/if}
+							{#if action.created_at}
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Дата создания
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(action.created_at)}
+									</dd>
+								</div>
+							{/if}
+
+							{#if action.updated_at}
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Дата обновления
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(action.updated_at)}
+									</dd>
+								</div>
+							{/if}
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Modal footer -->
-			<div class="flex justify-end border-t border-gray-200 px-6 py-4 dark:border-gray-700">
-				<button
-					type="button"
-					onclick={onClose}
-					class="rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-				>
-					Закрыть
-				</button>
-			</div>
+				<!-- Modal footer -->
+				<div class="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-gray-600">
+					<button
+						type="button"
+						onclick={onClose}
+						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+					>
+						Закрыть
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -36,8 +36,6 @@
 	let isFormValid = $derived(
 		formData.name.trim() !== '' &&
 			formData.description.trim() !== '' &&
-			formData.start !== '' &&
-			formData.end !== '' &&
 			formData.company_id !== '' &&
 			Object.keys(errors).length === 0
 	);
@@ -126,26 +124,20 @@
 				break;
 			}
 			case 'start': {
-				if (!value) {
-					newErrors.start = 'Дата начала обязательна';
-				} else {
-					delete newErrors.start;
-					// Validate end date if it exists
-					if (formData.end && value > formData.end) {
-						newErrors.end = 'Дата окончания должна быть позже даты начала';
-					} else if (formData.end) {
-						delete newErrors.end;
-					}
+				delete newErrors.start;
+				// Validate end date if both dates exist
+				if (value && formData.end && value > formData.end) {
+					newErrors.end = 'Дата окончания должна быть позже даты начала';
+				} else if (formData.end) {
+					delete newErrors.end;
 				}
 				break;
 			}
 			case 'end': {
-				if (!value) {
-					newErrors.end = 'Дата окончания обязательна';
-				} else if (formData.start && value < formData.start) {
+				delete newErrors.end;
+				// Validate if both dates exist
+				if (value && formData.start && value < formData.start) {
 					newErrors.end = 'Дата окончания должна быть позже даты начала';
-				} else {
-					delete newErrors.end;
 				}
 				break;
 			}
@@ -357,7 +349,7 @@
 								for="start-date"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Дата начала <span class="text-red-500">*</span>
+								Дата начала
 							</label>
 							<input
 								type="date"
@@ -365,7 +357,6 @@
 								value={formData.start}
 								oninput={(e) => handleInputChange('start', e.target.value)}
 								disabled={isLoading}
-								required
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.start ? 'start-date-error' : undefined}
 								aria-invalid={errors.start ? 'true' : 'false'}
@@ -382,7 +373,7 @@
 								for="end-date"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Дата окончания <span class="text-red-500">*</span>
+								Дата окончания
 							</label>
 							<input
 								type="date"
@@ -390,7 +381,6 @@
 								value={formData.end}
 								oninput={(e) => handleInputChange('end', e.target.value)}
 								disabled={isLoading}
-								required
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 								aria-describedby={errors.end ? 'end-date-error' : undefined}
 								aria-invalid={errors.end ? 'true' : 'false'}

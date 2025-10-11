@@ -5,7 +5,8 @@
 	import ActionAddModal from '$lib/components/ActionAddModal.svelte';
 	import ActionEditModal from '$lib/components/ActionEditModal.svelte';
 	import {
-		ErrorBoundary
+		ErrorBoundary,
+		ConfirmationModal
 	} from '$lib';
 	import {
 		toasts,
@@ -15,7 +16,7 @@
 		clearAllToasts,
 		retryOperation
 	} from '$lib/utils/toastStore.js';
-	import { createAction, updateAction, refreshActions } from '$lib/api/actions.js';
+	import { createAction, updateAction, deleteAction, refreshActions } from '$lib/api/actions.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
@@ -37,6 +38,8 @@
 	let isViewModalOpen = $state(false);
 	let showAddModal = $state(false);
 	let showEditModal = $state(false);
+	let showConfirmModal = $state(false);
+	let confirmAction = $state(null);
 	let isActionLoading = $state(false);
 
 	// Error boundary state
@@ -87,11 +90,48 @@
 	}
 
 	function handleDeleteAction(action) {
-		if (confirm(`Вы уверены, что хотите удалить акцию "${action.action_name}"?`)) {
-			console.log('Delete action:', action);
-			// TODO: Implement delete functionality
-			alert(`Акция "${action.action_name}" удалена`);
+		confirmAction = {
+			type: 'delete',
+			action: action,
+			title: 'Удалить акцию',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить акцию "${action.action_name}"?`,
+			confirmText: 'Удалить навсегда',
+			isDestructive: true
+		};
+		showConfirmModal = true;
+		clearAllToasts();
+	}
+
+	async function confirmActionHandler() {
+		if (!confirmAction) return;
+		isActionLoading = true;
+
+		try {
+			const { type, action } = confirmAction;
+			await retryOperation(
+				async () => {
+					if (type === 'delete') {
+						await deleteAction(action.id);
+						await invalidateAll();
+						addSuccessToast(`Акция "${action.action_name}" успешно удалена.`);
+					}
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Action failed after retries:', error);
+		} finally {
+			isActionLoading = false;
+			showConfirmModal = false;
+			confirmAction = null;
 		}
+	}
+
+	function cancelAction() {
+		showConfirmModal = false;
+		confirmAction = null;
+		isActionLoading = false;
 	}
 
 	function closeViewModal() {
@@ -437,3 +477,18 @@
 	isLoading={isActionLoading}
 	{companies}
 />
+
+<!-- Confirmation Modal -->
+{#if confirmAction}
+	<ConfirmationModal
+		isOpen={showConfirmModal}
+		title={confirmAction.title}
+		message={confirmAction.message}
+		confirmText={confirmAction.confirmText}
+		cancelText="Отмена"
+		onConfirm={confirmActionHandler}
+		onCancel={cancelAction}
+		isDestructive={confirmAction.isDestructive}
+		isLoading={isActionLoading}
+	/>
+{/if}

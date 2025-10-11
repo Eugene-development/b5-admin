@@ -31,7 +31,7 @@
 	// Function to get CSS classes for navigation items
 	function getNavClasses(route) {
 		const baseClasses =
-			'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold w-full text-left';
+			'group flex gap-x-3 rounded-md p-2 text-base/6 font-semibold w-full text-left';
 		const activeClasses = 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white';
 		const inactiveClasses =
 			'text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white';
@@ -203,7 +203,7 @@
 			<nav
 				class="mt-8 flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
 			>
-				<ul role="list" class="flex flex-1 flex-col gap-y-7">
+				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li>
 						<ul role="list" class="-mx-2 space-y-1">
 							<li>
@@ -213,181 +213,14 @@
 									class={getNavClasses('/dashboard')}
 									onclick={() => handleMobileNavigation('/dashboard')}
 								>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
 									Дашборд
 								</button>
 							</li>
-							{#if navigationVisibility.showAgents}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/agents')}
-										onclick={() => handleMobileNavigation('/agents')}
-									>
-										<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/agents')}>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Агенты
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showCurators}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/curators')}
-										onclick={() => handleMobileNavigation('/curators')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/curators')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Кураторы
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showContractors}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/contractors')}
-										onclick={() => handleMobileNavigation('/contractors')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/contractors')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Подрядчики
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showSuppliers}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/suppliers')}
-										onclick={() => handleMobileNavigation('/suppliers')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/suppliers')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Поставщики
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showDelivery}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/delivery')}
-										onclick={() => handleMobileNavigation('/delivery')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/suppliers')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Доставка
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showServices}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/services')}
-										onclick={() => handleMobileNavigation('/services')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/services')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Сервис
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showActions}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/actions')}
-										onclick={() => handleMobileNavigation('/actions')}
-									>
-										<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/actions')}>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Акции
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showTz}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/tz')}
-										onclick={() => handleMobileNavigation('/tz')}
-									>
-										<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/tz')}>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Техзадания
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showBz}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/bz')}
-										onclick={() => handleMobileNavigation('/bz')}
-									>
-										<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/bz')}>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Заказы
-									</button>
-								</li>
-							{/if}
-							{#if navigationVisibility.showOrder}
-								<li>
-									<button
-										type="button"
-										class={getNavClasses('/order')}
-										onclick={() => handleMobileNavigation('/order')}
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="currentColor"
-											class={getIconClasses('/documentation')}
-										>
-											<circle cx="12" cy="12" r="3" />
-										</svg>
-										Заказы
-									</button>
-								</li>
-							{/if}
 						</ul>
 					</li>
-					{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
+					{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Аналитика</div>
+							<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showClients}
 									<li>
@@ -402,15 +235,113 @@
 										</button>
 									</li>
 								{/if}
-								{#if navigationVisibility.showProjects}
+								{#if navigationVisibility.showAgents}
 									<li>
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/projects')}
-											onclick={() => handleMobileNavigation('/projects')}
+											class={getNavClassesWithSpan('/agents')}
+											onclick={() => handleMobileNavigation('/agents')}
 										>
-											<span class={getSpanIconClasses('/projects')}>П</span>
-											<span class="truncate">Проекты</span>
+											<span class={getSpanIconClasses('/agents')}>А</span>
+											<span class="truncate">Агенты</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showCurators}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/curators')}
+											onclick={() => handleMobileNavigation('/curators')}
+										>
+											<span class={getSpanIconClasses('/curators')}>Кр</span>
+											<span class="truncate">Кураторы</span>
+										</button>
+									</li>
+								{/if}
+							</ul>
+						</li>
+					{/if}
+					{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
+						<li>
+							<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
+							<ul role="list" class="-mx-2 mt-2 space-y-1">
+								{#if navigationVisibility.showContractors}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/contractors')}
+											onclick={() => handleMobileNavigation('/contractors')}
+										>
+											<span class={getSpanIconClasses('/contractors')}>П</span>
+											<span class="truncate">Подрядчики</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showSuppliers}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/suppliers')}
+											onclick={() => handleMobileNavigation('/suppliers')}
+										>
+											<span class={getSpanIconClasses('/suppliers')}>Пс</span>
+											<span class="truncate">Поставщики</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showDelivery}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/delivery')}
+											onclick={() => handleMobileNavigation('/delivery')}
+										>
+											<span class={getSpanIconClasses('/delivery')}>Д</span>
+											<span class="truncate">Доставка</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showServices}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/services')}
+											onclick={() => handleMobileNavigation('/services')}
+										>
+											<span class={getSpanIconClasses('/services')}>С</span>
+											<span class="truncate">Сервис</span>
+										</button>
+									</li>
+								{/if}
+							</ul>
+						</li>
+					{/if}
+					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showFinance}
+						<li>
+							<div class="text-xs/6 font-semibold text-gray-400">Процессы</div>
+							<ul role="list" class="-mx-2 mt-2 space-y-1">
+								{#if navigationVisibility.showTz}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/tz')}
+											onclick={() => handleMobileNavigation('/tz')}
+										>
+											<span class={getSpanIconClasses('/tz')}>ТЗ</span>
+											<span class="truncate">Техзадания</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showOrder}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/order')}
+											onclick={() => handleMobileNavigation('/order')}
+										>
+											<span class={getSpanIconClasses('/order')}>З</span>
+											<span class="truncate">Заказы</span>
 										</button>
 									</li>
 								{/if}
@@ -423,6 +354,37 @@
 										>
 											<span class={getSpanIconClasses('/finance')}>Ф</span>
 											<span class="truncate">Финансы</span>
+										</button>
+									</li>
+								{/if}
+							</ul>
+						</li>
+					{/if}
+					{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
+						<li>
+							<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
+							<ul role="list" class="-mx-2 mt-2 space-y-1">
+								{#if navigationVisibility.showActions}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/actions')}
+											onclick={() => handleMobileNavigation('/actions')}
+										>
+											<span class={getSpanIconClasses('/actions')}>Ак</span>
+											<span class="truncate">Акции</span>
+										</button>
+									</li>
+								{/if}
+								{#if navigationVisibility.showDocumentation}
+									<li>
+										<button
+											type="button"
+											class={getNavClassesWithSpan('/documentation')}
+											onclick={() => handleMobileNavigation('/documentation')}
+										>
+											<span class={getSpanIconClasses('/documentation')}>Док</span>
+											<span class="truncate">Документация</span>
 										</button>
 									</li>
 								{/if}
@@ -457,31 +419,6 @@
 										</svg>
 										Профиль
 									</button>
-
-									{#if navigationVisibility.showDocumentation}
-										<button
-											type="button"
-											class="group -mx-2 flex w-full gap-x-3 rounded-md p-2 text-left text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-											onclick={() => handleMobileNavigation('/documentation')}
-										>
-											<svg
-												viewBox="0 0 24 24"
-												fill="none"
-												stroke="currentColor"
-												stroke-width="1.5"
-												data-slot="icon"
-												aria-hidden="true"
-												class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
-											>
-												<path
-													d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-													stroke-linecap="round"
-													stroke-linejoin="round"
-												/>
-											</svg>
-											Документация
-										</button>
-									{/if}
 
 									<button
 										type="button"
@@ -582,133 +519,20 @@
 			/>
 		</div> -->
 		<nav
-			class="mt-8 flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
+			class="mt-4 flex max-h-[calc(100vh-4rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
 		>
-			<ul role="list" class="flex flex-1 flex-col gap-y-7">
+			<ul role="list" class="flex flex-1 flex-col gap-y-3">
 				<li>
 					<ul role="list" class="-mx-2 space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-							<a href="/dashboard" class={getNavClasses('/dashboard')}>
-								<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/dashboard')}>
-									<circle cx="12" cy="12" r="3" />
-								</svg>
-								Дашборд
-							</a>
+							<a href="/dashboard" class={getNavClasses('/dashboard')}> Дашборд </a>
 						</li>
-						{#if navigationVisibility.showAgents}
-							<li>
-								<a href="/agents" class={getNavClasses('/agents')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/agents')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Агенты
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showCurators}
-							<li>
-								<a href="/curators" class={getNavClasses('/curators')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/curators')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Кураторы
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showContractors}
-							<li>
-								<a href="/contractors" class={getNavClasses('/contractors')}>
-									<svg
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										class={getIconClasses('/contractors')}
-									>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Подрядчики
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showSuppliers}
-							<li>
-								<a href="/suppliers" class={getNavClasses('/suppliers')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/suppliers')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Поставщики
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showDelivery}
-							<li>
-								<a href="/delivery" class={getNavClasses('/delivery')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/suppliers')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Доставка
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showServices}
-							<li>
-								<a href="/services" class={getNavClasses('/services')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/services')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Сервис
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showActions}
-							<li>
-								<a href="/actions" class={getNavClasses('/actions')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/actions')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Акции
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showTz}
-							<li>
-								<a href="/tz" class={getNavClasses('/tz')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/tz')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Техзадания
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showBz}
-							<li>
-								<a href="/bz" class={getNavClasses('/bz')}>
-									<svg viewBox="0 0 24 24" fill="currentColor" class={getIconClasses('/bz')}>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Заказы
-								</a>
-							</li>
-						{/if}
-						{#if navigationVisibility.showOrder}
-							<li>
-								<a href="/order" class={getNavClasses('/order')}>
-									<svg
-										viewBox="0 0 24 24"
-										fill="currentColor"
-										class={getIconClasses('/documentation')}
-									>
-										<circle cx="12" cy="12" r="3" />
-									</svg>
-									Заказы
-								</a>
-							</li>
-						{/if}
 					</ul>
 				</li>
-				{#if navigationVisibility.showClients || navigationVisibility.showProjects || navigationVisibility.showFinance}
+				{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Аналитика</div>
+						<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
 						<ul role="list" class="-mx-2 mt-2 space-y-1">
 							{#if navigationVisibility.showClients}
 								<li>
@@ -719,11 +543,81 @@
 									</a>
 								</li>
 							{/if}
-							{#if navigationVisibility.showProjects}
+							{#if navigationVisibility.showAgents}
 								<li>
-									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
-										<span class={getSpanIconClasses('/projects')}>П</span>
-										<span class="truncate">Проекты</span>
+									<a href="/agents" class={getNavClassesWithSpan('/agents')}>
+										<span class={getSpanIconClasses('/agents')}>А</span>
+										<span class="truncate">Агенты</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showCurators}
+								<li>
+									<a href="/curators" class={getNavClassesWithSpan('/curators')}>
+										<span class={getSpanIconClasses('/curators')}>Кр</span>
+										<span class="truncate">Кураторы</span>
+									</a>
+								</li>
+							{/if}
+						</ul>
+					</li>
+				{/if}
+				{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
+					<li>
+						<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
+						<ul role="list" class="-mx-2 mt-2 space-y-1">
+							{#if navigationVisibility.showContractors}
+								<li>
+									<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
+										<span class={getSpanIconClasses('/contractors')}>П</span>
+										<span class="truncate">Подрядчики</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showSuppliers}
+								<li>
+									<a href="/suppliers" class={getNavClassesWithSpan('/suppliers')}>
+										<span class={getSpanIconClasses('/suppliers')}>Пс</span>
+										<span class="truncate">Поставщики</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showDelivery}
+								<li>
+									<a href="/delivery" class={getNavClassesWithSpan('/delivery')}>
+										<span class={getSpanIconClasses('/delivery')}>Д</span>
+										<span class="truncate">Доставка</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showServices}
+								<li>
+									<a href="/services" class={getNavClassesWithSpan('/services')}>
+										<span class={getSpanIconClasses('/services')}>С</span>
+										<span class="truncate">Сервис</span>
+									</a>
+								</li>
+							{/if}
+						</ul>
+					</li>
+				{/if}
+				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showFinance}
+					<li>
+						<div class="text-xs/6 font-semibold text-gray-400">Процессы</div>
+						<ul role="list" class="-mx-2 mt-2 space-y-1">
+							{#if navigationVisibility.showTz}
+								<li>
+									<a href="/tz" class={getNavClassesWithSpan('/tz')}>
+										<span class={getSpanIconClasses('/tz')}>ТЗ</span>
+										<span class="truncate">Техзадания</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showOrder}
+								<li>
+									<a href="/order" class={getNavClassesWithSpan('/order')}>
+										<span class={getSpanIconClasses('/order')}>З</span>
+										<span class="truncate">Заказы</span>
 									</a>
 								</li>
 							{/if}
@@ -732,6 +626,29 @@
 									<a href="/finance" class={getNavClassesWithSpan('/finance')}>
 										<span class={getSpanIconClasses('/finance')}>Ф</span>
 										<span class="truncate">Финансы</span>
+									</a>
+								</li>
+							{/if}
+						</ul>
+					</li>
+				{/if}
+				{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
+					<li>
+						<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
+						<ul role="list" class="-mx-2 mt-2 space-y-1">
+							{#if navigationVisibility.showActions}
+								<li>
+									<a href="/actions" class={getNavClassesWithSpan('/actions')}>
+										<span class={getSpanIconClasses('/actions')}>Ак</span>
+										<span class="truncate">Акции</span>
+									</a>
+								</li>
+							{/if}
+							{#if navigationVisibility.showDocumentation}
+								<li>
+									<a href="/documentation" class={getNavClassesWithSpan('/documentation')}>
+										<span class={getSpanIconClasses('/documentation')}>Док</span>
+										<span class="truncate">Документация</span>
 									</a>
 								</li>
 							{/if}
@@ -765,30 +682,6 @@
 									</svg>
 									Профиль
 								</a>
-
-								{#if navigationVisibility.showDocumentation}
-									<a
-										href="/documentation"
-										class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
-									>
-										<svg
-											viewBox="0 0 24 24"
-											fill="none"
-											stroke="currentColor"
-											stroke-width="1.5"
-											data-slot="icon"
-											aria-hidden="true"
-											class="size-6 shrink-0 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white"
-										>
-											<path
-												d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-												stroke-linecap="round"
-												stroke-linejoin="round"
-											/>
-										</svg>
-										Документация
-									</a>
-								{/if}
 
 								<a
 									href="/settings"

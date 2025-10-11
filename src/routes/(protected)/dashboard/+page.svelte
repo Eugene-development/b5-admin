@@ -8,7 +8,7 @@
 
 <ProtectedRoute>
 	{#snippet children()}
-		<div class="space-y-6">
+		<div class="space-y-2">
 			<div>
 				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Дашборд</h1>
 				<!-- <p class="mt-4 text-gray-600 dark:text-gray-400">

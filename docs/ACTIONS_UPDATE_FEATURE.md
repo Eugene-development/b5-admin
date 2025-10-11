@@ -126,9 +126,50 @@ mutation UpdateAction($input: UpdateActionInput!) {
 5. Сохраните изменения
 6. Убедитесь, что данные обновились в таблице
 
+## Функционал удаления акций
+
+### Процесс удаления
+
+1. Пользователь нажимает кнопку "Удалить" в таблице акций
+2. Открывается модальное окно подтверждения `ConfirmationModal`
+3. Пользователь подтверждает удаление или отменяет действие
+4. При подтверждении:
+   - Данные отправляются через `deleteAction` API
+   - Выполняется повторная попытка при ошибке (retry logic)
+   - Обновляются данные на странице через `invalidateAll()`
+   - Показывается уведомление об успехе
+5. Модальное окно закрывается
+
+### GraphQL мутация удаления
+
+```graphql
+mutation DeleteAction($id: ID!) {
+  deleteAction(id: $id) {
+    id
+    name
+  }
+}
+```
+
+### Компонент ConfirmationModal
+
+Используется стандартный компонент из библиотеки `$lib` для подтверждения деструктивных действий.
+
+**Props:**
+- `isOpen` - видимость модального окна
+- `title` - заголовок ("Удалить акцию")
+- `message` - текст подтверждения
+- `confirmText` - текст кнопки подтверждения ("Удалить навсегда")
+- `cancelText` - текст кнопки отмены ("Отмена")
+- `isDestructive` - флаг деструктивного действия (красная кнопка)
+- `isLoading` - состояние загрузки
+- `onConfirm` - callback подтверждения
+- `onCancel` - callback отмены
+
 ## Связанные файлы
 
-- `src/lib/components/ActionEditModal.svelte` - компонент модального окна
+- `src/lib/components/ActionEditModal.svelte` - компонент модального окна редактирования
 - `src/routes/(protected)/actions/+page.svelte` - страница акций
-- `src/lib/api/actions.js` - API функции
+- `src/lib/api/actions.js` - API функции (createAction, updateAction, deleteAction)
 - `graphql/action.graphql` - GraphQL схема (в проекте b5-api-2)
+- `src/lib/components/ConfirmationModal.svelte` - компонент подтверждения (из $lib)
