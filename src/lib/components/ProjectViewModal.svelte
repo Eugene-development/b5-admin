@@ -147,28 +147,25 @@
 
 			<!-- Modal Content -->
 			<div
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 dark:bg-gray-800"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
 				tabindex="-1"
 			>
 				<!-- Modal Header -->
-				<div class="mb-6 flex items-start justify-between">
-					<div class="flex-1">
-						<h3
-							class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
-							id="modal-title"
-						>
-							Просмотр проекта
-						</h3>
-						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-							Детальная информация о проекте "{project.value || project.name || 'Без названия'}"
-						</p>
-					</div>
+				<div
+					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
+				>
+					<h3
+						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						id="modal-title"
+					>
+						Просмотр проекта
+					</h3>
 					<button
 						type="button"
-						class="ml-3 rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-500 dark:hover:text-gray-400"
+						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
 						onclick={handleClose}
 						bind:this={closeButtonElement}
 						aria-label="Закрыть модальное окно"
@@ -177,191 +174,219 @@
 							class="h-6 w-6"
 							fill="none"
 							viewBox="0 0 24 24"
+							stroke-width="1.5"
 							stroke="currentColor"
-							aria-hidden="true"
 						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M6 18L18 6M6 6l12 12"
-							/>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</button>
 				</div>
 
-				<!-- Project Information Grid -->
-				<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-					<!-- Basic Information -->
-					<div class="space-y-4">
-						<h4
-							class="text-md border-b border-gray-200 pb-2 font-medium text-gray-900 dark:border-gray-700 dark:text-white"
-						>
-							Основная информация
-						</h4>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Имя клиента</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.value || project.name || 'Не указано'}
-							</dd>
+				<!-- Modal content -->
+				<div class="mt-6">
+					<!-- Project header -->
+					<div class="mb-6 flex items-start justify-between">
+						<div class="min-w-0 flex-1">
+							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
+								{project.value || project.name || 'Без названия'}
+							</h4>
+							{#if project.contract_name}
+								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									Договор: {project.contract_name}
+								</p>
+							{/if}
 						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Регион</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.region || 'Не указан'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Описание</dt>
-							<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
-								{project.description || 'Описание не предоставлено'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">ID проекта</dt>
-							<dd class="mt-1 font-mono text-sm text-gray-900 dark:text-white">
-								{project.id}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Статус</dt>
-							<dd class="mt-1">
-								<span
-									class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
-									{project.is_active !== false
-										? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
-										: 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'}"
-								>
-									{project.is_active !== false ? 'Активный' : 'Неактивный'}
-								</span>
-							</dd>
-						</div>
-					</div>
-
-					<!-- Contract Information -->
-					<div class="space-y-4">
-						<h4
-							class="text-md border-b border-gray-200 pb-2 font-medium text-gray-900 dark:border-gray-700 dark:text-white"
-						>
-							Информация о договоре
-						</h4>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Номер договора</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.contract_name || 'Не указан'}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-								Дата заключения договора
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(project.contract_date)}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Сумма договора</dt>
-							<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-								{formatCurrency(project.contract_amount)}
-							</dd>
-						</div>
-
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-								Планируемое завершение
-							</dt>
-							<dd
-								class="mt-1 text-sm
-								{isOverdue(project.planned_completion_date)
-									? 'font-medium text-red-600 dark:text-red-400'
-									: 'text-gray-900 dark:text-white'}"
+						<div class="ml-4 flex-shrink-0">
+							<span
+								class="inline-flex items-center rounded-full {project.is_active !== false
+									? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+									: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'} px-2.5 py-0.5 text-xs font-medium"
 							>
-								{formatDate(project.planned_completion_date)}
-								{#if isOverdue(project.planned_completion_date)}
-									<span
-										class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800 dark:bg-red-900/20 dark:text-red-400"
-									>
-										Просрочено
-									</span>
-								{/if}
-							</dd>
+								{project.is_active !== false ? 'Активен' : 'Неактивен'}
+							</span>
 						</div>
 					</div>
 
-					<!-- Agent Information -->
-					<div class="space-y-4">
-						<h4
-							class="text-md border-b border-gray-200 pb-2 font-medium text-gray-900 dark:border-gray-700 dark:text-white"
-						>
-							Информация об агенте
-						</h4>
+					<!-- Project details grid -->
+					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+						<!-- Basic Information -->
+						<div class="space-y-4">
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Основная информация:
+							</h5>
 
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-								Назначенный агент
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{getAgentDisplay(project.agent)}
-							</dd>
-						</div>
-
-						{#if project.agent}
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Имя агента</dt>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Имя клиента
+								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.agent.name || 'Не указано'}
+									{project.value || project.name || 'Не указано'}
 								</dd>
 							</div>
-						{/if}
 
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ставка агенту</dt>
-							<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-								{formatAgentRate(project.agent_percentage)}
-							</dd>
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Регион
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{project.region || 'Не указан'}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Описание
+								</dt>
+								<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+									{project.description || 'Не указано'}
+								</dd>
+							</div>
+						</div>
+
+						<!-- Contract Information -->
+						<div class="space-y-4">
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Информация о договоре:
+							</h5>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Номер договора
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{project.contract_name || 'Не указан'}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Дата заключения договора
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{formatDate(project.contract_date)}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Сумма договора
+								</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{formatCurrency(project.contract_amount)}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								>
+									Планируемое завершение
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{formatDate(project.planned_completion_date)}
+									{#if isOverdue(project.planned_completion_date)}
+										<span
+											class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+										>
+											Просрочено
+										</span>
+									{/if}
+								</dd>
+							</div>
 						</div>
 					</div>
 
-					<!-- Timestamps -->
-					<div class="space-y-4">
-						<h4
-							class="text-md border-b border-gray-200 pb-2 font-medium text-gray-900 dark:border-gray-700 dark:text-white"
-						>
-							Системная информация
-						</h4>
+					<!-- Agent and System Information -->
+					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+							<!-- Agent Information -->
+							<div class="space-y-4">
+								<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+									Информация об агенте:
+								</h5>
 
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата создания</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(project.created_at)}
-							</dd>
-						</div>
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Назначенный агент
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{#if project.agent}
+											<div>{project.agent.name || project.agent.email || 'Не указано'}</div>
+											{#if project.agent.email && project.agent.name}
+												<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+													{project.agent.email}
+												</div>
+											{/if}
+										{:else}
+											Не назначен
+										{/if}
+									</dd>
+								</div>
 
-						<div>
-							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-								Последнее обновление
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(project.updated_at)}
-							</dd>
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Ставка агенту
+									</dt>
+									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+										{formatAgentRate(project.agent_percentage)}
+									</dd>
+								</div>
+							</div>
+
+							<!-- System Information -->
+							<div class="space-y-4">
+								<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+									Системная информация:
+								</h5>
+
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Дата создания
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(project.created_at)}
+									</dd>
+								</div>
+
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Дата обновления
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(project.updated_at)}
+									</dd>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<!-- Modal Footer -->
-				<div class="mt-8 flex justify-end">
+				<!-- Modal footer -->
+				<div class="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-gray-600">
 					<button
 						type="button"
 						onclick={handleClose}
-						class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-gray-700"
+						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
 					>
 						Закрыть
 					</button>

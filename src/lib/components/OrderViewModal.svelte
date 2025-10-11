@@ -110,7 +110,7 @@
 							Заказ: {order.value || order.deal || 'Не указан'}
 						</p> -->
 						{#if order.order_number}
-							<p class="mt-1 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+							<p class="mt-1 text-sm font-semibold text-orange-600 dark:text-orange-400">
 								№ {order.order_number}
 							</p>
 						{/if}
@@ -145,11 +145,13 @@
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 					<!-- Basic Information -->
 					<div class="space-y-4">
-						<h5 class="text-sm font-medium text-gray-900 dark:text-white">Основная информация</h5>
+						<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+							Основная информация:
+						</h5>
 
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 							>
 								Компания
 							</dt>
@@ -165,7 +167,7 @@
 
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 							>
 								Клиент
 							</dt>
@@ -177,7 +179,7 @@
 						{#if order.project?.phones && order.project.phones.length > 0}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Телефон клиента
 								</dt>
@@ -186,7 +188,7 @@
 										{#if index > 0}<br />{/if}
 										<a
 											href="tel:{phone.value}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{formatPhone(phone.value)}
 										</a>
@@ -203,7 +205,7 @@
 						{#if order.project?.region}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Адрес объекта
 								</dt>
@@ -212,29 +214,29 @@
 								</dd>
 							</div>
 						{/if}
-
-						<div>
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Описание
-							</dt>
-							<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
-								{order.value || order.deal || order.comment || 'Нет описания'}
-							</dd>
-						</div>
 					</div>
 
 					<!-- Additional Information -->
 					<div class="space-y-4">
-						<h5 class="text-sm font-medium text-gray-900 dark:text-white">
-							Дополнительная информация
+						<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+							Дополнительная информация:
 						</h5>
+
+						<div>
+							<dt
+								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+							>
+								Комментарий
+							</dt>
+							<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+								{order.value || order.deal || order.comment || 'Нет комментария'}
+							</dd>
+						</div>
 
 						{#if order.delivery_date}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Планируемая дата поставки
 								</dt>
@@ -247,7 +249,7 @@
 						{#if order.actual_delivery_date}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Фактическая дата поставки
 								</dt>
@@ -260,7 +262,7 @@
 						{#if order.created_at}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Дата создания
 								</dt>
@@ -273,7 +275,7 @@
 						{#if order.updated_at}
 							<div>
 								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
 									Дата обновления
 								</dt>
@@ -288,7 +290,9 @@
 				<!-- Positions if available -->
 				{#if order.positions && order.positions.length > 0}
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Позиции заказа</h5>
+						<h5 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">
+							Позиции заказа
+						</h5>
 
 						<div class="overflow-x-auto">
 							<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -381,7 +385,7 @@
 				{:else if order.items && order.items.length > 0}
 					<!-- Fallback for old structure -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<h5 class="text-sm font-medium text-gray-900 dark:text-white">Товары в заказе</h5>
+						<h5 class="text-base font-semibold text-gray-900 dark:text-white">Товары в заказе</h5>
 
 						<div class="mt-4 space-y-3">
 							{#each order.items as item}

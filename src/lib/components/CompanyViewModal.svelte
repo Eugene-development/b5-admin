@@ -118,9 +118,11 @@
 							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
 								{company.name || 'Название не указано'}
 							</h4>
-							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-								ID: {company.id}
-							</p>
+							{#if company.legal_name}
+								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									{company.legal_name}
+								</p>
+							{/if}
 						</div>
 						<div class="ml-4 flex-shrink-0">
 							<StatusBadge status={getCompanyStatus(company)} />
@@ -131,10 +133,12 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Основная информация</h5>
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Основная информация:
+							</h5>
 							
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Название компании
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -143,7 +147,7 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Юридическое название
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -152,7 +156,7 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									ИНН
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -161,7 +165,7 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Регион
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -172,17 +176,19 @@
 
 						<!-- Contact Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Контактная информация</h5>
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Контактная информация:
+							</h5>
 							
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Email
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if company.email}
 										<a 
 											href="mailto:{company.email}" 
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{company.email}
 										</a>
@@ -193,14 +199,14 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Телефон
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if company.phone}
 										<a 
 											href="tel:{company.phone}" 
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{formatPhone(company.phone)}
 										</a>
@@ -211,7 +217,7 @@
 							</div>
 
 							<div>
-								<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 									Контактное лицо
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -221,7 +227,7 @@
 
 							{#if company.website}
 								<div>
-									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+									<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 										Веб-сайт
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -229,7 +235,7 @@
 											href={company.website} 
 											target="_blank" 
 											rel="noopener noreferrer"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{company.website}
 										</a>
@@ -239,7 +245,7 @@
 
 							{#if company.address}
 								<div>
-									<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+									<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 										Адрес
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -251,32 +257,47 @@
 					</div>
 
 					<!-- Additional Information -->
-					{#if company.description || company.created_at}
+					{#if company.description || company.created_at || company.updated_at}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Дополнительная информация</h5>
+							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
+								Дополнительная информация:
+							</h5>
 							
-							<div class="mt-4 space-y-4">
-								{#if company.created_at}
-									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-											Дата регистрации
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{formatDate(company.created_at)}
-										</dd>
-									</div>
-								{/if}
-
+							<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
 								{#if company.description}
 									<div>
-										<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+										<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
 											Описание
 										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 											{company.description}
 										</dd>
 									</div>
 								{/if}
+
+								<div class="space-y-4">
+									{#if company.created_at}
+										<div>
+											<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
+												Дата создания
+											</dt>
+											<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+												{formatDate(company.created_at)}
+											</dd>
+										</div>
+									{/if}
+
+									{#if company.updated_at}
+										<div>
+											<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
+												Дата обновления
+											</dt>
+											<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+												{formatDate(company.updated_at)}
+											</dd>
+										</div>
+									{/if}
+								</div>
 							</div>
 						</div>
 					{/if}
