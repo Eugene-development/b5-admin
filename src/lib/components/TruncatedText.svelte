@@ -5,7 +5,7 @@
 		text = '',
 		maxLength = 100,
 		className = '',
-		tooltipClassName = 'bg-gray-900 text-white text-sm rounded px-2 py-1 shadow-lg'
+		tooltipClassName = 'bg-gray-950 text-white text-sm rounded px-2 py-1 shadow-lg'
 	} = $props();
 
 	let displayText = $derived(truncateText(text, maxLength));

@@ -159,11 +159,11 @@
 </svelte:head>
 
 <!-- Современная карточка подтверждения email -->
-<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
 	<div class="animate-fade-in-up relative w-full max-w-2xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div
-			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-900/80"
+			class="overflow-hidden rounded-3xl border border-white/20 bg-white/80 shadow-2xl backdrop-blur-xl dark:border-gray-700/20 dark:bg-gray-950/80"
 		>
 			<!-- Заголовок с градиентом -->
 			<div

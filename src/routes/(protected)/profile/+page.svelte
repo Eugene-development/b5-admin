@@ -205,9 +205,7 @@
 </script>
 
 <ProtectedRoute requireEmailVerification={false}>
-	<div
-		class="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16"
-	>
+	<div class="min-h-screen bg-gray-950 px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16">
 		<div class="mx-auto max-w-4xl">
 			<!-- Loading States -->
 			{#if isCheckingAuth}
@@ -285,7 +283,7 @@
 					</div>
 				{/if}
 
-				<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">Профиль администратора</h2>
+				<h2 class="mb-6 text-2xl font-semibold tracking-wide text-white">Ваш профиль</h2>
 
 				{#if isLoading() && !getUserDisplayData()}
 					<div class="flex items-center justify-center py-12">
@@ -361,6 +359,54 @@
 								class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
 							>
 								<p class="text-lg font-medium text-white">{user.region || 'Не указано'}</p>
+							</div>
+						</div>
+
+						<!-- User Status -->
+						<div class="group">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+								Статус пользователя
+							</div>
+							<div
+								class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+							>
+								{#if user.userStatus}
+									<span
+										class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
+										style="background-color: {user.userStatus.color}20; color: {user.userStatus.color}"
+									>
+										{#if user.userStatus.icon}
+											<span class="mr-1.5">{user.userStatus.icon}</span>
+										{/if}
+										{user.userStatus.value}
+									</span>
+								{:else}
+									<p class="text-lg font-medium text-gray-400">Не указан</p>
+								{/if}
+							</div>
+						</div>
+
+						<!-- Registration Date -->
+						<div class="group">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+								Дата регистрации
+							</div>
+							<div
+								class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+							>
+								<p class="text-lg font-medium text-white">
+									{#if user.created_at}
+										{new Date(user.created_at).toLocaleDateString('ru-RU', {
+											year: 'numeric',
+											month: 'long',
+											day: 'numeric',
+											hour: '2-digit',
+											minute: '2-digit'
+										})}
+									{:else}
+										Не указана
+									{/if}
+								</p>
 							</div>
 						</div>
 
@@ -511,7 +557,7 @@
 				{/if}
 
 				<!-- Project Statistics Card -->
-				<div
+				<!-- <div
 					class="my-8 rounded-xl border border-white/10 bg-white/5 p-8 shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:shadow-2xl"
 				>
 					<div class="mb-6 flex items-center gap-3">
@@ -543,10 +589,10 @@
 							</div>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
 				<!-- Action Buttons -->
-				<div class="flex flex-col justify-center gap-4 sm:flex-row">
+				<div class="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
 					<button
 						onclick={handleLogout}
 						disabled={isLogoutLoading || isRedirecting}
@@ -593,9 +639,9 @@
 							/>
 						</svg>
 						<div class="text-left">
-							<p class="text-sm font-medium text-gray-300">Защищенная страница</p>
+							<p class="text-sm font-medium text-gray-300">Защищенный проект</p>
 							<p class="text-xs text-gray-500">
-								Сессия защищена API токенами • Данные передаются по HTTPS
+								Все сессии защищены API токенами • Данные передаются по HTTPS
 							</p>
 						</div>
 					</div>

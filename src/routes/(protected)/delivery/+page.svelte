@@ -374,7 +374,7 @@
 			fallbackMessage="An error occurred while loading the delivery page."
 			showDetails={true}
 		>
-			<div class="space-y-6 bg-gray-900">
+			<div class="space-y-6 bg-gray-950">
 				<main id="main-content" aria-labelledby="page-title">
 					<div
 						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"

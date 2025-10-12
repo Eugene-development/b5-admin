@@ -16,11 +16,11 @@
 	<meta name="description" content="Система управления проектами" />
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+<div class="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
 	<div class="animate-fade-in-up w-full max-w-6xl text-center">
 		<!-- Главная карточка -->
 		<div
-			class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-900/80"
+			class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-950/80"
 		>
 			<!-- Домен большими буквами с градиентом -->
 			<h1

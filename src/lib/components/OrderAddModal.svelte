@@ -416,7 +416,7 @@
 								{/each}
 							</div>
 
-							<div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-900">
+							<div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-950">
 								<div class="flex items-center justify-between">
 									<span class="text-sm font-medium text-gray-700 dark:text-gray-300">
 										Общая сумма заказа:

@@ -158,7 +158,16 @@
 					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Регистрация
+					Дата регистрации
+				</th>
+				<th
+					id="col-user-status"
+					scope="col"
+					role="columnheader"
+					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					aria-sort="none"
+				>
+					Статус пользователя
 				</th>
 				<th
 					id="col-status"
@@ -174,10 +183,10 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="9" class="px-4 py-4 text-center" role="cell">
+					<td colspan="10" class="px-4 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading users data">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -189,7 +198,7 @@
 				</tr>
 			{:else if users.length === 0}
 				<tr>
-					<td colspan="9" class="px-4 py-4" role="cell">
+					<td colspan="10" class="px-4 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -246,6 +255,25 @@
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
+						</td>
+						<td
+							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
+							role="cell"
+							headers="col-user-status"
+						>
+							{#if agent.userStatus}
+								<span
+									class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
+									style="background-color: {agent.userStatus.color}20; color: {agent.userStatus.color}"
+								>
+									{#if agent.userStatus.icon}
+										<span class="mr-1">{agent.userStatus.icon}</span>
+									{/if}
+									{agent.userStatus.value}
+								</span>
+							{:else}
+								<span class="text-gray-400">Не указан</span>
+							{/if}
 						</td>
 						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-status">
 							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
@@ -440,10 +468,32 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Регистрация
+								Дата регистрации
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{formatDate(agent.created_at)}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Статус пользователя
+							</dt>
+							<dd class="mt-1">
+								{#if agent.userStatus}
+									<span
+										class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
+										style="background-color: {agent.userStatus.color}20; color: {agent.userStatus.color}"
+									>
+										{#if agent.userStatus.icon}
+											<span class="mr-1">{agent.userStatus.icon}</span>
+										{/if}
+										{agent.userStatus.value}
+									</span>
+								{:else}
+									<span class="text-sm text-gray-400">Не указан</span>
+								{/if}
 							</dd>
 						</div>
 					</dl>
@@ -589,6 +639,18 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
+								Дата регистрации
+							</th>
+							<th
+								scope="col"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Статус пользователя
+							</th>
+							<th
+								scope="col"
+								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
 								Статус
 							</th>
 							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
@@ -596,10 +658,10 @@
 							</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if isLoading}
 							<tr>
-								<td colspan="7" class="px-4 py-4 text-center">
+								<td colspan="9" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
 										<div
 											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -609,7 +671,7 @@
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="7" class="px-4 py-4">
+								<td colspan="9" class="px-4 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -635,6 +697,24 @@
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{agent.region || 'Не указан'}
+									</td>
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
+										{formatDate(agent.created_at)}
+									</td>
+									<td class="whitespace-nowrap px-4 py-4 text-sm">
+										{#if agent.userStatus}
+											<span
+												class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
+												style="background-color: {agent.userStatus.color}20; color: {agent.userStatus.color}"
+											>
+												{#if agent.userStatus.icon}
+													<span class="mr-1">{agent.userStatus.icon}</span>
+												{/if}
+												{agent.userStatus.value}
+											</span>
+										{:else}
+											<span class="text-gray-400">Не указан</span>
+										{/if}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm">
 										<div class="flex flex-col space-y-1">

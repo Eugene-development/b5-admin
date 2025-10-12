@@ -51,7 +51,7 @@
 	>
 		<!-- Backdrop -->
 		<div
-			class="absolute inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity dark:bg-gray-950/60"
+			class="absolute inset-0 bg-gray-950/50 backdrop-blur-sm transition-opacity dark:bg-gray-950/60"
 			aria-hidden="true"
 		></div>
 

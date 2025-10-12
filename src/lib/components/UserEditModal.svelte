@@ -47,12 +47,8 @@
 	// Form validation state
 	let errors = $state({});
 	let isFormValid = $derived(
-		formData.name.trim() !== '' &&
-			formData.email.trim() !== '' &&
-			Object.keys(errors).length === 0
+		formData.name.trim() !== '' && formData.email.trim() !== '' && Object.keys(errors).length === 0
 	);
-
-
 
 	// Initialize form data when user changes
 	$effect(() => {
@@ -63,17 +59,17 @@
 				region: user.region || '',
 				status_id: user.status_id || ''
 			};
-			
+
 			formData = newFormData;
-			
+
 			// Reset errors and validate initial data
 			errors = {};
-			
+
 			// Load statuses if not already loaded
 			if (userStatuses.length === 0) {
 				loadUserStatuses();
 			}
-			
+
 			// Use setTimeout to ensure formData is updated before validation
 			setTimeout(() => {
 				validateField('name', newFormData.name);
@@ -289,10 +285,7 @@
 
 					<!-- Email -->
 					<div>
-						<label
-							for="email"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-						>
+						<label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 							Email <span class="text-red-500">*</span>
 						</label>
 						<input
@@ -315,10 +308,7 @@
 
 					<!-- Region -->
 					<div>
-						<label
-							for="region"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-						>
+						<label for="region" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 							Регион
 						</label>
 						<input

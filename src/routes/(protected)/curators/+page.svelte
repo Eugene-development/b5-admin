@@ -332,7 +332,7 @@
 				Перейти к основному контенту
 			</a>
 
-			<div class="space-y-6 bg-gray-900">
+			<div class="space-y-6 bg-gray-950">
 				<!-- Page landmark -->
 				<main id="main-content" aria-labelledby="page-title">
 					<div

@@ -6,7 +6,8 @@
 		ErrorBoundary,
 		LoadingSpinner,
 		EmptyState,
-		UserViewModal
+		UserViewModal,
+		UserEditModal
 	} from '$lib';
 	import {
 		toasts,
@@ -17,7 +18,7 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { banUser, unbanUser, deleteUser, refreshUsers } from '$lib/api/agents.js';
+	import { banUser, unbanUser, deleteUser, refreshUsers, updateUser } from '$lib/api/agents.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
@@ -34,6 +35,10 @@
 	let selectedUser = $state(null);
 	let confirmAction = $state(null);
 
+	// Edit modal state
+	let showEditModal = $state(false);
+	let editingUser = $state(null);
+
 	// Error boundary state
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
@@ -41,11 +46,15 @@
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local users state for updates - normalize status to lowercase
+	// Local users state for updates - normalize status
 	let localUsers = $state([
 		...(data?.agents || []).map((user) => ({
 			...user,
-			status: user.status?.toLowerCase() || 'active'
+			// Keep old status field for backward compatibility (derived from bun field)
+			status: user.bun ? 'banned' : 'active',
+			// Add new status fields
+			status_id: user.status_id,
+			userStatus: user.userStatus
 		}))
 	]);
 
@@ -119,6 +128,58 @@
 		selectedUser = null;
 	}
 
+	// Open edit modal
+	function handleEditUser(user) {
+		editingUser = user;
+		showEditModal = true;
+		clearAllToasts();
+	}
+
+	// Save user changes (edit)
+	async function handleUpdateUser(updatedUserData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					// Update user data including status_id
+					const updatedUser = await updateUser(updatedUserData);
+
+					// Update in local list
+					localUsers = localUsers.map((user) =>
+						user.id === updatedUser.id
+							? {
+									...updatedUser,
+									status: updatedUser.status?.toLowerCase() || 'active',
+									status_id: updatedUser.status_id,
+									userStatus: updatedUser.userStatus
+								}
+							: user
+					);
+
+					addSuccessToast(
+						`Пользователь "${updatedUser.name || updatedUser.email}" успешно обновлен.`
+					);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to update user:', error);
+		} finally {
+			isActionLoading = false;
+			showEditModal = false;
+			editingUser = null;
+		}
+	}
+
+	// Cancel edit user
+	function handleCancelEditUser() {
+		showEditModal = false;
+		editingUser = null;
+		isActionLoading = false;
+	}
+
 	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
@@ -190,10 +251,14 @@
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
-			// Normalize status to lowercase
+			// Normalize status
 			localUsers = users.map((user) => ({
 				...user,
-				status: user.status?.toLowerCase() || 'active'
+				// Keep old status field for backward compatibility (derived from bun field)
+				status: user.bun ? 'banned' : 'active',
+				// Add new status fields
+				status_id: user.status_id,
+				userStatus: user.userStatus
 			}));
 			loadError = null;
 			// Only show success message for manual refresh, not initial load
@@ -264,7 +329,7 @@
 				Перейти к основному контенту
 			</a>
 
-			<div class="space-y-6 bg-gray-900">
+			<div class="space-y-6 bg-gray-950">
 				<!-- Page landmark -->
 				<main id="main-content" aria-labelledby="page-title">
 					<div
@@ -369,6 +434,7 @@
 						onBanUser={handleBanUser}
 						onDeleteUser={handleDeleteUser}
 						onViewUser={handleViewUser}
+						onEditUser={handleEditUser}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
@@ -395,10 +461,17 @@
 {/if}
 
 <!-- User View Modal -->
-<UserViewModal
-	isOpen={showViewModal}
-	user={selectedUser}
-	onClose={closeViewModal}
-/>
+<UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
+
+<!-- User Edit Modal -->
+{#if editingUser}
+	<UserEditModal
+		isOpen={showEditModal}
+		user={editingUser}
+		onSave={handleUpdateUser}
+		onCancel={handleCancelEditUser}
+		isLoading={isActionLoading}
+	/>
+{/if}
 
 

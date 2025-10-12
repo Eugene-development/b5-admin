@@ -166,7 +166,7 @@
 				</th>
 			</tr>
 		</thead>
-		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
 					<td colspan="8" class="px-4 py-4 text-center" role="cell">
@@ -317,25 +317,6 @@
 											d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 										/>
 									</svg>
-								</button>
-								<!-- Ban/Unban Button -->
-								<button
-									type="button"
-									onclick={() => onBanUser(user)}
-									disabled={isLoading}
-									class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-										{user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'
-										? 'bg-red-100 text-red-800 hover:bg-red-200 focus-visible:outline-red-600 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
-										: 'bg-green-100 text-green-800 hover:bg-green-200 focus-visible:outline-green-600 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30'}"
-									aria-label={user.status === 'banned'
-										? 'Разбанить пользователя'
-										: 'Забанить пользователя'}
-								>
-									{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
-										Бан
-									{:else}
-										Активно
-									{/if}
 								</button>
 								<!-- Delete Button -->
 								<button
@@ -561,7 +542,7 @@
 							</th>
 						</tr>
 					</thead>
-					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
+					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if isLoading}
 							<tr>
 								<td colspan="7" class="px-4 py-4 text-center">

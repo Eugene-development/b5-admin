@@ -141,7 +141,7 @@
   This example requires updating your template:
 
   ```
-  <html class="h-full bg-white dark:bg-gray-900">
+  <html class="h-full bg-white dark:bg-gray-950">
   <body class="h-full">
   ```
 -->
@@ -151,7 +151,7 @@
 	<div class="lg:hidden" role="dialog" aria-modal="true">
 		<!-- Background backdrop, show/hide based on slide-over state. -->
 		<div
-			class="fixed inset-0 z-50 bg-gray-900/80"
+			class="fixed inset-0 z-50 bg-gray-950/80"
 			onclick={handleBackdropClick}
 			onkeydown={handleBackdropKeydown}
 			tabindex="0"
@@ -159,7 +159,7 @@
 			aria-label="Close mobile menu"
 		></div>
 		<div
-			class="fixed inset-y-0 left-0 z-50 w-full max-w-xs bg-white px-6 py-4 dark:bg-gray-900"
+			class="fixed inset-y-0 left-0 z-50 w-full max-w-xs bg-white px-6 py-4 dark:bg-gray-950"
 			onclick={handleMenuClick}
 			onkeydown={handleBackdropKeydown}
 			role="dialog"
@@ -506,10 +506,10 @@
 {/if}
 
 <!-- Static sidebar for desktop -->
-<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
+<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-950">
 	<!-- Sidebar component, swap this element with another sidebar if you like -->
 	<div
-		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-900"
+		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-950"
 	>
 		<!-- <div class="flex h-20 shrink-0 items-center">
 			<img
@@ -765,10 +765,10 @@
 	</div>
 </div>
 
-<div class="h-screen bg-gray-900 lg:pl-72">
+<div class="h-screen bg-gray-950 lg:pl-72">
 	<div class="sticky top-0 z-20 lg:mx-auto lg:max-w-full">
 		<div
-			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none"
+			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"
 		>
 			<button
 				type="button"
@@ -794,7 +794,7 @@
 			</button>
 
 			<!-- Separator -->
-			<div aria-hidden="true" class="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-900"></div>
+			<div aria-hidden="true" class="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-950"></div>
 
 			<div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
 				<form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
@@ -802,7 +802,7 @@
 						name="search"
 						placeholder="Поиск"
 						aria-label="Search"
-						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 sm:text-sm/6 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500"
+						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 sm:text-sm/6 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500"
 						style="outline: none !important; box-shadow: none !important;"
 					/>
 					<svg
@@ -885,12 +885,12 @@
 							>
 								<a
 									href="/profile"
-									class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+									class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-950"
 									>Ваш профиль</a
 								>
 								<button
 									onclick={handleLogout}
-									class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-900"
+									class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-950"
 									>Выйти</button
 								>
 							</el-menu>
@@ -911,7 +911,7 @@
 		</div>
 	</div>
 
-	<main class="bg-gray-900 py-4">
+	<main class="bg-gray-950 py-4">
 		<div class="px-4 sm:px-6 lg:px-8">
 			{@render children?.()}
 		</div>
