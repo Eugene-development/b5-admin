@@ -14,7 +14,14 @@ const USERS_QUERY = gql`
 			email_verified_at
 			created_at
 			updated_at
-			status
+			status_id
+			userStatus {
+				id
+				value
+				slug
+				color
+				icon
+			}
 		}
 	}
 `;
@@ -44,6 +51,28 @@ const DELETE_USER_MUTATION = gql`
 			name
 			email
 			deleted
+		}
+	}
+`;
+
+const UPDATE_USER_MUTATION = gql`
+	mutation UpdateUser($input: UpdateUserInput!) {
+		updateUser(input: $input) {
+			id
+			name
+			email
+			region
+			status_id
+			userStatus {
+				id
+				value
+				slug
+				color
+				icon
+			}
+			status
+			created_at
+			updated_at
 		}
 	}
 `;
@@ -158,6 +187,49 @@ export async function getUsersWithPagination(first = 1000, page = 1, customFetch
 		};
 	} catch (err) {
 		console.error('Get users with pagination failed:', err);
+		throw err;
+	}
+}
+
+// Function to update a user
+export async function updateUser(userData, customFetch = null, cookies = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			UPDATE_USER_MUTATION,
+			{ input: userData },
+			'updateUser',
+			customFetch,
+			cookies
+		);
+		return result.updateUser;
+	} catch (err) {
+		console.error('Update user failed:', err);
+		throw err;
+	}
+}
+
+// Function to get all user statuses
+export async function getUserStatuses(customFetch = null, cookies = null) {
+	const query = gql`
+		query GetUserStatuses {
+			activeUserStatuses {
+				id
+				value
+				slug
+				description
+				color
+				icon
+				sort_order
+				is_default
+			}
+		}
+	`;
+
+	try {
+		const result = await makeGraphQLRequest(query, {}, 'getUserStatuses', customFetch, cookies);
+		return result.activeUserStatuses || [];
+	} catch (err) {
+		console.error('Get user statuses failed:', err);
 		throw err;
 	}
 }
