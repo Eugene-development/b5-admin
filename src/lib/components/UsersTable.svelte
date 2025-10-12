@@ -130,17 +130,9 @@
 					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Почта
+					Почта / подтверждение
 				</th>
-				<th
-					id="col-verified"
-					scope="col"
-					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					aria-sort="none"
-				>
-					<!-- Подтверждена -->
-				</th>
+
 				<th
 					id="col-region"
 					scope="col"
@@ -227,11 +219,10 @@
 							role="cell"
 							headers="col-email"
 						>
-							{user.email}
-						</td>
-						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-verified">
+							{user.email} /
 							<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 						</td>
+
 						<td
 							class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
