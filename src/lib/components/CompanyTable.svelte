@@ -127,6 +127,13 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 150px; width: 150px;"
+				>
+					Статус
+				</th>
+				<th
+					scope="col"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					СОСТОЯНИЕ
@@ -143,7 +150,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="7" class="px-4 py-8 text-center" role="cell">
+					<td colspan="8" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных компаний">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -155,7 +162,7 @@
 				</tr>
 			{:else if companies.length === 0}
 				<tr>
-					<td colspan="7" class="px-4 py-8" role="cell">
+					<td colspan="8" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -202,6 +209,19 @@
 							<div class="pr-4" title={company.contact_person || 'Не указано'}>
 								{company.contact_person || 'Не указано'}
 							</div>
+						</td>
+						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
+							{#if company.status}
+								<span 
+									class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+									style="background-color: {company.status.color}20; color: {company.status.color};"
+									title={company.status.description || company.status.value}
+								>
+									{company.status.value}
+								</span>
+							{:else}
+								<span class="text-gray-400 dark:text-gray-500">Не указан</span>
+							{/if}
 						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
 							<button
@@ -403,6 +423,25 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{company.contact_person || 'Не указано'}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Статус
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{#if company.status}
+									<span 
+										class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium"
+										style="background-color: {company.status.color}20; color: {company.status.color};"
+									>
+										{company.status.value}
+									</span>
+								{:else}
+									<span class="text-gray-400 dark:text-gray-500">Не указан</span>
+								{/if}
 							</dd>
 						</div>
 					</dl>

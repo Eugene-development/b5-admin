@@ -241,7 +241,9 @@
 									email: supplier.email,
 									contact_person: supplier.contact_person,
 									phones: supplier.phones,
-									emails: supplier.emails
+									emails: supplier.emails,
+									status_id: updatedCompany.status_id,
+									status: updatedCompany.status
 								}
 							: supplier
 					);

@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 
+	import { getCompanyStatuses } from '$lib/api/companies.js';
+
 	/**
 	 * CompanyEditModal Component
 	 *
@@ -19,12 +21,17 @@
 	let firstInputElement = $state();
 	let previousActiveElement;
 
+	// Company statuses
+	let companyStatuses = $state([]);
+	let isLoadingStatuses = $state(false);
+
 	// Form data state
 	let formData = $state({
 		name: '',
 		legal_name: '',
 		inn: '',
-		region: ''
+		region: '',
+		status_id: ''
 	});
 
 	// Form validation state
@@ -36,6 +43,18 @@
 			Object.keys(errors).length === 0
 	);
 
+	// Load company statuses
+	async function loadCompanyStatuses() {
+		isLoadingStatuses = true;
+		try {
+			companyStatuses = await getCompanyStatuses();
+		} catch (error) {
+			console.error('Failed to load company statuses:', error);
+		} finally {
+			isLoadingStatuses = false;
+		}
+	}
+
 	// Initialize form data when company changes
 	$effect(() => {
 		if (company && isOpen) {
@@ -43,9 +62,15 @@
 				name: company.name || '',
 				legal_name: company.legal_name || '',
 				inn: company.inn || '',
-				region: company.region || ''
+				region: company.region || '',
+				status_id: company.status_id || ''
 			};
 			errors = {};
+			
+			// Load statuses if not already loaded
+			if (companyStatuses.length === 0) {
+				loadCompanyStatuses();
+			}
 		}
 	});
 
@@ -80,6 +105,7 @@
 				legal_name: formData.legal_name.trim(),
 				inn: formData.inn.trim(),
 				region: formData.region.trim() || null,
+				status_id: formData.status_id || null,
 				bun: company.bun,
 				is_active: company.is_active
 			};
@@ -335,6 +361,35 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
 							/>
 						</div>
+					</div>
+
+					<!-- Company Status -->
+					<div>
+						<label
+							for="status"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
+							Статус компании
+						</label>
+						<select
+							id="status"
+							value={formData.status_id}
+							onchange={(e) => handleInputChange('status_id', e.target.value)}
+							disabled={isLoading || isLoadingStatuses}
+							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+						>
+							<option value="">Выберите статус</option>
+							{#each companyStatuses as status}
+								<option value={status.id}>
+									{status.value}
+								</option>
+							{/each}
+						</select>
+						{#if isLoadingStatuses}
+							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+								Загрузка статусов...
+							</p>
+						{/if}
 					</div>
 
 					<!-- Action buttons -->

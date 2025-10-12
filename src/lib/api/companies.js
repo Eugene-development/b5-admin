@@ -210,6 +210,14 @@ export async function updateCompany(companyData) {
 				region
 				bun
 				is_active
+				status_id
+				status {
+					id
+					value
+					slug
+					color
+					icon
+				}
 				created_at
 				updated_at
 			}
@@ -234,7 +242,8 @@ export async function updateCompany(companyData) {
 						inn: companyData.inn || undefined,
 						region: companyData.region || undefined,
 						bun: companyData.bun,
-						is_active: companyData.is_active
+						is_active: companyData.is_active,
+						status_id: companyData.status_id || undefined
 					}
 				}
 			})
@@ -380,6 +389,15 @@ export async function refreshCompanies() {
 					region
 					bun
 					is_active
+					status_id
+					status {
+						id
+						value
+						slug
+						color
+						icon
+						sort_order
+					}
 					created_at
 					updated_at
 					phones {
@@ -423,6 +441,54 @@ export async function refreshCompanies() {
 		return result.data.companies.data;
 	} catch (error) {
 		handleApiError(error, 'Не удалось загрузить компании');
+		throw error;
+	}
+}
+
+/**
+ * Get all company statuses
+ * @returns {Promise<Array>} List of company statuses
+ */
+export async function getCompanyStatuses() {
+	const query = `
+		query GetCompanyStatuses {
+			activeCompanyStatuses {
+				id
+				value
+				slug
+				description
+				color
+				icon
+				sort_order
+				is_default
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify({ query })
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to fetch company statuses');
+		}
+
+		return result.data.activeCompanyStatuses;
+	} catch (error) {
+		handleApiError(error, 'Не удалось загрузить статусы компаний');
 		throw error;
 	}
 }

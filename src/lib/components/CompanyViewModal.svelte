@@ -172,6 +172,24 @@
 									{company.region || 'Не указан'}
 								</dd>
 							</div>
+
+							<div>
+								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
+									Статус компании
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{#if company.status}
+										<span 
+											class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+											style="background-color: {company.status.color}20; color: {company.status.color};"
+										>
+											{company.status.value}
+										</span>
+									{:else}
+										Не указан
+									{/if}
+								</dd>
+							</div>
 						</div>
 
 						<!-- Contact Information -->

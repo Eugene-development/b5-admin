@@ -317,9 +317,9 @@
 							</ul>
 						</li>
 					{/if}
-					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showFinance}
+					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Процессы</div>
+							<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showTz}
 									<li>
@@ -345,15 +345,15 @@
 										</button>
 									</li>
 								{/if}
-								{#if navigationVisibility.showFinance}
+								{#if navigationVisibility.showProjects}
 									<li>
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/finance')}
-											onclick={() => handleMobileNavigation('/finance')}
+											class={getNavClassesWithSpan('/projects')}
+											onclick={() => handleMobileNavigation('/projects')}
 										>
-											<span class={getSpanIconClasses('/finance')}>Ф</span>
-											<span class="truncate">Финансы</span>
+											<span class={getSpanIconClasses('/projects')}>П</span>
+											<span class="truncate">Проекты</span>
 										</button>
 									</li>
 								{/if}
@@ -601,9 +601,9 @@
 						</ul>
 					</li>
 				{/if}
-				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showFinance}
+				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Процессы</div>
+						<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
 						<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showTz}
 								<li>
@@ -621,11 +621,11 @@
 									</a>
 								</li>
 							{/if}
-							{#if navigationVisibility.showFinance}
+							{#if navigationVisibility.showProjects}
 								<li>
-									<a href="/finance" class={getNavClassesWithSpan('/finance')}>
-										<span class={getSpanIconClasses('/finance')}>Ф</span>
-										<span class="truncate">Финансы</span>
+									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
+										<span class={getSpanIconClasses('/projects')}>П</span>
+										<span class="truncate">Проекты</span>
 									</a>
 								</li>
 							{/if}
