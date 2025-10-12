@@ -127,16 +127,9 @@
 				<th
 					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 100px; width: 100px;"
+					style="min-width: 120px; width: 120px;"
 				>
-					Статус
-				</th>
-				<th
-					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 80px; width: 80px;"
-				>
-					Бан
+					СОСТОЯНИЕ
 				</th>
 				<th
 					scope="col"
@@ -150,7 +143,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="8" class="px-4 py-8 text-center" role="cell">
+					<td colspan="7" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных компаний">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -162,7 +155,7 @@
 				</tr>
 			{:else if companies.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-8" role="cell">
+					<td colspan="7" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -211,77 +204,22 @@
 							</div>
 						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
-							<StatusBadge status={getCompanyStatus(company)} />
-						</td>
-						<td class="whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanCompany(company)}
 								disabled={isLoading}
-								class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+								class="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
 									{getCompanyStatus(company) === 'banned'
-									? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
-									: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
+									? 'bg-red-100 text-red-800 hover:bg-red-200 focus-visible:outline-red-600 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+									: 'bg-green-100 text-green-800 hover:bg-green-200 focus-visible:outline-green-600 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30'}"
 								aria-label={getCompanyStatus(company) === 'banned'
 									? 'Разбанить компанию'
 									: 'Забанить компанию'}
 							>
-								{#if isLoading}
-									<svg
-										class="mr-1 h-3 w-3 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										aria-hidden="true"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else if getCompanyStatus(company) === 'banned'}
-									<!-- Plus icon for unban -->
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 4v16m8-8H4"
-										/>
-									</svg>
+								{#if getCompanyStatus(company) === 'banned'}
+									Бан
 								{:else}
-									<!-- Minus icon for ban -->
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M20 12H4"
-										/>
-									</svg>
+									Активно
 								{/if}
 							</button>
 						</td>
@@ -474,72 +412,19 @@
 						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
 						<div class="flex items-center space-x-2">
-							<StatusBadge status={getCompanyStatus(company)} />
 							<button
 								type="button"
 								onclick={() => onBanCompany(company)}
 								disabled={isLoading}
 								class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
 									{getCompanyStatus(company) === 'banned'
-									? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
-									: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
+									? 'bg-red-100 text-red-800 hover:bg-red-200 focus-visible:outline-red-600 active:bg-red-300 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+									: 'bg-green-100 text-green-800 hover:bg-green-200 focus-visible:outline-green-600 active:bg-green-300 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30'}"
 							>
-								{#if isLoading}
-									<svg
-										class="mr-2 h-4 w-4 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										aria-hidden="true"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else if getCompanyStatus(company) === 'banned'}
-									<!-- Plus icon for unban -->
-									<svg
-										class="h-5 w-5"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 4v16m8-8H4"
-										/>
-									</svg>
+								{#if getCompanyStatus(company) === 'banned'}
+									Бан
 								{:else}
-									<!-- Minus icon for ban -->
-									<svg
-										class="h-5 w-5"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M20 12H4"
-										/>
-									</svg>
+									Активно
 								{/if}
 							</button>
 						</div>

@@ -160,13 +160,13 @@
 					Регистрация
 				</th>
 				<th
-					id="col-status"
+					id="col-ban"
 					scope="col"
 					role="columnheader"
 					class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Статус
+					Состояние
 				</th>
 				<th id="col-actions" scope="col" role="columnheader" class="relative px-4 py-3">
 					<span class="sr-only">Actions</span>
@@ -176,7 +176,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
 			{#if isLoading}
 				<tr>
-					<td colspan="9" class="px-4 py-4 text-center" role="cell">
+					<td colspan="8" class="px-4 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading users data">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -188,7 +188,7 @@
 				</tr>
 			{:else if users.length === 0}
 				<tr>
-					<td colspan="9" class="px-4 py-4" role="cell">
+					<td colspan="8" class="px-4 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -246,19 +246,40 @@
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-status">
-							{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
-								<StatusBadge status="banned" />
-							{:else}
-								<StatusBadge status="verified" text="Активен" />
-							{/if}
+						<td class="whitespace-nowrap px-4 py-4 text-sm" role="cell" headers="col-ban">
+							<button
+								type="button"
+								onclick={() => onBanUser(user)}
+								disabled={isLoading}
+								class="inline-flex items-center rounded-md px-3 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+									{user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'
+									? 'bg-red-100 text-red-800 hover:bg-red-200 focus-visible:outline-red-600 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30'
+									: 'bg-green-100 text-green-800 hover:bg-green-200 focus-visible:outline-green-600 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30'}"
+								aria-label={user.status === 'banned' ||
+								user.status === 'inactive' ||
+								user.status === 'suspended'
+									? 'Разбанить пользователя'
+									: 'Забанить пользователя'}
+							>
+								{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
+									Бан
+								{:else}
+									Активно
+								{/if}
+							</button>
 						</td>
 						<td
 							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
-							<ActionButtons user={user} onBan={onBanUser} onDelete={onDeleteUser} onView={onViewUser} {isLoading} />
+							<ActionButtons
+								{user}
+								onBan={onBanUser}
+								onDelete={onDeleteUser}
+								onView={onViewUser}
+								{isLoading}
+							/>
 						</td>
 					</tr>
 				{/each}
@@ -354,7 +375,9 @@
 					<!-- Status Badges -->
 					<div class="mb-4 flex flex-wrap gap-2">
 						<div class="flex items-center">
-							<span class="mr-2 text-xs font-medium text-gray-500 dark:text-gray-400">Статус:</span>
+							<span class="mr-2 text-xs font-medium text-gray-500 dark:text-gray-400"
+								>Состояние:</span
+							>
 							{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
@@ -366,7 +389,7 @@
 					<!-- Action Buttons -->
 					<div class="flex justify-end border-t border-gray-200 pt-3 dark:border-gray-600">
 						<ActionButtons
-							user={user}
+							{user}
 							onBan={onBanUser}
 							onDelete={onDeleteUser}
 							onView={onViewUser}
@@ -483,7 +506,7 @@
 										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
 									>
 										<ActionButtons
-											user={user}
+											{user}
 											onBan={onBanUser}
 											onDelete={onDeleteUser}
 											onView={onViewUser}

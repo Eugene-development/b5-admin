@@ -175,57 +175,34 @@
 			</button>
 		{/if}
 
-		<!-- Ban/Unban or Edit Button -->
-		<button
-			type="button"
-			id={banButtonId}
-			onclick={handleBanAction}
-			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex min-h-[44px] items-center justify-center rounded-md px-4 py-3 text-sm font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
-				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600 active:bg-blue-700'
-				: isBanned
-					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600 active:bg-green-700'
-					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600 active:bg-yellow-700'}"
-			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, entity.name)}
-			aria-describedby={`${banButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-2 h-4 w-4 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else if projectMode}
-				<svg
-					class="h-5 w-5"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-					/>
-				</svg>
-			{:else}
-				<!-- Ban (minus icon) / Unban (plus icon) -->
-				{#if isBanned}
-					<!-- Plus icon for unban -->
+		{#if projectMode}
+			<button
+				type="button"
+				id={banButtonId}
+				onclick={handleBanAction}
+				onkeydown={(e) => handleKeydown(e, 'ban')}
+				class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+				disabled={isLoading}
+				aria-label={getAccessibleBanText(isBanned, entity.name)}
+				aria-describedby={`${banButtonId}-description`}
+			>
+				{#if isLoading}
+					<svg
+						class="mr-2 h-4 w-4 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
 					<svg
 						class="h-5 w-5"
 						xmlns="http://www.w3.org/2000/svg"
@@ -238,24 +215,12 @@
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M12 4v16m8-8H4"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 						/>
 					</svg>
-				{:else}
-					<!-- Minus icon for ban -->
-					<svg
-						class="h-5 w-5"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-					</svg>
 				{/if}
-			{/if}
-		</button>
+			</button>
+		{/if}
 
 		<!-- Delete Button -->
 		<button
@@ -360,57 +325,35 @@
 			</button>
 		{/if}
 
-		<!-- Ban/Unban or Edit Button -->
-		<button
-			type="button"
-			id={banButtonId}
-			onclick={handleBanAction}
-			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
-				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600'
-				: isBanned
-					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
-					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
-			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, entity.name)}
-			aria-describedby={`${banButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-1 h-3 w-3 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else if projectMode}
-				<svg
-					class="h-4 w-4"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-					/>
-				</svg>
-			{:else}
-				<!-- Ban (minus icon) / Unban (plus icon) -->
-				{#if isBanned}
-					<!-- Plus icon for unban -->
+		{#if projectMode}
+			<!-- Edit Button (only for projects) -->
+			<button
+				type="button"
+				id={banButtonId}
+				onclick={handleBanAction}
+				onkeydown={(e) => handleKeydown(e, 'ban')}
+				class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
+				disabled={isLoading}
+				aria-label={getAccessibleBanText(isBanned, entity.name)}
+				aria-describedby={`${banButtonId}-description`}
+			>
+				{#if isLoading}
+					<svg
+						class="mr-1 h-3 w-3 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
 					<svg
 						class="h-4 w-4"
 						xmlns="http://www.w3.org/2000/svg"
@@ -423,24 +366,12 @@
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M12 4v16m8-8H4"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 						/>
 					</svg>
-				{:else}
-					<!-- Minus icon for ban -->
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-					</svg>
 				{/if}
-			{/if}
-		</button>
+			</button>
+		{/if}
 
 		<!-- Delete Button -->
 		<button
@@ -545,57 +476,35 @@
 			</button>
 		{/if}
 
-		<!-- Ban/Unban or Edit Button -->
-		<button
-			type="button"
-			id={banButtonId}
-			onclick={handleBanAction}
-			onkeydown={(e) => handleKeydown(e, 'ban')}
-			class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {projectMode
-				? 'bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600'
-				: isBanned
-					? 'bg-green-600 text-white hover:bg-green-500 focus-visible:outline-green-600'
-					: 'bg-yellow-600 text-white hover:bg-yellow-500 focus-visible:outline-yellow-600'}"
-			disabled={isLoading}
-			aria-label={getAccessibleBanText(isBanned, entity.name)}
-			aria-describedby={`${banButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-1 h-3 w-3 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else if projectMode}
-				<svg
-					class="h-4 w-4"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-					/>
-				</svg>
-			{:else}
-				<!-- Ban (minus icon) / Unban (plus icon) -->
-				{#if isBanned}
-					<!-- Plus icon for unban -->
+		{#if projectMode}
+			<!-- Edit Button (only for projects) -->
+			<button
+				type="button"
+				id={banButtonId}
+				onclick={handleBanAction}
+				onkeydown={(e) => handleKeydown(e, 'ban')}
+				class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
+				disabled={isLoading}
+				aria-label={getAccessibleBanText(isBanned, entity.name)}
+				aria-describedby={`${banButtonId}-description`}
+			>
+				{#if isLoading}
+					<svg
+						class="mr-1 h-3 w-3 animate-spin"
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+						></circle>
+						<path
+							class="opacity-75"
+							fill="currentColor"
+							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+						></path>
+					</svg>
+				{:else}
 					<svg
 						class="h-4 w-4"
 						xmlns="http://www.w3.org/2000/svg"
@@ -608,24 +517,12 @@
 							stroke-linecap="round"
 							stroke-linejoin="round"
 							stroke-width="2"
-							d="M12 4v16m8-8H4"
+							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 						/>
 					</svg>
-				{:else}
-					<!-- Minus icon for ban -->
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-					</svg>
 				{/if}
-			{/if}
-		</button>
+			</button>
+		{/if}
 
 		<!-- Delete Button -->
 		<button
@@ -689,7 +586,7 @@
 	</div>
 	{#if onView}
 		<div id="{viewButtonId}-description" class="sr-only">
-			{projectMode 
+			{projectMode
 				? 'Откроет окно с детальной информацией о проекте'
 				: 'Откроет окно с детальной информацией о пользователе'}
 		</div>

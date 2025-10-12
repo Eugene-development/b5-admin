@@ -99,7 +99,7 @@ export function hasOrderAccess() {
  */
 export function getDomainPageConfig() {
 	return {
-		'rubonus.info': ['/actions', '/tz', '/projects', '/finance'],
+		'rubonus.info': ['/actions', '/tz', '/projects', '/finance', '/documentation'],
 		'bonus.band': [
 			'/projects',
 			'/actions',

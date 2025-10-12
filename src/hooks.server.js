@@ -9,7 +9,7 @@ import { authMiddleware } from '$lib/auth/auth-guard.svelte.js';
  */
 function getDomainPageConfig() {
 	return {
-		'rubonus.info': ['/actions', '/tz', '/projects', '/finance'],
+		'rubonus.info': ['/actions', '/tz', '/projects', '/finance', '/documentation'],
 		'bonus.band': [
 			'/projects',
 			'/actions',

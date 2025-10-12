@@ -201,7 +201,10 @@
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
@@ -395,10 +398,4 @@
 {/if}
 
 <!-- User View Modal -->
-<UserViewModal
-	isOpen={showViewModal}
-	user={selectedUser}
-	onClose={closeViewModal}
-/>
-
-
+<UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
