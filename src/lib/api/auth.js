@@ -64,7 +64,14 @@ export async function loginUser(email, password, remember = false) {
  */
 export async function registerUser(userData) {
 	try {
+		console.log('🔐 Registration API call started', {
+			endpoint: API_CONFIG.endpoints.register,
+			userData: { ...userData, password: '***', password_confirmation: '***' }
+		});
+
 		const response = await post(API_CONFIG.endpoints.register, userData);
+
+		console.log('🔐 Registration API response:', response);
 
 		return {
 			success: true,
@@ -73,6 +80,7 @@ export async function registerUser(userData) {
 			message: response.message || response.data?.message || 'Registration successful'
 		};
 	} catch (error) {
+		console.error('🔐 Registration API error:', error);
 		// Handle specific registration errors
 		let message = 'Registration failed';
 
