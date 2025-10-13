@@ -124,16 +124,17 @@ export function createAuthLoad(options = {}) {
 
 ```javascript
 // ✅ РАЗРЕШЁННЫЕ СТАТУСЫ
-{ type: "Клиент" }    // Доступ разрешён
-{ type: "Агент" }     // Доступ разрешён
-{ type: "Дизайнер" }  // Доступ разрешён
+{ type: "Админ" }      // Доступ разрешён
+{ type: "Куратор" }    // Доступ разрешён
+{ type: "Менеджер" }   // Доступ разрешён
 
 // ❌ ЗАБЛОКИРОВАННЫЕ СТАТУСЫ
+{ type: "Клиент" }          // Блокировка
+{ type: "Агент" }           // Блокировка
+{ type: "Дизайнер" }        // Блокировка
 { type: null }              // Блокировка
 { type: undefined }         // Блокировка
 { type: "Администратор" }   // Блокировка
-{ type: "Менеджер" }        // Блокировка
-{ type: "Супервайзер" }     // Блокировка
 { type: "" }                // Блокировка
 ```
 
@@ -143,25 +144,20 @@ export function createAuthLoad(options = {}) {
 
 ```javascript
 function checkUserAccess(user) {
-  const allowedTypes = ['Клиент', 'Агент', 'Дизайнер'];
+  const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
   const userType = user?.type;
   
-  if (!userType) {
-    console.log('❌ Статус не определён');
+  if (!userType || !allowedTypes.includes(userType)) {
+    console.log(`❌ Доступ запрещён (статус: ${userType || 'не определён'})`);
     return false;
   }
   
-  if (!allowedTypes.includes(userType)) {
-    console.log(`❌ Статус "${userType}" не разрешён`);
-    return false;
-  }
-  
-  console.log(`✅ Статус "${userType}" разрешён`);
+  console.log(`✅ Доступ разрешён (статус: ${userType})`);
   return true;
 }
 
 // Использование
-const user = { type: 'Клиент' };
+const user = { type: 'Админ' };
 if (checkUserAccess(user)) {
   // Разрешить доступ
 } else {
@@ -173,7 +169,7 @@ if (checkUserAccess(user)) {
 
 ```javascript
 async function checkAndLogAccess(user) {
-  const allowedTypes = ['Клиент', 'Агент', 'Дизайнер'];
+  const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
   const userType = user?.type;
   const isAllowed = userType && allowedTypes.includes(userType);
   

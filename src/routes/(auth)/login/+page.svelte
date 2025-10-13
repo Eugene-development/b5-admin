@@ -60,8 +60,9 @@
 				// Check user type/status
 				const userType = authState.user?.type;
 				
-				// Redirect to access denied if user type is not defined or not allowed
-				if (!userType || !['Клиент', 'Агент', 'Дизайнер'].includes(userType)) {
+				// Allow access ONLY for Админ, Куратор, Менеджер
+				const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
+				if (!userType || !allowedTypes.includes(userType)) {
 					goto('/access-denied');
 					return;
 				}

@@ -118,10 +118,11 @@ export function createAuthLoad(options = {}) {
 			throw redirect(302, loginUrl);
 		}
 
-		// Check user type/status - redirect to access denied if not allowed
+		// Check user type/status - allow access ONLY for Админ, Куратор, Менеджер
 		if (requireAuth && isAuth && userData) {
 			const userType = userData.type;
-			if (!userType || !['Клиент', 'Агент', 'Дизайнер'].includes(userType)) {
+			const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
+			if (!userType || !allowedTypes.includes(userType)) {
 				throw redirect(302, '/access-denied');
 			}
 		}
