@@ -46,16 +46,18 @@
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local users state for updates - normalize status
+	// Local users state for updates - normalize status and sort by created_at descending
 	let localUsers = $state([
-		...(data?.agents || []).map((user) => ({
-			...user,
-			// Keep old status field for backward compatibility (derived from bun field)
-			status: user.bun ? 'banned' : 'active',
-			// Add new status fields
-			status_id: user.status_id,
-			userStatus: user.userStatus
-		}))
+		...(data?.agents || [])
+			.map((user) => ({
+				...user,
+				// Keep old status field for backward compatibility (derived from bun field)
+				status: user.bun ? 'banned' : 'active',
+				// Add new status fields
+				status_id: user.status_id,
+				userStatus: user.userStatus
+			}))
+			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 	]);
 
 	// Force update counter for reactivity
@@ -251,15 +253,17 @@
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
-			// Normalize status
-			localUsers = users.map((user) => ({
-				...user,
-				// Keep old status field for backward compatibility (derived from bun field)
-				status: user.bun ? 'banned' : 'active',
-				// Add new status fields
-				status_id: user.status_id,
-				userStatus: user.userStatus
-			}));
+			// Normalize status and sort by created_at descending
+			localUsers = users
+				.map((user) => ({
+					...user,
+					// Keep old status field for backward compatibility (derived from bun field)
+					status: user.bun ? 'banned' : 'active',
+					// Add new status fields
+					status_id: user.status_id,
+					userStatus: user.userStatus
+				}))
+				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
 			// Only show success message for manual refresh, not initial load
 			if (!isInitialLoad) {
