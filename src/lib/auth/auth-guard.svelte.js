@@ -118,6 +118,14 @@ export function createAuthLoad(options = {}) {
 			throw redirect(302, loginUrl);
 		}
 
+		// Check user type/status - redirect to access denied if not allowed
+		if (requireAuth && isAuth && userData) {
+			const userType = userData.type;
+			if (!userType || !['Клиент', 'Агент', 'Дизайнер'].includes(userType)) {
+				throw redirect(302, '/access-denied');
+			}
+		}
+
 		// Check email verification requirement
 		if (requireEmailVerification && isAuth && userData && !userData.email_verified) {
 			// User is authenticated but email not verified

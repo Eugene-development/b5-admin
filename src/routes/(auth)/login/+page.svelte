@@ -57,6 +57,15 @@
 		try {
 			const success = await login(email, password, remember);
 			if (success) {
+				// Check user type/status
+				const userType = authState.user?.type;
+				
+				// Redirect to access denied if user type is not defined or not allowed
+				if (!userType || !['Клиент', 'Агент', 'Дизайнер'].includes(userType)) {
+					goto('/access-denied');
+					return;
+				}
+				
 				// Check if email is verified
 				if (authState.user && !authState.user.email_verified) {
 					// Email not verified - redirect to email verification page
