@@ -2,6 +2,7 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import ActionButtons from './ActionButtons.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { authState } from '$lib/state/auth.svelte.js';
 
 	let {
 		users = [],
@@ -14,6 +15,9 @@
 		searchTerm = '',
 		hasSearched = false
 	} = $props();
+
+	// Check if current user is admin
+	const isAdmin = $derived(authState.user?.userStatus?.slug === 'admin');
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -317,29 +321,31 @@
 										/>
 									</svg>
 								</button>
-								<!-- Edit Button -->
-								<button
-									type="button"
-									onclick={() => onEditUser && onEditUser(agent)}
-									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-									aria-label="Редактировать пользователя {agent.name || agent.email}"
-								>
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
+								<!-- Edit Button - Only visible for admin -->
+								{#if isAdmin}
+									<button
+										type="button"
+										onclick={() => onEditUser && onEditUser(agent)}
+										class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+										aria-label="Редактировать пользователя {agent.name || agent.email}"
 									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-										/>
-									</svg>
-								</button>
+										<svg
+											class="h-4 w-4"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+											/>
+										</svg>
+									</button>
+								{/if}
 								<!-- Ban/Unban Button -->
 								<button
 									type="button"
@@ -543,29 +549,31 @@
 								/>
 							</svg>
 						</button>
-						<!-- Edit Button -->
-						<button
-							type="button"
-							onclick={() => onEditUser && onEditUser(agent)}
-							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-							aria-label="Редактировать пользователя {agent.name || agent.email}"
-						>
-							<svg
-								class="h-5 w-5"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
+						<!-- Edit Button - Only visible for admin -->
+						{#if isAdmin}
+							<button
+								type="button"
+								onclick={() => onEditUser && onEditUser(agent)}
+								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+								aria-label="Редактировать пользователя {agent.name || agent.email}"
 							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-								/>
-							</svg>
-						</button>
+								<svg
+									class="h-5 w-5"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+									/>
+								</svg>
+							</button>
+						{/if}
 						<!-- Delete Button -->
 						<button
 							type="button"
@@ -759,29 +767,31 @@
 													/>
 												</svg>
 											</button>
-											<!-- Edit Button -->
-											<button
-												type="button"
-												onclick={() => onEditUser && onEditUser(agent)}
-												class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500"
-												aria-label="Редактировать пользователя {agent.name || agent.email}"
-											>
-												<svg
-													class="h-4 w-4"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													aria-hidden="true"
+											<!-- Edit Button - Only visible for admin -->
+											{#if isAdmin}
+												<button
+													type="button"
+													onclick={() => onEditUser && onEditUser(agent)}
+													class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500"
+													aria-label="Редактировать пользователя {agent.name || agent.email}"
 												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-													/>
-												</svg>
-											</button>
+													<svg
+														class="h-4 w-4"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+														aria-hidden="true"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+														/>
+													</svg>
+												</button>
+											{/if}
 											<!-- Delete Button -->
 											<button
 												type="button"
