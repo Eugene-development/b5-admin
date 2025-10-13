@@ -1,17 +1,12 @@
 /**
- * Client-side load function for agents page
+ * Client-side load function for designers page
  * Handles data fetching and processing with error handling on the client-side
- * Uses client-side loading to match the project's authentication pattern
- * Requirements: Client-side data loading, error handling, authentication state management
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
 import { authState } from '$lib/state/auth.svelte.js';
 import { browser } from '$app/environment';
 
-/**
- * Error types for better error categorization
- */
 const ERROR_TYPES = {
 	NETWORK: 'network',
 	API: 'api',
@@ -21,11 +16,6 @@ const ERROR_TYPES = {
 	UNKNOWN: 'unknown'
 };
 
-/**
- * Categorize error based on error message and properties
- * @param {Error} error - The error to categorize
- * @returns {string} Error type
- */
 function categorizeError(error) {
 	const message = error.message?.toLowerCase() || '';
 
@@ -48,12 +38,6 @@ function categorizeError(error) {
 	return ERROR_TYPES.UNKNOWN;
 }
 
-/**
- * Get user-friendly error message based on error type
- * @param {string} errorType - Error type
- * @param {string} originalMessage - Original error message
- * @returns {string} User-friendly error message
- */
 function getUserFriendlyErrorMessage(errorType, originalMessage) {
 	switch (errorType) {
 		case ERROR_TYPES.NETWORK:
@@ -71,11 +55,7 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 	}
 }
 
-/**
- * Create fallback data structure for agents page
- * @returns {Object} Fallback data structure
- */
-function createCuratorsFallbackData() {
+function createDesignersFallbackData() {
 	return {
 		agents: [],
 		stats: {
@@ -99,22 +79,16 @@ function createCuratorsFallbackData() {
 	};
 }
 
-/**
- * Validate curators data structure
- * @param {any} curatorsResult - Curators result from API
- * @returns {boolean} Whether data is valid
- */
-function validateCuratorsData(curatorsResult) {
-	if (!curatorsResult || typeof curatorsResult !== 'object') {
+function validateDesignersData(designersResult) {
+	if (!designersResult || typeof designersResult !== 'object') {
 		return false;
 	}
 
-	if (!Array.isArray(curatorsResult.data)) {
+	if (!Array.isArray(designersResult.data)) {
 		return false;
 	}
 
-	// Validate pagination info structure
-	const paginatorInfo = curatorsResult.paginatorInfo;
+	const paginatorInfo = designersResult.paginatorInfo;
 	if (paginatorInfo && typeof paginatorInfo !== 'object') {
 		return false;
 	}
@@ -122,13 +96,8 @@ function validateCuratorsData(curatorsResult) {
 	return true;
 }
 
-/**
- * Safely calculate curator statistics
- * @param {Array} curators - Array of curators
- * @returns {Object} Statistics object
- */
-function calculateCuratorStats(curators) {
-	if (!Array.isArray(curators)) {
+function calculateDesignerStats(designers) {
+	if (!Array.isArray(designers)) {
 		return {
 			total: 0,
 			active: 0,
@@ -139,24 +108,22 @@ function calculateCuratorStats(curators) {
 	}
 
 	const stats = {
-		total: curators.length,
+		total: designers.length,
 		active: 0,
 		banned: 0,
 		verified: 0,
 		unverified: 0
 	};
 
-	for (const curator of curators) {
-		// Safely check curator status
-		const status = curator?.status?.toLowerCase() || 'active';
+	for (const designer of designers) {
+		const status = designer?.status?.toLowerCase() || 'active';
 		if (status === 'active') {
 			stats.active++;
 		} else if (status === 'banned') {
 			stats.banned++;
 		}
 
-		// Safely check email verification status
-		if (curator?.email_verified_at) {
+		if (designer?.email_verified_at) {
 			stats.verified++;
 		} else {
 			stats.unverified++;
@@ -170,53 +137,42 @@ function calculateCuratorStats(curators) {
 export async function load({ fetch }) {
 	const startTime = Date.now();
 
-	// Check if we're in browser - for SSR safety
 	if (!browser) {
-		// Return fallback data for SSR
-		return createCuratorsFallbackData();
+		return createDesignersFallbackData();
 	}
 
-	// Since auth is handled client-side and the check might not be ready yet,
-	// we'll proceed with the API call and let the API handle authentication errors
 	try {
-		// Add timeout to prevent hanging requests
 		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 seconds
+			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		// Load curators data - use SvelteKit fetch for proper SSR support
-		console.log('🔍 About to call getUsersWithPagination with SvelteKit fetch');
-		const curatorsResult = await Promise.race([
-			getUsersWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
+		console.log('🔍 Loading designers data');
+		const designersResult = await Promise.race([
+			getUsersWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
-		console.log('✅ getUsersWithPagination completed successfully:', curatorsResult);
+		console.log('✅ Designers data loaded successfully:', designersResult);
 
-		// Validate data structure
-		if (!validateCuratorsData(curatorsResult)) {
+		if (!validateDesignersData(designersResult)) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const curators = curatorsResult.data || [];
+		const designers = designersResult.data || [];
+		const stats = calculateDesignerStats(designers);
 
-		// Calculate statistics with error handling
-		const stats = calculateCuratorStats(curators);
-
-		// Ensure pagination info is valid
-		const pagination = curatorsResult.paginatorInfo || {
+		const pagination = designersResult.paginatorInfo || {
 			currentPage: 1,
 			lastPage: 1,
-			total: curators.length,
+			total: designers.length,
 			perPage: 1000,
 			hasMorePages: false
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Curators data loaded successfully in ${loadTime}ms`);
-// FIX: agents: curators?
-		return {
+		console.log(`Designers data loaded successfully in ${loadTime}ms`);
 
-			agents: curators, // Keep as 'agents' for backward compatibility with existing page code
+		return {
+			agents: designers,
 			stats,
 			pagination,
 			error: null,
@@ -229,21 +185,20 @@ export async function load({ fetch }) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
 
-		console.error('Failed to load agents data:', {
+		console.error('Failed to load designers data:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
 
-		// Return error state with detailed information for graceful error handling
-		const fallbackData = createCuratorsFallbackData();
+		const fallbackData = createDesignersFallbackData();
 		return {
 			...fallbackData,
 			error: userMessage,
 			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH, // Don't allow retry for auth errors
-			originalError: apiError.message, // For debugging
+			canRetry: errorType !== ERROR_TYPES.AUTH,
+			originalError: apiError.message,
 			loadTime: Date.now() - startTime
 		};
 	}

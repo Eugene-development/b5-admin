@@ -23,52 +23,34 @@
 
 	let { data } = $props();
 
-	// Search state management
 	let searchTerm = $state('');
-
-	// Action state management
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
-
-	// View modal state
+	let confirmAction = $state(null);
 	let showViewModal = $state(false);
 	let selectedUser = $state(null);
-	let confirmAction = $state(null);
-
-	// Edit modal state
 	let showEditModal = $state(false);
 	let editingUser = $state(null);
-
-	// Error boundary state
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
-
-	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local users state for updates - normalize status and sort by created_at descending
-	// Filter only agents (users with status slug 'agents')
+	// Filter only designers (users with status slug 'designers')
 	let localUsers = $state([
 		...(data?.agents || [])
-			.filter((user) => user.userStatus?.slug === 'agents')
+			.filter((user) => user.userStatus?.slug === 'designers')
 			.map((user) => ({
 				...user,
-				// Keep old status field for backward compatibility (derived from bun field)
 				status: user.bun ? 'banned' : 'active',
-				// Add new status fields
 				status_id: user.status_id,
 				userStatus: user.userStatus
 			}))
 			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 	]);
 
-	// Force update counter for reactivity
 	let updateCounter = $state(0);
-
-	// Check for server-side load errors
 	let loadError = $state(data?.error || null);
 
-	// Computed filteredUsers reactive statement
 	let filteredUsers = $derived.by(() => {
 		if (!searchTerm.trim()) {
 			return localUsers;
@@ -84,21 +66,19 @@
 		});
 	});
 
-	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
 	}
 
-	// Ban user handler with confirmation
 	function handleBanUser(user) {
 		const isBanned = user.status === 'banned';
 		confirmAction = {
 			type: isBanned ? 'unban' : 'ban',
 			user: user,
-			title: isBanned ? 'Разбанить агента' : 'Забанить агента',
+			title: isBanned ? 'Разбанить дизайнера' : 'Забанить дизайнера',
 			message: isBanned
-				? `Вы уверены, что хотите разбанить агента "${user.name || user.email}"? Агент снова сможет получить доступ к системе.`
-				: `Вы уверены, что хотите забанить агента "${user.name || user.email}"? Агент потеряет доступ к системе.`,
+				? `Вы уверены, что хотите разбанить дизайнера "${user.name || user.email}"? Дизайнер снова сможет получить доступ к системе.`
+				: `Вы уверены, что хотите забанить дизайнера "${user.name || user.email}"? Дизайнер потеряет доступ к системе.`,
 			confirmText: isBanned ? 'Разбанить' : 'Забанить',
 			isDestructive: !isBanned
 		};
@@ -106,13 +86,12 @@
 		clearAllToasts();
 	}
 
-	// Delete user handler with confirmation
 	function handleDeleteUser(user) {
 		confirmAction = {
 			type: 'delete',
 			user: user,
-			title: 'Удалить агента',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить агента "${user.name || user.email}"? Это действие нельзя отменить. Все данные агента будут потеряны.`,
+			title: 'Удалить дизайнера',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить дизайнера "${user.name || user.email}"? Это действие нельзя отменить. Все данные дизайнера будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -120,36 +99,30 @@
 		clearAllToasts();
 	}
 
-	// View user handler
 	function handleViewUser(user) {
 		selectedUser = user;
 		showViewModal = true;
 	}
 
-	// Close view modal
 	function closeViewModal() {
 		showViewModal = false;
 		selectedUser = null;
 	}
 
-	// Open edit modal
 	function handleEditUser(user) {
 		editingUser = user;
 		showEditModal = true;
 		clearAllToasts();
 	}
 
-	// Save user changes (edit)
 	async function handleUpdateUser(updatedUserData) {
 		isActionLoading = true;
 
 		try {
 			await retryOperation(
 				async () => {
-					// Update user data including status_id
 					const updatedUser = await updateUser(updatedUserData);
 
-					// Update in local list
 					localUsers = localUsers.map((user) =>
 						user.id === updatedUser.id
 							? {
@@ -177,14 +150,12 @@
 		}
 	}
 
-	// Cancel edit user
 	function handleCancelEditUser() {
 		showEditModal = false;
 		editingUser = null;
 		isActionLoading = false;
 	}
 
-	// Execute confirmed action with retry mechanism
 	async function confirmActionHandler() {
 		if (!confirmAction) return;
 
@@ -193,32 +164,28 @@
 		try {
 			const { type, user } = confirmAction;
 
-			// Use retry mechanism for critical operations
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
 						const result = await banUser(user.id);
-						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'banned';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно забанен.`);
+						addSuccessToast(`Дизайнер "${user.name || user.email}" успешно забанен.`);
 					} else if (type === 'unban') {
 						const result = await unbanUser(user.id);
-						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'active';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно разбанен.`);
+						addSuccessToast(`Дизайнер "${user.name || user.email}" успешно разбанен.`);
 					} else if (type === 'delete') {
 						await deleteUser(user.id);
 						removeUserFromList(user.id);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно удален.`);
+						addSuccessToast(`Дизайнер "${user.name || user.email}" успешно удален.`);
 					}
 				},
 				2,
 				1000
-			); // 2 retries with 1 second delay
+			);
 		} catch (error) {
-			// Error is already handled by handleApiError in retryOperation
 			console.error('Action failed after retries:', error);
 		} finally {
 			isActionLoading = false;
@@ -227,91 +194,79 @@
 		}
 	}
 
-	// Cancel action
 	function cancelAction() {
 		showConfirmModal = false;
 		confirmAction = null;
 		isActionLoading = false;
 	}
 
-	// Update user status in local state
 	function updateUserStatus(userId, newStatus) {
-		// Create completely new array with new objects to ensure reactivity
 		localUsers = localUsers.map((user) =>
 			user.id === userId ? { ...user, status: newStatus } : user
 		);
 
-		// Force reactivity update
 		updateCounter++;
 	}
 
-	// Remove user from local state after deletion
 	function removeUserFromList(userId) {
 		localUsers = localUsers.filter((user) => user.id !== userId);
 	}
 
-	// Refresh data from server
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
-			// Filter only agents and normalize status
+			// Filter only designers
 			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'agents')
+				.filter((user) => user.userStatus?.slug === 'designers')
 				.map((user) => ({
 					...user,
-					// Keep old status field for backward compatibility (derived from bun field)
 					status: user.bun ? 'banned' : 'active',
-					// Add new status fields
 					status_id: user.status_id,
 					userStatus: user.userStatus
 				}))
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
-			// Only show success message for manual refresh, not initial load
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
 	}
 
-	// Handle error boundary errors
 	function handleErrorBoundaryError(error) {
 		hasError = true;
 		errorBoundaryError = error;
 		handleApiError(error, 'Критическая ошибка');
 	}
 
-	// Retry from error boundary
 	async function retryFromErrorBoundary() {
 		hasError = false;
 		errorBoundaryError = null;
 		await refreshData();
 	}
 
-	// Handle initial load error and load data if empty
 	onMount(() => {
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
 
-		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (!localUsers.length && !loadError) {
-			refreshData(true); // Pass true to indicate initial load
+			refreshData(true);
 		}
 	});
 
-	// Debug function to manually set user status (for testing)
 	function debugSetUserStatus(userId, status) {
 		console.log('Debug: Manually setting user status:', { userId, status });
 		updateUserStatus(userId, status);
 	}
 
-	// Make debug function available globally for testing
 	if (typeof window !== 'undefined') {
 		window.debugSetUserStatus = debugSetUserStatus;
 	}
@@ -324,11 +279,10 @@
 			error={errorBoundaryError}
 			onError={handleErrorBoundaryError}
 			onRetry={retryFromErrorBoundary}
-			fallbackTitle="Agents Page Error"
-			fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
+			fallbackTitle="Designers Page Error"
+			fallbackMessage="An error occurred while loading the designers page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Skip link for keyboard navigation -->
 			<a
 				href="#main-content"
 				class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -337,7 +291,6 @@
 			</a>
 
 			<div class="space-y-6 bg-gray-950">
-				<!-- Page landmark -->
 				<main id="main-content" aria-labelledby="page-title">
 					<div
 						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
@@ -347,7 +300,7 @@
 								id="page-title"
 								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
 							>
-								Агенты
+								Дизайнеры
 							</h1>
 						</div>
 						<div class="flex-none">
@@ -356,7 +309,7 @@
 								onclick={refreshData}
 								disabled={isRefreshing}
 								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-								aria-label="Refresh agents data from server"
+								aria-label="Refresh designers data from server"
 								aria-describedby="refresh-button-description"
 							>
 								{#if isRefreshing}
@@ -365,12 +318,11 @@
 								{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
 							</button>
 							<div id="refresh-button-description" class="sr-only">
-								Обновить данные агентов с сервера
+								Обновить данные дизайнеров с сервера
 							</div>
 						</div>
 					</div>
 
-					<!-- Load Error Banner -->
 					{#if loadError && loadError.canRetry}
 						<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
 							<div class="flex">
@@ -412,12 +364,10 @@
 						</div>
 					{/if}
 
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Agent search">
+					<div class="w-full sm:max-w-md" role="search" aria-label="Designer search">
 						<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
 					</div>
 
-					<!-- Results summary -->
 					{#if searchTerm.trim()}
 						<div
 							class="py-2 text-sm text-gray-600 dark:text-gray-400"
@@ -426,9 +376,7 @@
 							aria-atomic="true"
 						>
 							{#if filteredUsers.length === 0}
-								<p>Агенты не найдены</p>
-								<!-- {:else if filteredUsers.length === 1}
-							<p>Найдена 1 запись по запросу "{searchTerm}"</p> -->
+								<p>Дизайнеры не найдены</p>
 							{:else}
 								<p>Найдено {filteredUsers.length} поз. по запросу "{searchTerm}"</p>
 							{/if}
@@ -452,7 +400,6 @@
 	{/snippet}
 </ProtectedRoute>
 
-<!-- Confirmation Modal -->
 {#if confirmAction}
 	<ConfirmationModal
 		isOpen={showConfirmModal}
@@ -467,10 +414,8 @@
 	/>
 {/if}
 
-<!-- User View Modal -->
 <UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
 
-<!-- User Edit Modal -->
 {#if editingUser}
 	<UserEditModal
 		isOpen={showEditModal}
@@ -480,5 +425,3 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
-
-

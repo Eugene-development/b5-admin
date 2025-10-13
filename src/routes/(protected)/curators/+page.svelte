@@ -47,8 +47,10 @@
 	let isRefreshing = $state(false);
 
 	// Local users state for updates - normalize status and sort by created_at descending
+	// Filter only curators (users with status slug 'curators')
 	let localUsers = $state([
 		...(data?.agents || [])
+			.filter((user) => user.userStatus?.slug === 'curators')
 			.map((user) => ({
 				...user,
 				// Keep old status field for backward compatibility (derived from bun field)
@@ -253,8 +255,9 @@
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
-			// Normalize status and sort by created_at descending
+			// Filter only curators and normalize status
 			localUsers = users
+				.filter((user) => user.userStatus?.slug === 'curators')
 				.map((user) => ({
 					...user,
 					// Keep old status field for backward compatibility (derived from bun field)

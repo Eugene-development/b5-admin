@@ -259,6 +259,26 @@
 										</button>
 									</li>
 								{/if}
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/managers')}
+										onclick={() => handleMobileNavigation('/managers')}
+									>
+										<span class={getSpanIconClasses('/managers')}>М</span>
+										<span class="truncate">Менеджеры</span>
+									</button>
+								</li>
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/designers')}
+										onclick={() => handleMobileNavigation('/designers')}
+									>
+										<span class={getSpanIconClasses('/designers')}>Д</span>
+										<span class="truncate">Дизайнеры</span>
+									</button>
+								</li>
 							</ul>
 						</li>
 					{/if}
@@ -559,6 +579,18 @@
 									</a>
 								</li>
 							{/if}
+							<li>
+								<a href="/managers" class={getNavClassesWithSpan('/managers')}>
+									<span class={getSpanIconClasses('/managers')}>М</span>
+									<span class="truncate">Менеджеры</span>
+								</a>
+							</li>
+							<li>
+								<a href="/designers" class={getNavClassesWithSpan('/designers')}>
+									<span class={getSpanIconClasses('/designers')}>Д</span>
+									<span class="truncate">Дизайнеры</span>
+								</a>
+							</li>
 						</ul>
 					</li>
 				{/if}

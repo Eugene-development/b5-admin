@@ -29,11 +29,11 @@
 	// Action state management
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
+	let confirmAction = $state(null);
 
 	// View modal state
 	let showViewModal = $state(false);
 	let selectedUser = $state(null);
-	let confirmAction = $state(null);
 
 	// Edit modal state
 	let showEditModal = $state(false);
@@ -47,15 +47,13 @@
 	let isRefreshing = $state(false);
 
 	// Local users state for updates - normalize status and sort by created_at descending
-	// Filter only agents (users with status slug 'agents')
+	// Filter only managers (users with status slug 'managers')
 	let localUsers = $state([
 		...(data?.agents || [])
-			.filter((user) => user.userStatus?.slug === 'agents')
+			.filter((user) => user.userStatus?.slug === 'managers')
 			.map((user) => ({
 				...user,
-				// Keep old status field for backward compatibility (derived from bun field)
 				status: user.bun ? 'banned' : 'active',
-				// Add new status fields
 				status_id: user.status_id,
 				userStatus: user.userStatus
 			}))
@@ -95,10 +93,10 @@
 		confirmAction = {
 			type: isBanned ? 'unban' : 'ban',
 			user: user,
-			title: isBanned ? 'Разбанить агента' : 'Забанить агента',
+			title: isBanned ? 'Разбанить менеджера' : 'Забанить менеджера',
 			message: isBanned
-				? `Вы уверены, что хотите разбанить агента "${user.name || user.email}"? Агент снова сможет получить доступ к системе.`
-				: `Вы уверены, что хотите забанить агента "${user.name || user.email}"? Агент потеряет доступ к системе.`,
+				? `Вы уверены, что хотите разбанить менеджера "${user.name || user.email}"? Менеджер снова сможет получить доступ к системе.`
+				: `Вы уверены, что хотите забанить менеджера "${user.name || user.email}"? Менеджер потеряет доступ к системе.`,
 			confirmText: isBanned ? 'Разбанить' : 'Забанить',
 			isDestructive: !isBanned
 		};
@@ -111,8 +109,8 @@
 		confirmAction = {
 			type: 'delete',
 			user: user,
-			title: 'Удалить агента',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить агента "${user.name || user.email}"? Это действие нельзя отменить. Все данные агента будут потеряны.`,
+			title: 'Удалить менеджера',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить менеджера "${user.name || user.email}"? Это действие нельзя отменить. Все данные менеджера будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -146,10 +144,8 @@
 		try {
 			await retryOperation(
 				async () => {
-					// Update user data including status_id
 					const updatedUser = await updateUser(updatedUserData);
 
-					// Update in local list
 					localUsers = localUsers.map((user) =>
 						user.id === updatedUser.id
 							? {
@@ -193,32 +189,28 @@
 		try {
 			const { type, user } = confirmAction;
 
-			// Use retry mechanism for critical operations
 			await retryOperation(
 				async () => {
 					if (type === 'ban') {
 						const result = await banUser(user.id);
-						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'banned';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно забанен.`);
+						addSuccessToast(`Менеджер "${user.name || user.email}" успешно забанен.`);
 					} else if (type === 'unban') {
 						const result = await unbanUser(user.id);
-						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'active';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно разбанен.`);
+						addSuccessToast(`Менеджер "${user.name || user.email}" успешно разбанен.`);
 					} else if (type === 'delete') {
 						await deleteUser(user.id);
 						removeUserFromList(user.id);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно удален.`);
+						addSuccessToast(`Менеджер "${user.name || user.email}" успешно удален.`);
 					}
 				},
 				2,
 				1000
-			); // 2 retries with 1 second delay
+			);
 		} catch (error) {
-			// Error is already handled by handleApiError in retryOperation
 			console.error('Action failed after retries:', error);
 		} finally {
 			isActionLoading = false;
@@ -236,12 +228,10 @@
 
 	// Update user status in local state
 	function updateUserStatus(userId, newStatus) {
-		// Create completely new array with new objects to ensure reactivity
 		localUsers = localUsers.map((user) =>
 			user.id === userId ? { ...user, status: newStatus } : user
 		);
 
-		// Force reactivity update
 		updateCounter++;
 	}
 
@@ -255,25 +245,25 @@
 		isRefreshing = true;
 		try {
 			const users = await refreshUsers();
-			// Filter only agents and normalize status
+			// Filter only managers
 			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'agents')
+				.filter((user) => user.userStatus?.slug === 'managers')
 				.map((user) => ({
 					...user,
-					// Keep old status field for backward compatibility (derived from bun field)
 					status: user.bun ? 'banned' : 'active',
-					// Add new status fields
 					status_id: user.status_id,
 					userStatus: user.userStatus
 				}))
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
-			// Only show success message for manual refresh, not initial load
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
@@ -299,9 +289,8 @@
 			addErrorToast(loadError.message, { duration: 0 });
 		}
 
-		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (!localUsers.length && !loadError) {
-			refreshData(true); // Pass true to indicate initial load
+			refreshData(true);
 		}
 	});
 
@@ -324,11 +313,10 @@
 			error={errorBoundaryError}
 			onError={handleErrorBoundaryError}
 			onRetry={retryFromErrorBoundary}
-			fallbackTitle="Agents Page Error"
-			fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
+			fallbackTitle="Managers Page Error"
+			fallbackMessage="An error occurred while loading the managers page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Skip link for keyboard navigation -->
 			<a
 				href="#main-content"
 				class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -337,7 +325,6 @@
 			</a>
 
 			<div class="space-y-6 bg-gray-950">
-				<!-- Page landmark -->
 				<main id="main-content" aria-labelledby="page-title">
 					<div
 						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
@@ -347,7 +334,7 @@
 								id="page-title"
 								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
 							>
-								Агенты
+								Менеджеры
 							</h1>
 						</div>
 						<div class="flex-none">
@@ -356,7 +343,7 @@
 								onclick={refreshData}
 								disabled={isRefreshing}
 								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-								aria-label="Refresh agents data from server"
+								aria-label="Refresh managers data from server"
 								aria-describedby="refresh-button-description"
 							>
 								{#if isRefreshing}
@@ -365,12 +352,11 @@
 								{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
 							</button>
 							<div id="refresh-button-description" class="sr-only">
-								Обновить данные агентов с сервера
+								Обновить данные менеджеров с сервера
 							</div>
 						</div>
 					</div>
 
-					<!-- Load Error Banner -->
 					{#if loadError && loadError.canRetry}
 						<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
 							<div class="flex">
@@ -412,12 +398,10 @@
 						</div>
 					{/if}
 
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Agent search">
+					<div class="w-full sm:max-w-md" role="search" aria-label="Manager search">
 						<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
 					</div>
 
-					<!-- Results summary -->
 					{#if searchTerm.trim()}
 						<div
 							class="py-2 text-sm text-gray-600 dark:text-gray-400"
@@ -426,9 +410,7 @@
 							aria-atomic="true"
 						>
 							{#if filteredUsers.length === 0}
-								<p>Агенты не найдены</p>
-								<!-- {:else if filteredUsers.length === 1}
-							<p>Найдена 1 запись по запросу "{searchTerm}"</p> -->
+								<p>Менеджеры не найдены</p>
 							{:else}
 								<p>Найдено {filteredUsers.length} поз. по запросу "{searchTerm}"</p>
 							{/if}
@@ -452,7 +434,6 @@
 	{/snippet}
 </ProtectedRoute>
 
-<!-- Confirmation Modal -->
 {#if confirmAction}
 	<ConfirmationModal
 		isOpen={showConfirmModal}
@@ -467,10 +448,8 @@
 	/>
 {/if}
 
-<!-- User View Modal -->
 <UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
 
-<!-- User Edit Modal -->
 {#if editingUser}
 	<UserEditModal
 		isOpen={showEditModal}
@@ -480,5 +459,3 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
-
-
