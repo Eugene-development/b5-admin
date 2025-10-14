@@ -17,8 +17,12 @@
 	import { ToastContainer } from '$lib';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	let { children } = $props();
+
+	// State for logout confirmation modal
+	let showLogoutModal = $state(false);
 
 	// Get navigation visibility reactively
 	const navigationVisibility = $derived(getNavigationVisibility());
@@ -93,22 +97,33 @@
 		event.stopPropagation();
 	}
 
-	// Handle logout with confirmation
-	async function handleLogout() {
-		if (confirm('Вы уверены, что хотите выйти из системы?')) {
-			try {
-				const success = await logout();
-				if (success) {
-					addSuccessToast('Вы успешно вышли из системы');
-					goto('/login');
-				} else {
-					addErrorToast('Произошла ошибка при выходе из системы');
-				}
-			} catch (error) {
-				console.error('Logout error:', error);
+	// Handle logout button click - show modal
+	function handleLogoutClick() {
+		showLogoutModal = true;
+	}
+
+	// Handle logout confirmation
+	async function handleLogoutConfirm() {
+		try {
+			const success = await logout();
+			if (success) {
+				addSuccessToast('Вы успешно вышли из системы');
+				showLogoutModal = false;
+				goto('/login');
+			} else {
 				addErrorToast('Произошла ошибка при выходе из системы');
+				showLogoutModal = false;
 			}
+		} catch (error) {
+			console.error('Logout error:', error);
+			addErrorToast('Произошла ошибка при выходе из системы');
+			showLogoutModal = false;
 		}
+	}
+
+	// Handle logout cancellation
+	function handleLogoutCancel() {
+		showLogoutModal = false;
 	}
 
 	// Handle navigation for mobile menu
@@ -469,7 +484,7 @@
 									</button>
 
 									<button
-										onclick={handleLogout}
+										onclick={handleLogoutClick}
 										class="group flex w-full cursor-pointer gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 									>
 										<svg
@@ -743,7 +758,7 @@
 								</a>
 
 								<button
-									onclick={handleLogout}
+									onclick={handleLogoutClick}
 									class="group flex w-full gap-x-3 rounded-lg px-3 py-2.5 text-sm/6 font-semibold text-gray-900 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white"
 								>
 									<svg
@@ -921,7 +936,7 @@
 									>Ваш профиль</a
 								>
 								<button
-									onclick={handleLogout}
+									onclick={handleLogoutClick}
 									class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 focus:bg-gray-50 dark:text-white dark:focus:bg-gray-950"
 									>Выйти</button
 								>
@@ -952,3 +967,15 @@
 
 <!-- Toast notifications container at the top level -->
 <ToastContainer toasts={$toasts} position="top-center" />
+
+<!-- Logout confirmation modal -->
+<ConfirmationModal
+	isOpen={showLogoutModal}
+	title="Подтверждение выхода"
+	message="Вы уверены, что хотите выйти из системы?"
+	confirmText="Выйти"
+	cancelText="Отмена"
+	onConfirm={handleLogoutConfirm}
+	onCancel={handleLogoutCancel}
+	isDestructive={true}
+/>

@@ -22,6 +22,7 @@
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	// Component state
 	let showSuccessMessage = $state(false);
@@ -33,6 +34,7 @@
 	let redirectMessage = $state('');
 	let authError = $state(null);
 	let isCopyingKey = $state(false);
+	let showLogoutModal = $state(false);
 
 	// Get user data for display with localStorage fallback
 	function getUserDisplayData() {
@@ -132,10 +134,16 @@
 		}
 	}
 
-	// Handle logout with enhanced loading states
-	async function handleLogout() {
+	// Handle logout button click - show modal
+	function handleLogoutClick() {
+		showLogoutModal = true;
+	}
+
+	// Handle logout confirmation with enhanced loading states
+	async function handleLogoutConfirm() {
 		isLogoutLoading = true;
 		authError = null;
+		showLogoutModal = false;
 
 		try {
 			const success = await logout();
@@ -166,6 +174,11 @@
 		} finally {
 			isLogoutLoading = false;
 		}
+	}
+
+	// Handle logout cancellation
+	function handleLogoutCancel() {
+		showLogoutModal = false;
 	}
 
 	// Check authentication status with loading indicator
@@ -594,7 +607,7 @@
 				<!-- Action Buttons -->
 				<div class="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
 					<button
-						onclick={handleLogout}
+						onclick={handleLogoutClick}
 						disabled={isLogoutLoading || isRedirecting}
 						class="group flex min-h-[52px] items-center justify-center gap-3 rounded-xl border border-red-500 bg-red-600 px-8 py-4 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 					>
@@ -650,3 +663,15 @@
 		</div>
 	</div>
 </ProtectedRoute>
+
+<!-- Logout confirmation modal -->
+<ConfirmationModal
+	isOpen={showLogoutModal}
+	title="Подтверждение выхода"
+	message="Вы уверены, что хотите выйти из системы?"
+	confirmText="Выйти"
+	cancelText="Отмена"
+	onConfirm={handleLogoutConfirm}
+	onCancel={handleLogoutCancel}
+	isDestructive={true}
+/>

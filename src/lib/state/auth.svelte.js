@@ -58,6 +58,21 @@ export const authState = $state({
 });
 
 /**
+ * Normalize user data to ensure consistent structure
+ * Converts user.status to user.userStatus for compatibility
+ */
+function normalizeUserData(user) {
+	if (!user) return null;
+	
+	// If status exists but userStatus doesn't, map status to userStatus
+	if (user.status && !user.userStatus) {
+		user.userStatus = user.status;
+	}
+	
+	return user;
+}
+
+/**
  * Initialize authentication state from localStorage
  * Should be called when the app starts
  */
@@ -69,7 +84,7 @@ export async function initializeAuth() {
 	// Immediately restore from localStorage if available (before setting loading state)
 	const hasToken = hasAuthToken();
 	const token = getAuthToken();
-	const storedUser = getUserData();
+	const storedUser = normalizeUserData(getUserData());
 	console.log('storedUser-', storedUser);
 
 	// Restore state immediately from localStorage if we have both token and user data
@@ -101,13 +116,14 @@ export async function initializeAuth() {
 				if (result.success && result.user) {
 					// Update with fresh data
 					console.log('initializeAuth - Updating with fresh API data');
-					authState.user = result.user;
+					const normalizedUser = normalizeUserData(result.user);
+					authState.user = normalizedUser;
 					authState.isAuthenticated = true;
-					authState.emailVerified = result.user.email_verified || false;
+					authState.emailVerified = normalizedUser.email_verified || false;
 					authState.token = getAuthToken();
 
 					// Update stored user data
-					setUserData(result.user);
+					setUserData(normalizedUser);
 					console.log('initializeAuth - Authentication updated successfully:', authState.user);
 				} else if (result.status === 401 || result.status === 403) {
 					// Token is invalid, clear it
@@ -164,18 +180,19 @@ export async function login(email, password, remember = false) {
 		console.log('🔐 Login API result:', result);
 
 		if (result.success) {
-			// Update auth state - add safety checks
-			authState.user = result.user || null;
-			authState.isAuthenticated = !!result.user;
-			authState.emailVerified = result.user?.email_verified || false;
+			// Update auth state - add safety checks and normalize user data
+			const normalizedUser = normalizeUserData(result.user);
+			authState.user = normalizedUser || null;
+			authState.isAuthenticated = !!normalizedUser;
+			authState.emailVerified = normalizedUser?.email_verified || false;
 			authState.token = result.token?.access_token || result.token || null;
 
 			// Store token and user data
 			if (result.token) {
 				setAuthToken(result.token);
 			}
-			if (result.user) {
-				setUserData(result.user);
+			if (normalizedUser) {
+				setUserData(normalizedUser);
 			}
 
 			return true;
@@ -221,18 +238,19 @@ export async function register(userData) {
 		const result = await registerUser(userData);
 
 		if (result.success) {
-			// Update auth state
-			authState.user = result.user;
+			// Update auth state and normalize user data
+			const normalizedUser = normalizeUserData(result.user);
+			authState.user = normalizedUser;
 			authState.isAuthenticated = true;
-			authState.emailVerified = result.user?.email_verified || false;
+			authState.emailVerified = normalizedUser?.email_verified || false;
 			authState.token = result.token?.access_token || null;
 
 			// Store token and user data
 			if (result.token) {
 				setAuthToken(result.token);
 			}
-			if (result.user) {
-				setUserData(result.user);
+			if (normalizedUser) {
+				setUserData(normalizedUser);
 			}
 
 			return true;
@@ -294,7 +312,7 @@ export async function checkAuth() {
 
 	// If we don't have user data in state but have token, restore from localStorage first
 	if (!authState.user && hasAuthToken()) {
-		const storedUser = getUserData();
+		const storedUser = normalizeUserData(getUserData());
 		if (storedUser) {
 			console.log('checkAuth - Restoring user from localStorage');
 			authState.user = storedUser;
@@ -310,13 +328,14 @@ export async function checkAuth() {
 		const result = await getCurrentUser();
 
 		if (result.success && result.user) {
-			// Update user data
-			authState.user = result.user;
+			// Update user data and normalize
+			const normalizedUser = normalizeUserData(result.user);
+			authState.user = normalizedUser;
 			authState.isAuthenticated = true;
-			authState.emailVerified = result.user.email_verified || false;
+			authState.emailVerified = normalizedUser.email_verified || false;
 
 			// Update stored user data
-			setUserData(result.user);
+			setUserData(normalizedUser);
 
 			return true;
 		} else if (result.status === 0) {
@@ -337,7 +356,7 @@ export async function checkAuth() {
 	} catch (error) {
 		console.error('Check auth error:', error);
 		// If network error, try to keep stored state
-		const storedUser = getUserData();
+		const storedUser = normalizeUserData(getUserData());
 		if (storedUser && hasAuthToken()) {
 			console.log('checkAuth - Exception occurred, keeping stored state');
 			authState.user = storedUser;
