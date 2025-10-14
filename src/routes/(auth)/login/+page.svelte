@@ -62,6 +62,7 @@
 				
 				// Allow access ONLY for Админ, Куратор, Менеджер
 				const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
+				
 				if (!userType || !allowedTypes.includes(userType)) {
 					goto('/access-denied');
 					return;

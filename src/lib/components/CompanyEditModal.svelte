@@ -106,7 +106,7 @@
 				inn: formData.inn.trim(),
 				region: formData.region.trim() || null,
 				status_id: formData.status_id || null,
-				bun: company.bun,
+				ban: company.ban,
 				is_active: company.is_active
 			};
 

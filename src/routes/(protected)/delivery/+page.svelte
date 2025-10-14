@@ -218,7 +218,7 @@
 						company.id === updatedCompany.id
 							? {
 									...updatedCompany,
-									status: updatedCompany.bun
+									status: updatedCompany.ban
 										? 'banned'
 										: updatedCompany.is_active
 											? 'active'
@@ -317,7 +317,7 @@
 			const companies = await refreshCompanies();
 			localDeliveryCompanies = companies.map((company) => ({
 				...company,
-				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
 				email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
 				contact_person:

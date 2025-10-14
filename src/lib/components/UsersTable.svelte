@@ -17,7 +17,7 @@
 	} = $props();
 
 	// Check if current user is admin
-	const isAdmin = $derived(authState.user?.userStatus?.slug === 'admin');
+	const isAdmin = $derived(authState.user?.type === 'Админ');
 
 	// Format date helper function
 	function formatDate(dateString) {

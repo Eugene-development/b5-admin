@@ -53,8 +53,8 @@
 			.filter((user) => user.userStatus?.slug === 'curators')
 			.map((user) => ({
 				...user,
-				// Keep old status field for backward compatibility (derived from bun field)
-				status: user.bun ? 'banned' : 'active',
+				// Keep old status field for backward compatibility (derived from ban field)
+				status: user.ban ? 'banned' : 'active',
 				// Add new status fields
 				status_id: user.status_id,
 				userStatus: user.userStatus
@@ -260,8 +260,8 @@
 				.filter((user) => user.userStatus?.slug === 'curators')
 				.map((user) => ({
 					...user,
-					// Keep old status field for backward compatibility (derived from bun field)
-					status: user.bun ? 'banned' : 'active',
+					// Keep old status field for backward compatibility (derived from ban field)
+					status: user.ban ? 'banned' : 'active',
 					// Add new status fields
 					status_id: user.status_id,
 					userStatus: user.userStatus

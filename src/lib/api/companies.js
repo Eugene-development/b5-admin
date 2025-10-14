@@ -16,7 +16,7 @@ export async function createCompany(companyData) {
 				legal_name
 				inn
 				region
-				bun
+				ban
 				is_active
 				created_at
 				updated_at
@@ -40,7 +40,7 @@ export async function createCompany(companyData) {
 						legal_name: companyData.legal_name,
 						inn: companyData.inn,
 						region: companyData.region || null,
-						bun: false,
+						ban: false,
 						is_active: true
 					}
 				}
@@ -208,7 +208,7 @@ export async function updateCompany(companyData) {
 				legal_name
 				inn
 				region
-				bun
+				ban
 				is_active
 				status_id
 				status {
@@ -241,7 +241,7 @@ export async function updateCompany(companyData) {
 						legal_name: companyData.legal_name || undefined,
 						inn: companyData.inn || undefined,
 						region: companyData.region || undefined,
-						bun: companyData.bun,
+						ban: companyData.ban,
 						is_active: companyData.is_active,
 						status_id: companyData.status_id || undefined
 					}
@@ -281,7 +281,7 @@ export async function toggleCompanyBan(companyId, shouldBan) {
 				legal_name
 				inn
 				region
-				bun
+				ban
 				is_active
 				created_at
 				updated_at
@@ -302,7 +302,7 @@ export async function toggleCompanyBan(companyId, shouldBan) {
 				variables: {
 					input: {
 						id: companyId,
-						bun: shouldBan
+						ban: shouldBan
 					}
 				}
 			})
@@ -387,7 +387,7 @@ export async function refreshCompanies() {
 					legal_name
 					inn
 					region
-					bun
+					ban
 					is_active
 					status_id
 					status {

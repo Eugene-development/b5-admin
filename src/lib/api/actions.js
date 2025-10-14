@@ -252,7 +252,7 @@ export async function getCompaniesForActions() {
 					legal_name
 					region
 					is_active
-					bun
+					ban
 				}
 				paginatorInfo {
 					total
@@ -285,7 +285,7 @@ export async function getCompaniesForActions() {
 		}
 
 		// Filter only active and not banned companies
-		return result.data.companies.data.filter(company => company.is_active && !company.bun);
+		return result.data.companies.data.filter(company => company.is_active && !company.ban);
 	} catch (error) {
 		handleApiError(error, 'Не удалось загрузить список компаний');
 		throw error;

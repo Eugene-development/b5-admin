@@ -53,7 +53,7 @@
 			.filter((user) => user.userStatus?.slug === 'managers')
 			.map((user) => ({
 				...user,
-				status: user.bun ? 'banned' : 'active',
+				status: user.ban ? 'banned' : 'active',
 				status_id: user.status_id,
 				userStatus: user.userStatus
 			}))
@@ -250,7 +250,7 @@
 				.filter((user) => user.userStatus?.slug === 'managers')
 				.map((user) => ({
 					...user,
-					status: user.bun ? 'banned' : 'active',
+					status: user.ban ? 'banned' : 'active',
 					status_id: user.status_id,
 					userStatus: user.userStatus
 				}))

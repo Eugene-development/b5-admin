@@ -232,7 +232,7 @@
 						supplier.id === updatedCompany.id
 							? {
 									...updatedCompany,
-									status: updatedCompany.bun
+									status: updatedCompany.ban
 										? 'banned'
 										: updatedCompany.is_active
 											? 'active'
@@ -334,7 +334,7 @@
 			const companies = await refreshCompanies();
 			localSuppliers = companies.map((company) => ({
 				...company,
-				status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 				// Get primary phone or first phone
 				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
 				// Get primary email or first email

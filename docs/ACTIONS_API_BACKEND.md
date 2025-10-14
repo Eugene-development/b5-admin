@@ -33,7 +33,7 @@ type Company {
   legal_name: String!
   region: String
   is_active: Boolean!
-  bun: Boolean!
+  ban: Boolean!
 }
 ```
 

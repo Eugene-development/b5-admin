@@ -13,7 +13,7 @@ export async function load() {
 					legal_name
 					inn
 					region
-					bun
+					ban
 					is_active
 					created_at
 					updated_at
@@ -65,7 +65,7 @@ export async function load() {
 		// Transform data to match expected format
 		const deliveryCompanies = result.data.companies.data.map((company) => ({
 			...company,
-			status: company.bun ? 'banned' : company.is_active ? 'active' : 'inactive',
+			status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 			phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
 			email: company.emails?.find((e) => e.is_primary)?.value || company.emails?.[0]?.value,
 			contact_person:

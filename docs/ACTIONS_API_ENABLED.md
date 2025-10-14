@@ -92,7 +92,7 @@ query {
       legal_name
       region
       is_active
-      bun
+      ban
     }
   }
 }
@@ -179,7 +179,7 @@ composer dump-autoload
 
 Убедитесь, что в БД есть активные компании:
 ```sql
-SELECT * FROM companies WHERE is_active = 1 AND bun = 0;
+SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 ```
 
 ## Структура данных
