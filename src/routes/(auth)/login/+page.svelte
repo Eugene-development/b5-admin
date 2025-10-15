@@ -2,6 +2,7 @@
 	import { login, authState, clearError, isLoading } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
 	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
 
 	// Form state
@@ -13,6 +14,16 @@
 
 	// Get return URL from query parameters for redirect after login
 	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/dashboard');
+
+	// Restore "Remember Me" preference from localStorage
+	$effect(() => {
+		if (browser) {
+			const savedRememberMe = localStorage.getItem('rememberMe');
+			if (savedRememberMe === 'true') {
+				remember = true;
+			}
+		}
+	});
 
 	/**
 	 * Validate email format
@@ -54,6 +65,12 @@
 		clearError();
 		clientErrors = {};
 		if (!validateForm()) return;
+		
+		// Save "Remember Me" preference to localStorage
+		if (browser) {
+			localStorage.setItem('rememberMe', remember.toString());
+		}
+		
 		try {
 			const success = await login(email, password, remember);
 			if (success) {
