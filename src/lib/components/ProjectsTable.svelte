@@ -141,7 +141,7 @@
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Имя клиента
+					Проект
 				</th>
 				<th
 					id="col-region"
@@ -150,7 +150,7 @@
 					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Регион
+					Адрес объекта
 				</th>
 				<th
 					id="col-contract"
@@ -159,7 +159,7 @@
 					class="hidden px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 lg:table-cell dark:text-gray-400"
 					aria-sort="none"
 				>
-					Номер договора
+					Номер
 				</th>
 				<th
 					id="col-agent"
@@ -351,7 +351,7 @@
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Номер договора
+								Номер
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{project.contract_name || ' - '}
@@ -421,7 +421,7 @@
 								scope="col"
 								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
-								Регион
+								Адрес объекта
 							</th>
 							<th
 								scope="col"

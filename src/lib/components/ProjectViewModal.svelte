@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	/**
 	 * ProjectViewModal Component
@@ -17,6 +18,22 @@
 	let closeButtonElement = $state();
 	let previousActiveElement;
 
+	// Clipboard copy state for agent email
+	let emailCopied = $state(false);
+
+	async function copyEmailToClipboard(email) {
+		if (!email) return;
+		try {
+			await navigator.clipboard?.writeText?.(email);
+			emailCopied = true;
+			setTimeout(() => {
+				emailCopied = false;
+			}, 1500);
+		} catch (err) {
+			console.error('Failed to copy email:', err);
+		}
+	}
+
 	// Format date helper function
 	function formatDate(dateString) {
 		if (!dateString) return 'Не указана';
@@ -24,6 +41,18 @@
 			day: '2-digit',
 			month: '2-digit',
 			year: 'numeric'
+		});
+	}
+
+	// Format date-time helper function
+	function formatDateTime(dateString) {
+		if (!dateString) return 'Не указано';
+		return new Date(dateString).toLocaleString('ru-RU', {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
 		});
 	}
 
@@ -192,7 +221,7 @@
 							</h4>
 							{#if project.contract_name}
 								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-									Договор: {project.contract_name}
+									Номер проекта: {project.contract_name}
 								</p>
 							{/if}
 						</div>
@@ -230,12 +259,50 @@
 								<dt
 									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
 								>
-									Регион
+									Адрес объекта
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{project.region || 'Не указан'}
 								</dd>
 							</div>
+
+							{#if (project?.phones && project.phones.length > 0) || project?.phone}
+								<div>
+									<dt
+										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									>
+										Телефон клиента
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{#if project?.phones && project.phones.length > 0}
+											<ul class="space-y-1">
+												{#each project.phones as phone}
+													<li>
+														<a
+															href="tel:{phone.value}"
+															class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+														>
+															{formatPhone(phone.value)}
+														</a>
+														{#if phone.contact_person}
+															<span class="ml-1 text-xs text-gray-500 dark:text-gray-400"
+																>({phone.contact_person})</span
+															>
+														{/if}
+													</li>
+												{/each}
+											</ul>
+										{:else}
+											<a
+												href="tel:{project.phone}"
+												class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+											>
+												{formatPhone(project.phone)}
+											</a>
+										{/if}
+									</dd>
+								</div>
+							{/if}
 
 							<div>
 								<dt
@@ -252,7 +319,7 @@
 						<!-- Contract Information -->
 						<div class="space-y-4">
 							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Информация о договоре:
+								Информация о проекте:
 							</h5>
 
 							<div>
@@ -325,10 +392,52 @@
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{#if project.agent}
-											<div>{project.agent.name || project.agent.email || 'Не указано'}</div>
-											{#if project.agent.email && project.agent.name}
-												<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
-													{project.agent.email}
+											{#if project.agent.name}
+												<div>{project.agent.name}</div>
+												{#if project.agent.email}
+													<div class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+														<button
+															type="button"
+															onclick={() => copyEmailToClipboard(project.agent.email)}
+															class="text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+															aria-label="Скопировать email агента"
+															title={emailCopied ? 'Скопировано' : 'Нажмите, чтобы скопировать'}
+														>
+															{project.agent.email}
+														</button>
+														{#if emailCopied}
+															<span class="ml-2 text-[11px] text-gray-400">Скопировано</span>
+														{/if}
+													</div>
+												{/if}
+											{:else if project.agent.email}
+												<div>
+													<button
+														type="button"
+														onclick={() => copyEmailToClipboard(project.agent.email)}
+														class="text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+														aria-label="Скопировать email агента"
+														title={emailCopied ? 'Скопировано' : 'Нажмите, чтобы скопировать'}
+													>
+														{project.agent.email}
+													</button>
+													{#if emailCopied}
+														<span class="ml-2 text-[11px] text-gray-400">Скопировано</span>
+													{/if}
+												</div>
+											{:else}
+												<div>Не указано</div>
+											{/if}
+											{#if project.agent.phones && project.agent.phones.length > 0}
+												<div class="mt-1">
+													{#each project.agent.phones as phone}
+														<a
+															href="tel:{phone.value}"
+															class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+														>
+															{formatPhone(phone.value)}
+														</a>
+													{/each}
 												</div>
 											{/if}
 										{:else}
@@ -362,7 +471,7 @@
 										Дата создания
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(project.created_at)}
+										{formatDateTime(project.created_at)}
 									</dd>
 								</div>
 
@@ -373,7 +482,7 @@
 										Дата обновления
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(project.updated_at)}
+										{formatDateTime(project.updated_at)}
 									</dd>
 								</div>
 							</div>

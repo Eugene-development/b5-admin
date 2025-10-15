@@ -17,6 +17,11 @@ const PROJECTS_QUERY = gql`
 					email
 					region
 					status
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				region
 				description

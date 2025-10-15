@@ -331,9 +331,16 @@
 												type="button"
 												onclick={() => removePosition(position.id)}
 												disabled={isLoading}
+												aria-label="Удалить позицию #{index + 1}"
 												class="text-red-600 hover:text-red-800 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
 											>
-												<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+												<svg
+													class="h-5 w-5"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													aria-hidden="true"
+												>
 													<path
 														stroke-linecap="round"
 														stroke-linejoin="round"
@@ -346,11 +353,15 @@
 
 										<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-value-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Наименование <span class="text-red-500">*</span>
 												</label>
 												<input
 													type="text"
+													id="position-value-{position.id}"
 													bind:value={position.value}
 													oninput={(e) => updatePosition(position.id, 'value', e.target.value)}
 													disabled={isLoading}
@@ -360,11 +371,15 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-article-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Артикул <span class="text-red-500">*</span>
 												</label>
 												<input
 													type="text"
+													id="position-article-{position.id}"
 													bind:value={position.article}
 													oninput={(e) => updatePosition(position.id, 'article', e.target.value)}
 													disabled={isLoading}
@@ -374,11 +389,15 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-price-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Цена <span class="text-red-500">*</span>
 												</label>
 												<input
 													type="number"
+													id="position-price-{position.id}"
 													bind:value={position.price}
 													oninput={(e) => updatePosition(position.id, 'price', e.target.value)}
 													disabled={isLoading}
@@ -390,11 +409,15 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-count-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Количество <span class="text-red-500">*</span>
 												</label>
 												<input
 													type="number"
+													id="position-count-{position.id}"
 													bind:value={position.count}
 													oninput={(e) => updatePosition(position.id, 'count', e.target.value)}
 													disabled={isLoading}

@@ -311,7 +311,7 @@
 							for="project-region"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Регион
+							Адрес объекта
 						</label>
 						<input
 							type="text"
