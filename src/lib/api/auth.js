@@ -238,3 +238,84 @@ export async function verifyEmail(id, hash) {
 		};
 	}
 }
+
+/**
+ * Request password reset link
+ * @param {string} email - User email
+ * @returns {Promise<Object>} Password reset request response
+ */
+export async function forgotPassword(email) {
+	try {
+		const response = await post(API_CONFIG.endpoints.forgotPassword, { email }, {}, false);
+
+		return {
+			success: true,
+			message: response.message || 'Ссылка для сброса пароля отправлена на ваш email'
+		};
+	} catch (error) {
+		// Handle specific forgot password errors
+		let message = 'Не удалось отправить ссылку для сброса пароля';
+
+		if (error.status === 422) {
+			message = 'Некорректный email адрес';
+		} else if (error.status === 429) {
+			message = 'Слишком много запросов. Попробуйте позже';
+		} else if (error.status === 0) {
+			message = error.message; // Network error message
+		}
+
+		return {
+			success: false,
+			message: error.message || message,
+			errors: error.data?.errors || {}
+		};
+	}
+}
+
+/**
+ * Reset password using token
+ * @param {string} token - Password reset token
+ * @param {string} email - User email
+ * @param {string} password - New password
+ * @param {string} password_confirmation - Password confirmation
+ * @returns {Promise<Object>} Password reset response
+ */
+export async function resetPassword(token, email, password, password_confirmation) {
+	try {
+		const response = await post(
+			API_CONFIG.endpoints.resetPassword,
+			{
+				token,
+				email,
+				password,
+				password_confirmation
+			},
+			{},
+			false
+		);
+
+		return {
+			success: true,
+			message: response.message || 'Пароль успешно изменен'
+		};
+	} catch (error) {
+		// Handle specific reset password errors
+		let message = 'Не удалось сбросить пароль';
+
+		if (error.status === 422) {
+			message = 'Проверьте правильность введенных данных';
+		} else if (error.status === 400) {
+			message = 'Недействительный или истекший токен';
+		} else if (error.status === 404) {
+			message = 'Пользователь не найден';
+		} else if (error.status === 0) {
+			message = error.message; // Network error message
+		}
+
+		return {
+			success: false,
+			message: error.message || message,
+			errors: error.data?.errors || {}
+		};
+	}
+}

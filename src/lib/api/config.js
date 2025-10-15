@@ -18,7 +18,11 @@ export const API_CONFIG = {
 
 		// Email verification endpoints
 		sendEmailVerification: '/api/email/verification-notification',
-		verifyEmail: '/api/email/verify'
+		verifyEmail: '/api/email/verify',
+
+		// Password reset endpoints
+		forgotPassword: '/api/forgot-password',
+		resetPassword: '/api/reset-password'
 	},
 	headers: {
 		'Content-Type': 'application/json',
