@@ -15,6 +15,14 @@ export async function load() {
 					region
 					ban
 					is_active
+					status_id
+					status {
+						id
+						value
+						slug
+						color
+						icon
+					}
 					created_at
 					updated_at
 					phones {
@@ -62,8 +70,13 @@ export async function load() {
 			};
 		}
 
+		// Filter companies by status slug 'suppliers'
+		const suppliersData = result.data.companies.data.filter(
+			(company) => company.status?.slug === 'suppliers'
+		);
+
 		// Transform data to match expected format
-		const suppliers = result.data.companies.data.map((company) => ({
+		const suppliers = suppliersData.map((company) => ({
 			...company,
 			status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 			// Get primary phone or first phone

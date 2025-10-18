@@ -18,6 +18,14 @@ export async function createCompany(companyData) {
 				region
 				ban
 				is_active
+				status_id
+				status {
+					id
+					value
+					slug
+					color
+					icon
+				}
 				created_at
 				updated_at
 			}
@@ -40,6 +48,7 @@ export async function createCompany(companyData) {
 						legal_name: companyData.legal_name,
 						inn: companyData.inn,
 						region: companyData.region || null,
+						status_id: companyData.status_id || null,
 						ban: false,
 						is_active: true
 					}

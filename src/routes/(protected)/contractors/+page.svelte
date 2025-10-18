@@ -270,7 +270,11 @@
 		isRefreshing = true;
 		try {
 			const companies = await refreshCompanies();
-			localContractors = companies.map((company) => ({
+			// Filter companies by status slug 'contractors'
+			const contractorsData = companies.filter(
+				(company) => company.status?.slug === 'contractors'
+			);
+			localContractors = contractorsData.map((company) => ({
 				...company,
 				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
@@ -468,6 +472,7 @@
 	onSave={handleSaveNewCompany}
 	onCancel={handleCancelAddCompany}
 	isLoading={isActionLoading}
+	slug="contractors"
 />
 
 {#if editingCompany}

@@ -315,7 +315,11 @@
 		isRefreshing = true;
 		try {
 			const companies = await refreshCompanies();
-			localDeliveryCompanies = companies.map((company) => ({
+			// Filter companies by status slug 'delivery'
+			const deliveryData = companies.filter(
+				(company) => company.status?.slug === 'delivery'
+			);
+			localDeliveryCompanies = deliveryData.map((company) => ({
 				...company,
 				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 				phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
@@ -533,6 +537,7 @@
 	onSave={handleSaveNewCompany}
 	onCancel={handleCancelAddCompany}
 	isLoading={isActionLoading}
+	slug="delivery"
 />
 
 <!-- Company Edit Modal -->

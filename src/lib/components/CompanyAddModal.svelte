@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { getCompanyStatuses } from '$lib/api/companies.js';
 
 	/**
 	 * CompanyAddModal Component
@@ -11,12 +12,18 @@
 	 * @param {Function} onSave - Callback function for saving new company
 	 * @param {Function} onCancel - Callback function for cancellation
 	 * @param {boolean} [isLoading=false] - Loading state for save button
+	 * @param {string} [slug=''] - Page slug to determine company status
 	 */
-	let { isOpen = false, onSave, onCancel, isLoading = false } = $props();
+	let { isOpen = false, onSave, onCancel, isLoading = false, slug = '' } = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
 	let previousActiveElement;
+
+	// Company statuses state
+	let companyStatuses = $state([]);
+	let statusId = $state(null);
+	let isLoadingStatuses = $state(false);
 
 	// Form data state
 	let formData = $state({
@@ -39,6 +46,36 @@
 			Object.keys(errors).length === 0
 	);
 
+	// Load company statuses and find status_id by slug
+	async function loadCompanyStatuses() {
+		if (companyStatuses.length === 0) {
+			isLoadingStatuses = true;
+			try {
+				const statuses = await getCompanyStatuses();
+				companyStatuses = statuses;
+			} catch (error) {
+				console.error('Failed to load company statuses:', error);
+			} finally {
+				isLoadingStatuses = false;
+			}
+		}
+	}
+
+	// Find status_id based on slug
+	$effect(() => {
+		if (slug && companyStatuses.length > 0) {
+			const status = companyStatuses.find(s => s.slug === slug);
+			if (status) {
+				statusId = status.id;
+				console.log(`Found status_id for slug "${slug}":`, statusId);
+			} else {
+				console.warn(`No status found for slug "${slug}", will use default`);
+				const defaultStatus = companyStatuses.find(s => s.is_default);
+				statusId = defaultStatus?.id || null;
+			}
+		}
+	});
+
 	// Reset form when modal opens
 	$effect(() => {
 		if (isOpen) {
@@ -53,6 +90,9 @@
 				email_contact: ''
 			};
 			errors = {};
+			
+			// Load statuses when modal opens
+			loadCompanyStatuses();
 		}
 	});
 
@@ -85,7 +125,8 @@
 				name: formData.name.trim(),
 				legal_name: formData.legal_name.trim(),
 				inn: formData.inn.trim(),
-				region: formData.region.trim() || null
+				region: formData.region.trim() || null,
+				status_id: statusId
 			};
 
 			const phoneData = formData.phone.trim()
