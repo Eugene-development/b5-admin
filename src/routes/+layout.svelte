@@ -16,10 +16,29 @@
 			authState.isAuthenticated = true;
 			authState.emailVerified = data.user.email_verified || false;
 			authState.initialized = true;
+			
+			// Store user data in localStorage for offline access
+			if (browser) {
+				import('$lib/api/config.js').then(({ setUserData }) => {
+					setUserData(data.user);
+				});
+			}
+		} else {
+			// No server data - user is not authenticated
+			console.log('🔄 No server data - user not authenticated');
+			authState.user = null;
+			authState.isAuthenticated = false;
+			authState.initialized = true;
+			
+			// Clear localStorage
+			if (browser) {
+				import('$lib/api/config.js').then(({ removeAuthToken }) => {
+					removeAuthToken();
+				});
+			}
 		}
 		
-		// Always initialize auth (will verify with API and set initialized flag)
-		initializeAuth();
+		// Initialize domain detection
 		initializeDomainDetection();
 	});
 </script>

@@ -15,6 +15,7 @@ import { API_CONFIG } from './config.js';
  */
 export async function loginUser(email, password, remember = false) {
 	try {
+		console.log('🔐 Login API request:', { email, remember });
 		const response = await post(API_CONFIG.endpoints.login, {
 			email,
 			password,

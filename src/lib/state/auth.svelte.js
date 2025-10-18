@@ -176,6 +176,7 @@ export async function login(email, password, remember = false) {
 		await initCsrf();
 		console.log('✅ CSRF protection initialized');
 
+		console.log('🔐 Login attempt with remember:', remember);
 		const result = await loginUser(email, password, remember);
 		console.log('🔐 Login API result:', result);
 

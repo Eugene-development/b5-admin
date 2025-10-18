@@ -72,6 +72,7 @@
 		}
 		
 		try {
+			// Pass remember parameter to login function
 			const success = await login(email, password, remember);
 			if (success) {
 				// Check user type/status
