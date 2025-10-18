@@ -45,7 +45,7 @@
 	let localContractors = $state([
 		...(data?.contractors || []).map((contractor) => ({
 			...contractor,
-			status: contractor.status?.toLowerCase() || 'active'
+			operationalStatus: contractor.status?.toLowerCase() || 'active'
 		}))
 	]);
 
@@ -78,7 +78,7 @@
 	}
 
 	function handleBanContractor(contractor) {
-		const isBanned = contractor.status === 'banned';
+		const isBanned = contractor.operationalStatus === 'banned';
 		confirmAction = {
 			type: isBanned ? 'unban' : 'ban',
 			company: contractor,
@@ -183,7 +183,7 @@
 						contractor.id === updatedCompany.id
 							? {
 									...updatedCompany,
-									status: updatedCompany.ban
+									operationalStatus: updatedCompany.ban
 										? 'banned'
 										: updatedCompany.is_active
 											? 'active'
@@ -257,7 +257,7 @@
 
 	function updateContractorStatus(contractorId, newStatus) {
 		localContractors = localContractors.map((contractor) =>
-			contractor.id === contractorId ? { ...contractor, status: newStatus } : contractor
+			contractor.id === contractorId ? { ...contractor, operationalStatus: newStatus } : contractor
 		);
 		updateCounter++;
 	}

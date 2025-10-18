@@ -28,9 +28,9 @@
 
 	// Get company status for StatusBadge
 	function getCompanyStatus(company) {
-		return company.status === 'banned' ||
-			company.status === 'inactive' ||
-			company.status === 'suspended'
+		return company.operationalStatus === 'banned' ||
+			company.operationalStatus === 'inactive' ||
+			company.operationalStatus === 'suspended'
 			? 'banned'
 			: 'active';
 	}

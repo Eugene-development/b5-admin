@@ -1,12 +1,16 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
+	import { getCompanyStatuses } from '$lib/api/companies.js';
 
 	let {
 		isOpen = false,
 		company = null,
 		onClose
 	} = $props();
+
+	let companyStatuses = $state([]);
+	let isLoadingStatus = $state(false);
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -22,7 +26,7 @@
 
 	// Get company status for StatusBadge
 	function getCompanyStatus(company) {
-		return company?.status === 'banned' || company?.status === 'inactive' || company?.status === 'suspended'
+		return company?.operationalStatus === 'banned' || company?.operationalStatus === 'inactive' || company?.operationalStatus === 'suspended'
 			? 'banned'
 			: 'active';
 	}
@@ -46,9 +50,29 @@
 		event.stopPropagation();
 	}
 
-	// Handle body scroll when modal is open/closed
+	// Load company statuses when modal is opened
+	async function loadCompanyStatuses() {
+		if (companyStatuses.length === 0) {
+			isLoadingStatus = true;
+			try {
+				companyStatuses = await getCompanyStatuses();
+			} catch (error) {
+				console.error('Failed to load company statuses:', error);
+			} finally {
+				isLoadingStatus = false;
+			}
+		}
+	}
+
+	// Get company status by status_id
+	function getCompanyStatusById(statusId) {
+		if (!statusId || companyStatuses.length === 0) return null;
+		return companyStatuses.find(status => status.id === statusId);
+	}
+
 	$effect(() => {
 		if (isOpen) {
+			loadCompanyStatuses();
 			// Prevent body scroll when modal is open
 			document.body.style.overflow = 'hidden';
 		} else {
@@ -137,23 +161,7 @@
 								Основная информация:
 							</h5>
 							
-							<div>
-								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
-									Название компании
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{company.name || 'Не указано'}
-								</dd>
-							</div>
-
-							<div>
-								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
-									Юридическое название
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{company.legal_name || 'Не указано'}
-								</dd>
-							</div>
+							
 
 							<div>
 								<dt class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300">
@@ -178,15 +186,19 @@
 									Статус компании
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if company.status}
-										<span 
-											class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-											style="background-color: {company.status.color}20; color: {company.status.color};"
-										>
-											{company.status.value}
-										</span>
+									{#if isLoadingStatus}
+										Загрузка...
 									{:else}
-										Не указан
+										{@const companyStatus = getCompanyStatusById(company.status_id)}
+										{#if companyStatus}
+											<span 
+												class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800"
+											>
+												{companyStatus.value}
+											</span>
+										{:else}
+											Не указан
+										{/if}
 									{/if}
 								</dd>
 							</div>
