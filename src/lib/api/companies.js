@@ -1,6 +1,13 @@
-import { handleApiError } from '$lib/utils/toastStore.js';
+import { handleApiError, addWarningToast } from '$lib/utils/toastStore.js';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/graphql';
+
+export class DuplicateInnError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = 'DuplicateInnError';
+	}
+}
 
 /**
  * Create a new company with phones and emails
@@ -64,10 +71,19 @@ export async function createCompany(companyData) {
 
 		if (result.errors) {
 			const errorMessage = result.errors[0]?.message || 'Failed to create company';
+			const extensions = result.errors[0]?.extensions;
 			
-			// Check for duplicate INN error
-			if (errorMessage.includes('Duplicate entry') && errorMessage.includes('companies_inn_unique')) {
-				throw new Error('Компания с таким ИНН уже существует в системе');
+			// Check for duplicate INN error (validation or database constraint)
+			const isDuplicateInn = 
+				errorMessage.includes('Duplicate entry') && errorMessage.includes('companies_inn_unique') ||
+				errorMessage.includes('inn has already been taken') ||
+				errorMessage.includes('inn') && errorMessage.includes('already') ||
+				(extensions?.validation && extensions.validation['input.inn']);
+			
+			if (isDuplicateInn) {
+				const duplicateError = new DuplicateInnError('Компания с таким ИНН уже существует в системе');
+				addWarningToast(duplicateError.message, { duration: 6000 });
+				throw duplicateError;
 			}
 			
 			throw new Error(errorMessage);
@@ -76,11 +92,10 @@ export async function createCompany(companyData) {
 		return result.data.createCompany;
 	} catch (error) {
 		// Check if it's a duplicate INN error
-		if (error.message.includes('Компания с таким ИНН уже существует')) {
-			handleApiError(error, error.message);
-		} else {
-			handleApiError(error, 'Не удалось создать компанию');
+		if (error instanceof DuplicateInnError) {
+			throw error;
 		}
+		handleApiError(error, 'Не удалось создать компанию');
 		throw error;
 	}
 }

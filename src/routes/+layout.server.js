@@ -12,18 +12,21 @@ import { AUTH_API_URL } from '$lib/config/api.js';
 export async function load({ fetch, cookies, request }) {
 	try {
 		console.log('🔍 Layout server load - checking authentication');
-		
+
 		// Get all cookies
 		const allCookies = cookies.getAll();
-		console.log('🍪 Available cookies:', allCookies.map(c => c.name));
-		
+		console.log(
+			'🍪 Available cookies:',
+			allCookies.map((c) => c.name)
+		);
+
 		// Get session cookie from request
 		const sessionCookie = cookies.get('b5_auth_2_session');
 		const xsrfToken = cookies.get('XSRF-TOKEN');
-		
+
 		console.log('🔑 Session cookie:', sessionCookie ? 'present' : 'missing');
 		console.log('🔑 XSRF token:', xsrfToken ? 'present' : 'missing');
-		
+
 		// If no session cookie, user is not authenticated
 		if (!sessionCookie) {
 			console.log('🔒 No session cookie found - user not authenticated');
@@ -34,9 +37,7 @@ export async function load({ fetch, cookies, request }) {
 		}
 
 		// Build cookie header from all cookies
-		const cookieHeader = allCookies
-			.map(cookie => `${cookie.name}=${cookie.value}`)
-			.join('; ');
+		const cookieHeader = allCookies.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
 
 		console.log('📤 Making request to:', `${AUTH_API_URL}/api/user`);
 
@@ -44,12 +45,12 @@ export async function load({ fetch, cookies, request }) {
 		const response = await fetch(`${AUTH_API_URL}/api/user`, {
 			method: 'GET',
 			headers: {
-				'Accept': 'application/json',
+				Accept: 'application/json',
 				'Content-Type': 'application/json',
-				'Cookie': cookieHeader,
+				Cookie: cookieHeader,
 				'X-Requested-With': 'XMLHttpRequest',
 				// Add referer to help with CORS
-				'Referer': request.headers.get('referer') || request.url
+				Referer: request.headers.get('referer') || request.url
 			}
 		});
 
@@ -58,9 +59,9 @@ export async function load({ fetch, cookies, request }) {
 		if (response.ok) {
 			const data = await response.json();
 			const user = data.user || data;
-			
+
 			console.log('✅ User authenticated via session cookie:', user?.email);
-			
+
 			return {
 				user,
 				isAuthenticated: true

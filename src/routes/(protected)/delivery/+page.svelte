@@ -27,7 +27,8 @@
 		updateCompany,
 		toggleCompanyBan,
 		deleteCompany,
-		refreshCompanies
+		refreshCompanies,
+		DuplicateInnError
 	} from '$lib/api/companies.js';
 
 	let { data } = $props();
@@ -156,41 +157,41 @@
 	async function handleSaveNewCompany(data) {
 		isActionLoading = true;
 		try {
-			await retryOperation(
-				async () => {
-					const newCompany = await createCompany(data.company);
-					const phones = [];
-					const emails = [];
-					if (data.phone) {
-						const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
-						phones.push(createdPhone);
-					}
-					if (data.email) {
-						const createdEmail = await createCompanyEmail(newCompany.id, data.email);
-						emails.push(createdEmail);
-					}
-					localDeliveryCompanies = [
-						...localDeliveryCompanies,
-						{
-							...newCompany,
-							status: 'active',
-							phones,
-							emails,
-							phone: phones[0]?.value || null,
-							email: emails[0]?.value || null,
-							contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
-						}
-					];
-					addSuccessToast(`Служба доставки "${newCompany.name}" успешно добавлена.`);
-				},
-				2,
-				1000
-			);
+			const newCompany = await createCompany(data.company);
+			const phones = [];
+			const emails = [];
+			if (data.phone) {
+				const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
+				phones.push(createdPhone);
+			}
+			if (data.email) {
+				const createdEmail = await createCompanyEmail(newCompany.id, data.email);
+				emails.push(createdEmail);
+			}
+			localDeliveryCompanies = [
+				...localDeliveryCompanies,
+				{
+					...newCompany,
+					status: 'active',
+					phones,
+					emails,
+					phone: phones[0]?.value || null,
+					email: emails[0]?.value || null,
+					contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
+				}
+			];
+			addSuccessToast(`Служба доставки "${newCompany.name}" успешно добавлена.`);
+			showAddModal = false;
 		} catch (error) {
+			if (error instanceof DuplicateInnError) {
+				// Don't close modal for duplicate INN - let user correct it
+				isActionLoading = false;
+				return;
+			}
 			console.error('Failed to create company:', error);
+			showAddModal = false;
 		} finally {
 			isActionLoading = false;
-			showAddModal = false;
 		}
 	}
 

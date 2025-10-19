@@ -27,7 +27,8 @@
 		updateCompany,
 		toggleCompanyBan,
 		deleteCompany,
-		refreshCompanies
+		refreshCompanies,
+		DuplicateInnError
 	} from '$lib/api/companies.js';
 
 	let { data } = $props();
@@ -157,51 +158,51 @@
 		isActionLoading = true;
 
 		try {
-			await retryOperation(
-				async () => {
-					// Create company
-					const newCompany = await createCompany(data.company);
+			// Create company
+			const newCompany = await createCompany(data.company);
 
-					// Arrays to store created phones and emails
-					const phones = [];
-					const emails = [];
+			// Arrays to store created phones and emails
+			const phones = [];
+			const emails = [];
 
-					// Create phone if provided
-					if (data.phone) {
-						const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
-						phones.push(createdPhone);
-					}
+			// Create phone if provided
+			if (data.phone) {
+				const createdPhone = await createCompanyPhone(newCompany.id, data.phone);
+				phones.push(createdPhone);
+			}
 
-					// Create email if provided
-					if (data.email) {
-						const createdEmail = await createCompanyEmail(newCompany.id, data.email);
-						emails.push(createdEmail);
-					}
+			// Create email if provided
+			if (data.email) {
+				const createdEmail = await createCompanyEmail(newCompany.id, data.email);
+				emails.push(createdEmail);
+			}
 
-					// Add to local list with phones and emails
-					localSuppliers = [
-						...localSuppliers,
-						{
-							...newCompany,
-							status: 'active',
-							phones: phones,
-							emails: emails,
-							phone: phones[0]?.value || null,
-							email: emails[0]?.value || null,
-							contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
-						}
-					];
+			// Add to local list with phones and emails
+			localSuppliers = [
+				...localSuppliers,
+				{
+					...newCompany,
+					status: 'active',
+					phones: phones,
+					emails: emails,
+					phone: phones[0]?.value || null,
+					email: emails[0]?.value || null,
+					contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
+				}
+			];
 
-					addSuccessToast(`Компания "${newCompany.name}" успешно добавлена.`);
-				},
-				2,
-				1000
-			);
+			addSuccessToast(`Компания "${newCompany.name}" успешно добавлена.`);
+			showAddModal = false;
 		} catch (error) {
+			if (error instanceof DuplicateInnError) {
+				// Don't close modal for duplicate INN - let user correct it
+				isActionLoading = false;
+				return;
+			}
 			console.error('Failed to create company:', error);
+			showAddModal = false;
 		} finally {
 			isActionLoading = false;
-			showAddModal = false;
 		}
 	}
 
