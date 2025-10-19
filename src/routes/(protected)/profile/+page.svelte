@@ -20,6 +20,7 @@
 	} from '$lib/state/auth.svelte.js';
 	import { getUserData } from '$lib/api/config.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
+	import { formatPhone } from '$lib/utils/formatters.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
@@ -84,6 +85,16 @@
 		const url = new URL(window.location);
 		url.searchParams.delete('message');
 		window.history.replaceState({}, '', url);
+	}
+
+	// Mask secret key showing only last 4 characters
+	function maskSecretKey(key) {
+		if (!key || key.length <= 4) {
+			return key || 'Не указано';
+		}
+		const visiblePart = key.slice(-4);
+		const maskedPart = '*'.repeat(key.length - 4);
+		return maskedPart + visiblePart;
 	}
 
 	// Copy secret key to clipboard with enhanced error handling
@@ -375,6 +386,18 @@
 							</div>
 						</div>
 
+						<!-- Phone -->
+						<div class="group">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+								Телефон
+							</div>
+							<div
+								class="rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 group-hover:border-gray-600/50 group-hover:bg-gray-800/70"
+							>
+								<p class="text-lg font-medium text-white">{formatPhone(user.phone)}</p>
+							</div>
+						</div>
+
 						<!-- User Status -->
 						<div class="group">
 							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
@@ -386,7 +409,8 @@
 								{#if user.userStatus}
 									<span
 										class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium"
-										style="background-color: {user.userStatus.color}20; color: {user.userStatus.color}"
+										style="background-color: {user.userStatus.color}20; color: {user.userStatus
+											.color}"
 									>
 										{#if user.userStatus.icon}
 											<span class="mr-1.5">{user.userStatus.icon}</span>
@@ -435,8 +459,9 @@
 								title="Нажмите для копирования в буфер обмена"
 							>
 								<div class="flex items-center justify-between">
-									<span class="truncate pr-2 font-mono text-lg font-medium text-white"
-										>{user.key || 'Не указано'}</span
+									<span
+										class="truncate pr-2 font-mono text-lg font-medium tracking-widest text-white"
+										>{maskSecretKey(user.key)}</span
 									>
 									{#if isCopyingKey}
 										<LoadingSpinner size="sm" color="white" inline={true} />
@@ -458,6 +483,47 @@
 								class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400"
 							>
 								{isCopyingKey ? 'Копирование...' : 'Кликните для копирования ключа'}
+							</p>
+						</div>
+
+						<!-- Logout Button -->
+						<div class="group">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+								Действия
+							</div>
+							<button
+								onclick={handleLogoutClick}
+								disabled={isLogoutLoading || isRedirecting}
+								class="group/logout flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-red-500 bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+							>
+								{#if isLogoutLoading}
+									<LoadingSpinner size="sm" color="white" inline={true} />
+									<span>Выход...</span>
+								{:else if isRedirecting}
+									<LoadingSpinner size="sm" color="white" inline={true} />
+									<span>Перенаправление...</span>
+								{:else}
+									<svg
+										class="h-5 w-5 transition-transform duration-200 group-hover/logout:scale-110"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
+											clip-rule="evenodd"
+										/>
+										<path
+											fill-rule="evenodd"
+											d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114L8.704 10.75H18.25A.75.75 0 0019 10z"
+											clip-rule="evenodd"
+										/>
+									</svg>
+									<span>Выйти из аккаунта</span>
+								{/if}
+							</button>
+							<p class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
+								Завершение текущей сессии
 							</p>
 						</div>
 
@@ -604,54 +670,19 @@
 					</div>
 				</div> -->
 
-				<!-- Action Buttons -->
-				<div class="mt-12 flex flex-col justify-center gap-4 sm:flex-row">
-					<button
-						onclick={handleLogoutClick}
-						disabled={isLogoutLoading || isRedirecting}
-						class="group flex min-h-[52px] items-center justify-center gap-3 rounded-xl border border-red-500 bg-red-600 px-8 py-4 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
-					>
-						{#if isLogoutLoading}
-							<LoadingSpinner size="sm" color="white" inline={true} />
-							<span>Выход...</span>
-						{:else if isRedirecting}
-							<LoadingSpinner size="sm" color="white" inline={true} />
-							<span>Перенаправление...</span>
-						{:else}
-							<svg
-								class="h-5 w-5 transition-transform duration-200 group-hover:scale-110"
-								viewBox="0 0 20 20"
-								fill="currentColor"
-							>
-								<path
-									fill-rule="evenodd"
-									d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"
-									clip-rule="evenodd"
-								/>
-								<path
-									fill-rule="evenodd"
-									d="M19 10a.75.75 0 00-.75-.75H8.704l1.048-.943a.75.75 0 10-1.004-1.114l-2.5 2.25a.75.75 0 000 1.114l2.5 2.25a.75.75 0 101.004-1.114L8.704 10.75H18.25A.75.75 0 0019 10z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-							<span class="cursor-pointer">Выйти из аккаунта</span>
-						{/if}
-					</button>
-				</div>
-
 				<!-- Security Notice -->
-				<div class="mt-12 text-center">
+				<div class="mt-12">
 					<div
-						class="inline-flex items-center gap-2 rounded-lg border border-gray-700/50 bg-gray-800/30 px-4 py-3 backdrop-blur-sm"
+						class="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-700/50 bg-gray-800/30 px-6 py-4 backdrop-blur-sm"
 					>
-						<svg class="h-4 w-4 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+						<svg class="h-5 w-5 flex-shrink-0 text-green-400" viewBox="0 0 20 20" fill="currentColor">
 							<path
 								fill-rule="evenodd"
 								d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
 								clip-rule="evenodd"
 							/>
 						</svg>
-						<div class="text-left">
+						<div class="text-center sm:text-left">
 							<p class="text-sm font-medium text-gray-300">Защищенный проект</p>
 							<p class="text-xs text-gray-500">
 								Все сессии защищены API токенами • Данные передаются по HTTPS

@@ -14,9 +14,9 @@
 	} from '$lib/state/auth.svelte.js';
 	import { shouldShowNavItem, getNavigationVisibility } from '$lib/utils/domainAccess.svelte.js';
 	import { addSuccessToast, addErrorToast, toasts } from '$lib/utils/toastStore.js';
-	import { ToastContainer } from '$lib';
+	import { ToastContainer, LoadingOverlay } from '$lib';
 	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
+	import { page, navigating } from '$app/stores';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 
 	let { children } = $props();
@@ -979,3 +979,6 @@
 	onCancel={handleLogoutCancel}
 	isDestructive={true}
 />
+
+<!-- Global loading overlay during navigation -->
+<LoadingOverlay show={$navigating !== null} message="Загрузка данных..." spinnerSize="xl" />
