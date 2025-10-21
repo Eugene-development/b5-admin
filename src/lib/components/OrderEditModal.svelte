@@ -438,10 +438,11 @@
 
 										<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label for="position-value-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 													Наименование <span class="text-red-500">*</span>
 												</label>
 												<input
+													id="position-value-{position.id}"
 													type="text"
 													bind:value={position.value}
 													oninput={(e) => updatePosition(position.id, 'value', e.target.value)}
@@ -452,10 +453,11 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label for="position-article-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 													Артикул <span class="text-red-500">*</span>
 												</label>
 												<input
+													id="position-article-{position.id}"
 													type="text"
 													bind:value={position.article}
 													oninput={(e) => updatePosition(position.id, 'article', e.target.value)}
@@ -466,10 +468,11 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label for="position-price-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 													Цена <span class="text-red-500">*</span>
 												</label>
 												<input
+													id="position-price-{position.id}"
 													type="number"
 													bind:value={position.price}
 													oninput={(e) => updatePosition(position.id, 'price', e.target.value)}
@@ -482,10 +485,11 @@
 											</div>
 
 											<div>
-												<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label for="position-count-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 													Количество <span class="text-red-500">*</span>
 												</label>
 												<input
+													id="position-count-{position.id}"
 													type="number"
 													bind:value={position.count}
 													oninput={(e) => updatePosition(position.id, 'count', e.target.value)}
