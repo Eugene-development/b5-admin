@@ -145,15 +145,11 @@
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 					<!-- Basic Information -->
 					<div class="space-y-4">
-						<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-							Основная информация:
-						</h5>
-
 						<div>
 							<dt
-								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 							>
-								Компания
+								Поставщик:
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								<div>{order.company?.name || order.supplier || 'Не указана'}</div>
@@ -167,9 +163,9 @@
 
 						<div>
 							<dt
-								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 							>
-								Клиент
+								Проект:
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{order.project?.value || 'Не указан'}
@@ -179,9 +175,9 @@
 						{#if order.project?.phones && order.project.phones.length > 0}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Телефон клиента
+									Телефон клиента:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#each order.project.phones as phone, index}
@@ -205,9 +201,9 @@
 						{#if order.project?.region}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Адрес объекта
+									Адрес объекта:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{order.project.region}
@@ -218,15 +214,11 @@
 
 					<!-- Additional Information -->
 					<div class="space-y-4">
-						<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-							Дополнительная информация:
-						</h5>
-
 						<div>
 							<dt
-								class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+								class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 							>
-								Комментарий
+								Комментарий:
 							</dt>
 							<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 								{order.value || order.deal || order.comment || 'Нет комментария'}
@@ -236,9 +228,9 @@
 						{#if order.delivery_date}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Планируемая дата поставки
+									Планируемая дата поставки:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{new Date(order.delivery_date).toLocaleDateString('ru-RU')}
@@ -249,9 +241,9 @@
 						{#if order.actual_delivery_date}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Фактическая дата поставки
+									Фактическая дата поставки:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{new Date(order.actual_delivery_date).toLocaleDateString('ru-RU')}
@@ -262,9 +254,9 @@
 						{#if order.created_at}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Дата создания
+									Дата создания:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(order.created_at)}
@@ -275,9 +267,9 @@
 						{#if order.updated_at}
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Дата обновления
+									Дата обновления:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(order.updated_at)}

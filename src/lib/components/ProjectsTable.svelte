@@ -62,6 +62,13 @@
 		return `${agent.email} (ID: ${agent.id})`;
 	}
 
+	// Truncate text to specified length
+	function truncateText(text, maxLength = 35) {
+		if (!text) return ' - ';
+		if (text.length <= maxLength) return text;
+		return text.substring(0, maxLength) + '...';
+	}
+
 	// Generate unique table ID for accessibility
 	const tableId = `projects-table-${Math.random().toString(36).substr(2, 9)}`;
 	const tableCaptionId = `${tableId}-caption`;
@@ -237,8 +244,9 @@
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
+						title={project.region || ''}
 						>
-							{project.region || ' - '}
+							{truncateText(project.region)}
 						</td>
 						<td
 							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 lg:table-cell dark:text-white"
@@ -331,8 +339,8 @@
 							>
 								{project.value || ' - '}
 							</h3>
-							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-								{project.region || ' - '}
+							<p class="truncate text-sm text-gray-500 dark:text-gray-400" title={project.region || ''}>
+								{truncateText(project.region)}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
@@ -470,8 +478,8 @@
 									>
 										{project.value || ' - '}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{project.region || ' - '}
+									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white" title={project.region || ''}>
+										{truncateText(project.region)}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
 										{getAgentDisplay(project.agent)}

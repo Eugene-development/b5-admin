@@ -215,16 +215,7 @@
 				<div class="mt-6">
 					<!-- Project header -->
 					<div class="mb-6 flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{project.value || project.name || 'Без названия'}
-							</h4>
-							{#if project.contract_name}
-								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-									Номер проекта: {project.contract_name}
-								</p>
-							{/if}
-						</div>
+						<div class="min-w-0 flex-1"></div>
 						<div class="ml-4 flex-shrink-0">
 							<span
 								class="inline-flex items-center rounded-full {project.is_active !== false
@@ -246,9 +237,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Имя клиента
+									Имя клиента:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{project.value || project.name || 'Не указано'}
@@ -257,9 +248,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Адрес объекта
+									Адрес объекта:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{project.region || 'Не указан'}
@@ -269,9 +260,9 @@
 							{#if (project?.phones && project.phones.length > 0) || project?.phone}
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Телефон клиента
+										Телефон клиента:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{#if project?.phones && project.phones.length > 0}
@@ -306,9 +297,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Описание
+									Описание:
 								</dt>
 								<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 									{project.description || 'Не указано'}
@@ -324,9 +315,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Номер договора
+									Номер:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{project.contract_name || 'Не указан'}
@@ -335,9 +326,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Дата заключения договора
+									Дата договора с подрядчиком:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(project.contract_date)}
@@ -346,9 +337,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Сумма договора
+									Сумма договора:
 								</dt>
 								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
 									{formatCurrency(project.contract_amount)}
@@ -357,9 +348,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Планируемое завершение
+									Планируемое завершение:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(project.planned_completion_date)}
@@ -386,9 +377,9 @@
 
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Назначенный агент
+										Назначенный агент:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{#if project.agent}
@@ -448,9 +439,9 @@
 
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Ставка агенту
+										Ставка агенту:
 									</dt>
 									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
 										{formatAgentRate(project.agent_percentage)}
@@ -466,9 +457,9 @@
 
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Дата создания
+										Дата создания:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{formatDateTime(project.created_at)}
@@ -477,9 +468,9 @@
 
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Дата обновления
+										Дата обновления:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{formatDateTime(project.updated_at)}

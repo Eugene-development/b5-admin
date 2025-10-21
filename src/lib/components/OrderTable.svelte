@@ -93,7 +93,7 @@
 					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Сделка
+					Заказ
 				</th>
 				<th
 					scope="col"
@@ -108,6 +108,13 @@
 					style="min-width: 120px; width: 120px;"
 				>
 					Срочность
+				</th>
+				<th
+					scope="col"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 100px; width: 100px;"
+				>
+					Статус
 				</th>
 				<th
 					scope="col"
@@ -181,6 +188,22 @@
 								{:else}
 									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
 										Обычный
+									</span>
+								{/if}
+							</div>
+						</td>
+						<td
+							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							role="cell"
+						>
+							<div class="pr-4">
+								{#if order.is_active}
+									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+										Активен
+									</span>
+								{:else}
+									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+										Неактивен
 									</span>
 								{/if}
 							</div>
@@ -356,6 +379,24 @@
 								{:else}
 									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
 										Обычный
+									</span>
+								{/if}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Статус
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{#if order.is_active}
+									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+										Активен
+									</span>
+								{:else}
+									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+										Неактивен
 									</span>
 								{/if}
 							</dd>

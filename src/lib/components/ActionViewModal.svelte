@@ -121,9 +121,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Компания
+									Компания:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{action.company_name || 'Не указана'}
@@ -132,9 +132,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Название акции
+									Название акции:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{action.action_name || 'Не указано'}
@@ -144,9 +144,9 @@
 							{#if action.description}
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Описание
+										Описание:
 									</dt>
 									<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 										{action.description}
@@ -157,9 +157,9 @@
 							{#if action.comment}
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Комментарий
+										Комментарий:
 									</dt>
 									<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 										{action.comment}
@@ -176,9 +176,9 @@
 
 							<div>
 								<dt
-									class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
-									Период проведения
+									Период проведения:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if action.start_date && action.end_date}
@@ -196,9 +196,9 @@
 							{#if action.created_at}
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Дата создания
+										Дата создания:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{formatDate(action.created_at)}
@@ -209,9 +209,9 @@
 							{#if action.updated_at}
 								<div>
 									<dt
-										class="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-300"
+										class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 									>
-										Дата обновления
+										Дата обновления:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{formatDate(action.updated_at)}
