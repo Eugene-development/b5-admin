@@ -25,6 +25,28 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 							is_primary
 						}
 					}
+					sketches {
+						id
+						file_url
+						file_name
+						file_size
+						mime_type
+						description
+						order
+						created_at
+					}
+					offers {
+						id
+						file_url
+						file_name
+						file_size
+						mime_type
+						description
+						amount
+						valid_until
+						order
+						created_at
+					}
 				}
 				description
 				comment
@@ -116,6 +138,40 @@ const DELETE_TECHNICAL_SPECIFICATION_MUTATION = gql`
 	mutation DeleteTechnicalSpecification($id: ID!) {
 		deleteTechnicalSpecification(id: $id) {
 			id
+		}
+	}
+`;
+
+const UPLOAD_SKETCH_MUTATION = gql`
+	mutation UploadProjectSketch($project_id: ID!, $file: Upload!) {
+		uploadProjectSketch(project_id: $project_id, file: $file) {
+			id
+			project_id
+			file_url
+			file_name
+			file_size
+			mime_type
+			description
+			order
+			created_at
+		}
+	}
+`;
+
+const UPLOAD_OFFER_MUTATION = gql`
+	mutation UploadProjectOffer($project_id: ID!, $file: Upload!) {
+		uploadProjectOffer(project_id: $project_id, file: $file) {
+			id
+			project_id
+			file_url
+			file_name
+			file_size
+			mime_type
+			description
+			amount
+			valid_until
+			order
+			created_at
 		}
 	}
 `;
@@ -309,6 +365,80 @@ export async function refreshTechnicalSpecifications(
 		return result.technicalSpecifications?.data || [];
 	} catch (err) {
 		console.error('Refresh technical specifications failed:', err);
+		throw err;
+	}
+}
+
+// Function to upload sketch file
+export async function uploadSketchFile(projectId, file) {
+	try {
+		const formData = new FormData();
+		formData.append(
+			'operations',
+			JSON.stringify({
+				query: UPLOAD_SKETCH_MUTATION,
+				variables: { project_id: projectId, file: null }
+			})
+		);
+		formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
+		formData.append('0', file);
+
+		const response = await fetch(GRAPHQL_ENDPOINT, {
+			method: 'POST',
+			body: formData,
+			credentials: 'omit'
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors && result.errors.length > 0) {
+			throw new Error(result.errors[0].message || 'Upload failed');
+		}
+
+		return result.data.uploadProjectSketch;
+	} catch (err) {
+		console.error('Upload sketch file failed:', err);
+		throw err;
+	}
+}
+
+// Function to upload offer file
+export async function uploadOfferFile(projectId, file) {
+	try {
+		const formData = new FormData();
+		formData.append(
+			'operations',
+			JSON.stringify({
+				query: UPLOAD_OFFER_MUTATION,
+				variables: { project_id: projectId, file: null }
+			})
+		);
+		formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
+		formData.append('0', file);
+
+		const response = await fetch(GRAPHQL_ENDPOINT, {
+			method: 'POST',
+			body: formData,
+			credentials: 'omit'
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors && result.errors.length > 0) {
+			throw new Error(result.errors[0].message || 'Upload failed');
+		}
+
+		return result.data.uploadProjectOffer;
+	} catch (err) {
+		console.error('Upload offer file failed:', err);
 		throw err;
 	}
 }

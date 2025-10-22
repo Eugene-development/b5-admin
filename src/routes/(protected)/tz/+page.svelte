@@ -4,6 +4,7 @@
 	import TzCreateModal from '$lib/components/TzCreateModal.svelte';
 	import TzEditModal from '$lib/components/TzEditModal.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+	import FileUploadModal from '$lib/components/FileUploadModal.svelte';
 	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
@@ -21,7 +22,9 @@
 		refreshTechnicalSpecifications,
 		deleteTechnicalSpecification,
 		createTechnicalSpecification,
-		updateTechnicalSpecification
+		updateTechnicalSpecification,
+		uploadSketchFile,
+		uploadOfferFile
 	} from '$lib/api/technicalSpecifications.js';
 	import { getProjects } from '$lib/api/projects.js';
 
@@ -43,6 +46,9 @@
 	let editingTz = $state(null);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
+	let isUploadModalOpen = $state(false);
+	let uploadType = $state(null); // 'sketch' or 'cp'
+	let uploadingTz = $state(null);
 
 	// Projects for dropdown
 	let projects = $state([]);
@@ -241,6 +247,63 @@
 		}
 	}
 
+	// Handle upload sketch
+	function handleUploadSketch(tz) {
+		uploadingTz = tz;
+		uploadType = 'sketch';
+		isUploadModalOpen = true;
+		clearAllToasts();
+	}
+
+	// Handle upload CP
+	function handleUploadCP(tz) {
+		uploadingTz = tz;
+		uploadType = 'cp';
+		isUploadModalOpen = true;
+		clearAllToasts();
+	}
+
+	// Handle file upload
+	async function handleFileUpload(file) {
+		if (!uploadingTz || !uploadType) return;
+
+		isLoading = true;
+		try {
+			await retryOperation(
+				async () => {
+					const projectId = uploadingTz.project_id;
+					if (uploadType === 'sketch') {
+						await uploadSketchFile(projectId, file);
+						addSuccessToast('Эскиз успешно загружен');
+					} else {
+						await uploadOfferFile(projectId, file);
+						addSuccessToast('КП успешно загружено');
+					}
+					
+					// Reload data to get updated files
+					await loadServices();
+					isUploadModalOpen = false;
+					uploadingTz = null;
+					uploadType = null;
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('File upload failed:', error);
+			handleApiError(error, 'Не удалось загрузить файл');
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	// Close upload modal
+	function handleCloseUploadModal() {
+		isUploadModalOpen = false;
+		uploadingTz = null;
+		uploadType = null;
+	}
+
 	// Handle initial load error and load projects
 	onMount(() => {
 		if (loadError) {
@@ -408,6 +471,8 @@
 						onViewTz={handleViewTz}
 						onEditTz={handleEditTz}
 						onDeleteTz={handleDeleteTz}
+						onUploadSketch={handleUploadSketch}
+						onUploadCP={handleUploadCP}
 					/>
 				</div>
 			</div>
@@ -451,3 +516,12 @@
 		{isLoading}
 	/>
 {/if}
+
+<!-- File Upload Modal -->
+<FileUploadModal
+	isOpen={isUploadModalOpen}
+	title={uploadType === 'sketch' ? 'Загрузить эскиз' : 'Загрузить КП'}
+	onUpload={handleFileUpload}
+	onCancel={handleCloseUploadModal}
+	{isLoading}
+/>

@@ -9,6 +9,8 @@
 		onViewTz,
 		onEditTz,
 		onDeleteTz,
+		onUploadSketch,
+		onUploadCP,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -197,52 +199,84 @@
 							</div>
 						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
-							{#if tz.sketch_file}
-								<button
-									type="button"
-									onclick={() => handleFileDownload(tz.sketch_file, tz.sketch_filename || 'sketch')}
-									class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-									aria-label="Скачать эскиз"
-								>
-									<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-										/>
-									</svg>
-									Файл
-								</button>
-							{:else}
-								<span class="text-xs text-gray-400">Нет файла</span>
+							{#if tz.project?.sketches && tz.project.sketches.length > 0}
+								<div class="flex flex-col gap-1">
+									{#each tz.project.sketches as sketch}
+										<button
+											type="button"
+											onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
+											class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+											aria-label="Скачать эскиз {sketch.file_name}"
+										>
+											<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+												/>
+											</svg>
+											{sketch.file_name.length > 15 ? sketch.file_name.substring(0, 15) + '...' : sketch.file_name}
+										</button>
+									{/each}
+								</div>
 							{/if}
+							<button
+								type="button"
+								onclick={() => onUploadSketch && onUploadSketch(tz)}
+								class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 {tz.project?.sketches && tz.project.sketches.length > 0 ? 'mt-1' : ''}"
+								aria-label="Загрузить эскиз"
+							>
+								<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+									/>
+								</svg>
+								Загрузить
+							</button>
 						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
-							{#if tz.commercial_proposal}
-								<button
-									type="button"
-									onclick={() =>
-										handleFileDownload(
-											tz.commercial_proposal,
-											tz.cp_filename || 'commercial_proposal'
-										)}
-									class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-									aria-label="Скачать коммерческое предложение"
-								>
-									<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-										/>
-									</svg>
-									КП
-								</button>
-							{:else}
-								<span class="text-xs text-gray-400">Нет КП</span>
+							{#if tz.project?.offers && tz.project.offers.length > 0}
+								<div class="flex flex-col gap-1">
+									{#each tz.project.offers as offer}
+										<button
+											type="button"
+											onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
+											class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+											aria-label="Скачать КП {offer.file_name}"
+										>
+											<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+												/>
+											</svg>
+											{offer.file_name.length > 15 ? offer.file_name.substring(0, 15) + '...' : offer.file_name}
+										</button>
+									{/each}
+								</div>
 							{/if}
+							<button
+								type="button"
+								onclick={() => onUploadCP && onUploadCP(tz)}
+								class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 {tz.project?.offers && tz.project.offers.length > 0 ? 'mt-1' : ''}"
+								aria-label="Загрузить КП"
+							>
+								<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+									/>
+								</svg>
+								Загрузить
+							</button>
 						</td>
 						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
 							<div class="flex items-center justify-center space-x-2">
@@ -410,35 +444,55 @@
 								<dt
 									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
-									Эскиз
+									Эскизы
 								</dt>
-								<dd class="mt-1">
-									{#if tz.sketch_file}
-										<button
-											type="button"
-											onclick={() =>
-												handleFileDownload(tz.sketch_file, tz.sketch_filename || 'sketch')}
-											class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-											aria-label="Скачать эскиз"
-										>
-											<svg
-												class="mr-1 h-3 w-3"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
+								<dd class="mt-1 flex flex-col gap-1">
+									{#if tz.project?.sketches && tz.project.sketches.length > 0}
+										{#each tz.project.sketches as sketch}
+											<button
+												type="button"
+												onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
+												class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+												aria-label="Скачать эскиз {sketch.file_name}"
 											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-												/>
-											</svg>
-											Файл
-										</button>
-									{:else}
-										<span class="text-xs text-gray-400">Нет файла</span>
+												<svg
+													class="mr-1 h-3 w-3"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+													/>
+												</svg>
+												{sketch.file_name}
+											</button>
+										{/each}
 									{/if}
+									<button
+										type="button"
+										onclick={() => onUploadSketch && onUploadSketch(tz)}
+										class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										aria-label="Загрузить эскиз"
+									>
+										<svg
+											class="mr-1 h-3 w-3"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+											/>
+										</svg>
+										Загрузить
+									</button>
 								</dd>
 							</div>
 							<div>
@@ -447,36 +501,53 @@
 								>
 									КП
 								</dt>
-								<dd class="mt-1">
-									{#if tz.commercial_proposal}
-										<button
-											type="button"
-											onclick={() =>
-												handleFileDownload(
-													tz.commercial_proposal,
-													tz.cp_filename || 'commercial_proposal'
-												)}
-											class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-											aria-label="Скачать коммерческое предложение"
-										>
-											<svg
-												class="mr-1 h-3 w-3"
-												fill="none"
-												stroke="currentColor"
-												viewBox="0 0 24 24"
+								<dd class="mt-1 flex flex-col gap-1">
+									{#if tz.project?.offers && tz.project.offers.length > 0}
+										{#each tz.project.offers as offer}
+											<button
+												type="button"
+												onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
+												class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+												aria-label="Скачать КП {offer.file_name}"
 											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-												/>
-											</svg>
-											КП
-										</button>
-									{:else}
-										<span class="text-xs text-gray-400">Нет КП</span>
+												<svg
+													class="mr-1 h-3 w-3"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+													/>
+												</svg>
+												{offer.file_name}
+											</button>
+										{/each}
 									{/if}
+									<button
+										type="button"
+										onclick={() => onUploadCP && onUploadCP(tz)}
+										class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+										aria-label="Загрузить КП"
+									>
+										<svg
+											class="mr-1 h-3 w-3"
+											fill="none"
+											stroke="currentColor"
+											viewBox="0 0 24 24"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+											/>
+										</svg>
+										Загрузить
+									</button>
 								</dd>
 							</div>
 						</div>
