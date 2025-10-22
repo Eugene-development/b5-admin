@@ -3,6 +3,7 @@
 	import TzViewModal from '$lib/components/TzViewModal.svelte';
 	import TzCreateModal from '$lib/components/TzCreateModal.svelte';
 	import TzEditModal from '$lib/components/TzEditModal.svelte';
+	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
@@ -40,6 +41,8 @@
 	let isCreateModalOpen = $state(false);
 	let isEditModalOpen = $state(false);
 	let editingTz = $state(null);
+	let showConfirmModal = $state(false);
+	let confirmAction = $state(null);
 
 	// Projects for dropdown
 	let projects = $state([]);
@@ -70,30 +73,55 @@
 		clearAllToasts();
 	}
 
-	async function handleDeleteTz(tz) {
-		if (!confirm(`Вы уверены, что хотите удалить техзадание #${tz.id}?`)) {
-			return;
-		}
+	function handleDeleteTz(tz) {
+		confirmAction = {
+			type: 'delete',
+			tz: tz,
+			title: 'Удалить техзадание',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить техзадание #${tz.id}? Это действие нельзя отменить. Все данные техзадания будут потеряны.`,
+			confirmText: 'Удалить навсегда',
+			isDestructive: true
+		};
+		showConfirmModal = true;
+		clearAllToasts();
+	}
+
+	// Execute confirmed action
+	async function confirmActionHandler() {
+		if (!confirmAction) return;
 
 		isLoading = true;
+
 		try {
+			const { type, tz } = confirmAction;
+
 			await retryOperation(
 				async () => {
-					await deleteTechnicalSpecification(tz.id);
-					// Remove from local list
-					tzList = tzList.filter((t) => t.id !== tz.id);
-					addSuccessToast('Техзадание успешно удалено');
-					updateCounter++;
+					if (type === 'delete') {
+						await deleteTechnicalSpecification(tz.id);
+						// Remove from local list
+						tzList = tzList.filter((t) => t.id !== tz.id);
+						addSuccessToast(`Техзадание #${tz.id} успешно удалено`);
+						updateCounter++;
+					}
 				},
 				2,
 				1000
 			);
 		} catch (error) {
-			console.error('Delete TZ failed:', error);
-			handleApiError(error, 'Не удалось удалить техзадание');
+			console.error('Action failed after retries:', error);
 		} finally {
 			isLoading = false;
+			showConfirmModal = false;
+			confirmAction = null;
 		}
+	}
+
+	// Cancel action
+	function cancelAction() {
+		showConfirmModal = false;
+		confirmAction = null;
+		isLoading = false;
 	}
 
 	function closeViewModal() {
@@ -408,3 +436,18 @@
 	onCancel={handleCloseEditModal}
 	{isLoading}
 />
+
+<!-- Confirmation Modal -->
+{#if confirmAction}
+	<ConfirmationModal
+		isOpen={showConfirmModal}
+		title={confirmAction.title}
+		message={confirmAction.message}
+		confirmText={confirmAction.confirmText}
+		cancelText="Отмена"
+		onConfirm={confirmActionHandler}
+		onCancel={cancelAction}
+		isDestructive={confirmAction.isDestructive}
+		{isLoading}
+	/>
+{/if}
