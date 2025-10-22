@@ -45,6 +45,7 @@ export { default as DateDisplay } from './components/DateDisplay.svelte';
 export { default as CurrencyDisplay } from './components/CurrencyDisplay.svelte';
 export { default as AgentDisplay } from './components/AgentDisplay.svelte';
 export { default as ProtectedRoute } from './components/ProtectedRoute.svelte';
+export { default as TzCreateModal } from './components/TzCreateModal.svelte';
 
 // Export utilities
 export * from './utils/index.js';

@@ -10,13 +10,23 @@
 	 *
 	 * @param {boolean} isOpen - Controls modal visibility
 	 * @param {Object} project - The project object to display
+	 * @param {Object} acceptedByCurrentUser - Local state info about current user accepting the project
 	 * @param {Function} onClose - Callback function for closing the modal
 	 */
-	let { isOpen = false, project = null, onClose } = $props();
+	let { isOpen = false, project = null, acceptedByCurrentUser = null, onClose } = $props();
 
 	let modalElement = $state();
 	let closeButtonElement = $state();
 	let previousActiveElement;
+
+	// Debug logging
+	$effect(() => {
+		if (isOpen && project) {
+			console.log('Modal opened for project:', project.id);
+			console.log('acceptedByCurrentUser:', acceptedByCurrentUser);
+			console.log('project.users:', project.users);
+		}
+	});
 
 	// Clipboard copy state for agent email
 	let emailCopied = $state(false);
@@ -495,7 +505,7 @@
 									</dd>
 								</div>
 
-								{#if project.users && project.users.length > 0}
+								{#if acceptedByCurrentUser || (project.users && project.users.length > 0)}
 									<div>
 										<dt
 											class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
@@ -503,20 +513,35 @@
 											Принят куратором:
 										</dt>
 										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{#each project.users as user, index}
+											{#if acceptedByCurrentUser}
+												<!-- Show current user acceptance immediately from local state -->
 												<div class="flex items-center space-x-2">
 													<span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400">
 														✓
 													</span>
-													<span>{user.name || user.email}</span>
-													{#if user.email && user.name}
-														<span class="text-xs text-gray-500 dark:text-gray-400">({user.email})</span>
+													<span>{acceptedByCurrentUser.user.name || acceptedByCurrentUser.user.email}</span>
+													{#if acceptedByCurrentUser.user.email && acceptedByCurrentUser.user.name}
+														<span class="text-xs text-gray-500 dark:text-gray-400">({acceptedByCurrentUser.user.email})</span>
 													{/if}
+													<span class="text-xs italic text-emerald-600 dark:text-emerald-400">(только что)</span>
 												</div>
-												{#if index < project.users.length - 1}
-													<div class="mt-1"></div>
-												{/if}
-											{/each}
+											{:else if project.users && project.users.length > 0}
+												<!-- Show users from database -->
+												{#each project.users as user, index}
+													<div class="flex items-center space-x-2">
+														<span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400">
+															✓
+														</span>
+														<span>{user.name || user.email}</span>
+														{#if user.email && user.name}
+															<span class="text-xs text-gray-500 dark:text-gray-400">({user.email})</span>
+														{/if}
+													</div>
+													{#if index < project.users.length - 1}
+														<div class="mt-1"></div>
+													{/if}
+												{/each}
+											{/if}
 										</dd>
 									</div>
 								{/if}

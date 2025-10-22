@@ -3,6 +3,21 @@
 	
 	let { isOpen = false, tz = null, onClose } = $props();
 
+	// Get curator name from project
+	function getCuratorName(tz) {
+		return tz?.project?.agent?.name || 'Не указан';
+	}
+
+	// Get curator phone from project
+	function getCuratorPhone(tz) {
+		const phones = tz?.project?.agent?.phones;
+		if (!phones || phones.length === 0) return null;
+		
+		// Find primary phone or return first phone
+		const primaryPhone = phones.find(p => p.is_primary);
+		return primaryPhone?.value || phones[0]?.value || null;
+	}
+
 	// Handle file download
 	function handleFileDownload(fileUrl, fileName) {
 		if (!fileUrl) return;
@@ -126,21 +141,14 @@
 					<div class="mb-6 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{tz.curator || 'Куратор не указан'}
+								{getCuratorName(tz)}
 							</h4>
-							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-								ID: {tz.id}
-							</p>
+							{#if tz.project}
+								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									Проект: {tz.project.value || 'Не указан'}
+								</p>
+							{/if}
 						</div>
-						{#if tz.status}
-							<div class="ml-4 flex-shrink-0">
-								<span
-									class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-								>
-									{tz.status}
-								</span>
-							</div>
-						{/if}
 					</div>
 
 					<!-- TZ details grid -->
@@ -156,7 +164,7 @@
 									Куратор
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{tz.curator || 'Не указан'}
+									{getCuratorName(tz)}
 								</dd>
 							</div>
 
@@ -167,18 +175,44 @@
 									Телефон куратора
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if tz.curator_phone}
+									{#if getCuratorPhone(tz)}
 										<a
-											href="tel:{tz.curator_phone}"
+											href="tel:{getCuratorPhone(tz)}"
 											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
 										>
-											{formatPhone(tz.curator_phone)}
+											{formatPhone(getCuratorPhone(tz))}
 										</a>
 									{:else}
 										Не указан
 									{/if}
 								</dd>
 							</div>
+
+							{#if tz.project}
+								<div>
+									<dt
+										class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+									>
+										Проект
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{tz.project.value || 'Не указан'}
+									</dd>
+								</div>
+
+								{#if tz.project.region}
+									<div>
+										<dt
+											class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+										>
+											Адрес объекта
+										</dt>
+										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+											{tz.project.region}
+										</dd>
+									</div>
+								{/if}
+							{/if}
 
 							<div>
 								<dt

@@ -61,8 +61,6 @@
 		return project.status;
 	}
 
-
-
 	// Get status display text
 	function getStatusDisplay(status) {
 		if (!status || !status.value) return 'Не указан';
@@ -127,7 +125,13 @@
 	}
 
 	// Handle accept project
-	async function handleAcceptProject(projectId) {
+	async function handleAcceptProject(projectId, event) {
+		// Prevent event bubbling to avoid triggering other buttons
+		if (event) {
+			event.stopPropagation();
+			event.preventDefault();
+		}
+
 		if (acceptingProjectId) return; // Prevent multiple simultaneous requests
 
 		if (!currentUserId) {
@@ -211,7 +215,6 @@
 				>
 					Номер
 				</th>
-
 
 				<th
 					id="col-status"
@@ -297,7 +300,7 @@
 						>
 							{project.contract_name || ' - '}
 						</td>
-<td
+						<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-status"
@@ -309,7 +312,7 @@
 							{#if !isProjectAccepted(project)}
 								<button
 									type="button"
-									onclick={() => handleAcceptProject(project.id)}
+									onclick={(event) => handleAcceptProject(project.id, event)}
 									disabled={acceptingProjectId === project.id}
 									class="inline-flex items-center rounded-md bg-emerald-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
 									aria-label="Принять проект {project.value}"
@@ -451,15 +454,14 @@
 							</dd>
 						</div>
 						<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Статус
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{getStatusDisplay(project.status)}
-								</dd>
-							</div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Статус
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{getStatusDisplay(project.status)}
+							</dd>
 						</div>
 					</dl>
 
@@ -467,10 +469,11 @@
 					<div
 						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
+						>
 						{#if !isProjectAccepted(project)}
 							<button
 								type="button"
-								onclick={() => handleAcceptProject(project.id)}
+								onclick={(event) => handleAcceptProject(project.id, event)}
 								disabled={acceptingProjectId === project.id}
 								class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
 								aria-label="Принять проект {project.value}"

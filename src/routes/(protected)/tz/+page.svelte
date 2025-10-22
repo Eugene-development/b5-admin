@@ -1,17 +1,26 @@
 <script>
 	import TzTable from '$lib/components/TzTable.svelte';
 	import TzViewModal from '$lib/components/TzViewModal.svelte';
+	import TzCreateModal from '$lib/components/TzCreateModal.svelte';
 	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
 		addSuccessToast,
 		addErrorToast,
+		addInfoToast,
 		handleApiError,
-		clearAllToasts
+		clearAllToasts,
+		retryOperation
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { invalidateAll } from '$app/navigation';
+	import {
+		refreshTechnicalSpecifications,
+		deleteTechnicalSpecification,
+		createTechnicalSpecification
+	} from '$lib/api/technicalSpecifications.js';
+	import { getProjects } from '$lib/api/projects.js';
 
 	/** @type {import('./$types').PageData} */
 	let { data } = $props();
@@ -26,6 +35,10 @@
 	// Modal state
 	let isViewModalOpen = $state(false);
 	let selectedTz = $state(null);
+	let isCreateModalOpen = $state(false);
+
+	// Projects for dropdown
+	let projects = $state([]);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -49,14 +62,32 @@
 	function handleEditTz(tz) {
 		// TODO: Implement edit functionality
 		console.log('Edit TZ:', tz);
-		alert(`Редактирование техзадания #${tz.id} будет реализовано позже`);
+		addInfoToast('Редактирование техзаданий будет реализовано позже');
 	}
 
-	function handleDeleteTz(tz) {
-		if (confirm(`Вы уверены, что хотите удалить техзадание #${tz.id}?`)) {
-			// TODO: Implement delete functionality
-			console.log('Delete TZ:', tz);
-			alert(`Удаление техзадания #${tz.id} будет реализовано позже`);
+	async function handleDeleteTz(tz) {
+		if (!confirm(`Вы уверены, что хотите удалить техзадание #${tz.id}?`)) {
+			return;
+		}
+
+		isLoading = true;
+		try {
+			await retryOperation(
+				async () => {
+					await deleteTechnicalSpecification(tz.id);
+					// Remove from local list
+					tzList = tzList.filter((t) => t.id !== tz.id);
+					addSuccessToast('Техзадание успешно удалено');
+					updateCounter++;
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Delete TZ failed:', error);
+			handleApiError(error, 'Не удалось удалить техзадание');
+		} finally {
+			isLoading = false;
 		}
 	}
 
@@ -76,7 +107,8 @@
 	async function loadServices() {
 		isLoading = true;
 		try {
-			await invalidateAll();
+			const refreshedData = await refreshTechnicalSpecifications();
+			tzList = refreshedData || [];
 			addSuccessToast('Данные успешно обновлены');
 			updateCounter++;
 		} catch (error) {
@@ -97,14 +129,60 @@
 	async function retryFromErrorBoundary() {
 		hasError = false;
 		errorBoundaryError = null;
-		// TODO: Add refresh functionality
+		await loadServices();
 	}
 
-	// Handle initial load error
+	// Open create modal
+	function handleOpenCreateModal() {
+		isCreateModalOpen = true;
+		clearAllToasts();
+	}
+
+	// Close create modal
+	function handleCloseCreateModal() {
+		isCreateModalOpen = false;
+	}
+
+	// Handle create TZ
+	async function handleCreateTz(tzData) {
+		isLoading = true;
+		try {
+			await retryOperation(
+				async () => {
+					const newTz = await createTechnicalSpecification(tzData);
+					// Add to local list
+					tzList = [newTz, ...tzList];
+					addSuccessToast('Техзадание успешно создано');
+					updateCounter++;
+					isCreateModalOpen = false;
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Create TZ failed:', error);
+			handleApiError(error, 'Не удалось создать техзадание');
+		} finally {
+			isLoading = false;
+		}
+	}
+
+	// Load projects for dropdown
+	async function loadProjects() {
+		try {
+			projects = await getProjects();
+		} catch (error) {
+			console.error('Failed to load projects:', error);
+			handleApiError(error, 'Не удалось загрузить список проектов');
+		}
+	}
+
+	// Handle initial load error and load projects
 	onMount(() => {
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
+		loadProjects();
 	});
 </script>
 
@@ -185,7 +263,9 @@
 				<!-- Create TZ Button -->
 				<button
 					type="button"
-					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					onclick={handleOpenCreateModal}
+					disabled={isLoading}
+					class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
 				>
 					<svg
 						class="-ml-0.5 mr-1.5 h-5 w-5"
@@ -269,5 +349,14 @@
 
 <!-- View Modal -->
 <TzViewModal isOpen={isViewModalOpen} tz={selectedTz} onClose={closeViewModal} />
+
+<!-- Create Modal -->
+<TzCreateModal
+	isOpen={isCreateModalOpen}
+	{projects}
+	onSave={handleCreateTz}
+	onCancel={handleCloseCreateModal}
+	{isLoading}
+/>
 
 

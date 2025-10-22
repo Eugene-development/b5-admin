@@ -24,6 +24,21 @@
 		});
 	}
 
+	// Get curator name from project
+	function getCuratorName(tz) {
+		return tz.project?.agent?.name || 'Не указан';
+	}
+
+	// Get curator phone from project
+	function getCuratorPhone(tz) {
+		const phones = tz.project?.agent?.phones;
+		if (!phones || phones.length === 0) return null;
+		
+		// Find primary phone or return first phone
+		const primaryPhone = phones.find(p => p.is_primary);
+		return primaryPhone?.value || phones[0]?.value || null;
+	}
+
 	// Generate unique table ID for accessibility
 	const tableId = `tz-table-${Math.random().toString(36).substr(2, 9)}`;
 	const tableCaptionId = `${tableId}-caption`;
@@ -81,7 +96,7 @@
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
 		aria-labelledby={tableCaptionId}
 		aria-describedby={tableDescriptionId}
-		style="min-width: 1100px;"
+		style="min-width: 950px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
 			Таблица управления техзаданиями с {tzList.length} техзадани{tzList.length === 1
@@ -96,7 +111,7 @@
 					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
-					ID
+					№
 				</th>
 				<th
 					scope="col"
@@ -105,27 +120,20 @@
 				>
 					Куратор
 				</th>
-				<th
-					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 150px; width: 150px;"
-				>
-					Телефон куратора
-				</th>
 
-				<th
-					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					Эскиз
-				</th>
 				<th
 					scope="col"
 					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Комментарий
+				</th>
+				<th
+					scope="col"
+					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 120px; width: 120px;"
+				>
+					Эскиз
 				</th>
 				<th
 					scope="col"
@@ -146,7 +154,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="7" class="px-4 py-8 text-center" role="cell">
+					<td colspan="6" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных техзаданий">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -158,7 +166,7 @@
 				</tr>
 			{:else if tzList.length === 0}
 				<tr>
-					<td colspan="7" class="px-4 py-8" role="cell">
+					<td colspan="6" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -175,22 +183,19 @@
 							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{tz.id}
+							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-4 leading-relaxed">
-								{tz.curator || 'Не указан'}
-							</div>
-						</td>
-						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
-							role="cell"
-						>
-							<div class="pr-4" title={formatPhone(tz.curator_phone)}>
-								{formatPhone(tz.curator_phone)}
+								{getCuratorName(tz)}
 							</div>
 						</td>
 
+						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="max-w-xs break-words pr-4 leading-relaxed">
+								{tz.comment || 'Нет комментария'}
+							</div>
+						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
 							{#if tz.sketch_file}
 								<button
@@ -212,11 +217,6 @@
 							{:else}
 								<span class="text-xs text-gray-400">Нет файла</span>
 							{/if}
-						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="max-w-xs break-words pr-4 leading-relaxed">
-								{tz.comment || 'Нет комментария'}
-							</div>
 						</td>
 						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
 							{#if tz.commercial_proposal}
@@ -378,17 +378,17 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
-								Куратор: {tz.curator || 'Не указан'}
+								Куратор: {getCuratorName(tz)}
 							</h3>
 							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
-								{tz.curator_phone || 'Телефон не указан'}
+								{formatPhone(getCuratorPhone(tz)) || 'Телефон не указан'}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								ID: {tz.id}
+								№ {index + 1}
 							</span>
 						</div>
 					</div>

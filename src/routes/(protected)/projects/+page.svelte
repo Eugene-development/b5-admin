@@ -19,7 +19,12 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { updateProject, deleteProject, refreshProjects, acceptProject } from '$lib/api/projects.js';
+	import {
+		updateProject,
+		deleteProject,
+		refreshProjects,
+		acceptProject
+	} from '$lib/api/projects.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 
@@ -50,6 +55,9 @@
 
 	// Local projects state for updates
 	let localProjects = $state([...(data?.projects || [])]);
+
+	// Local state for accepted projects (to show immediately in modal)
+	let acceptedProjects = $state(new Map()); // Map<projectId, {user, acceptedAt}>
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
@@ -201,9 +209,20 @@
 			await retryOperation(
 				async () => {
 					await acceptProject(projectId, authState.user.id);
+
+					// Immediately add to local accepted projects state
+					acceptedProjects.set(projectId, {
+						user: {
+							id: authState.user.id,
+							name: authState.user.name,
+							email: authState.user.email
+						},
+						acceptedAt: new Date().toISOString()
+					});
+
 					addSuccessToast('Вы успешно приняли проект');
-					// Optionally refresh data to get updated project info
-					await refreshData(true);
+					// Silently refresh data in background without showing loading state
+					await silentRefreshData();
 				},
 				2,
 				1000
@@ -235,6 +254,11 @@
 			const projects = await refreshProjects();
 			localProjects = projects;
 			loadError = null;
+
+			// Clear local accepted projects state when data is refreshed from server
+			// as the server data now contains the actual accepted users
+			acceptedProjects.clear();
+
 			// Only show success message for manual refresh, not initial load
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
@@ -246,6 +270,22 @@
 			);
 		} finally {
 			isRefreshing = false;
+		}
+	}
+
+	// Silent refresh without showing loading state (for background updates after actions)
+	async function silentRefreshData() {
+		try {
+			const projects = await refreshProjects();
+			localProjects = projects;
+			loadError = null;
+
+			// Clear local accepted projects state when data is refreshed from server
+			// as the server data now contains the actual accepted users
+			acceptedProjects.clear();
+		} catch (error) {
+			// Silent refresh - don't show error messages, just log
+			console.error('Silent refresh failed:', error);
 		}
 	}
 
@@ -312,7 +352,10 @@
 						<div class="flex-none">
 							<button
 								type="button"
-								onclick={refreshData}
+								onclick={(event) => {
+									event.stopPropagation();
+									refreshData();
+								}}
 								disabled={isRefreshing}
 								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-cyan-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
 								aria-label="Refresh projects data from server"
@@ -441,8 +484,7 @@
 	<ProjectViewModal
 		isOpen={showViewModal}
 		project={viewingProject}
+		acceptedByCurrentUser={acceptedProjects.get(viewingProject.id)}
 		onClose={handleCancelViewProject}
 	/>
 {/if}
-
-
