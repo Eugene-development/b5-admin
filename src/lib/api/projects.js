@@ -11,6 +11,7 @@ const PROJECTS_QUERY = gql`
 				id
 				value
 				user_id
+				status_id
 				agent {
 					id
 					name
@@ -22,6 +23,15 @@ const PROJECTS_QUERY = gql`
 						value
 						is_primary
 					}
+				}
+				status {
+					id
+					value
+					slug
+					description
+					color
+					icon
+					is_active
 				}
 				region
 				description
@@ -54,10 +64,20 @@ const UPDATE_PROJECT_MUTATION = gql`
 			id
 			value
 			user_id
+			status_id
 			agent {
 				id
 				name
 				email
+			}
+			status {
+				id
+				value
+				slug
+				description
+				color
+				icon
+				is_active
 			}
 			region
 			description

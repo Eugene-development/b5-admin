@@ -59,7 +59,13 @@
 	// Get agent display text
 	function getAgentDisplay(agent) {
 		if (!agent) return 'Не назначен';
-		return `${agent.email} (ID: ${agent.id})`;
+		return agent.email;
+	}
+
+	// Get status display text
+	function getStatusDisplay(status) {
+		if (!status || !status.value) return 'Не указан';
+		return status.value;
 	}
 
 	// Truncate text to specified length
@@ -179,15 +185,14 @@
 				</th>
 
 				<th
-					id="col-rate"
+					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="hidden px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 xl:table-cell dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort="none"
 				>
-					Ставка агенту
+					Статус
 				</th>
-
 				<th id="col-actions" scope="col" role="columnheader" class="relative px-6 py-3">
 					<span class="sr-only">Действия</span>
 				</th>
@@ -244,7 +249,7 @@
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
-						title={project.region || ''}
+							title={project.region || ''}
 						>
 							{truncateText(project.region)}
 						</td>
@@ -261,14 +266,12 @@
 							headers="col-agent"
 						>
 							{getAgentDisplay(project.agent)}
-						</td>
-
-						<td
-							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 xl:table-cell dark:text-white"
+						</td><td
+							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
-							headers="col-rate"
+							headers="col-status"
 						>
-							{formatAgentRate(project.agent_percentage, 'percentage')}
+							{getStatusDisplay(project.status)}
 						</td>
 
 						<td
@@ -339,7 +342,10 @@
 							>
 								{project.value || ' - '}
 							</h3>
-							<p class="truncate text-sm text-gray-500 dark:text-gray-400" title={project.region || ''}>
+							<p
+								class="truncate text-sm text-gray-500 dark:text-gray-400"
+								title={project.region || ''}
+							>
 								{truncateText(project.region)}
 							</p>
 						</div>
@@ -374,16 +380,16 @@
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{getAgentDisplay(project.agent)}
 							</dd>
-						</div>
-						<div>
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Ставка агенту
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatAgentRate(project.agent_percentage, 'percentage')}
-							</dd>
+							<div>
+								<dt
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								>
+									Статус
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{getStatusDisplay(project.status)}
+								</dd>
+							</div>
 						</div>
 					</dl>
 
@@ -478,7 +484,10 @@
 									>
 										{project.value || ' - '}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white" title={project.region || ''}>
+									<td
+										class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
+										title={project.region || ''}
+									>
 										{truncateText(project.region)}
 									</td>
 									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">

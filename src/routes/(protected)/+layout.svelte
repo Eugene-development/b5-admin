@@ -228,7 +228,7 @@
 									class={getNavClassesWithSpan('/dashboard')}
 									onclick={() => handleMobileNavigation('/dashboard')}
 								>
-									<span class={getSpanIconClasses('/dashboard')}>Д</span>
+									<span class={getSpanIconClasses('/dashboard')}>Дш</span>
 									<span class="truncate">Дашборд</span>
 								</button>
 							</li>
@@ -246,7 +246,7 @@
 											class={getNavClassesWithSpan('/clients')}
 											onclick={() => handleMobileNavigation('/clients')}
 										>
-											<span class={getSpanIconClasses('/clients')}>К</span>
+											<span class={getSpanIconClasses('/clients')}>Кл</span>
 											<span class="truncate">Клиенты</span>
 										</button>
 									</li>
@@ -258,7 +258,7 @@
 											class={getNavClassesWithSpan('/agents')}
 											onclick={() => handleMobileNavigation('/agents')}
 										>
-											<span class={getSpanIconClasses('/agents')}>А</span>
+											<span class={getSpanIconClasses('/agents')}>Аг</span>
 											<span class="truncate">Агенты</span>
 										</button>
 									</li>
@@ -281,7 +281,7 @@
 										class={getNavClassesWithSpan('/managers')}
 										onclick={() => handleMobileNavigation('/managers')}
 									>
-										<span class={getSpanIconClasses('/managers')}>М</span>
+										<span class={getSpanIconClasses('/managers')}>Мн</span>
 										<span class="truncate">Менеджеры</span>
 									</button>
 								</li>
@@ -291,7 +291,7 @@
 										class={getNavClassesWithSpan('/designers')}
 										onclick={() => handleMobileNavigation('/designers')}
 									>
-										<span class={getSpanIconClasses('/designers')}>Д</span>
+										<span class={getSpanIconClasses('/designers')}>Дз</span>
 										<span class="truncate">Дизайнеры</span>
 									</button>
 								</li>
@@ -309,7 +309,7 @@
 											class={getNavClassesWithSpan('/contractors')}
 											onclick={() => handleMobileNavigation('/contractors')}
 										>
-											<span class={getSpanIconClasses('/contractors')}>П</span>
+											<span class={getSpanIconClasses('/contractors')}>Пд</span>
 											<span class="truncate">Подрядчики</span>
 										</button>
 									</li>
@@ -333,7 +333,7 @@
 											class={getNavClassesWithSpan('/delivery')}
 											onclick={() => handleMobileNavigation('/delivery')}
 										>
-											<span class={getSpanIconClasses('/delivery')}>Д</span>
+											<span class={getSpanIconClasses('/delivery')}>Дс</span>
 											<span class="truncate">Доставка</span>
 										</button>
 									</li>
@@ -345,7 +345,7 @@
 											class={getNavClassesWithSpan('/services')}
 											onclick={() => handleMobileNavigation('/services')}
 										>
-											<span class={getSpanIconClasses('/services')}>С</span>
+											<span class={getSpanIconClasses('/services')}>Ср</span>
 											<span class="truncate">Сервис</span>
 										</button>
 									</li>
@@ -364,7 +364,7 @@
 											class={getNavClassesWithSpan('/projects')}
 											onclick={() => handleMobileNavigation('/projects')}
 										>
-											<span class={getSpanIconClasses('/projects')}>П</span>
+											<span class={getSpanIconClasses('/projects')}>Пр</span>
 											<span class="truncate">Проекты</span>
 										</button>
 									</li>
@@ -376,7 +376,7 @@
 											class={getNavClassesWithSpan('/tz')}
 											onclick={() => handleMobileNavigation('/tz')}
 										>
-											<span class={getSpanIconClasses('/tz')}>ТЗ</span>
+											<span class={getSpanIconClasses('/tz')}>Тз</span>
 											<span class="truncate">Техзадания</span>
 										</button>
 									</li>
@@ -388,7 +388,7 @@
 											class={getNavClassesWithSpan('/order')}
 											onclick={() => handleMobileNavigation('/order')}
 										>
-											<span class={getSpanIconClasses('/order')}>З</span>
+											<span class={getSpanIconClasses('/order')}>Зк</span>
 											<span class="truncate">Заказы</span>
 										</button>
 									</li>
@@ -419,7 +419,7 @@
 											class={getNavClassesWithSpan('/documentation')}
 											onclick={() => handleMobileNavigation('/documentation')}
 										>
-											<span class={getSpanIconClasses('/documentation')}>Док</span>
+											<span class={getSpanIconClasses('/documentation')}>Дк</span>
 											<span class="truncate">Документация</span>
 										</button>
 									</li>
