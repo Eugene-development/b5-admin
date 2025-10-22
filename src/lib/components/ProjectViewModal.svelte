@@ -299,6 +299,24 @@
 								<dt
 									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
 								>
+									Статус:
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{#if project.status}
+										<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium" 
+											style="background-color: {project.status.color}20; color: {project.status.color};">
+											{project.status.value}
+										</span>
+									{:else}
+										Не указан
+									{/if}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
+								>
 									Описание:
 								</dt>
 								<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
@@ -476,6 +494,32 @@
 										{formatDateTime(project.updated_at)}
 									</dd>
 								</div>
+
+								{#if project.users && project.users.length > 0}
+									<div>
+										<dt
+											class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400"
+										>
+											Принят куратором:
+										</dt>
+										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+											{#each project.users as user, index}
+												<div class="flex items-center space-x-2">
+													<span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400">
+														✓
+													</span>
+													<span>{user.name || user.email}</span>
+													{#if user.email && user.name}
+														<span class="text-xs text-gray-500 dark:text-gray-400">({user.email})</span>
+													{/if}
+												</div>
+												{#if index < project.users.length - 1}
+													<div class="mt-1"></div>
+												{/if}
+											{/each}
+										</dd>
+									</div>
+								{/if}
 							</div>
 						</div>
 					</div>
