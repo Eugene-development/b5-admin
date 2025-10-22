@@ -19,8 +19,9 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { updateProject, deleteProject, refreshProjects } from '$lib/api/projects.js';
+	import { updateProject, deleteProject, refreshProjects, acceptProject } from '$lib/api/projects.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import { authState } from '$lib/state/auth.svelte.js';
 
 	let { data } = $props();
 
@@ -187,6 +188,30 @@
 	function handleCancelViewProject() {
 		showViewModal = false;
 		viewingProject = null;
+	}
+
+	// Accept project handler
+	async function handleAcceptProject(projectId) {
+		if (!authState.user?.id) {
+			addErrorToast('Ошибка: пользователь не аутентифицирован');
+			return;
+		}
+
+		try {
+			await retryOperation(
+				async () => {
+					await acceptProject(projectId, authState.user.id);
+					addSuccessToast('Вы успешно приняли проект');
+					// Optionally refresh data to get updated project info
+					await refreshData(true);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Accept project failed after retries:', error);
+			addErrorToast('Не удалось принять проект');
+		}
 	}
 
 	// Remove project from local state after deletion
@@ -373,9 +398,11 @@
 						onEditProject={handleEditProject}
 						onDeleteProject={handleDeleteProject}
 						onViewProject={handleViewProject}
+						onAcceptProject={handleAcceptProject}
 						{updateCounter}
 						{searchTerm}
 						hasSearched={searchTerm.trim().length > 0}
+						currentUserId={authState.user?.id}
 					/>
 				</main>
 			</div>

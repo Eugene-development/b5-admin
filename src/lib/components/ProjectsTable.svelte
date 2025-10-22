@@ -2,6 +2,7 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import ActionButtons from './ActionButtons.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { acceptProject } from '$lib/api/projects.js';
 
 	let {
 		projects = [],
@@ -9,10 +10,14 @@
 		onEditProject,
 		onDeleteProject,
 		onViewProject,
+		onAcceptProject,
 		updateCounter = 0,
 		searchTerm = '',
-		hasSearched = false
+		hasSearched = false,
+		currentUserId = null
 	} = $props();
+
+	let acceptingProjectId = $state(null);
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -56,11 +61,7 @@
 		return project.status;
 	}
 
-	// Get agent display text
-	function getAgentDisplay(agent) {
-		if (!agent) return 'Не назначен';
-		return agent.email;
-	}
+
 
 	// Get status display text
 	function getStatusDisplay(status) {
@@ -113,6 +114,42 @@
 			setTimeout(announceTableUpdate, 100); // Small delay to ensure DOM is updated
 		}
 	});
+
+	// Check if project has been accepted by any user
+	function isProjectAccepted(project) {
+		return project.users && project.users.length > 0;
+	}
+
+	// Get the user who accepted the project (for display)
+	function getAcceptedByUser(project) {
+		if (!project.users || project.users.length === 0) return null;
+		return project.users[0]; // Return first user who accepted
+	}
+
+	// Handle accept project
+	async function handleAcceptProject(projectId) {
+		if (acceptingProjectId) return; // Prevent multiple simultaneous requests
+
+		if (!currentUserId) {
+			console.error('No current user ID available');
+			return;
+		}
+
+		try {
+			acceptingProjectId = projectId;
+			await acceptProject(projectId, currentUserId);
+
+			// Call parent callback if provided
+			if (onAcceptProject) {
+				await onAcceptProject(projectId);
+			}
+		} catch (error) {
+			console.error('Failed to accept project:', error);
+			// You can add toast notification here
+		} finally {
+			acceptingProjectId = null;
+		}
+	}
 </script>
 
 <!-- Live region for screen reader announcements -->
@@ -174,15 +211,7 @@
 				>
 					Номер
 				</th>
-				<th
-					id="col-agent"
-					scope="col"
-					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					aria-sort="none"
-				>
-					Агент
-				</th>
+
 
 				<th
 					id="col-status"
@@ -192,6 +221,14 @@
 					aria-sort="none"
 				>
 					Статус
+				</th>
+				<th
+					id="col-accept"
+					scope="col"
+					role="columnheader"
+					class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					aria-sort="none"
+				>
 				</th>
 				<th id="col-actions" scope="col" role="columnheader" class="relative px-6 py-3">
 					<span class="sr-only">Действия</span>
@@ -260,18 +297,60 @@
 						>
 							{project.contract_name || ' - '}
 						</td>
-						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-agent"
-						>
-							{getAgentDisplay(project.agent)}
-						</td><td
+<td
 							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-status"
 						>
 							{getStatusDisplay(project.status)}
+						</td>
+
+						<td class="whitespace-nowrap px-6 py-4 text-center" role="cell" headers="col-accept">
+							{#if !isProjectAccepted(project)}
+								<button
+									type="button"
+									onclick={() => handleAcceptProject(project.id)}
+									disabled={acceptingProjectId === project.id}
+									class="inline-flex items-center rounded-md bg-emerald-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+									aria-label="Принять проект {project.value}"
+								>
+									{#if acceptingProjectId === project.id}
+										<svg
+											class="-ml-1 mr-2 h-4 w-4 animate-spin text-white"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+										>
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
+											<path
+												class="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+									{:else}
+										<svg
+											class="-ml-1 mr-2 h-4 w-4 text-white"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											stroke-width="2"
+										>
+											<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"
+											></path>
+										</svg>
+									{/if}
+									Принять
+								</button>
+							{/if}
 						</td>
 
 						<td
@@ -372,15 +451,6 @@
 							</dd>
 						</div>
 						<div>
-							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Агент
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{getAgentDisplay(project.agent)}
-							</dd>
-							<div>
 								<dt
 									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
@@ -394,7 +464,53 @@
 					</dl>
 
 					<!-- Action Buttons -->
-					<div class="flex justify-end border-t border-gray-200 pt-3 dark:border-gray-600">
+					<div
+						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
+					>
+						{#if !isProjectAccepted(project)}
+							<button
+								type="button"
+								onclick={() => handleAcceptProject(project.id)}
+								disabled={acceptingProjectId === project.id}
+								class="inline-flex items-center rounded-md bg-emerald-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-not-allowed disabled:opacity-50"
+								aria-label="Принять проект {project.value}"
+							>
+								{#if acceptingProjectId === project.id}
+									<svg
+										class="-ml-1 mr-2 h-4 w-4 animate-spin text-white"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+									>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
+										<path
+											class="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
+									</svg>
+								{:else}
+									<svg
+										class="-ml-1 mr-2 h-4 w-4 text-white"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										stroke-width="2"
+									>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+									</svg>
+								{/if}
+								Принять
+							</button>
+						{/if}
 						<ActionButtons
 							agent={project}
 							onBan={onEditProject}
@@ -437,12 +553,7 @@
 							>
 								Адрес объекта
 							</th>
-							<th
-								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-							>
-								Агент
-							</th>
+
 							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
 								<span class="sr-only">Действия</span>
 							</th>
@@ -451,7 +562,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if isLoading}
 							<tr>
-								<td colspan="5" class="px-4 py-4 text-center">
+								<td colspan="4" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
 										<div
 											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -461,7 +572,7 @@
 							</tr>
 						{:else if projects.length === 0}
 							<tr>
-								<td colspan="5" class="px-4 py-4">
+								<td colspan="4" class="px-4 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -490,9 +601,7 @@
 									>
 										{truncateText(project.region)}
 									</td>
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white">
-										{getAgentDisplay(project.agent)}
-									</td>
+
 									<td
 										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
 									>
