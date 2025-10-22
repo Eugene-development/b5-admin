@@ -256,92 +256,141 @@
 						<div class="space-y-4">
 							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Файлы и документы</h5>
 
+							<!-- Sketches -->
 							<div>
 								<dt
 									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
-									Эскиз
+									Эскизы ({tz.project?.sketches?.length || 0})
 								</dt>
-								<dd class="mt-1">
-									{#if tz.sketch_file}
-										<div class="flex items-center space-x-2">
-											<button
-												type="button"
-												onclick={() =>
-													handleFileDownload(tz.sketch_file, tz.sketch_filename || 'sketch')}
-												class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+								<dd class="mt-2 space-y-2">
+									{#if tz.project?.sketches && tz.project.sketches.length > 0}
+										{#each tz.project.sketches as sketch}
+											<div
+												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
 											>
-												<svg
-													class="mr-2 h-4 w-4"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
+												<div class="flex items-center space-x-3">
+													<svg
+														class="h-8 w-8 text-blue-600 dark:text-blue-400"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+														/>
+													</svg>
+													<div>
+														<p class="text-sm font-medium text-gray-900 dark:text-white">
+															{sketch.file_name}
+														</p>
+														{#if sketch.file_size}
+															<p class="text-xs text-gray-500 dark:text-gray-400">
+																{(sketch.file_size / 1024 / 1024).toFixed(2)} MB
+															</p>
+														{/if}
+													</div>
+												</div>
+												<button
+													type="button"
+													onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
+													class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
 												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-													/>
-												</svg>
-												Скачать эскиз
-											</button>
-											{#if tz.sketch_filename}
-												<span class="text-sm text-gray-500 dark:text-gray-400"
-													>{tz.sketch_filename}</span
-												>
-											{/if}
-										</div>
+													<svg
+														class="mr-1 h-3 w-3"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+														/>
+													</svg>
+													Скачать
+												</button>
+											</div>
+										{/each}
 									{:else}
 										<p class="text-sm text-gray-500 dark:text-gray-400">
-											Файл эскиза не прикреплен
+											Эскизы не прикреплены
 										</p>
 									{/if}
 								</dd>
 							</div>
 
+							<!-- Offers -->
 							<div>
 								<dt
 									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
-									Коммерческое предложение
+									Коммерческие предложения ({tz.project?.offers?.length || 0})
 								</dt>
-								<dd class="mt-1">
-									{#if tz.commercial_proposal}
-										<div class="flex items-center space-x-2">
-											<button
-												type="button"
-												onclick={() =>
-													handleFileDownload(
-														tz.commercial_proposal,
-														tz.cp_filename || 'commercial_proposal'
-													)}
-												class="inline-flex items-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+								<dd class="mt-2 space-y-2">
+									{#if tz.project?.offers && tz.project.offers.length > 0}
+										{#each tz.project.offers as offer}
+											<div
+												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
 											>
-												<svg
-													class="mr-2 h-4 w-4"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
+												<div class="flex items-center space-x-3">
+													<svg
+														class="h-8 w-8 text-green-600 dark:text-green-400"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+														/>
+													</svg>
+													<div>
+														<p class="text-sm font-medium text-gray-900 dark:text-white">
+															{offer.file_name}
+														</p>
+														<div class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400">
+															{#if offer.file_size}
+																<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
+															{/if}
+															{#if offer.amount}
+																<span>•</span>
+																<span>{offer.amount.toLocaleString('ru-RU')} ₽</span>
+															{/if}
+														</div>
+													</div>
+												</div>
+												<button
+													type="button"
+													onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
+													class="inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-green-500"
 												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-													/>
-												</svg>
-												Скачать КП
-											</button>
-											{#if tz.cp_filename}
-												<span class="text-sm text-gray-500 dark:text-gray-400"
-													>{tz.cp_filename}</span
-												>
-											{/if}
-										</div>
+													<svg
+														class="mr-1 h-3 w-3"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+														/>
+													</svg>
+													Скачать
+												</button>
+											</div>
+										{/each}
 									{:else}
 										<p class="text-sm text-gray-500 dark:text-gray-400">
-											Коммерческое предложение не прикреплено
+											Коммерческие предложения не прикреплены
 										</p>
 									{/if}
 								</dd>

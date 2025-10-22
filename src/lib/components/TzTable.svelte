@@ -132,22 +132,8 @@
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					Эскиз
-				</th>
-				<th
-					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					КП
-				</th>
-				<th
-					scope="col"
 					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 200px; width: 200px;"
+					style="min-width: 250px; width: 250px;"
 				>
 					Действия
 				</th>
@@ -156,7 +142,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="6" class="px-4 py-8 text-center" role="cell">
+					<td colspan="4" class="px-4 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных техзаданий">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -168,7 +154,7 @@
 				</tr>
 			{:else if tzList.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="4" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -198,94 +184,15 @@
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
-							{#if tz.project?.sketches && tz.project.sketches.length > 0}
-								<div class="flex flex-col gap-1">
-									{#each tz.project.sketches as sketch}
-										<button
-											type="button"
-											onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
-											class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-											aria-label="Скачать эскиз {sketch.file_name}"
-										>
-											<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-												/>
-											</svg>
-											{sketch.file_name.length > 15 ? sketch.file_name.substring(0, 15) + '...' : sketch.file_name}
-										</button>
-									{/each}
-								</div>
-							{/if}
-							<button
-								type="button"
-								onclick={() => onUploadSketch && onUploadSketch(tz)}
-								class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 {tz.project?.sketches && tz.project.sketches.length > 0 ? 'mt-1' : ''}"
-								aria-label="Загрузить эскиз"
-							>
-								<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-									/>
-								</svg>
-								Загрузить
-							</button>
-						</td>
-						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
-							{#if tz.project?.offers && tz.project.offers.length > 0}
-								<div class="flex flex-col gap-1">
-									{#each tz.project.offers as offer}
-										<button
-											type="button"
-											onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
-											class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-											aria-label="Скачать КП {offer.file_name}"
-										>
-											<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-												/>
-											</svg>
-											{offer.file_name.length > 15 ? offer.file_name.substring(0, 15) + '...' : offer.file_name}
-										</button>
-									{/each}
-								</div>
-							{/if}
-							<button
-								type="button"
-								onclick={() => onUploadCP && onUploadCP(tz)}
-								class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 {tz.project?.offers && tz.project.offers.length > 0 ? 'mt-1' : ''}"
-								aria-label="Загрузить КП"
-							>
-								<svg class="mr-1 h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-									/>
-								</svg>
-								Загрузить
-							</button>
-						</td>
 						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
-							<div class="flex items-center justify-center space-x-2">
+							<div class="flex items-center justify-center space-x-1">
 								<!-- View Button -->
 								<button
 									type="button"
 									onclick={() => onViewTz && onViewTz(tz)}
 									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
 									aria-label="Просмотреть техзадание {tz.id}"
+									title="Просмотреть"
 								>
 									<svg
 										class="h-4 w-4"
@@ -315,6 +222,7 @@
 									onclick={() => onEditTz && onEditTz(tz)}
 									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 									aria-label="Редактировать техзадание {tz.id}"
+									title="Редактировать"
 								>
 									<svg
 										class="h-4 w-4"
@@ -332,6 +240,52 @@
 										/>
 									</svg>
 								</button>
+								<!-- Upload Sketch Button -->
+								<button
+									type="button"
+									onclick={() => onUploadSketch && onUploadSketch(tz)}
+									class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+									aria-label="Загрузить эскиз"
+									title="Загрузить эскиз"
+								>
+									<svg
+										class="h-4 w-4"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+										/>
+									</svg>
+								</button>
+								<!-- Upload Offer Button -->
+								<button
+									type="button"
+									onclick={() => onUploadCP && onUploadCP(tz)}
+									class="inline-flex items-center rounded-md bg-green-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-green-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+									aria-label="Загрузить КП"
+									title="Загрузить КП"
+								>
+									<svg
+										class="h-4 w-4"
+										xmlns="http://www.w3.org/2000/svg"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+										/>
+									</svg>
+								</button>
 								<!-- Delete Button -->
 								<button
 									type="button"
@@ -339,10 +293,11 @@
 									disabled={isLoading}
 									class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 									aria-label="Удалить техзадание {tz.id}"
+									title="Удалить"
 								>
 									{#if isLoading}
 										<svg
-											class="mr-1 h-3 w-3 animate-spin"
+											class="h-3 w-3 animate-spin"
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
 											viewBox="0 0 24 24"
@@ -439,139 +394,41 @@
 								{tz.comment || 'Нет комментария'}
 							</dd>
 						</div>
-						<div class="grid grid-cols-2 gap-3">
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Эскизы
-								</dt>
-								<dd class="mt-1 flex flex-col gap-1">
-									{#if tz.project?.sketches && tz.project.sketches.length > 0}
-										{#each tz.project.sketches as sketch}
-											<button
-												type="button"
-												onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
-												class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1.5 text-xs font-medium text-blue-800 hover:bg-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-												aria-label="Скачать эскиз {sketch.file_name}"
-											>
-												<svg
-													class="mr-1 h-3 w-3"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-													/>
-												</svg>
-												{sketch.file_name}
-											</button>
-										{/each}
-									{/if}
-									<button
-										type="button"
-										onclick={() => onUploadSketch && onUploadSketch(tz)}
-										class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-										aria-label="Загрузить эскиз"
-									>
-										<svg
-											class="mr-1 h-3 w-3"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-											/>
-										</svg>
-										Загрузить
-									</button>
-								</dd>
-							</div>
-							<div>
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									КП
-								</dt>
-								<dd class="mt-1 flex flex-col gap-1">
-									{#if tz.project?.offers && tz.project.offers.length > 0}
-										{#each tz.project.offers as offer}
-											<button
-												type="button"
-												onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
-												class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1.5 text-xs font-medium text-green-800 hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-												aria-label="Скачать КП {offer.file_name}"
-											>
-												<svg
-													class="mr-1 h-3 w-3"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-													/>
-												</svg>
-												{offer.file_name}
-											</button>
-										{/each}
-									{/if}
-									<button
-										type="button"
-										onclick={() => onUploadCP && onUploadCP(tz)}
-										class="inline-flex items-center rounded-md bg-indigo-100 px-2.5 py-1.5 text-xs font-medium text-indigo-800 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-										aria-label="Загрузить КП"
-									>
-										<svg
-											class="mr-1 h-3 w-3"
-											fill="none"
-											stroke="currentColor"
-											viewBox="0 0 24 24"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-											/>
-										</svg>
-										Загрузить
-									</button>
-								</dd>
-							</div>
+						<div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Файлы
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{#if tz.project?.sketches && tz.project.sketches.length > 0}
+									<span class="text-blue-600 dark:text-blue-400">{tz.project.sketches.length} эскиз(ов)</span>
+								{:else}
+									<span class="text-gray-500">Нет эскизов</span>
+								{/if}
+								{' • '}
+								{#if tz.project?.offers && tz.project.offers.length > 0}
+									<span class="text-green-600 dark:text-green-400">{tz.project.offers.length} КП</span>
+								{:else}
+									<span class="text-gray-500">Нет КП</span>
+								{/if}
+							</dd>
 						</div>
 					</dl>
 
 					<!-- Actions -->
 					<div
-						class="flex items-center justify-end space-x-2 border-t border-gray-200 pt-3 dark:border-gray-600"
+						class="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
 						<!-- View Button -->
 						<button
 							type="button"
 							onclick={() => onViewTz && onViewTz(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-							aria-label="Просмотреть техзадание {tz.id}"
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500"
+							aria-label="Просмотреть"
+							title="Просмотреть"
 						>
-							<svg
-								class="h-5 w-5"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
-							>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -590,17 +447,11 @@
 						<button
 							type="button"
 							onclick={() => onEditTz && onEditTz(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-							aria-label="Редактировать техзадание {tz.id}"
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500"
+							aria-label="Редактировать"
+							title="Редактировать"
 						>
-							<svg
-								class="h-5 w-5"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
-							>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path
 									stroke-linecap="round"
 									stroke-linejoin="round"
@@ -609,53 +460,57 @@
 								/>
 							</svg>
 						</button>
+						<!-- Upload Sketch Button -->
+						<button
+							type="button"
+							onclick={() => onUploadSketch && onUploadSketch(tz)}
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500"
+							aria-label="Загрузить эскиз"
+							title="Загрузить эскиз"
+						>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+								/>
+							</svg>
+						</button>
+						<!-- Upload Offer Button -->
+						<button
+							type="button"
+							onclick={() => onUploadCP && onUploadCP(tz)}
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-green-500"
+							aria-label="Загрузить КП"
+							title="Загрузить КП"
+						>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+								/>
+							</svg>
+						</button>
 						<!-- Delete Button -->
 						<button
 							type="button"
 							onclick={() => onDeleteTz && onDeleteTz(tz)}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-							aria-label="Удалить техзадание {tz.id}"
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
+							aria-label="Удалить"
+							title="Удалить"
 						>
-							{#if isLoading}
-								<svg
-									class="mr-2 h-4 w-4 animate-spin"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									aria-hidden="true"
-								>
-									<circle
-										class="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										stroke-width="4"
-									></circle>
-									<path
-										class="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-									></path>
-								</svg>
-							{:else}
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-									/>
-								</svg>
-							{/if}
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+								/>
+							</svg>
 						</button>
 					</div>
 				</div>
