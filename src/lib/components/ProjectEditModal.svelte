@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { getProjectStatuses } from '$lib/api/projectStatuses.js';
 
 	/**
 	 * ProjectEditModal Component
@@ -19,9 +20,14 @@
 	let firstInputElement = $state();
 	let previousActiveElement;
 
+	// Project statuses state
+	let projectStatuses = $state([]);
+	let isLoadingStatuses = $state(false);
+
 	// Form data state
 	let formData = $state({
 		name: '',
+		status_id: '',
 		region: '',
 		description: '',
 		contract_number: '',
@@ -37,11 +43,24 @@
 	// Поля необязательные: валидность зависит только от отсутствия ошибок формата
 	let isFormValid = $derived(Object.keys(errors).length === 0);
 
+	// Load project statuses on mount
+	onMount(async () => {
+		isLoadingStatuses = true;
+		try {
+			projectStatuses = await getProjectStatuses();
+		} catch (error) {
+			console.error('Failed to load project statuses:', error);
+		} finally {
+			isLoadingStatuses = false;
+		}
+	});
+
 	// Initialize form data when project changes
 	$effect(() => {
 		if (project && isOpen) {
 			formData = {
 				name: project.value || '', // map value to name for UI
+				status_id: project.status_id || '',
 				region: project.region || '',
 				description: project.description || '',
 				contract_number: project.contract_name || '', // map contract_name to contract_number for UI
@@ -87,6 +106,8 @@
 
 			const nameTrimmed = (formData.name || '').trim();
 			if (nameTrimmed !== '') updatedData.value = nameTrimmed;
+
+			if (formData.status_id) updatedData.status_id = formData.status_id;
 
 			const regionTrimmed = (formData.region || '').trim();
 			if (regionTrimmed !== '') updatedData.region = regionTrimmed;
@@ -303,6 +324,28 @@
 								{errors.name}
 							</p>
 						{/if}
+					</div>
+
+					<!-- Project Status -->
+					<div>
+						<label
+							for="project-status"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
+							Статус проекта
+						</label>
+						<select
+							id="project-status"
+							value={formData.status_id}
+							onchange={(e) => handleInputChange('status_id', e.target.value)}
+							disabled={isLoading || isLoadingStatuses}
+							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+						>
+							<option value="">Выберите статус</option>
+							{#each projectStatuses.filter((s) => s.is_active).sort((a, b) => a.sort_order - b.sort_order) as status}
+								<option value={status.id}>{status.value}</option>
+							{/each}
+						</select>
 					</div>
 
 					<!-- Region -->

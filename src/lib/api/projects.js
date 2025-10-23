@@ -82,6 +82,8 @@ const UPDATE_PROJECT_MUTATION = gql`
 				description
 				color
 				icon
+				sort_order
+				is_default
 				is_active
 			}
 			region

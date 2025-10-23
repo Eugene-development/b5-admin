@@ -124,6 +124,18 @@
 		return project.users[0]; // Return first user who accepted
 	}
 
+	// Check if project can be accepted (only new projects can be accepted)
+	function canAcceptProject(project) {
+		// Show accept button only if:
+		// 1. Project is not accepted yet
+		// 2. Project status is "Новый проект" (slug: 'new-project')
+		return (
+			!isProjectAccepted(project) &&
+			project.status &&
+			project.status.slug === 'new-project'
+		);
+	}
+
 	// Handle accept project
 	async function handleAcceptProject(projectId, event) {
 		// Prevent event bubbling to avoid triggering other buttons
@@ -309,7 +321,7 @@
 						</td>
 
 						<td class="whitespace-nowrap px-6 py-4 text-center" role="cell" headers="col-accept">
-							{#if !isProjectAccepted(project)}
+							{#if canAcceptProject(project)}
 								<button
 									type="button"
 									onclick={(event) => handleAcceptProject(project.id, event)}
@@ -469,8 +481,7 @@
 					<div
 						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
-						>
-						{#if !isProjectAccepted(project)}
+						{#if canAcceptProject(project)}
 							<button
 								type="button"
 								onclick={(event) => handleAcceptProject(project.id, event)}
