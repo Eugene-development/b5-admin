@@ -388,7 +388,7 @@
 				<h1 class="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:truncate sm:text-3xl">
 					Заказы
 				</h1>
-				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+				<p class="hidden sm:block mt-1 text-sm text-gray-500 dark:text-gray-400">
 					Управление заказами и их статусами
 				</p>
 			</div>
@@ -460,7 +460,7 @@
 							d="M12 4v16m8-8H4"
 						/>
 					</svg>
-					Добавить заказ
+					Добавить
 				</button>
 			</div>
 		</div>

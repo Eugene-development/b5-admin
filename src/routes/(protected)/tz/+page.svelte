@@ -339,7 +339,7 @@
 							>
 								Техзадания
 							</h1>
-							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+							<p class="hidden sm:block mt-1 text-sm text-gray-500 dark:text-gray-400">
 								Управление техническими заданиями и спецификациями
 							</p>
 						</div>
@@ -411,7 +411,7 @@
 										d="M12 4v16m8-8H4"
 									/>
 								</svg>
-								Создать ТЗ
+								Создать
 							</button>
 						</div>
 					</div>
