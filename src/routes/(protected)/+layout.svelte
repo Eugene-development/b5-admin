@@ -109,7 +109,9 @@
 			if (success) {
 				addSuccessToast('Вы успешно вышли из системы');
 				showLogoutModal = false;
-				goto('/login');
+				// Use window.location instead of goto to force full page reload
+				// This ensures cookies are properly cleared by the server
+				window.location.href = '/login';
 			} else {
 				addErrorToast('Произошла ошибка при выходе из системы');
 				showLogoutModal = false;

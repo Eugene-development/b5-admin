@@ -163,9 +163,9 @@
 				isRedirecting = true;
 				redirectMessage = 'Перенаправление на главную страницу...';
 
-				// Add a small delay to show the redirect message
+				// Use window.location to force full page reload and clear cookies
 				setTimeout(() => {
-					goto('/');
+					window.location.href = '/';
 				}, 1000);
 			} else {
 				authError = 'Произошла ошибка при выходе из системы';
@@ -180,7 +180,7 @@
 			isRedirecting = true;
 			redirectMessage = 'Перенаправление на главную страницу...';
 			setTimeout(() => {
-				goto('/');
+				window.location.href = '/';
 			}, 2000);
 		} finally {
 			isLogoutLoading = false;
