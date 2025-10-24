@@ -101,7 +101,7 @@
 
 			<!-- Modal panel -->
 			<div
-				class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				onclick={handleModalClick}
 				onkeydown={handleKeydown}
 				tabindex="0"
