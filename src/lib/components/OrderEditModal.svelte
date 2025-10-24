@@ -248,7 +248,7 @@
 									bind:value={formData.company_id}
 									disabled={isLoading}
 									required
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								>
 									<option value="">Не указан</option>
 									{#each companies as company}
@@ -269,7 +269,7 @@
 									bind:value={formData.project_id}
 									disabled={isLoading}
 									required
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								>
 									<option value="">Не указан</option>
 									{#each projects as project}
@@ -292,7 +292,7 @@
 								bind:value={formData.order_number}
 								disabled={isLoading}
 								readonly
-								class="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							/>
 							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
 								Номер заказа нельзя изменить
@@ -312,7 +312,7 @@
 								disabled={isLoading}
 								rows="3"
 								placeholder="Не указан"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							></textarea>
 						</div>
 
@@ -329,7 +329,7 @@
 									id="delivery-date"
 									bind:value={formData.delivery_date}
 									disabled={isLoading}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								/>
 							</div>
 
@@ -345,7 +345,7 @@
 									id="actual-delivery-date"
 									bind:value={formData.actual_delivery_date}
 									disabled={isLoading}
-									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								/>
 							</div>
 						</div>
@@ -448,7 +448,7 @@
 													oninput={(e) => updatePosition(position.id, 'value', e.target.value)}
 													disabled={isLoading}
 													required
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
 
@@ -463,7 +463,7 @@
 													oninput={(e) => updatePosition(position.id, 'article', e.target.value)}
 													disabled={isLoading}
 													required
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
 
@@ -480,7 +480,7 @@
 													required
 													min="0"
 													step="1"
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
 
@@ -496,7 +496,7 @@
 													disabled={isLoading}
 													required
 													min="1"
-													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+													class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 												/>
 											</div>
 										</div>
