@@ -174,14 +174,14 @@
 			aria-label="Close mobile menu"
 		></div>
 		<div
-			class="fixed inset-y-0 left-0 z-50 w-full max-w-xs bg-white px-6 py-4 dark:bg-gray-950"
+			class="fixed inset-y-0 left-0 z-50 flex w-full max-w-xs flex-col border-r border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950"
 			onclick={handleMenuClick}
 			onkeydown={handleBackdropKeydown}
 			role="dialog"
 			aria-label="Mobile navigation menu"
 			tabindex="0"
 		>
-			<div class="flex items-center justify-between">
+			<div class="flex shrink-0 items-center justify-between px-6 py-4">
 				<!-- <div class="flex h-16 shrink-0 items-center">
 					<img
 						src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
@@ -216,7 +216,7 @@
 
 			<!-- Navigation content -->
 			<nav
-				class="mt-8 flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
+				class="flex flex-1 flex-col overflow-y-auto overflow-x-hidden px-6"
 			>
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li>
