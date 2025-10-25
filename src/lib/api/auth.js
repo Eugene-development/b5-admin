@@ -109,13 +109,16 @@ export async function registerUser(userData) {
  */
 export async function logoutUser() {
 	try {
+		console.log('🚪 Calling logout API...');
 		const response = await post(API_CONFIG.endpoints.logout, {}, {}, true);
+		console.log('🚪 Logout API response:', response);
 
 		return {
 			success: true,
 			message: response.message || 'Logout successful'
 		};
 	} catch (error) {
+		console.error('🚪 Logout API error:', error);
 		// Even if logout fails on server, we consider it successful locally
 		return {
 			success: true,

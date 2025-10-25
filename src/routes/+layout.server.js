@@ -27,8 +27,8 @@ export async function load({ fetch, cookies, request }) {
 		console.log('🔑 Session cookie:', sessionCookie ? 'present' : 'missing');
 		console.log('🔑 XSRF token:', xsrfToken ? 'present' : 'missing');
 
-		// If no session cookie, user is not authenticated
-		if (!sessionCookie) {
+		// If no session cookie or empty session cookie, user is not authenticated
+		if (!sessionCookie || sessionCookie.trim() === '') {
 			console.log('🔒 No session cookie found - user not authenticated');
 			return {
 				user: null,
@@ -36,10 +36,19 @@ export async function load({ fetch, cookies, request }) {
 			};
 		}
 
-		// Build cookie header from all cookies
-		const cookieHeader = allCookies.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
+		// Build cookie header with only necessary cookies
+		// Only include session and XSRF cookies to avoid creating new sessions
+		const cookiesToSend = [];
+		if (sessionCookie) {
+			cookiesToSend.push(`b5_auth_2_session=${sessionCookie}`);
+		}
+		if (xsrfToken) {
+			cookiesToSend.push(`XSRF-TOKEN=${xsrfToken}`);
+		}
+		const cookieHeader = cookiesToSend.join('; ');
 
 		console.log('📤 Making request to:', `${AUTH_API_URL}/api/user`);
+		console.log('📤 Sending cookies:', cookieHeader);
 
 		// Try to get current user data from API using session cookie
 		const response = await fetch(`${AUTH_API_URL}/api/user`, {
@@ -69,6 +78,13 @@ export async function load({ fetch, cookies, request }) {
 		} else {
 			const errorText = await response.text();
 			console.log('❌ Session invalid or expired:', response.status, errorText);
+			
+			// If session is invalid (401/403), explicitly delete the cookie
+			if (response.status === 401 || response.status === 403) {
+				console.log('🗑️ Deleting invalid session cookie');
+				cookies.delete('b5_auth_2_session', { path: '/' });
+			}
+			
 			return {
 				user: null,
 				isAuthenticated: false

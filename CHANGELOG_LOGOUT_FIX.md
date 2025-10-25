@@ -14,7 +14,44 @@
 
 ## Решение
 
-### 1. Замена `goto()` на `window.location.href`
+### 1. Исправление Laravel API logout (b5-auth-2)
+Добавили явное удаление session cookie в ответе API с поддержкой localhost:
+
+**Файл:** `b5-auth-2/app/Http/Controllers/AuthController.php`
+
+**Изменения:**
+- Добавлено логирование процесса logout
+- Специальная обработка для localhost (domain=null)
+- Явное удаление cookies через `response()->cookie()` с отрицательным временем жизни
+- Удаление как session cookie, так и XSRF-TOKEN
+- Добавлена обработка ошибок с логированием
+
+**Ключевое исправление для localhost:**
+```php
+// Для localhost не устанавливаем domain
+$isLocalhost = in_array($request->getHost(), ['localhost', '127.0.0.1', '::1']);
+$cookieDomain = $isLocalhost ? null : $sessionDomain;
+
+// Устанавливаем cookie с отрицательным временем жизни
+$response->cookie(
+    $sessionName,
+    '',
+    -2628000, // Expire 5 years ago
+    $sessionPath,
+    $cookieDomain, // null для localhost
+    ...
+);
+```
+
+### 2. Улучшение серверной проверки (b5-admin)
+Добавили обработку невалидных cookies в `+layout.server.js`:
+
+**Изменения:**
+- Проверка на пустой session cookie
+- Явное удаление cookie при получении 401/403 от API
+- Улучшенное логирование
+
+### 3. Замена `goto()` на `window.location.href`
 Заменили все вызовы `goto()` после logout на `window.location.href`, чтобы принудительно выполнить полную перезагрузку страницы:
 
 **Измененные файлы:**
