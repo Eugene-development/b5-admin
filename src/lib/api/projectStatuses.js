@@ -52,7 +52,7 @@ async function makeGraphQLRequest(
 					variables
 				}),
 				signal: controller.signal,
-				credentials: 'omit'
+				credentials: 'include'
 			});
 
 			clearTimeout(timeoutId);

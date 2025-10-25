@@ -170,8 +170,7 @@ async function makeGraphQLRequest(
 					variables
 				}),
 				signal: controller.signal,
-				// Temporarily disable credentials to avoid CORS issues
-				credentials: 'omit'
+				credentials: 'include'
 			});
 
 			clearTimeout(timeoutId);

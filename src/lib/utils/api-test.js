@@ -19,7 +19,7 @@ export async function testGraphQLConnection() {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
 			},
-			credentials: 'omit', // Temporarily disable credentials to avoid CORS issues
+			credentials: 'include',
 			body: JSON.stringify({
 				query: '{ __schema { types { name } } }'
 			})

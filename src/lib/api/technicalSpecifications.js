@@ -215,7 +215,7 @@ async function makeGraphQLRequest(
 					variables
 				}),
 				signal: controller.signal,
-				credentials: 'omit'
+				credentials: 'include'
 			});
 
 			clearTimeout(timeoutId);
@@ -386,7 +386,7 @@ export async function uploadSketchFile(projectId, file) {
 		const response = await fetch(GRAPHQL_ENDPOINT, {
 			method: 'POST',
 			body: formData,
-			credentials: 'omit'
+			credentials: 'include'
 		});
 
 		if (!response.ok) {
@@ -423,7 +423,7 @@ export async function uploadOfferFile(projectId, file) {
 		const response = await fetch(GRAPHQL_ENDPOINT, {
 			method: 'POST',
 			body: formData,
-			credentials: 'omit'
+			credentials: 'include'
 		});
 
 		if (!response.ok) {
