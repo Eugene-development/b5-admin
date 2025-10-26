@@ -2,7 +2,6 @@
 	import StatusBadge from './StatusBadge.svelte';
 	import ActionButtons from './ActionButtons.svelte';
 	import EmptyState from './EmptyState.svelte';
-	import { acceptProject } from '$lib/api/projects.js';
 
 	let {
 		projects = [],
@@ -153,15 +152,13 @@
 
 		try {
 			acceptingProjectId = projectId;
-			await acceptProject(projectId, currentUserId);
-
-			// Call parent callback if provided
+			
+			// Call parent callback which handles the actual API call
 			if (onAcceptProject) {
 				await onAcceptProject(projectId);
 			}
 		} catch (error) {
 			console.error('Failed to accept project:', error);
-			// You can add toast notification here
 		} finally {
 			acceptingProjectId = null;
 		}
@@ -317,11 +314,12 @@
 							role="cell"
 							headers="col-status"
 						>
-							{getStatusDisplay(project.status)}
+							<StatusBadge status={project.status} />
 						</td>
 
 						<td class="whitespace-nowrap px-6 py-4 text-center" role="cell" headers="col-accept">
-							{#if canAcceptProject(project)}
+							<!-- TODO: Temporarily disabled - will be fixed later -->
+							<!-- {#if canAcceptProject(project)}
 								<button
 									type="button"
 									onclick={(event) => handleAcceptProject(project.id, event)}
@@ -365,7 +363,7 @@
 									{/if}
 									Принять
 								</button>
-							{/if}
+							{/if} -->
 						</td>
 
 						<td
@@ -471,8 +469,8 @@
 							>
 								Статус
 							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{getStatusDisplay(project.status)}
+							<dd class="mt-1">
+								<StatusBadge status={project.status} />
 							</dd>
 						</div>
 					</dl>
@@ -481,7 +479,8 @@
 					<div
 						class="flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
-						{#if canAcceptProject(project)}
+						<!-- TODO: Temporarily disabled - will be fixed later -->
+						<!-- {#if canAcceptProject(project)}
 							<button
 								type="button"
 								onclick={(event) => handleAcceptProject(project.id, event)}
@@ -524,7 +523,7 @@
 								{/if}
 								Принять
 							</button>
-						{/if}
+						{/if} -->
 						<ActionButtons
 							agent={project}
 							onBan={onEditProject}

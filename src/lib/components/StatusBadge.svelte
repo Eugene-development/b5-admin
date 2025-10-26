@@ -5,17 +5,40 @@
 	 * A reusable badge component for displaying status indicators with proper
 	 * color coding and accessibility features.
 	 *
-	 * @param {string} status - The status to display ('verified', 'unverified', 'banned')
+	 * @param {string|object} status - The status to display (string or object with slug/value)
 	 * @param {string} [text] - Optional custom text to display (defaults to status)
 	 * @param {string} [size='sm'] - Size variant ('xs', 'sm', 'md')
 	 */
 	let { status, text = null, size = 'sm' } = $props();
 
+	// Get status slug from status object or string
+	function getStatusSlug(status) {
+		if (typeof status === 'object' && status !== null) {
+			return status.slug || '';
+		}
+		return status || '';
+	}
+
+	// Get status value from status object or string
+	function getStatusValue(status) {
+		if (typeof status === 'object' && status !== null) {
+			return status.value || '';
+		}
+		return status || '';
+	}
+
 	// Get the display text for the badge
 	function getDisplayText(status, customText) {
 		if (customText) return customText;
 
-		switch (status) {
+		const statusSlug = getStatusSlug(status);
+		const statusValue = getStatusValue(status);
+
+		// For project statuses, use the value from the status object
+		if (statusValue) return statusValue;
+
+		// For legacy user statuses
+		switch (statusSlug) {
 			case 'verified':
 				return '+';
 			case 'unverified':
@@ -23,7 +46,7 @@
 			case 'banned':
 				return 'Забанен';
 			default:
-				return status;
+				return statusSlug || 'Не указан';
 		}
 	}
 
@@ -31,7 +54,14 @@
 	function getAccessibleDescription(status, customText) {
 		if (customText) return customText;
 
-		switch (status) {
+		const statusSlug = getStatusSlug(status);
+		const statusValue = getStatusValue(status);
+
+		// For project statuses, use the value
+		if (statusValue) return statusValue;
+
+		// For legacy user statuses
+		switch (statusSlug) {
 			case 'verified':
 				return 'Email verified';
 			case 'unverified':
@@ -39,7 +69,7 @@
 			case 'banned':
 				return 'Account banned';
 			default:
-				return status;
+				return statusSlug || 'Не указан';
 		}
 	}
 
@@ -56,17 +86,32 @@
 			md: 'px-2.5 py-1.5 text-sm'
 		};
 
+		const statusSlug = getStatusSlug(status);
+
 		// Status-specific color classes
 		const statusClasses = {
+			// User statuses
 			verified:
 				'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20',
 			unverified:
 				'bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20',
 			banned:
+				'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20',
+			
+			// Project statuses
+			'new-project':
+				'bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-400/10 dark:text-emerald-400 dark:ring-emerald-400/20',
+			'curator-processing':
+				'bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/20',
+			'in-progress':
+				'bg-yellow-50 text-yellow-700 ring-yellow-600/20 dark:bg-yellow-400/10 dark:text-yellow-400 dark:ring-yellow-400/20',
+			'completed':
+				'bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20',
+			'cancelled':
 				'bg-red-50 text-red-700 ring-red-600/20 dark:bg-red-400/10 dark:text-red-400 dark:ring-red-400/20'
 		};
 
-		return `${baseClasses} ${sizeClasses[size] || sizeClasses.sm} ${statusClasses[status] || statusClasses.unverified}`;
+		return `${baseClasses} ${sizeClasses[size] || sizeClasses.sm} ${statusClasses[statusSlug] || statusClasses.unverified}`;
 	}
 
 	// Computed values using Svelte 5 runes

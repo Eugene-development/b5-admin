@@ -110,8 +110,8 @@ const DELETE_PROJECT_MUTATION = gql`
 `;
 
 const ACCEPT_PROJECT_MUTATION = gql`
-	mutation AcceptProject($projectId: ID!, $userId: ID!) {
-		acceptProject(projectId: $projectId, userId: $userId) {
+	mutation AcceptProject($projectId: ID!, $userId: ID!, $statusId: ID) {
+		acceptProject(projectId: $projectId, userId: $userId, statusId: $statusId) {
 			id
 			user_id
 			project_id
@@ -283,19 +283,26 @@ export async function deleteProject(projectId, customFetch = null, cookies = nul
 }
 
 // Function to accept a project (link user to project)
-export async function acceptProject(projectId, userId, customFetch = null, cookies = null) {
+export async function acceptProject(projectId, userId, statusId = null, customFetch = null, cookies = null) {
 	try {
+		console.log('🎯 acceptProject called with:', { projectId, userId, statusId });
 		const result = await makeGraphQLRequest(
 			ACCEPT_PROJECT_MUTATION,
-			{ projectId, userId },
+			{ projectId, userId, statusId },
 			'acceptProject',
 			3,
 			customFetch,
 			cookies
 		);
+		console.log('✅ acceptProject result:', result);
 		return result.acceptProject;
 	} catch (err) {
-		console.error('Accept project failed:', err);
+		console.error('❌ Accept project failed:', err);
+		console.error('Error details:', {
+			message: err.message,
+			stack: err.stack,
+			response: err.response
+		});
 		throw err;
 	}
 }
@@ -376,7 +383,7 @@ export function createProjectsApiWithFetch(fetch, cookies) {
 		getProjects: (first, page) => getProjects(first, page, fetch, cookies),
 		updateProject: (projectData) => updateProject(projectData, fetch, cookies),
 		deleteProject: (projectId) => deleteProject(projectId, fetch, cookies),
-		acceptProject: (projectId, userId) => acceptProject(projectId, userId, fetch, cookies),
+		acceptProject: (projectId, userId, statusId) => acceptProject(projectId, userId, statusId, fetch, cookies),
 		refreshProjects: (first, page) => refreshProjects(first, page, fetch, cookies),
 		getAllProjects: (first, page) => getAllProjects(first, page, fetch, cookies),
 		getProjectsWithPagination: (first, page) =>

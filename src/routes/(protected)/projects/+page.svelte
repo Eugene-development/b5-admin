@@ -25,6 +25,7 @@
 		refreshProjects,
 		acceptProject
 	} from '$lib/api/projects.js';
+	import { getProjectStatuses } from '$lib/api/projectStatuses.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 
@@ -58,6 +59,10 @@
 
 	// Local state for accepted projects (to show immediately in modal)
 	let acceptedProjects = $state(new Map()); // Map<projectId, {user, acceptedAt}>
+
+	// Project statuses state
+	let projectStatuses = $state([]);
+	let curatorAcceptedStatusId = $state(null);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
@@ -205,10 +210,17 @@
 			return;
 		}
 
+		// Hardcoded status ID for "Принят куратором"
+		const CURATOR_ACCEPTED_STATUS_ID = '01K7HRKV20QE6K37YY18D206NQ';
+
 		try {
 			await retryOperation(
 				async () => {
-					await acceptProject(projectId, authState.user.id);
+					console.log(
+						'🔥 Calling acceptProject with hardcoded statusId:',
+						CURATOR_ACCEPTED_STATUS_ID
+					);
+					await acceptProject(projectId, authState.user.id, CURATOR_ACCEPTED_STATUS_ID);
 
 					// Immediately add to local accepted projects state
 					acceptedProjects.set(projectId, {
@@ -304,9 +316,24 @@
 	}
 
 	// Handle initial load error and load data if empty
-	onMount(() => {
+	onMount(async () => {
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
+		}
+
+		// Load project statuses
+		try {
+			projectStatuses = await getProjectStatuses();
+			// Find "Принят куратором" status
+			const curatorStatus = projectStatuses.find((s) => s.slug === 'curator-processing');
+			if (curatorStatus) {
+				curatorAcceptedStatusId = curatorStatus.id;
+				console.log('✅ Found curator-processing status:', curatorStatus);
+			} else {
+				console.warn('⚠️ curator-processing status not found in statuses');
+			}
+		} catch (error) {
+			console.error('Failed to load project statuses:', error);
 		}
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
