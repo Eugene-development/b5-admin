@@ -18,16 +18,13 @@
 	import { goto } from '$app/navigation';
 	import { page, navigating } from '$app/stores';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
-	import { getProjectsWithPagination } from '$lib/api/projects.js';
+	import { newProjectsCountState } from '$lib/state/newProjectsCount.svelte.js';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
 
 	// State for logout confirmation modal
 	let showLogoutModal = $state(false);
-
-	// State for new projects count
-	let newProjectsCount = $state(0);
 
 	// Get navigation visibility reactively
 	const navigationVisibility = $derived(getNavigationVisibility());
@@ -51,33 +48,15 @@
 
 	// Get new projects tooltip text
 	const newProjectsTooltip = $derived(
-		`${newProjectsCount} ${newProjectsCount === 1 ? 'новый' : 'новых'} ${getProjectsPlural(newProjectsCount)}`
+		`${newProjectsCountState.count} ${newProjectsCountState.count === 1 ? 'новый' : 'новых'} ${getProjectsPlural(newProjectsCountState.count)}`
 	);
-
-	// Load new projects count
-	async function loadNewProjectsCount() {
-		try {
-			const projectsResult = await getProjectsWithPagination(1000, 1);
-			const projects = projectsResult.data || [];
-			
-			// Count projects with status slug 'new-project'
-			const count = projects.filter(
-				(project) => project.status && project.status.slug === 'new-project'
-			).length;
-			
-			newProjectsCount = count;
-		} catch (error) {
-			console.error('Failed to load new projects count:', error);
-			newProjectsCount = 0;
-		}
-	}
 
 	// Load new projects count on mount
 	onMount(() => {
-		loadNewProjectsCount();
+		newProjectsCountState.load();
 		
 		// Refresh count every 5 minutes
-		const interval = setInterval(loadNewProjectsCount, 5 * 60 * 1000);
+		const interval = setInterval(() => newProjectsCountState.refresh(), 5 * 60 * 1000);
 		
 		return () => clearInterval(interval);
 	});
@@ -725,7 +704,7 @@
 									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
 										<span class={getSpanIconClasses('/projects')}>Пр</span>
 										<span class="truncate">Проекты</span>
-										{#if newProjectsCount > 0}
+										{#if newProjectsCountState.count > 0}
 											<span
 												class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
 												title={newProjectsTooltip}

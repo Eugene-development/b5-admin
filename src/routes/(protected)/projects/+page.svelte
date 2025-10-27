@@ -28,6 +28,7 @@
 	import { getProjectStatuses } from '$lib/api/projectStatuses.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
+	import { newProjectsCountState } from '$lib/state/newProjectsCount.svelte.js';
 
 	let { data } = $props();
 
@@ -144,6 +145,8 @@
 						await deleteProject(project.id);
 						removeProjectFromList(project.id);
 						addSuccessToast(`Проект "${project.value}" успешно удален.`);
+						// Refresh new projects count in sidebar (in case deleted project was new)
+						await newProjectsCountState.refresh();
 					}
 				},
 				2,
@@ -177,6 +180,8 @@
 					const updatedProject = await updateProject(updatedProjectData);
 					updateProjectInList(updatedProject);
 					addSuccessToast(`Проект "${updatedProject.value}" успешно обновлен.`);
+					// Refresh new projects count in sidebar (in case status changed)
+					await newProjectsCountState.refresh();
 				},
 				2,
 				1000
@@ -236,6 +241,8 @@
 					addSuccessToast('Вы успешно приняли проект');
 					// Silently refresh data in background without showing loading state
 					await silentRefreshData();
+					// Refresh new projects count in sidebar
+					await newProjectsCountState.refresh();
 				},
 				2,
 				1000
