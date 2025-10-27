@@ -63,6 +63,7 @@
 	// Project statuses state
 	let projectStatuses = $state([]);
 	let curatorAcceptedStatusId = $state(null);
+	let isLoadingStatuses = $state(false);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
@@ -315,13 +316,9 @@
 		await refreshData();
 	}
 
-	// Handle initial load error and load data if empty
-	onMount(async () => {
-		if (loadError) {
-			addErrorToast(loadError.message, { duration: 0 });
-		}
-
-		// Load project statuses
+	// Load project statuses immediately
+	async function loadProjectStatuses() {
+		isLoadingStatuses = true;
 		try {
 			projectStatuses = await getProjectStatuses();
 			// Find "Принят куратором" status
@@ -334,7 +331,20 @@
 			}
 		} catch (error) {
 			console.error('Failed to load project statuses:', error);
+			addErrorToast('Не удалось загрузить статусы проектов');
+		} finally {
+			isLoadingStatuses = false;
 		}
+	}
+
+	// Handle initial load error and load data if empty
+	onMount(async () => {
+		if (loadError) {
+			addErrorToast(loadError.message, { duration: 0 });
+		}
+
+		// Load project statuses immediately on page load
+		await loadProjectStatuses();
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (!localProjects.length && !loadError) {
@@ -500,6 +510,8 @@
 	<ProjectEditModal
 		isOpen={showEditModal}
 		project={editingProject}
+		{projectStatuses}
+		{isLoadingStatuses}
 		onSave={handleSaveProject}
 		onCancel={handleCancelEditProject}
 		isLoading={isActionLoading}

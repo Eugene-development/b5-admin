@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { getProjectStatuses } from '$lib/api/projectStatuses.js';
 
 	/**
 	 * ProjectEditModal Component
@@ -10,19 +9,25 @@
 	 *
 	 * @param {boolean} isOpen - Controls modal visibility
 	 * @param {Object} project - The project object to edit
+	 * @param {Array} projectStatuses - List of available project statuses
+	 * @param {boolean} isLoadingStatuses - Loading state for statuses
 	 * @param {Function} onSave - Callback function for saving changes
 	 * @param {Function} onCancel - Callback function for cancellation
 	 * @param {boolean} [isLoading=false] - Loading state for save button
 	 */
-	let { isOpen = false, project = null, onSave, onCancel, isLoading = false } = $props();
+	let {
+		isOpen = false,
+		project = null,
+		projectStatuses = [],
+		isLoadingStatuses = false,
+		onSave,
+		onCancel,
+		isLoading = false
+	} = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
 	let previousActiveElement;
-
-	// Project statuses state
-	let projectStatuses = $state([]);
-	let isLoadingStatuses = $state(false);
 
 	// Form data state
 	let formData = $state({
@@ -42,18 +47,6 @@
 	let errors = $state({});
 	// Поля необязательные: валидность зависит только от отсутствия ошибок формата
 	let isFormValid = $derived(Object.keys(errors).length === 0);
-
-	// Load project statuses on mount
-	onMount(async () => {
-		isLoadingStatuses = true;
-		try {
-			projectStatuses = await getProjectStatuses();
-		} catch (error) {
-			console.error('Failed to load project statuses:', error);
-		} finally {
-			isLoadingStatuses = false;
-		}
-	});
 
 	// Initialize form data when project changes
 	$effect(() => {
