@@ -319,16 +319,93 @@
 						</div>
 					</div>
 
-					<!-- CTA -->
-					<div class="mt-12 rounded-2xl bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 p-8 text-center dark:from-pink-700 dark:via-purple-700 dark:to-indigo-700">
-						<h3 class="mb-4 text-2xl font-bold text-white md:text-3xl">Готовы начать?</h3>
-						<p class="mb-6 text-lg text-white/90">Присоединяйтесь к РУБОНУС и развивайте свой бизнес вместе с нами</p>
-						<a
-							href="/register"
-							class="inline-block transform rounded-xl bg-white px-8 py-4 text-lg font-semibold text-purple-600 transition-all duration-300 hover:scale-105 hover:shadow-xl"
-						>
-							Зарегистрироваться сейчас
-						</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Секция: Регистрация -->
+	<section
+		id="register"
+		class="flex min-h-screen items-center justify-center p-4"
+	>
+		<div class="w-full max-w-6xl">
+			<div
+				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
+			>
+				<div class="mx-auto max-w-3xl text-center">
+					<!-- Заголовок -->
+					<h2
+						class="mb-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-6xl dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400"
+					>
+						Готовы начать?
+					</h2>
+					
+					<p class="mb-8 text-xl text-gray-700 md:text-2xl dark:text-gray-300">
+						Присоединяйтесь к РУБОНУС и развивайте свой бизнес вместе с нами
+					</p>
+
+					<!-- Преимущества регистрации -->
+					<div class="mb-10 grid gap-4 text-left md:grid-cols-2">
+						<div class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 p-4 dark:from-green-950/30 dark:to-emerald-950/30">
+							<svg class="mt-1 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<div>
+								<h4 class="font-semibold text-gray-800 dark:text-gray-200">Быстрая регистрация</h4>
+								<p class="text-sm text-gray-600 dark:text-gray-400">Всего несколько минут</p>
+							</div>
+						</div>
+						<div class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-4 dark:from-blue-950/30 dark:to-cyan-950/30">
+							<svg class="mt-1 h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<div>
+								<h4 class="font-semibold text-gray-800 dark:text-gray-200">Бесплатный доступ</h4>
+								<p class="text-sm text-gray-600 dark:text-gray-400">Без скрытых платежей</p>
+							</div>
+						</div>
+						<div class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 p-4 dark:from-purple-950/30 dark:to-pink-950/30">
+							<svg class="mt-1 h-6 w-6 flex-shrink-0 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<div>
+								<h4 class="font-semibold text-gray-800 dark:text-gray-200">Мгновенный старт</h4>
+								<p class="text-sm text-gray-600 dark:text-gray-400">Начните работать сразу</p>
+							</div>
+						</div>
+						<div class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 p-4 dark:from-orange-950/30 dark:to-red-950/30">
+							<svg class="mt-1 h-6 w-6 flex-shrink-0 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+							</svg>
+							<div>
+								<h4 class="font-semibold text-gray-800 dark:text-gray-200">Полная поддержка</h4>
+								<p class="text-sm text-gray-600 dark:text-gray-400">Помощь на каждом этапе</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- CTA кнопка -->
+					<div class="rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-1 dark:from-indigo-700 dark:via-purple-700 dark:to-pink-700">
+						<div class="rounded-xl bg-white p-8 dark:bg-gray-900">
+							<a
+								href="/register"
+								class="inline-block w-full transform rounded-xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-12 py-5 text-xl font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl md:w-auto"
+							>
+								<div class="flex items-center justify-center space-x-3">
+									<span>Зарегистрироваться сейчас</span>
+									<svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+									</svg>
+								</div>
+							</a>
+							<p class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+								Уже есть аккаунт? 
+								<a href="/login" class="font-semibold text-indigo-600 hover:text-purple-600 dark:text-indigo-400 dark:hover:text-purple-400">
+									Войти
+								</a>
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>

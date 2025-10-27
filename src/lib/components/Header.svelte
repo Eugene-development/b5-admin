@@ -39,7 +39,7 @@
 
 			<!-- Меню навигации -->
 			<div class="hidden md:block">
-				<div class="flex items-center space-x-8">
+				<div class="flex items-center space-x-6">
 					<button
 						onclick={() => scrollToSection('home')}
 						class="text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
@@ -47,22 +47,28 @@
 						Главная
 					</button>
 					<button
-						onclick={() => scrollToSection('test1')}
+						onclick={() => scrollToSection('about')}
 						class="text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
 					>
-						Тест1
+						О проекте
 					</button>
 					<button
-						onclick={() => scrollToSection('test2')}
+						onclick={() => scrollToSection('stats')}
 						class="text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
 					>
-						Тест2
+						Цифры
 					</button>
 					<button
-						onclick={() => scrollToSection('test3')}
+						onclick={() => scrollToSection('benefits')}
 						class="text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
 					>
-						Тест3
+						Выгода
+					</button>
+					<button
+						onclick={() => scrollToSection('register')}
+						class="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 font-semibold text-white transition-all hover:scale-105 hover:shadow-lg"
+					>
+						Регистрация
 					</button>
 				</div>
 			</div>
@@ -105,30 +111,39 @@
 				</button>
 				<button
 					onclick={() => {
-						scrollToSection('test1');
+						scrollToSection('about');
 						document.getElementById('mobile-menu')?.classList.add('hidden');
 					}}
 					class="rounded px-3 py-2 text-left text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
 				>
-					Тест1
+					О проекте
 				</button>
 				<button
 					onclick={() => {
-						scrollToSection('test2');
+						scrollToSection('stats');
 						document.getElementById('mobile-menu')?.classList.add('hidden');
 					}}
 					class="rounded px-3 py-2 text-left text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
 				>
-					Тест2
+					Цифры
 				</button>
 				<button
 					onclick={() => {
-						scrollToSection('test3');
+						scrollToSection('benefits');
 						document.getElementById('mobile-menu')?.classList.add('hidden');
 					}}
 					class="rounded px-3 py-2 text-left text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
 				>
-					Тест3
+					Выгода
+				</button>
+				<button
+					onclick={() => {
+						scrollToSection('register');
+						document.getElementById('mobile-menu')?.classList.add('hidden');
+					}}
+					class="rounded bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-2 text-left font-semibold text-white hover:from-indigo-700 hover:to-purple-700"
+				>
+					Регистрация
 				</button>
 			</div>
 		</div>
