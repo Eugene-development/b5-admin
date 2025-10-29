@@ -217,9 +217,18 @@
 			tabindex="0"
 		>
 			<div class="flex shrink-0 items-center justify-between px-6 py-4">
-				<div class="flex h-16 shrink-0 items-center">
-				<span class="text-2xl font-bold text-indigo-600 dark:text-indigo-500">RUBONUS</span>
-			</div>
+				<!-- <div class="flex h-16 shrink-0 items-center">
+					<img
+						src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+						alt="Your Company"
+						class="h-8 w-auto dark:hidden"
+					/>
+					<img
+						src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+						alt="Your Company"
+						class="not-dark:hidden h-8 w-auto"
+					/>
+				</div> -->
 				<button
 					onclick={closeMobileMenu}
 					type="button"
