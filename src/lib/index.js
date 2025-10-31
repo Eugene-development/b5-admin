@@ -46,6 +46,7 @@ export { default as CurrencyDisplay } from './components/CurrencyDisplay.svelte'
 export { default as AgentDisplay } from './components/AgentDisplay.svelte';
 export { default as ProtectedRoute } from './components/ProtectedRoute.svelte';
 export { default as TzCreateModal } from './components/TzCreateModal.svelte';
+export { default as Sparkles } from './components/ui/Sparkles/Sparkles.svelte';
 
 // Export utilities
 export * from './utils/index.js';

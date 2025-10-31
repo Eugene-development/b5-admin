@@ -36,7 +36,9 @@
 		"vitest": "^2.1.9"
 	},
 	"dependencies": {
+		"clsx": "^2.1.1",
 		"graphql-request": "^7.2.0",
+		"tailwind-merge": "^3.3.1",
 		"tailwindcss-animated": "^2.0.0"
 	}
 }

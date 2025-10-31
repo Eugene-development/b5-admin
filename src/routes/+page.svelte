@@ -3,6 +3,7 @@
 	import { authState } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
 	import Header from '$lib/components/Header.svelte';
+	import Sparkles from '$lib/components/ui/Sparkles/Sparkles.svelte';
 	import { onMount } from 'svelte';
 
 	let isScrolled = $state(false);
@@ -30,80 +31,125 @@
 
 <div class="bg-gray-50 dark:bg-gray-950">
 	<!-- Секция: Главная -->
-	<section id="home" class="flex min-h-screen items-center justify-center p-4 pt-20">
-		<div class="animate-fade-in-up w-full max-w-6xl text-center">
+	<section
+		id="home"
+		class="flex min-h-screen items-center justify-center p-4 pt-8 sm:pt-12"
+		style="scroll-margin-top: 4rem;"
+	>
+		<div class="animate-fade-in-up w-full max-w-full text-center">
 			<!-- Главная карточка -->
 			<div
-				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-950/80"
+				class="rounded-3xl bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 lg:p-20 dark:border-gray-700/20 dark:bg-gray-950/80"
 			>
 				<!-- Название большими буквами с градиентом -->
 				<h1
-					class="mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-3xl font-extrabold uppercase text-transparent sm:text-5xl md:text-6xl lg:text-9xl dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+					class="mb-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-5xl font-extrabold uppercase text-transparent sm:text-6xl md:text-7xl lg:text-9xl dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
 					style="filter: drop-shadow(0 0 20px rgba(99, 102, 241, 0.3)) drop-shadow(0 0 40px rgba(168, 85, 247, 0.2));"
 				>
 					RUBONUS
 				</h1>
 
 				<!-- Подпись -->
-				<p class="mb-12 text-lg text-gray-600 sm:text-xl md:text-xl lg:mb-16 dark:text-gray-400">
-					Система управлением проектами и бонусами
+				<p
+					class="mx-auto mb-10 max-w-2xl text-lg text-gray-600 sm:text-xl md:text-xl dark:text-gray-400"
+				>
+					Система управлением проектами и бонусами для повышения эффективности работы компаний
 				</p>
 
-				<!-- Кнопки -->
-				<div class="flex flex-col items-center justify-center gap-4 sm:flex-row sm:gap-6">
-					<!-- Кнопка Логин -->
-					<a
-						href="/login"
-						class="group relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-52"
-					>
-						<div class="flex items-center justify-center space-x-2">
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-								/>
-							</svg>
-							<span>Логин</span>
-						</div>
-					</a>
+				<!-- Sparkles Effect -->
+				<div class="relative mb-12 mt-4 w-full overflow-hidden" style="height: 499px;">
+					<!-- Gradients -->
+					<div
+						class="absolute inset-x-20 top-0 h-[2px] w-3/4 bg-gradient-to-r from-transparent via-indigo-500 to-transparent blur-sm"
+					></div>
+					<div
+						class="absolute inset-x-20 top-0 h-px w-3/4 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"
+					></div>
+					<div
+						class="absolute inset-x-60 top-0 h-[5px] w-1/4 bg-gradient-to-r from-transparent via-sky-500 to-transparent blur-sm"
+					></div>
+					<div
+						class="absolute inset-x-60 top-0 h-px w-1/4 bg-gradient-to-r from-transparent via-sky-500 to-transparent"
+					></div>
 
-					<!-- Кнопка Регистрация -->
-					<a
-						href="/register"
-						class="group relative w-full transform overflow-hidden rounded-2xl border-2 border-indigo-600 bg-white px-8 py-4 text-lg font-semibold text-indigo-600 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 hover:shadow-xl sm:w-52 dark:border-indigo-400 dark:bg-gray-800 dark:text-indigo-400 dark:hover:bg-gray-700"
+					<!-- Core component -->
+					<div class="absolute inset-0 h-full w-full">
+						<Sparkles
+							minSize={0.8}
+							maxSize={2}
+							particleDensity={300}
+							className="w-full h-full"
+							particleColor="#FFFFFF"
+						/>
+					</div>
+
+					<!-- Radial Gradient to prevent sharp edges -->
+					<div
+						class="absolute inset-0 h-full w-full bg-transparent [mask-image:radial-gradient(350px_400px_at_top,transparent_20%,white)]"
+					></div>
+
+					<!-- Кнопки поверх Sparkles -->
+					<div
+						class="absolute inset-0 z-10 -mt-10 flex flex-col items-center justify-center gap-4 px-4 sm:flex-row sm:gap-6"
 					>
-						<div class="flex items-center justify-center space-x-2">
-							<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
-								/>
-							</svg>
-							<span>Регистрация</span>
-						</div>
-					</a>
+						<!-- Кнопка Логин -->
+						<a
+							href="/login"
+							class="group relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl sm:w-52"
+						>
+							<div class="flex items-center justify-center space-x-2">
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+									/>
+								</svg>
+								<span>Логин</span>
+							</div>
+						</a>
+
+						<!-- Кнопка Регистрация -->
+						<a
+							href="/register"
+							class="group relative w-full transform overflow-hidden rounded-2xl border-2 border-indigo-600 bg-white px-8 py-4 text-lg font-semibold text-indigo-600 shadow-lg transition-all duration-300 hover:scale-105 hover:bg-indigo-50 hover:shadow-xl sm:w-52 dark:border-indigo-400 dark:bg-gray-800 dark:text-indigo-400 dark:hover:bg-gray-700"
+						>
+							<div class="flex items-center justify-center space-x-2">
+								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+									/>
+								</svg>
+								<span>Регистрация</span>
+							</div>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
 	</section>
 
 	<!-- Секция: О проекте РУБОНУС -->
-	<section id="about" class="flex min-h-screen items-center justify-center p-4">
+	<section
+		id="about"
+		class="flex min-h-screen items-center justify-center p-4"
+		style="scroll-margin-top: 5rem;"
+	>
 		<div class="w-full max-w-6xl">
 			<div
-				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
+				class=" bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
 			>
 				<h2
-					class="mb-8 bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-center text-4xl font-bold text-transparent md:text-6xl dark:from-green-400 dark:to-teal-400"
+					class="mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-center text-4xl font-bold text-transparent md:text-6xl dark:from-blue-400 dark:to-indigo-400"
 				>
-					О проекте РУБОНУС
+					О проекте
 				</h2>
 
-				<div class="mx-auto max-w-4xl space-y-8">
+				<div class="mx-auto max-w-5xl space-y-8">
 					<p class="text-center text-xl text-gray-700 md:text-2xl dark:text-gray-300">
 						Мы создаём экосистему, которая объединяет бизнес
 					</p>
@@ -134,7 +180,7 @@
 								Клиенты
 							</h3>
 							<p class="text-center text-gray-600 dark:text-gray-400">
-								Получают качественные услуги и товары
+								Гарантированно получают товары и услуги высокого качества
 							</p>
 						</div>
 
@@ -163,7 +209,7 @@
 								Агенты
 							</h3>
 							<p class="text-center text-gray-600 dark:text-gray-400">
-								Связывают клиентов с партнёрами
+								Связывают клиентов с партнёрами за вознаграждение
 							</p>
 						</div>
 
@@ -192,7 +238,7 @@
 								Партнёры
 							</h3>
 							<p class="text-center text-gray-600 dark:text-gray-400">
-								Подрядчики и поставщики услуг
+								Подрядчики и поставщики услуг увеличивают доход
 							</p>
 						</div>
 					</div>
@@ -201,7 +247,8 @@
 						class="mt-8 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-center dark:from-indigo-700 dark:to-purple-700"
 					>
 						<p class="text-lg font-semibold text-white md:text-xl">
-							Единая сеть для эффективного взаимодействия и роста бизнеса
+							RUBONUS - это единая сеть для эффективного взаимодействия и роста доходов вашего
+							бизнеса
 						</p>
 					</div>
 				</div>
@@ -210,10 +257,14 @@
 	</section>
 
 	<!-- Секция: Статистика -->
-	<section id="stats" class="flex min-h-screen items-center justify-center p-4">
+	<section
+		id="stats"
+		class="flex min-h-screen items-center justify-center p-4"
+		style="scroll-margin-top: 5rem;"
+	>
 		<div class="w-full max-w-6xl">
 			<div
-				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
+				class=" bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
 			>
 				<h2
 					class="mb-8 bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-center text-4xl font-bold text-transparent md:text-6xl dark:from-orange-400 dark:to-red-400"
@@ -221,7 +272,7 @@
 					Наши достижения
 				</h2>
 
-				<div class="mx-auto max-w-4xl">
+				<div class="mx-auto max-w-5xl">
 					<p class="mb-12 text-center text-xl text-gray-700 dark:text-gray-300">
 						Растущая сеть профессионалов и надёжных партнёров
 					</p>
@@ -229,7 +280,7 @@
 					<div class="grid gap-8 md:grid-cols-2">
 						<!-- Агенты -->
 						<div
-							class="group transform rounded-3xl bg-gradient-to-br from-orange-500 to-red-500 p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:from-orange-600 dark:to-red-600"
+							class="group transform rounded-3xl bg-gradient-to-br from-orange-600 to-red-600 p-8 text-center transition-all duration-300 hover:scale-105 hover:shadow-2xl dark:from-orange-700 dark:to-red-700"
 						>
 							<div class="mb-4 flex justify-center">
 								<svg
@@ -246,8 +297,8 @@
 									/>
 								</svg>
 							</div>
-							<div class="mb-2 text-6xl font-extrabold text-white md:text-7xl">300+</div>
-							<div class="text-xl font-semibold text-white/90">Агентов в сети</div>
+							<div class="mb-2 text-6xl font-extrabold text-white md:text-7xl">500+</div>
+							<div class="text-xl font-semibold text-white/90">Агентов в нашей сети</div>
 							<p class="mt-4 text-white/80">Профессионалы, готовые помочь вашему бизнесу</p>
 						</div>
 
@@ -272,7 +323,7 @@
 							</div>
 							<div class="mb-2 text-6xl font-extrabold text-white md:text-7xl">100+</div>
 							<div class="text-xl font-semibold text-white/90">Компаний-партнёров</div>
-							<p class="mt-4 text-white/80">Надёжные подрядчики и поставщики</p>
+							<p class="mt-4 text-white/80">Надёжные подрядчики и поставщики товаров и услуг</p>
 						</div>
 					</div>
 
@@ -282,21 +333,25 @@
 							class="rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 p-6 text-center dark:from-green-950/30 dark:to-emerald-950/30"
 						>
 							<div class="mb-2 text-3xl font-bold text-green-600 dark:text-green-400">24/7</div>
-							<div class="text-sm font-medium text-gray-700 dark:text-gray-300">Поддержка</div>
+							<div class="text-sm font-medium text-gray-700 dark:text-gray-300">
+								Работает платформа
+							</div>
 						</div>
 						<div
 							class="rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 p-6 text-center dark:from-purple-950/30 dark:to-pink-950/30"
 						>
 							<div class="mb-2 text-3xl font-bold text-purple-600 dark:text-purple-400">98%</div>
 							<div class="text-sm font-medium text-gray-700 dark:text-gray-300">
-								Удовлетворённость
+								Удовлетворённость клиентов
 							</div>
 						</div>
 						<div
 							class="rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-6 text-center dark:from-blue-950/30 dark:to-cyan-950/30"
 						>
-							<div class="mb-2 text-3xl font-bold text-blue-600 dark:text-blue-400">5 лет</div>
-							<div class="text-sm font-medium text-gray-700 dark:text-gray-300">На рынке</div>
+							<div class="mb-2 text-3xl font-bold text-blue-600 dark:text-blue-400">25 лет</div>
+							<div class="text-sm font-medium text-gray-700 dark:text-gray-300">
+								На мебельном рынке
+							</div>
 						</div>
 					</div>
 				</div>
@@ -305,10 +360,14 @@
 	</section>
 
 	<!-- Секция: Мотивация сотрудничества -->
-	<section id="benefits" class="flex min-h-screen items-center justify-center p-4">
+	<section
+		id="benefits"
+		class="flex min-h-screen items-center justify-center p-4"
+		style="scroll-margin-top: 5rem;"
+	>
 		<div class="w-full max-w-6xl">
 			<div
-				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
+				class=" bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
 			>
 				<h2
 					class="mb-8 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-center text-4xl font-bold text-transparent md:text-6xl dark:from-pink-400 dark:to-purple-400"
@@ -344,10 +403,10 @@
 								</svg>
 							</div>
 							<h3 class="mb-3 text-xl font-bold text-gray-800 dark:text-gray-200">
-								Прозрачная система бонусов
+								Система бонусов
 							</h3>
 							<p class="text-gray-600 dark:text-gray-400">
-								Честное вознаграждение за каждую сделку и привлечённого клиента
+								Честное вознаграждение за каждую сделку
 							</p>
 						</div>
 
@@ -376,7 +435,7 @@
 								Проверенные партнёры
 							</h3>
 							<p class="text-gray-600 dark:text-gray-400">
-								Работаем только с надёжными компаниями с подтверждённой репутацией
+								Только надёжные компании с подтверждённой репутацией
 							</p>
 						</div>
 
@@ -403,7 +462,7 @@
 							</div>
 							<h3 class="mb-3 text-xl font-bold text-gray-800 dark:text-gray-200">Рост доходов</h3>
 							<p class="text-gray-600 dark:text-gray-400">
-								Увеличивайте прибыль через расширение клиентской базы
+								Увеличение прибыли через расширение клиентской базы
 							</p>
 						</div>
 
@@ -500,12 +559,16 @@
 	</section>
 
 	<!-- Секция: Регистрация -->
-	<section id="register" class="flex min-h-screen items-center justify-center p-4">
+	<section
+		id="register"
+		class="flex min-h-screen items-center justify-center p-4"
+		style="scroll-margin-top: 5rem;"
+	>
 		<div class="w-full max-w-6xl">
 			<div
-				class="rounded-3xl border border-white/20 bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
+				class=" bg-white/80 p-8 shadow-2xl backdrop-blur-xl md:p-16 dark:border-gray-700/20 dark:bg-gray-950/80"
 			>
-				<div class="mx-auto max-w-3xl text-center">
+				<div class="mx-auto max-w-4xl text-center">
 					<!-- Заголовок -->
 					<h2
 						class="mb-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-6xl dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400"
