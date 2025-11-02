@@ -31,9 +31,9 @@
 			<div class="flex-shrink-0">
 				<button
 					onclick={() => scrollToSection('home')}
-					class="text-xl font-semibold text-indigo-600 transition-colors hover:text-purple-600 dark:text-indigo-400 dark:hover:text-purple-400"
+					class="bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 bg-clip-text text-2xl font-bold text-transparent transition-all hover:from-blue-700 hover:via-cyan-700 hover:to-sky-700"
 				>
-					RUBONUS
+					RUBONUS<span class="text-base">.pro</span>
 				</button>
 			</div>
 

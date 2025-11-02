@@ -190,8 +190,22 @@
 	<meta name="description" content="Создайте новый аккаунт в административной панели" />
 </svelte:head>
 
+<!-- Header with Logo -->
+<div class="fixed top-0 left-0 right-0 z-50 bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 dark:bg-gray-950/80 dark:border-gray-800">
+	<div class="mx-auto max-w-7xl px-6 lg:px-8">
+		<div class="flex h-16 items-center justify-start">
+			<a
+				href="/"
+				class="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 bg-clip-text text-2xl font-bold text-transparent transition-all hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700"
+			>
+				RUBONUS<span class="text-base">.pro</span>
+			</a>
+		</div>
+	</div>
+</div>
+
 <!-- Современная карточка регистрации -->
-<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 pt-20 dark:bg-gray-950">
 	<div class="animate-fade-in-up relative w-full max-w-4xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div

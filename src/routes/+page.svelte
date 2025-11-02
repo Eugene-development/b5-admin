@@ -33,7 +33,7 @@
 	<!-- Секция: Главная -->
 	<section
 		id="home"
-		class="flex min-h-screen items-center justify-center p-4 pt-8 sm:pt-12"
+		class="flex min-h-screen items-center justify-center py-4 pt-16 sm:py-0 sm:pt-32"
 		style="scroll-margin-top: 4rem;"
 	>
 		<div class="animate-fade-in-up w-full max-w-full text-center">
@@ -136,7 +136,7 @@
 	<!-- Секция: О проекте РУБОНУС -->
 	<section
 		id="about"
-		class="flex min-h-screen items-center justify-center p-4"
+		class="flex min-h-screen items-center justify-center py-4 sm:py-0"
 		style="scroll-margin-top: 5rem;"
 	>
 		<div class="w-full max-w-6xl">
@@ -160,7 +160,7 @@
 							class="group transform rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl dark:from-blue-950/30 dark:to-indigo-950/30"
 						>
 							<div class="mb-4 flex justify-center">
-								<div class="rounded-full bg-blue-600 p-4 dark:bg-blue-500">
+								<div class="rounded-full bg-blue-600 py-4 sm:py-0 dark:bg-blue-500">
 									<svg
 										class="h-8 w-8 text-white"
 										fill="none"
@@ -189,7 +189,7 @@
 							class="group transform rounded-2xl bg-gradient-to-br from-purple-50 to-pink-50 p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl dark:from-purple-950/30 dark:to-pink-950/30"
 						>
 							<div class="mb-4 flex justify-center">
-								<div class="rounded-full bg-purple-600 p-4 dark:bg-purple-500">
+								<div class="rounded-full bg-purple-600 py-4 sm:py-0 dark:bg-purple-500">
 									<svg
 										class="h-8 w-8 text-white"
 										fill="none"
@@ -218,7 +218,7 @@
 							class="group transform rounded-2xl bg-gradient-to-br from-green-50 to-teal-50 p-6 transition-all duration-300 hover:scale-105 hover:shadow-xl dark:from-green-950/30 dark:to-teal-950/30"
 						>
 							<div class="mb-4 flex justify-center">
-								<div class="rounded-full bg-green-600 p-4 dark:bg-green-500">
+								<div class="rounded-full bg-green-600 py-4 sm:py-0 dark:bg-green-500">
 									<svg
 										class="h-8 w-8 text-white"
 										fill="none"
@@ -259,7 +259,7 @@
 	<!-- Секция: Статистика -->
 	<section
 		id="stats"
-		class="flex min-h-screen items-center justify-center p-4"
+		class="flex min-h-screen items-center justify-center py-4 sm:py-0"
 		style="scroll-margin-top: 5rem;"
 	>
 		<div class="w-full max-w-6xl">
@@ -362,7 +362,7 @@
 	<!-- Секция: Мотивация сотрудничества -->
 	<section
 		id="benefits"
-		class="flex min-h-screen items-center justify-center p-4"
+		class="flex min-h-screen items-center justify-center py-4 sm:py-0"
 		style="scroll-margin-top: 5rem;"
 	>
 		<div class="w-full max-w-6xl">
@@ -561,7 +561,7 @@
 	<!-- Секция: Регистрация -->
 	<section
 		id="register"
-		class="flex min-h-screen items-center justify-center p-4"
+		class="flex min-h-screen items-center justify-center py-4 sm:py-0"
 		style="scroll-margin-top: 5rem;"
 	>
 		<div class="w-full max-w-6xl">
@@ -583,7 +583,7 @@
 					<!-- Преимущества регистрации -->
 					<div class="mb-10 grid gap-4 text-left md:grid-cols-2">
 						<div
-							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 p-4 dark:from-green-950/30 dark:to-emerald-950/30"
+							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-green-50 to-emerald-50 py-4 sm:py-0 dark:from-green-950/30 dark:to-emerald-950/30"
 						>
 							<svg
 								class="mt-1 h-6 w-6 flex-shrink-0 text-green-600 dark:text-green-400"
@@ -604,7 +604,7 @@
 							</div>
 						</div>
 						<div
-							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 p-4 dark:from-blue-950/30 dark:to-cyan-950/30"
+							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-blue-50 to-cyan-50 py-4 sm:py-0 dark:from-blue-950/30 dark:to-cyan-950/30"
 						>
 							<svg
 								class="mt-1 h-6 w-6 flex-shrink-0 text-blue-600 dark:text-blue-400"
@@ -625,7 +625,7 @@
 							</div>
 						</div>
 						<div
-							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 p-4 dark:from-purple-950/30 dark:to-pink-950/30"
+							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 py-4 sm:py-0 dark:from-purple-950/30 dark:to-pink-950/30"
 						>
 							<svg
 								class="mt-1 h-6 w-6 flex-shrink-0 text-purple-600 dark:text-purple-400"
@@ -646,7 +646,7 @@
 							</div>
 						</div>
 						<div
-							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 p-4 dark:from-orange-950/30 dark:to-red-950/30"
+							class="flex items-start space-x-3 rounded-xl bg-gradient-to-br from-orange-50 to-red-50 py-4 sm:py-0 dark:from-orange-950/30 dark:to-red-950/30"
 						>
 							<svg
 								class="mt-1 h-6 w-6 flex-shrink-0 text-orange-600 dark:text-orange-400"

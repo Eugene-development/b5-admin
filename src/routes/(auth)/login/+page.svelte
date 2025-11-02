@@ -140,8 +140,22 @@
 	<meta name="description" content="Войдите в административную панель" />
 </svelte:head>
 
+<!-- Header with Logo -->
+<div class="fixed top-0 left-0 right-0 z-50 bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 dark:bg-gray-950/80 dark:border-gray-800">
+	<div class="mx-auto max-w-7xl px-6 lg:px-8">
+		<div class="flex h-16 items-center justify-start">
+			<a
+				href="/"
+				class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-2xl font-bold text-transparent transition-all hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700"
+			>
+				RUBONUS<span class="text-base">.pro</span>
+			</a>
+		</div>
+	</div>
+</div>
+
 <!-- Современная карточка авторизации -->
-<div class="flex h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-950">
+<div class="flex h-screen items-center justify-center bg-gray-50 p-4 pt-20 dark:bg-gray-950">
 	<div class="animate-fade-in-up relative w-full max-w-2xl">
 		<!-- Стеклянная морфизм карточка -->
 		<div
