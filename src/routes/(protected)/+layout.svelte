@@ -218,8 +218,12 @@
 		>
 			<div class="flex shrink-0 items-center justify-between px-6 py-4">
 				<div class="flex h-16 shrink-0 items-center">
-				<span class="text-2xl font-bold text-indigo-600 dark:text-indigo-500">RUBONUS</span>
-			</div>
+					<span
+						class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-2xl font-bold text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+					>
+						RUBONUS<span class="text-base">.pro</span>
+					</span>
+				</div>
 				<button
 					onclick={closeMobileMenu}
 					type="button"
@@ -582,7 +586,11 @@
 		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-950"
 	>
 		<div class="flex h-20 shrink-0 items-center">
-			<span class="text-2xl font-bold text-indigo-600 dark:text-indigo-500">RUBONUS</span>
+			<span
+				class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-2xl font-bold text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+			>
+				RUBONUS<span class="text-base">.pro</span>
+			</span>
 		</div>
 		<nav
 			class="flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"

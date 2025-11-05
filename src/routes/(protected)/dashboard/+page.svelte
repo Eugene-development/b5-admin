@@ -24,10 +24,11 @@
 						{#if navigationVisibility.showClients}
 							<a
 								href="/clients"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-pink-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-pink-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-offset-2 dark:border-pink-900/30 dark:from-pink-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-pink-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-pink-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-pink-50 p-3 text-pink-700 ring-4 ring-white dark:bg-pink-900/20 dark:text-pink-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-pink-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-pink-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -43,12 +44,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-pink-600 dark:text-white dark:group-hover:text-pink-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Клиенты
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление клиентами</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление клиентами</p>
 								</div>
 							</a>
 						{/if}
@@ -56,10 +57,11 @@
 						{#if navigationVisibility.showAgents}
 							<a
 								href="/agents"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-indigo-200/50 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-indigo-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 dark:border-indigo-900/30 dark:from-indigo-950/20 dark:via-gray-800 dark:to-blue-950/20 dark:hover:border-indigo-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400/10 to-blue-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-indigo-50 p-3 text-indigo-700 ring-4 ring-white dark:bg-indigo-900/20 dark:text-indigo-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-indigo-400 to-blue-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-indigo-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -75,12 +77,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Агенты
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
 										Управление агентами системы
 									</p>
 								</div>
@@ -90,10 +92,11 @@
 						{#if navigationVisibility.showCurators}
 							<a
 								href="/curators"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-cyan-200/50 bg-gradient-to-br from-cyan-50 via-white to-sky-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-cyan-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 dark:border-cyan-900/30 dark:from-cyan-950/20 dark:via-gray-800 dark:to-sky-950/20 dark:hover:border-cyan-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-400/10 to-sky-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-cyan-50 p-3 text-cyan-700 ring-4 ring-white dark:bg-cyan-900/20 dark:text-cyan-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-cyan-400 to-sky-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-cyan-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -109,12 +112,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-cyan-600 dark:text-white dark:group-hover:text-cyan-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Кураторы
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление кураторами</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление кураторами</p>
 								</div>
 							</a>
 						{/if}
@@ -130,10 +133,11 @@
 						{#if navigationVisibility.showContractors}
 							<a
 								href="/contractors"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-blue-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 dark:border-blue-900/30 dark:from-blue-950/20 dark:via-gray-800 dark:to-indigo-950/20 dark:hover:border-blue-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/10 to-indigo-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-blue-50 p-3 text-blue-700 ring-4 ring-white dark:bg-blue-900/20 dark:text-blue-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-blue-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -149,12 +153,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Подрядчики
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
 										Управление подрядчиками
 									</p>
 								</div>
@@ -164,10 +168,11 @@
 						{#if navigationVisibility.showSuppliers}
 							<a
 								href="/suppliers"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-green-200/50 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-green-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-green-500 focus-within:ring-offset-2 dark:border-green-900/30 dark:from-green-950/20 dark:via-gray-800 dark:to-emerald-950/20 dark:hover:border-green-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-green-400/10 to-emerald-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-green-50 p-3 text-green-700 ring-4 ring-white dark:bg-green-900/20 dark:text-green-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-green-400 to-emerald-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-green-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -183,12 +188,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-green-600 dark:text-white dark:group-hover:text-green-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Поставщики
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
 										Управление поставщиками
 									</p>
 								</div>
@@ -198,10 +203,11 @@
 						{#if navigationVisibility.showDelivery}
 							<a
 								href="/delivery"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-orange-200/50 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-orange-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 dark:border-orange-900/30 dark:from-orange-950/20 dark:via-gray-800 dark:to-amber-950/20 dark:hover:border-orange-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-orange-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-orange-50 p-3 text-orange-700 ring-4 ring-white dark:bg-orange-900/20 dark:text-orange-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-orange-400 to-amber-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-orange-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -217,12 +223,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Службы доставки
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление доставкой</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление доставкой</p>
 								</div>
 							</a>
 						{/if}
@@ -230,10 +236,11 @@
 						{#if navigationVisibility.showServices}
 							<a
 								href="/services"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-teal-200/50 bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-teal-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-offset-2 dark:border-teal-900/30 dark:from-teal-950/20 dark:via-gray-800 dark:to-cyan-950/20 dark:hover:border-teal-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/10 to-cyan-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-teal-50 p-3 text-teal-700 ring-4 ring-white dark:bg-teal-900/20 dark:text-teal-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-teal-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -249,12 +256,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Сервис
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление сервисом</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление сервисом</p>
 								</div>
 							</a>
 						{/if}
@@ -270,10 +277,11 @@
 						{#if navigationVisibility.showProjects}
 							<a
 								href="/projects"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-purple-200/50 bg-gradient-to-br from-purple-50 via-white to-fuchsia-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-purple-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-purple-500 focus-within:ring-offset-2 dark:border-purple-900/30 dark:from-purple-950/20 dark:via-gray-800 dark:to-fuchsia-950/20 dark:hover:border-purple-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-purple-400/10 to-fuchsia-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-purple-50 p-3 text-purple-700 ring-4 ring-white dark:bg-purple-900/20 dark:text-purple-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-purple-400 to-fuchsia-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-purple-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -289,12 +297,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Проекты
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление проектами</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление проектами</p>
 								</div>
 							</a>
 						{/if}
@@ -302,10 +310,11 @@
 						{#if navigationVisibility.showTz}
 							<a
 								href="/tz"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-yellow-200/50 bg-gradient-to-br from-yellow-50 via-white to-amber-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-yellow-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-yellow-500 focus-within:ring-offset-2 dark:border-yellow-900/30 dark:from-yellow-950/20 dark:via-gray-800 dark:to-amber-950/20 dark:hover:border-yellow-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-yellow-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-yellow-50 p-3 text-yellow-700 ring-4 ring-white dark:bg-yellow-900/20 dark:text-yellow-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-yellow-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -321,12 +330,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Техзадания
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
 										Управление техзаданиями
 									</p>
 								</div>
@@ -336,10 +345,11 @@
 						{#if navigationVisibility.showOrder}
 							<a
 								href="/order"
-								class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-lime-200/50 bg-gradient-to-br from-lime-50 via-white to-green-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-lime-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-lime-500 focus-within:ring-offset-2 dark:border-lime-900/30 dark:from-lime-950/20 dark:via-gray-800 dark:to-green-950/20 dark:hover:border-lime-700"
 							>
+								<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-lime-400/10 to-green-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 								<span
-									class="inline-flex flex-shrink-0 rounded-lg bg-lime-50 p-3 text-lime-700 ring-4 ring-white dark:bg-lime-900/20 dark:text-lime-400"
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-lime-400 to-green-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-lime-400/50"
 								>
 									<svg
 										class="h-6 w-6"
@@ -355,12 +365,12 @@
 										/>
 									</svg>
 								</span>
-								<div>
-									<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+								<div class="relative">
+									<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-lime-600 dark:text-white dark:group-hover:text-lime-400">
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Заказы
 									</h3>
-									<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Работа с заказами</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Работа с заказами</p>
 								</div>
 							</a>
 						{/if}
@@ -375,10 +385,11 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 						<a
 							href="/actions"
-							class="group relative flex min-h-[100px] items-center gap-4 rounded-lg border border-gray-300 bg-white p-6 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 hover:shadow-md dark:border-gray-600 dark:bg-gray-800 dark:hover:border-gray-500"
+							class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-red-200/50 bg-gradient-to-br from-red-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-red-300 hover:shadow-xl focus-within:ring-2 focus-within:ring-red-500 focus-within:ring-offset-2 dark:border-red-900/30 dark:from-red-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-red-700"
 						>
+							<div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-red-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"></div>
 							<span
-								class="inline-flex flex-shrink-0 rounded-lg bg-red-50 p-3 text-red-700 ring-4 ring-white dark:bg-red-900/20 dark:text-red-400"
+								class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-red-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-red-400/50"
 							>
 								<svg
 									class="h-6 w-6"
@@ -395,12 +406,12 @@
 									<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
 								</svg>
 							</span>
-							<div>
-								<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">
+							<div class="relative">
+								<h3 class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400">
 									<span class="absolute inset-0" aria-hidden="true"></span>
 									Акции
 								</h3>
-								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Управление акциями</p>
+								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление акциями</p>
 							</div>
 						</a>
 					</div>
