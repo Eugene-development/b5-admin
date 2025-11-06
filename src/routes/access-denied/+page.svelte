@@ -3,9 +3,7 @@
 	import { logout } from '$lib/state/auth.svelte.js';
 
 	async function handleLogout() {
-		await logout();
-		// Use window.location to force full page reload and clear cookies
-		window.location.href = '/login';
+		await logout({ redirectTo: '/login' });
 	}
 </script>
 

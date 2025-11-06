@@ -22,6 +22,7 @@ import {
 	setUserData,
 	hasAuthToken
 } from '../api/config.js';
+import { goto } from '$app/navigation';
 
 /**
  * Authentication state using Svelte 5 runes
@@ -275,9 +276,11 @@ export async function register(userData) {
 
 /**
  * Logout current user
+ * @param {Object} options - Logout options
+ * @param {string} options.redirectTo - Path to redirect after logout
  * @returns {Promise<boolean>} Success status
  */
-export async function logout() {
+export async function logout(options = {}) {
 	authState.logoutLoading = true;
 	authState.error = null;
 
@@ -289,12 +292,23 @@ export async function logout() {
 		clearAuthState();
 		removeAuthToken();
 
+		// Handle post-logout redirect if in browser
+		if (typeof window !== 'undefined' && options.redirectTo) {
+			await goto(options.redirectTo);
+		}
+
 		return true;
 	} catch (error) {
 		console.error('Logout error:', error);
 		// Even if API call fails, clear local state
 		clearAuthState();
 		removeAuthToken();
+
+		// Handle post-logout redirect even on error
+		if (typeof window !== 'undefined' && options.redirectTo) {
+			await goto(options.redirectTo);
+		}
+
 		return true; // We consider logout successful even if API fails
 	} finally {
 		authState.logoutLoading = false;

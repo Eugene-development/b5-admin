@@ -157,16 +157,9 @@
 		showLogoutModal = false;
 
 		try {
-			const success = await logout();
+			const success = await logout({ redirectTo: '/login' });
 			if (success) {
 				addSuccessToast('Вы успешно вышли из системы');
-				isRedirecting = true;
-				redirectMessage = 'Перенаправление на главную страницу...';
-
-				// Use window.location to force full page reload and clear cookies
-				setTimeout(() => {
-					window.location.href = '/';
-				}, 1000);
 			} else {
 				authError = 'Произошла ошибка при выходе из системы';
 				addErrorToast(authError);
@@ -175,13 +168,6 @@
 			console.error('Logout error:', error);
 			authError = 'Произошла ошибка при выходе из системы';
 			addErrorToast(authError);
-
-			// Force redirect even on error after showing message
-			isRedirecting = true;
-			redirectMessage = 'Перенаправление на главную страницу...';
-			setTimeout(() => {
-				window.location.href = '/';
-			}, 2000);
 		} finally {
 			isLogoutLoading = false;
 		}

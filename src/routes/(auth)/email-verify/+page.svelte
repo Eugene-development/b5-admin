@@ -136,9 +136,7 @@
 	 * Handle logout
 	 */
 	async function handleLogout() {
-		await logout();
-		// Use window.location to force full page reload and clear cookies
-		window.location.href = '/login';
+		await logout({ redirectTo: '/login' });
 	}
 
 	// Cleanup timer on component destroy
