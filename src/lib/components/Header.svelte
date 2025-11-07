@@ -1,13 +1,6 @@
 <script>
 	let { isScrolled = $bindable(false) } = $props();
 
-	function scrollToSection(sectionId) {
-		const element = document.getElementById(sectionId);
-		if (element) {
-			element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-		}
-	}
-
 	// Отслеживание скролла для изменения стиля хэдера
 	if (typeof window !== 'undefined') {
 		$effect(() => {
@@ -29,47 +22,29 @@
 		<div class="flex h-16 items-center justify-between">
 			<!-- Логотип/название -->
 			<div class="flex-shrink-0">
-				<button
-					onclick={() => scrollToSection('home')}
+				<a
+					href="/"
 					class="bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 bg-clip-text text-2xl font-bold text-transparent transition-all hover:from-blue-700 hover:via-cyan-700 hover:to-sky-700"
 				>
 					RUBONUS<span class="text-base">.pro</span>
-				</button>
+				</a>
 			</div>
 
 			<!-- Меню навигации -->
 			<div class="hidden md:block">
 				<div class="flex items-center space-x-6">
-					<button
-						onclick={() => scrollToSection('home')}
+					<a
+						href="/login"
 						class="font-light text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
 					>
-						Главная
-					</button>
-					<button
-						onclick={() => scrollToSection('about')}
-						class="font-light text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
-					>
-						Проект
-					</button>
-					<button
-						onclick={() => scrollToSection('stats')}
-						class="font-light text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
-					>
-						Цифры
-					</button>
-					<button
-						onclick={() => scrollToSection('benefits')}
-						class="font-light text-gray-700 transition-colors hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400"
-					>
-						Выгода
-					</button>
-					<button
-						onclick={() => scrollToSection('register')}
-						class="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 font-medium text-white transition-all hover:scale-105 hover:shadow-lg"
+						Войти
+					</a>
+					<a
+						href="/register"
+						class="rounded-lg bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 px-4 py-1.5 font-medium text-white transition-all hover:scale-105 hover:shadow-lg"
 					>
 						Регистрация
-					</button>
+					</a>
 				</div>
 			</div>
 
@@ -103,51 +78,18 @@
 			class="hidden bg-white/95 pb-4 backdrop-blur-md md:hidden dark:bg-gray-900/95"
 		>
 			<div class="flex flex-col space-y-2">
-				<button
-					onclick={() => {
-						scrollToSection('home');
-						document.getElementById('mobile-menu')?.classList.add('hidden');
-					}}
+				<a
+					href="/login"
 					class="rounded px-3 py-2 text-left font-light text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
 				>
-					Главная
-				</button>
-				<button
-					onclick={() => {
-						scrollToSection('about');
-						document.getElementById('mobile-menu')?.classList.add('hidden');
-					}}
-					class="rounded px-3 py-2 text-left font-light text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
-				>
-					Проект
-				</button>
-				<button
-					onclick={() => {
-						scrollToSection('stats');
-						document.getElementById('mobile-menu')?.classList.add('hidden');
-					}}
-					class="rounded px-3 py-2 text-left font-light text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
-				>
-					Цифры
-				</button>
-				<button
-					onclick={() => {
-						scrollToSection('benefits');
-						document.getElementById('mobile-menu')?.classList.add('hidden');
-					}}
-					class="rounded px-3 py-2 text-left font-light text-gray-700 hover:bg-indigo-50 dark:text-gray-300 dark:hover:bg-gray-800"
-				>
-					Выгода
-				</button>
-				<button
-					onclick={() => {
-						scrollToSection('register');
-						document.getElementById('mobile-menu')?.classList.add('hidden');
-					}}
-					class="rounded bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-2 text-left font-medium text-white hover:from-indigo-700 hover:to-purple-700"
+					Войти
+				</a>
+				<a
+					href="/register"
+					class="rounded bg-gradient-to-r from-blue-600 via-cyan-600 to-sky-600 px-3 py-2 text-left font-medium text-white hover:from-blue-700 hover:via-cyan-700 hover:to-sky-700"
 				>
 					Регистрация
-				</button>
+				</a>
 			</div>
 		</div>
 	</nav>
