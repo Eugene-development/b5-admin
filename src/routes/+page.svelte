@@ -78,6 +78,80 @@
 					<span class="text-white">Управляйте проектами</span> и
 					<span class="text-white">повышайте ваши доходы</span> с помощью современных технологий.
 				</p>
+
+				<!-- Decorative SVG Network -->
+				<div class="mx-auto max-w-2xl">
+					<svg viewBox="0 0 600 300" class="w-full" xmlns="http://www.w3.org/2000/svg">
+						<!-- Connections -->
+						<g stroke="url(#gradient1)" stroke-width="2" fill="none" opacity="0.4">
+							<line x1="100" y1="150" x2="300" y2="80" class="animate-pulse" />
+							<line x1="100" y1="150" x2="300" y2="220" class="animate-pulse" />
+							<line x1="300" y1="80" x2="500" y2="150" class="animate-pulse" />
+							<line x1="300" y1="220" x2="500" y2="150" class="animate-pulse" />
+							<line x1="300" y1="80" x2="300" y2="220" class="animate-pulse" />
+						</g>
+
+						<!-- Nodes -->
+						<g>
+							<!-- Left Node - Agents -->
+							<circle cx="100" cy="150" r="40" fill="url(#gradient4)" opacity="0.2" />
+							<circle cx="100" cy="150" r="30" fill="url(#gradient4)" opacity="0.4" />
+							<circle cx="100" cy="150" r="20" fill="url(#gradient4)" />
+							<text x="100" y="215" text-anchor="middle" fill="#9CA3AF" font-size="14">
+								Агенты
+							</text>
+
+							<!-- Top Center Node - Platform -->
+							<circle cx="300" cy="80" r="40" fill="url(#gradient3)" opacity="0.2" />
+							<circle cx="300" cy="80" r="30" fill="url(#gradient3)" opacity="0.4" />
+							<circle cx="300" cy="80" r="20" fill="url(#gradient3)" />
+							<text x="300" y="25" text-anchor="middle" fill="#9CA3AF" font-size="14">
+								Платформа
+							</text>
+
+							<!-- Bottom Center Node - Clients -->
+							<circle cx="300" cy="220" r="40" fill="url(#gradient2)" opacity="0.2" />
+							<circle cx="300" cy="220" r="30" fill="url(#gradient2)" opacity="0.4" />
+							<circle cx="300" cy="220" r="20" fill="url(#gradient2)" />
+							<text x="300" y="290" text-anchor="middle" fill="#9CA3AF" font-size="14">
+								Клиенты
+							</text>
+
+							<!-- Right Node - Partners -->
+							<circle cx="500" cy="150" r="40" fill="url(#gradient5)" opacity="0.2" />
+							<circle cx="500" cy="150" r="30" fill="url(#gradient5)" opacity="0.4" />
+							<circle cx="500" cy="150" r="20" fill="url(#gradient5)" />
+							<text x="500" y="215" text-anchor="middle" fill="#9CA3AF" font-size="14">
+								Партнёры
+							</text>
+						</g>
+
+						<!-- Gradients -->
+						<defs>
+							<linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+								<stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+								<stop offset="50%" style="stop-color:#06B6D4;stop-opacity:1" />
+								<stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+							</linearGradient>
+							<linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+								<stop offset="100%" style="stop-color:#A855F7;stop-opacity:1" />
+							</linearGradient>
+							<linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+								<stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+							</linearGradient>
+							<linearGradient id="gradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#A855F7;stop-opacity:1" />
+								<stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+							</linearGradient>
+							<linearGradient id="gradient5" x1="0%" y1="0%" x2="100%" y2="100%">
+								<stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+								<stop offset="100%" style="stop-color:#14B8A6;stop-opacity:1" />
+							</linearGradient>
+						</defs>
+					</svg>
+				</div>
 			</div>
 		</div>
 
@@ -223,7 +297,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Прозрачная система бонусов</h3>
-					<p class="text-sm text-gray-400">Вознаграждение за каждую успешную сделку</p>
+					<p class="text-sm text-gray-400">
+						Получайте честное и справедливое вознаграждение за каждую успешную сделку. Все расчёты
+						прозрачны и доступны в личном кабинете в режиме реального времени.
+					</p>
 				</div>
 
 				<!-- Benefit 2 -->
@@ -243,7 +320,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Проверенные партнёры</h3>
-					<p class="text-sm text-gray-400">Работаем только с надёжными компаниями</p>
+					<p class="text-sm text-gray-400">
+						Работаем только с надёжными и проверенными компаниями, которые прошли строгий отбор.
+						Гарантируем качество услуг и выполнение обязательств перед всеми участниками.
+					</p>
 				</div>
 
 				<!-- Benefit 3 -->
@@ -263,7 +343,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Рост доходов</h3>
-					<p class="text-sm text-gray-400">Увеличение прибыли для всех участников сети</p>
+					<p class="text-sm text-gray-400">
+						Стабильное увеличение прибыли для всех участников экосистемы. Наша модель позволяет
+						масштабировать бизнес и получать пассивный доход от партнёрской сети.
+					</p>
 				</div>
 
 				<!-- Benefit 4 -->
@@ -283,7 +366,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Современные технологии</h3>
-					<p class="text-sm text-gray-400">Удобная платформа для управления бизнесом</p>
+					<p class="text-sm text-gray-400">
+						Интуитивная и удобная платформа для эффективного управления бизнесом. Автоматизация
+						процессов, аналитика и отчётность в одном месте.
+					</p>
 				</div>
 
 				<!-- Benefit 5 -->
@@ -303,7 +389,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Гибкие условия</h3>
-					<p class="text-sm text-gray-400">Индивидуальный подход к каждому</p>
+					<p class="text-sm text-gray-400">
+						Индивидуальный подход к каждому участнику с учётом специфики его бизнеса. Мы постоянно
+						настраиваем нашу платформу под ваши потребности и цели.
+					</p>
 				</div>
 
 				<!-- Benefit 6 -->
@@ -323,7 +412,10 @@
 						</svg>
 					</div>
 					<h3 class="mb-2 text-lg font-semibold text-white">Активное комьюнити</h3>
-					<p class="text-sm text-gray-400">Обмен опытом и поддержка коллег</p>
+					<p class="text-sm text-gray-400">
+						Сообщество профессионалов для обмена опытом, идеями и взаимной поддержки. Организуем
+						тренинги и вебинары для достижения лучших результатов.
+					</p>
 				</div>
 			</div>
 		</div>
