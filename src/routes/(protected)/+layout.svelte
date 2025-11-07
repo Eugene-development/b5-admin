@@ -253,7 +253,7 @@
 			<div class="flex shrink-0 items-center justify-between px-6 py-4">
 				<div class="flex h-16 shrink-0 items-center">
 					<span
-						class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-2xl font-bold text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+						class="bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-2xl font-bold text-transparent"
 					>
 						RUBONUS<span class="text-base">.pro</span>
 					</span>
@@ -619,7 +619,7 @@
 	>
 		<div class="flex h-20 shrink-0 items-center">
 			<span
-				class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 bg-clip-text text-2xl font-bold text-transparent dark:from-indigo-400 dark:via-purple-400 dark:to-blue-400"
+				class="bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-2xl font-bold text-transparent"
 			>
 				RUBONUS<span class="text-base">.pro</span>
 			</span>
