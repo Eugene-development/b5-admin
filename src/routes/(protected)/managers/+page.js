@@ -146,12 +146,10 @@ export async function load({ fetch }) {
 			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		console.log('🔍 Loading managers data');
 		const managersResult = await Promise.race([
 			getUsersWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
-		console.log('✅ Managers data loaded successfully:', managersResult);
 
 		if (!validateManagersData(managersResult)) {
 			throw new Error('Invalid data format received from API');
@@ -169,7 +167,6 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Managers data loaded successfully in ${loadTime}ms`);
 
 		return {
 			agents: managers,

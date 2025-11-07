@@ -64,19 +64,3 @@ export const { API_BASE_URL, AUTH_API_URL, FRONTEND_URL } = config;
 // GraphQL endpoint for convenience
 export const GRAPHQL_ENDPOINT = `${API_BASE_URL}/graphql`;
 export const AUTH_ENDPOINT = `${AUTH_API_URL}/api`;
-
-// Debug logging in development
-if (dev || (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production')) {
-	console.log('🔧 API Config Debug:', {
-		browser,
-		dev,
-		NODE_ENV: typeof process !== 'undefined' ? process.env.NODE_ENV : 'undefined',
-		viteEnvVars: {
-			API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
-			AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL,
-			FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL
-		},
-		hasGlobalAppEnv: typeof globalThis !== 'undefined' && !!globalThis.__APP_ENV__,
-		config
-	});
-}

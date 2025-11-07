@@ -147,12 +147,10 @@ export async function load({ fetch }) {
 			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		console.log('🔍 Loading clients data');
 		const clientsResult = await Promise.race([
 			getUsersWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
-		console.log('✅ Clients data loaded successfully:', clientsResult);
 
 		if (!validateClientsData(clientsResult)) {
 			throw new Error('Invalid data format received from API');
@@ -170,7 +168,6 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Clients data loaded successfully in ${loadTime}ms`);
 
 		return {
 			agents: clients,

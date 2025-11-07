@@ -86,7 +86,6 @@ export async function initializeAuth() {
 	const hasToken = hasAuthToken();
 	const token = getAuthToken();
 	const storedUser = normalizeUserData(getUserData());
-	console.log('storedUser-', storedUser);
 
 	// Restore state immediately from localStorage if we have both token and user data
 	if (hasToken && storedUser) {
@@ -116,7 +115,6 @@ export async function initializeAuth() {
 
 				if (result.success && result.user) {
 					// Update with fresh data
-					console.log('initializeAuth - Updating with fresh API data');
 					const normalizedUser = normalizeUserData(result.user);
 					authState.user = normalizedUser;
 					authState.isAuthenticated = true;
@@ -125,20 +123,16 @@ export async function initializeAuth() {
 
 					// Update stored user data
 					setUserData(normalizedUser);
-					console.log('initializeAuth - Authentication updated successfully:', authState.user);
 				} else if (result.status === 401 || result.status === 403) {
 					// Token is invalid, clear it
-					console.log('initializeAuth - Token invalid, clearing state');
 					removeAuthToken();
 					clearAuthState();
 				} else if (result.status === 0) {
 					// Network error, keep the restored state if we have it
-					console.log('initializeAuth - Network error, keeping restored state');
 					// State already restored from localStorage above, no need to do anything
 				}
 				// For other errors, keep the restored state
 			} catch (apiError) {
-				console.log('initializeAuth - API call failed, keeping restored state:', apiError);
 				// State already restored from localStorage above, no need to do anything
 			}
 		} catch (error) {
@@ -150,13 +144,6 @@ export async function initializeAuth() {
 	}
 
 	authState.initialized = true;
-	console.log('initializeAuth - Initialization complete:', {
-		user: authState.user,
-		isAuthenticated: authState.isAuthenticated,
-		initialized: authState.initialized,
-		hasToken: hasAuthToken(),
-		storedToken: getAuthToken()
-	});
 }
 
 /**
@@ -173,13 +160,9 @@ export async function login(email, password, remember = false) {
 
 	try {
 		// Initialize CSRF protection before making login request
-		console.log('🔒 Initializing CSRF protection...');
 		await initCsrf();
-		console.log('✅ CSRF protection initialized');
 
-		console.log('🔐 Login attempt with remember:', remember);
 		const result = await loginUser(email, password, remember);
-		console.log('🔐 Login API result:', result);
 
 		if (result.success) {
 			// Update auth state - add safety checks and normalize user data
@@ -233,9 +216,7 @@ export async function register(userData) {
 
 	try {
 		// Initialize CSRF protection before making registration request
-		console.log('🔒 Initializing CSRF protection...');
 		await initCsrf();
-		console.log('✅ CSRF protection initialized');
 
 		const result = await registerUser(userData);
 
@@ -329,7 +310,6 @@ export async function checkAuth() {
 	if (!authState.user && hasAuthToken()) {
 		const storedUser = normalizeUserData(getUserData());
 		if (storedUser) {
-			console.log('checkAuth - Restoring user from localStorage');
 			authState.user = storedUser;
 			authState.isAuthenticated = true;
 			authState.emailVerified = storedUser.email_verified || false;
@@ -355,17 +335,14 @@ export async function checkAuth() {
 			return true;
 		} else if (result.status === 0) {
 			// Network error, keep current/stored state if present
-			console.log('checkAuth - Network error, keeping current state');
 			return authState.isAuthenticated;
 		} else if (result.status === 401 || result.status === 403) {
 			// Token is invalid
-			console.log('checkAuth - Token invalid, clearing state');
 			clearAuthState();
 			removeAuthToken();
 			return false;
 		} else {
 			// Other errors, keep current state
-			console.log('checkAuth - API error, keeping current state');
 			return authState.isAuthenticated;
 		}
 	} catch (error) {
@@ -373,7 +350,6 @@ export async function checkAuth() {
 		// If network error, try to keep stored state
 		const storedUser = normalizeUserData(getUserData());
 		if (storedUser && hasAuthToken()) {
-			console.log('checkAuth - Exception occurred, keeping stored state');
 			authState.user = storedUser;
 			authState.isAuthenticated = true;
 			authState.emailVerified = storedUser.email_verified || false;
@@ -510,12 +486,6 @@ export function clearError() {
  * Clear authentication state (internal helper)
  */
 function clearAuthState() {
-	console.log('clearAuthState called - before:', {
-		isAuthenticated: authState.isAuthenticated,
-		user: authState.user,
-		token: authState.token
-	});
-
 	authState.user = null;
 	authState.isAuthenticated = false;
 	authState.emailVerified = false;
@@ -525,12 +495,6 @@ function clearAuthState() {
 	authState.loginError = null;
 	authState.registerError = null;
 	authState.emailVerificationError = null;
-
-	console.log('clearAuthState called - after:', {
-		isAuthenticated: authState.isAuthenticated,
-		user: authState.user,
-		token: authState.token
-	});
 }
 
 /**

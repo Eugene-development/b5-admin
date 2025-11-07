@@ -66,14 +66,11 @@
 	});
 
 	function handleViewTz(tz) {
-		console.log('Opening modal for TZ:', tz);
 		selectedTz = tz;
 		isViewModalOpen = true;
-		console.log('Modal state:', { isViewModalOpen, selectedTz });
 	}
 
 	function handleEditTz(tz) {
-		console.log('Opening edit modal for TZ:', tz);
 		editingTz = tz;
 		isEditModalOpen = true;
 		clearAllToasts();
@@ -131,7 +128,6 @@
 	}
 
 	function closeViewModal() {
-		console.log('Closing modal');
 		isViewModalOpen = false;
 		selectedTz = null;
 	}
@@ -139,7 +135,6 @@
 	function handleSearch() {
 		hasSearched = true;
 		// TODO: Implement search functionality
-		console.log('Search term:', searchTerm);
 	}
 
 	// Load TZ data

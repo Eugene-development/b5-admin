@@ -141,16 +141,6 @@ async function makeGraphQLRequest(
 			const fetchFunction =
 				customFetch || (typeof window !== 'undefined' ? window.fetch : globalThis.fetch);
 
-			// Debug logging
-			console.log('🔧 GraphQL Request Debug:', {
-				operationName,
-				endpoint: GRAPHQL_ENDPOINT,
-				variables,
-				usingCustomFetch: !!customFetch,
-				fetchFunction: fetchFunction.name || 'unknown',
-				timestamp: new Date().toISOString()
-			});
-
 			// Prepare headers
 			const headers = {
 				'Content-Type': 'application/json',
@@ -161,7 +151,6 @@ async function makeGraphQLRequest(
 			// TODO: Re-enable authentication after CORS is properly configured
 
 			// Make the request using fetch directly to support server-side
-			console.log('🚀 Making GraphQL request to:', GRAPHQL_ENDPOINT);
 			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
 				method: 'POST',
 				headers,
@@ -174,13 +163,6 @@ async function makeGraphQLRequest(
 			});
 
 			clearTimeout(timeoutId);
-
-			console.log('✅ GraphQL response received:', {
-				status: response.status,
-				statusText: response.statusText,
-				ok: response.ok,
-				headers: Object.fromEntries(response.headers.entries())
-			});
 
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -285,7 +267,6 @@ export async function deleteProject(projectId, customFetch = null, cookies = nul
 // Function to accept a project (link user to project)
 export async function acceptProject(projectId, userId, statusId = null, customFetch = null, cookies = null) {
 	try {
-		console.log('🎯 acceptProject called with:', { projectId, userId, statusId });
 		const result = await makeGraphQLRequest(
 			ACCEPT_PROJECT_MUTATION,
 			{ projectId, userId, statusId },
@@ -294,7 +275,6 @@ export async function acceptProject(projectId, userId, statusId = null, customFe
 			customFetch,
 			cookies
 		);
-		console.log('✅ acceptProject result:', result);
 		return result.acceptProject;
 	} catch (err) {
 		console.error('❌ Accept project failed:', err);

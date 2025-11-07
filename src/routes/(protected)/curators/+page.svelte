@@ -310,7 +310,6 @@
 
 	// Debug function to manually set user status (for testing)
 	function debugSetUserStatus(userId, status) {
-		console.log('Debug: Manually setting user status:', { userId, status });
 		updateUserStatus(userId, status);
 	}
 

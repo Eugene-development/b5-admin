@@ -49,7 +49,6 @@
 		if (!authState.initialized) {
 			const storedUser = getUserData();
 			if (storedUser) {
-				console.log('profile - Using stored user data as fallback:', storedUser);
 				return storedUser;
 			}
 		}

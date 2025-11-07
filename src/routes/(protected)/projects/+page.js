@@ -185,12 +185,10 @@ export async function load({ fetch }) {
 		});
 
 		// Load projects data - use SvelteKit fetch for proper SSR support
-		console.log('🔍 About to call getProjectsWithPagination with SvelteKit fetch');
 		const projectsResult = await Promise.race([
 			getProjectsWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
 			timeoutPromise
 		]);
-		console.log('✅ getProjectsWithPagination completed successfully:', projectsResult);
 
 		// Validate data structure
 		if (!validateProjectsData(projectsResult)) {
@@ -212,7 +210,6 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Projects data loaded successfully in ${loadTime}ms`);
 
 		return {
 			projects,

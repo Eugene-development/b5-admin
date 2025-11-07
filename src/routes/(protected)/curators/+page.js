@@ -185,12 +185,10 @@ export async function load({ fetch }) {
 		});
 
 		// Load curators data - use SvelteKit fetch for proper SSR support
-		console.log('🔍 About to call getUsersWithPagination with SvelteKit fetch');
 		const curatorsResult = await Promise.race([
 			getUsersWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
 			timeoutPromise
 		]);
-		console.log('✅ getUsersWithPagination completed successfully:', curatorsResult);
 
 		// Validate data structure
 		if (!validateCuratorsData(curatorsResult)) {
@@ -212,7 +210,6 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Curators data loaded successfully in ${loadTime}ms`);
 // FIX: agents: curators?
 		return {
 

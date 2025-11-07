@@ -11,7 +11,6 @@
 	$effect(() => {
 		// If we have server data, update auth state immediately
 		if (data?.user && data?.isAuthenticated) {
-			console.log('🔄 Initializing auth from server data:', data.user);
 			authState.user = data.user;
 			authState.isAuthenticated = true;
 			authState.emailVerified = data.user.email_verified || false;
@@ -25,7 +24,6 @@
 			}
 		} else {
 			// No server data - user is not authenticated
-			console.log('🔄 No server data - user not authenticated');
 			authState.user = null;
 			authState.isAuthenticated = false;
 			authState.initialized = true;

@@ -185,12 +185,10 @@ export async function load({ fetch }) {
 		});
 
 		// Load agents data - use SvelteKit fetch for proper SSR support
-		console.log('🔍 About to call getUsersWithPagination with SvelteKit fetch');
 		const agentsResult = await Promise.race([
 			getUsersWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
 			timeoutPromise
 		]);
-		console.log('✅ getUsersWithPagination completed successfully:', agentsResult);
 
 		// Validate data structure
 		if (!validateAgentsData(agentsResult)) {
@@ -212,7 +210,6 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-		console.log(`Agents data loaded successfully in ${loadTime}ms`);
 
 		return {
 			agents,
