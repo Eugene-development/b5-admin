@@ -386,7 +386,7 @@
 						<!-- Правый столбец -->
 						<div class="space-y-4 md:space-y-5 lg:space-y-6">
 							<!-- Region поле -->
-							<div class="space-y-1">
+							<div class="hidden space-y-1 lg:block">
 								<label
 									for="region"
 									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"

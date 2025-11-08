@@ -97,7 +97,14 @@
 							<circle cx="100" cy="150" r="40" fill="url(#gradient4)" opacity="0.2" />
 							<circle cx="100" cy="150" r="30" fill="url(#gradient4)" opacity="0.4" />
 							<circle cx="100" cy="150" r="20" fill="url(#gradient4)" />
-							<text x="100" y="215" text-anchor="middle" fill="#9CA3AF" font-size="14">
+							<text
+								x="100"
+								y="215"
+								text-anchor="middle"
+								fill="url(#gradient4)"
+								font-size="14"
+								font-weight="500"
+							>
 								Агенты
 							</text>
 
@@ -105,7 +112,14 @@
 							<circle cx="300" cy="80" r="40" fill="url(#gradient3)" opacity="0.2" />
 							<circle cx="300" cy="80" r="30" fill="url(#gradient3)" opacity="0.4" />
 							<circle cx="300" cy="80" r="20" fill="url(#gradient3)" />
-							<text x="300" y="25" text-anchor="middle" fill="#9CA3AF" font-size="14">
+							<text
+								x="300"
+								y="25"
+								text-anchor="middle"
+								fill="url(#gradient3)"
+								font-size="14"
+								font-weight="500"
+							>
 								Платформа
 							</text>
 
@@ -113,7 +127,14 @@
 							<circle cx="300" cy="220" r="40" fill="url(#gradient2)" opacity="0.2" />
 							<circle cx="300" cy="220" r="30" fill="url(#gradient2)" opacity="0.4" />
 							<circle cx="300" cy="220" r="20" fill="url(#gradient2)" />
-							<text x="300" y="290" text-anchor="middle" fill="#9CA3AF" font-size="14">
+							<text
+								x="300"
+								y="290"
+								text-anchor="middle"
+								fill="url(#gradient2)"
+								font-size="14"
+								font-weight="500"
+							>
 								Клиенты
 							</text>
 
@@ -121,7 +142,14 @@
 							<circle cx="500" cy="150" r="40" fill="url(#gradient5)" opacity="0.2" />
 							<circle cx="500" cy="150" r="30" fill="url(#gradient5)" opacity="0.4" />
 							<circle cx="500" cy="150" r="20" fill="url(#gradient5)" />
-							<text x="500" y="215" text-anchor="middle" fill="#9CA3AF" font-size="14">
+							<text
+								x="500"
+								y="215"
+								text-anchor="middle"
+								fill="url(#gradient5)"
+								font-size="14"
+								font-weight="500"
+							>
 								Партнёры
 							</text>
 						</g>
@@ -440,7 +468,7 @@
 						Присоединяйтесь к RUBONUS и начните зарабатывать уже сегодня
 					</p>
 
-					<div class="mb-8 grid gap-4 sm:grid-cols-2">
+					<div class="mb-8 grid gap-4 sm:grid-cols-3">
 						<div class="flex items-center gap-3 rounded-xl bg-gray-900/50 p-4">
 							<div class="flex-shrink-0">
 								<svg
@@ -457,7 +485,7 @@
 									/>
 								</svg>
 							</div>
-							<span class="text-sm text-gray-300">Регистрация за 2 минуты</span>
+							<span class="text-sm text-gray-300">Простая регистрация</span>
 						</div>
 
 						<div class="flex items-center gap-3 rounded-xl bg-gray-900/50 p-4">
@@ -516,13 +544,51 @@
 							</div>
 							<span class="text-sm text-gray-300">Поддержка 24/7</span>
 						</div>
+
+						<div class="flex items-center gap-3 rounded-xl bg-gray-900/50 p-4">
+							<div class="flex-shrink-0">
+								<svg
+									class="h-6 w-6 text-green-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									/>
+								</svg>
+							</div>
+							<span class="text-sm text-gray-300">Прозрачные условия</span>
+						</div>
+
+						<div class="flex items-center gap-3 rounded-xl bg-gray-900/50 p-4">
+							<div class="flex-shrink-0">
+								<svg
+									class="h-6 w-6 text-green-400"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									/>
+								</svg>
+							</div>
+							<span class="text-sm text-gray-300">Обучение персонала</span>
+						</div>
 					</div>
 
 					<a
 						href="/register"
 						class="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 px-10 py-4 text-lg font-semibold text-white shadow-2xl shadow-indigo-500/50 transition-all duration-300 hover:scale-105 hover:shadow-indigo-500/70"
 					>
-						<span>Создать аккаунт</span>
+						<span>Зарегистрировать компанию</span>
 						<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path
 								stroke-linecap="round"
