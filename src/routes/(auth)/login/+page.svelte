@@ -16,14 +16,15 @@
 	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/dashboard');
 
 	// Restore "Remember Me" preference from localStorage
-	$effect(() => {
-		if (browser) {
-			const savedRememberMe = localStorage.getItem('rememberMe');
-			if (savedRememberMe === 'true') {
-				remember = true;
-			}
-		}
-	});
+	// Временно отключено: чекбокс "Запомнить меня" скрыт
+	// $effect(() => {
+	// 	if (browser) {
+	// 		const savedRememberMe = localStorage.getItem('rememberMe');
+	// 		if (savedRememberMe === 'true') {
+	// 			remember = true;
+	// 		}
+	// 	}
+	// });
 
 	/**
 	 * Validate email format
@@ -65,12 +66,13 @@
 		clearError();
 		clientErrors = {};
 		if (!validateForm()) return;
-		
+
 		// Save "Remember Me" preference to localStorage
-		if (browser) {
-			localStorage.setItem('rememberMe', remember.toString());
-		}
-		
+		// Временно отключено: чекбокс "Запомнить меня" скрыт
+		// if (browser) {
+		// 	localStorage.setItem('rememberMe', remember.toString());
+		// }
+
 		try {
 			// Pass remember parameter to login function
 			const success = await login(email, password, remember);
@@ -355,6 +357,8 @@
 
 					<!-- Дополнительные опции -->
 					<div class="flex items-center justify-between">
+						<!-- Временно скрыто: чекбокс "Запомнить меня" -->
+						<!--
 						<label class="flex cursor-pointer items-center space-x-2">
 							<input
 								type="checkbox"
@@ -363,6 +367,7 @@
 							/>
 							<span class="text-sm text-gray-700 dark:text-gray-300">Запомнить меня</span>
 						</label>
+						-->
 						<a
 							href="/forgot-password"
 							class="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
