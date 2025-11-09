@@ -402,119 +402,205 @@
 					Перейти к основному контенту
 				</a>
 
-				<div class="space-y-6 bg-gray-950">
-					<!-- Page landmark -->
-					<main id="main-content" aria-labelledby="page-title">
-						<div
-							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-						>
-							<div class="flex-auto">
-								<h1
-									id="page-title"
-									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
-								>
-									Проекты
-								</h1>
-							</div>
-							<div class="flex-none">
-								<button
-									type="button"
-									onclick={(event) => {
-										event.stopPropagation();
-										refreshData();
-									}}
-									disabled={isRefreshing}
-									class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-cyan-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-									aria-label="Refresh projects data from server"
-									aria-describedby="refresh-button-description"
-								>
-									{#if isRefreshing}
-										<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
-									{/if}
-									{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
-								</button>
-								<div id="refresh-button-description" class="sr-only">
-									Обновить данные проектов с сервера
-								</div>
-							</div>
-						</div>
-
-						<!-- Load Error Banner -->
-						{#if loadError && loadError.canRetry}
-							<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-								<div class="flex">
-									<div class="flex-shrink-0">
-										<svg
-											class="h-5 w-5 text-yellow-400"
-											viewBox="0 0 20 20"
-											fill="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												fill-rule="evenodd"
-												d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-												clip-rule="evenodd"
-											/>
-										</svg>
-									</div>
-									<div class="ml-3">
-										<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-											Ошибка загрузки данных
-										</h3>
-										<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-											<p>{loadError.message}</p>
+				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+					<div class="px-4 py-8 sm:px-6 lg:px-8">
+						<div class="mx-auto max-w-7xl">
+							<!-- Page landmark -->
+							<main id="main-content" aria-labelledby="page-title">
+								<!-- Header with Refresh Button -->
+								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
+									<div class="flex items-center justify-between">
+										<div>
+											<h1
+												id="page-title"
+												class="text-2xl font-semibold text-gray-900 dark:text-white"
+											>
+												Проекты
+											</h1>
+											<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+												Управление проектами системы
+											</p>
 										</div>
-										<div class="mt-4">
-											<div class="-mx-2 -my-1.5 flex">
-												<button
-													type="button"
-													onclick={refreshData}
-													disabled={isRefreshing}
-													class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+									</div>
+									<div class="flex items-center space-x-3">
+										<!-- Refresh Button -->
+										<button
+											type="button"
+											onclick={(event) => {
+												event.stopPropagation();
+												refreshData();
+											}}
+											disabled={isRefreshing}
+											class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+											aria-label="Refresh projects data from server"
+											aria-describedby="refresh-button-description"
+										>
+											{#if isRefreshing}
+												<svg
+													class="mr-2 h-4 w-4 animate-spin"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
 												>
-													{isRefreshing ? 'Retrying...' : 'Retry'}
-												</button>
+													<circle
+														class="opacity-25"
+														cx="12"
+														cy="12"
+														r="10"
+														stroke="currentColor"
+														stroke-width="4"
+													></circle>
+													<path
+														class="opacity-75"
+														fill="currentColor"
+														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+													></path>
+												</svg>
+											{:else}
+												<svg
+													class="mr-2 h-4 w-4"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+													></path>
+												</svg>
+											{/if}
+											Обновить
+										</button>
+										<div id="refresh-button-description" class="sr-only">
+											Обновить данные проектов с сервера
+										</div>
+									</div>
+								</div>
+
+								<!-- Separator -->
+								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+								<!-- Load Error Banner -->
+								{#if loadError && loadError.canRetry}
+									<div class="mb-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
+										<div class="flex">
+											<div class="flex-shrink-0">
+												<svg
+													class="h-5 w-5 text-yellow-400"
+													viewBox="0 0 20 20"
+													fill="currentColor"
+													aria-hidden="true"
+												>
+													<path
+														fill-rule="evenodd"
+														d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+														clip-rule="evenodd"
+													/>
+												</svg>
+											</div>
+											<div class="ml-3">
+												<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+													Ошибка загрузки данных
+												</h3>
+												<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+													<p>{loadError.message}</p>
+												</div>
+												<div class="mt-4">
+													<div class="-mx-2 -my-1.5 flex">
+														<button
+															type="button"
+															onclick={refreshData}
+															disabled={isRefreshing}
+															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+														>
+															{isRefreshing ? 'Retrying...' : 'Retry'}
+														</button>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</div>
-						{/if}
-
-						<!-- Search Bar -->
-						<div class="w-full sm:max-w-md" role="search" aria-label="Project search">
-							<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
-						</div>
-
-						<!-- Results summary -->
-						{#if searchTerm.trim()}
-							<div
-								class="py-2 text-sm text-gray-600 dark:text-gray-400"
-								role="status"
-								aria-live="polite"
-								aria-atomic="true"
-							>
-								{#if filteredProjects.length === 0}
-									<p>Проекты не найдены</p>
-								{:else}
-									<p>Найдено {filteredProjects.length} проектов по запросу "{searchTerm}"</p>
 								{/if}
-							</div>
-						{/if}
 
-						<ProjectsTable
-							projects={filteredProjects}
-							isLoading={isActionLoading}
-							onEditProject={handleEditProject}
-							onDeleteProject={handleDeleteProject}
-							onViewProject={handleViewProject}
-							onAcceptProject={handleAcceptProject}
-							{updateCounter}
-							{searchTerm}
-							hasSearched={searchTerm.trim().length > 0}
-							currentUserId={authState.user?.id}
-						/>
-					</main>
+								<!-- Search and Filters -->
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+								>
+									<div class="flex flex-1 items-center space-x-4">
+										<!-- Search Input -->
+										<div class="relative max-w-md flex-1" role="search" aria-label="Project search">
+											<div
+												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+											>
+												<svg
+													class="h-5 w-5 text-gray-400"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													aria-hidden="true"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+													/>
+												</svg>
+											</div>
+											<input
+												id="project-search"
+												type="text"
+												bind:value={searchTerm}
+												oninput={() => handleSearch(searchTerm)}
+												placeholder="Поиск по названию, региону, агенту..."
+												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
+											/>
+										</div>
+									</div>
+								</div>
+
+								<!-- Results summary -->
+								{#if searchTerm.trim()}
+									<div
+										class="mt-4 text-sm text-gray-600 dark:text-gray-400"
+										role="status"
+										aria-live="polite"
+										aria-atomic="true"
+									>
+										{#if filteredProjects.length === 0}
+											Проекты не найдены по запросу "{searchTerm}"
+										{:else}
+											Найдено {filteredProjects.length} проект{filteredProjects.length === 1
+												? ''
+												: filteredProjects.length < 5
+													? 'а'
+													: 'ов'} по запросу "{searchTerm}"
+										{/if}
+									</div>
+								{/if}
+
+								<!-- Projects Table -->
+								<div class="mt-8">
+									<ProjectsTable
+										projects={filteredProjects}
+										isLoading={isActionLoading}
+										onEditProject={handleEditProject}
+										onDeleteProject={handleDeleteProject}
+										onViewProject={handleViewProject}
+										onAcceptProject={handleAcceptProject}
+										{updateCounter}
+										{searchTerm}
+										hasSearched={searchTerm.trim().length > 0}
+										currentUserId={authState.user?.id}
+									/>
+								</div>
+							</main>
+						</div>
+					</div>
 				</div>
 			{:catch error}
 				<!-- Critical error state -->
