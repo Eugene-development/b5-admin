@@ -332,7 +332,7 @@
 				id={banButtonId}
 				onclick={handleBanAction}
 				onkeydown={(e) => handleKeydown(e, 'ban')}
-				class="inline-flex min-h-[36px] items-center rounded-md px-2 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
+				class="inline-flex min-h-[36px] items-center rounded-md bg-blue-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
 				aria-label={getAccessibleBanText(isBanned, entity.name)}
 				aria-describedby={`${banButtonId}-description`}
@@ -483,7 +483,7 @@
 				id={banButtonId}
 				onclick={handleBanAction}
 				onkeydown={(e) => handleKeydown(e, 'ban')}
-				class="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-semibold shadow-sm transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50 bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
+				class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
 				aria-label={getAccessibleBanText(isBanned, entity.name)}
 				aria-describedby={`${banButtonId}-description`}

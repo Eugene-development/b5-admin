@@ -13,6 +13,7 @@
 **Расположение:** `src/lib/components/ActionEditModal.svelte`
 
 **Функциональность:**
+
 - Форма редактирования с предзаполненными данными акции
 - Валидация всех полей в реальном времени
 - Проверка корректности дат (дата окончания должна быть позже даты начала)
@@ -23,6 +24,7 @@
 - Закрытие по Escape или клику вне модального окна
 
 **Props:**
+
 - `isOpen` (boolean) - контролирует видимость модального окна
 - `action` (Object) - объект акции для редактирования
 - `onSave` (Function) - callback для сохранения изменений
@@ -35,6 +37,7 @@
 **Расположение:** `src/routes/(protected)/actions/+page.svelte`
 
 **Изменения:**
+
 - Добавлен импорт `ActionEditModal` и `updateAction`
 - Добавлено состояние `showEditModal` для управления модальным окном редактирования
 - Реализована функция `handleEditAction` - открывает модальное окно с данными акции
@@ -49,6 +52,7 @@
 Функция уже была реализована ранее и выполняет GraphQL мутацию `updateAction`.
 
 **Параметры:**
+
 ```javascript
 {
   id: string,           // ID акции (обязательно)
@@ -78,17 +82,17 @@
 
 ```graphql
 mutation UpdateAction($input: UpdateActionInput!) {
-  updateAction(input: $input) {
-    id
-    name
-    description
-    start
-    end
-    company_id
-    is_active
-    created_at
-    updated_at
-  }
+	updateAction(input: $input) {
+		id
+		name
+		description
+		start
+		end
+		company_id
+		is_active
+		created_at
+		updated_at
+	}
 }
 ```
 
@@ -144,10 +148,10 @@ mutation UpdateAction($input: UpdateActionInput!) {
 
 ```graphql
 mutation DeleteAction($id: ID!) {
-  deleteAction(id: $id) {
-    id
-    name
-  }
+	deleteAction(id: $id) {
+		id
+		name
+	}
 }
 ```
 
@@ -156,6 +160,7 @@ mutation DeleteAction($id: ID!) {
 Используется стандартный компонент из библиотеки `$lib` для подтверждения деструктивных действий.
 
 **Props:**
+
 - `isOpen` - видимость модального окна
 - `title` - заголовок ("Удалить акцию")
 - `message` - текст подтверждения

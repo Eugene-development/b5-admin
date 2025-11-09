@@ -9,6 +9,7 @@
 Создан универсальный компонент `PageTransition` для управления анимациями переходов между страницами.
 
 ### Расположение
+
 `src/lib/components/PageTransition/index.svelte`
 
 ### Использование
@@ -42,6 +43,7 @@
 ### Примеры использования
 
 #### Базовый fade-эффект
+
 ```svelte
 <PageTransition type="fade" duration={400}>
 	{@render children?.()}
@@ -49,6 +51,7 @@
 ```
 
 #### Slide-up эффект
+
 ```svelte
 <PageTransition type="slide-up" duration={500}>
 	<h1>Заголовок страницы</h1>
@@ -57,6 +60,7 @@
 ```
 
 #### Zoom эффект с быстрой анимацией
+
 ```svelte
 <PageTransition type="zoom" duration={200}>
 	<div class="content">...</div>
@@ -105,6 +109,7 @@
 ## Техническая реализация
 
 1. **Подключение библиотеки**: `tailwindcss-animated` добавлен как импорт в `src/app.css`
+
    ```css
    @import 'tailwindcss-animated';
    ```

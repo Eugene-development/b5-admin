@@ -17,7 +17,7 @@
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
-	import { invalidateAll } from '$app/navigation';
+	import { invalidateAll, goto } from '$app/navigation';
 	import {
 		refreshTechnicalSpecifications,
 		deleteTechnicalSpecification,
@@ -32,7 +32,7 @@
 	let { data } = $props();
 
 	// State
-	let tzList = $state(data.tzList);
+	let tzList = $state([]);
 	let isLoading = $state(false);
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
@@ -56,14 +56,6 @@
 	// Error boundary state
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
-
-	// Check for server-side load errors
-	let loadError = $state(data?.error || null);
-
-	// Update tzList when data changes
-	$effect(() => {
-		tzList = data.tzList;
-	});
 
 	function handleViewTz(tz) {
 		selectedTz = tz;
@@ -274,7 +266,7 @@
 						await uploadOfferFile(projectId, file);
 						addSuccessToast('КП успешно загружено');
 					}
-					
+
 					// Reload data to get updated files
 					await loadServices();
 					isUploadModalOpen = false;
@@ -299,11 +291,13 @@
 		uploadType = null;
 	}
 
-	// Handle initial load error and load projects
+	// Handle retry on error
+	function handleRetry() {
+		goto(window.location.pathname, { invalidateAll: true });
+	}
+
+	// Load projects on mount
 	onMount(() => {
-		if (loadError) {
-			addErrorToast(loadError.message, { duration: 0 });
-		}
 		loadProjects();
 	});
 </script>
@@ -324,153 +318,247 @@
 			fallbackMessage="An error occurred while loading the TZ page."
 			showDetails={true}
 		>
-			<div class="space-y-6">
-				<!-- Page Header -->
-				<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
-					<div class="flex items-center justify-between">
-						<div>
+			{#await data.tzData}
+				<!-- Loading state: Show skeleton -->
+				<div class="space-y-6">
+					<!-- Page Header Skeleton -->
+					<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
+						<div class="flex items-center justify-between">
+							<div>
+								<div class="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+								<div class="mt-2 h-4 w-96 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+							</div>
+							<div class="flex items-center space-x-3">
+								<div class="h-10 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+								<div class="h-10 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
+							</div>
+						</div>
+					</div>
+					<!-- Loading Spinner -->
+					<div class="flex items-center justify-center py-12">
+						<svg
+							class="h-12 w-12 animate-spin text-indigo-600"
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+						>
+							<circle
+								class="opacity-25"
+								cx="12"
+								cy="12"
+								r="10"
+								stroke="currentColor"
+								stroke-width="4"
+							></circle>
+							<path
+								class="opacity-75"
+								fill="currentColor"
+								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+							></path>
+						</svg>
+					</div>
+				</div>
+			{:then tzData}
+				<!-- Success state: Show data -->
+				{#if tzData.error}
+					<!-- Error state -->
+					<div class="space-y-6">
+						<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
 							<h1
-								class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+								class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 							>
 								Техзадания
 							</h1>
-							<p class="hidden sm:block mt-1 text-sm text-gray-500 dark:text-gray-400">
-								Управление техническими заданиями и спецификациями
-							</p>
 						</div>
-						<div class="flex items-center space-x-3">
-							<!-- Refresh Button -->
-							<button
-								type="button"
-								onclick={loadServices}
-								disabled={isLoading}
-								class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-							>
-								{#if isLoading}
-									<svg
-										class="mr-2 h-4 w-4 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else}
-									<svg
-										class="mr-2 h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-										/>
-									</svg>
-								{/if}
-								Обновить
-							</button>
-							<!-- Create TZ Button -->
-							<button
-								type="button"
-								onclick={handleOpenCreateModal}
-								disabled={isLoading}
-								class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
-							>
-								<svg
-									class="-ml-0.5 mr-1.5 h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
+						<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
+							<h3 class="mb-4 text-xl font-semibold text-red-900 dark:text-white">
+								Ошибка загрузки техзаданий
+							</h3>
+							<p class="mb-4 text-red-700 dark:text-red-300">{tzData.error}</p>
+							{#if tzData.canRetry}
+								<button
+									onclick={handleRetry}
+									class="rounded-lg bg-red-600 px-6 py-2 font-semibold text-white hover:bg-red-700"
 								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 4v16m8-8H4"
-									/>
-								</svg>
-								Создать
-							</button>
+									Попробовать снова
+								</button>
+							{/if}
 						</div>
 					</div>
-				</div>
+				{:else}
+					<!-- Initialize local tzList from loaded data -->
+					{#if !tzList.length && tzData.tzList.length}
+						{((tzList = tzData.tzList), '')}
+					{/if}
 
-				<!-- Search and Filters -->
-				<div
-					class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-				>
-					<div class="flex flex-1 items-center space-x-4">
-						<!-- Search Input -->
-						<div class="relative max-w-md flex-1">
-							<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-								<svg
-									class="h-5 w-5 text-gray-400"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-									/>
-								</svg>
+					<div class="space-y-6">
+						<!-- Page Header -->
+						<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
+							<div class="flex items-center justify-between">
+								<div>
+									<h1
+										class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+									>
+										Техзадания
+									</h1>
+									<p class="mt-1 hidden text-sm text-gray-500 sm:block dark:text-gray-400">
+										Управление техническими заданиями и спецификациями
+									</p>
+								</div>
+								<div class="flex items-center space-x-3">
+									<!-- Refresh Button -->
+									<button
+										type="button"
+										onclick={loadServices}
+										disabled={isLoading}
+										class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+									>
+										{#if isLoading}
+											<svg
+												class="mr-2 h-4 w-4 animate-spin"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="none"
+												viewBox="0 0 24 24"
+											>
+												<circle
+													class="opacity-25"
+													cx="12"
+													cy="12"
+													r="10"
+													stroke="currentColor"
+													stroke-width="4"
+												></circle>
+												<path
+													class="opacity-75"
+													fill="currentColor"
+													d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+												></path>
+											</svg>
+										{:else}
+											<svg
+												class="mr-2 h-4 w-4"
+												xmlns="http://www.w3.org/2000/svg"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+												/>
+											</svg>
+										{/if}
+										Обновить
+									</button>
+									<!-- Create TZ Button -->
+									<button
+										type="button"
+										onclick={handleOpenCreateModal}
+										disabled={isLoading}
+										class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+									>
+										<svg
+											class="mr-1.5 -ml-0.5 h-5 w-5"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M12 4v16m8-8H4"
+											/>
+										</svg>
+										Создать
+									</button>
+								</div>
 							</div>
-							<input
-								id="tz-search"
-								type="text"
-								bind:value={searchTerm}
-								oninput={handleSearch}
-								class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-								placeholder="Поиск техзаданий..."
+						</div>
+
+						<!-- Search and Filters -->
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
+							<div class="flex flex-1 items-center space-x-4">
+								<!-- Search Input -->
+								<div class="relative max-w-md flex-1">
+									<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+										<svg
+											class="h-5 w-5 text-gray-400"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+											/>
+										</svg>
+									</div>
+									<input
+										id="tz-search"
+										type="text"
+										bind:value={searchTerm}
+										oninput={handleSearch}
+										class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
+										placeholder="Поиск техзаданий..."
+									/>
+								</div>
+							</div>
+
+							<!-- Total TZ count -->
+							<div class="text-sm text-gray-700 dark:text-gray-300">
+								<span>Всего элементов: <strong>{tzList.length}</strong></span>
+							</div>
+						</div>
+
+						<!-- Separator -->
+
+						<!-- Table -->
+						<div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl dark:bg-gray-800">
+							<TzTable
+								{tzList}
+								{isLoading}
+								{searchTerm}
+								{hasSearched}
+								{updateCounter}
+								onViewTz={handleViewTz}
+								onEditTz={handleEditTz}
+								onDeleteTz={handleDeleteTz}
+								onUploadSketch={handleUploadSketch}
+								onUploadCP={handleUploadCP}
 							/>
 						</div>
 					</div>
-
-					<!-- Total TZ count -->
-					<div class="text-sm text-gray-700 dark:text-gray-300">
-						<span>Всего элементов: <strong>{tzList.length}</strong></span>
+				{/if}
+			{:catch error}
+				<!-- Critical error state -->
+				<div class="space-y-6">
+					<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
+						<h1
+							class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+						>
+							Техзадания
+						</h1>
+					</div>
+					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
+						<h3 class="mb-4 text-xl font-semibold text-red-900 dark:text-white">
+							Критическая ошибка
+						</h3>
+						<p class="text-red-700 dark:text-red-300">
+							Не удалось загрузить техзадания. Попробуйте обновить страницу.
+						</p>
 					</div>
 				</div>
-
-				<!-- Separator -->
-
-				<!-- Table -->
-				<div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl dark:bg-gray-800">
-					<TzTable
-						{tzList}
-						{isLoading}
-						{searchTerm}
-						{hasSearched}
-						{updateCounter}
-						onViewTz={handleViewTz}
-						onEditTz={handleEditTz}
-						onDeleteTz={handleDeleteTz}
-						onUploadSketch={handleUploadSketch}
-						onUploadCP={handleUploadCP}
-					/>
-				</div>
-			</div>
+			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

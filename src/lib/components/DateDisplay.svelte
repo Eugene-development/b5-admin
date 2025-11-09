@@ -2,11 +2,7 @@
 	import { formatDate } from '../utils/formatters.js';
 	import { getDateUrgencyClasses, getRelativeTime } from '../utils/dateUtils.js';
 
-	let { 
-		date = null,
-		showRelative = false,
-		className = ''
-	} = $props();
+	let { date = null, showRelative = false, className = '' } = $props();
 
 	let formattedDate = $derived(formatDate(date));
 	let urgencyClasses = $derived(getDateUrgencyClasses(date));
@@ -18,7 +14,7 @@
 		{formattedDate}
 	</span>
 	{#if showRelative && relativeTime}
-		<span class="text-xs text-gray-500 mt-1">
+		<span class="mt-1 text-xs text-gray-500">
 			{relativeTime}
 		</span>
 	{/if}

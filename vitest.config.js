@@ -12,7 +12,7 @@ export default defineConfig({
 			'$app/navigation': './src/test-mocks/app/navigation.js',
 			'$app/environment': './src/test-mocks/app/environment.js',
 			'$app/stores': './src/test-mocks/app/stores.js',
-			'$lib': './src/lib'
+			$lib: './src/lib'
 		}
 	}
 });

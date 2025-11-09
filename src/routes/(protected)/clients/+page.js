@@ -1,6 +1,7 @@
 /**
- * Client-side load function for clients page
- * Handles data fetching and processing with error handling on the client-side
+ * Client-side load function for clients page with streaming
+ * Allows instant page navigation with data loading in background
+ * Uses streaming to show loading state while data is being fetched
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
@@ -54,7 +55,6 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 			return `Произошла неожиданная ошибка: ${originalMessage}`;
 	}
 }
-
 
 function createClientsFallbackData() {
 	return {
@@ -134,13 +134,11 @@ function calculateClientStats(clients) {
 	return stats;
 }
 
-/** @type {import('./$types').PageLoad} */
-export async function load({ fetch }) {
+/**
+ * Load clients data asynchronously for streaming
+ */
+async function loadClientsData(fetch) {
 	const startTime = Date.now();
-
-	if (!browser) {
-		return createClientsFallbackData();
-	}
 
 	try {
 		const timeoutPromise = new Promise((_, reject) => {
@@ -200,4 +198,14 @@ export async function load({ fetch }) {
 			loadTime: Date.now() - startTime
 		};
 	}
+}
+
+/** @type {import('./$types').PageLoad} */
+export async function load({ fetch }) {
+	// Return immediately with streamed Promise
+	// Page will render instantly, data will load in background
+	return {
+		// Don't await - return Promise for streaming!
+		usersData: loadClientsData(fetch)
+	};
 }

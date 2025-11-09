@@ -12,13 +12,13 @@ export function formatCurrency(amount, currency = 'RUB') {
 	if (amount === null || amount === undefined || amount === '') {
 		return 'Не указано';
 	}
-	
+
 	const numAmount = typeof amount === 'string' ? parseFloat(amount) : amount;
-	
+
 	if (isNaN(numAmount)) {
 		return 'Не указано';
 	}
-	
+
 	return new Intl.NumberFormat('ru-RU', {
 		style: 'currency',
 		currency: currency,
@@ -37,17 +37,17 @@ export function formatAgentRate(rate, type = 'percentage') {
 	if (rate === null || rate === undefined || rate === '') {
 		return 'Не указано';
 	}
-	
+
 	const numRate = typeof rate === 'string' ? parseFloat(rate) : rate;
-	
+
 	if (isNaN(numRate)) {
 		return 'Не указано';
 	}
-	
+
 	if (type === 'percentage') {
 		return `${numRate}%`;
 	}
-	
+
 	return formatCurrency(numRate);
 }
 /**
@@ -60,15 +60,15 @@ export function formatDate(dateString) {
 	if (!dateString) {
 		return 'Не указано';
 	}
-	
+
 	try {
 		const date = new Date(dateString);
-		
+
 		// Check if date is valid
 		if (isNaN(date.getTime())) {
 			return 'Не указано';
 		}
-		
+
 		return date.toLocaleDateString('ru-RU', {
 			day: '2-digit',
 			month: '2-digit',
@@ -89,15 +89,15 @@ export function isOverdue(dateString) {
 	if (!dateString) {
 		return false;
 	}
-	
+
 	try {
 		const date = new Date(dateString);
 		const today = new Date();
-		
+
 		// Reset time to compare only dates
 		today.setHours(0, 0, 0, 0);
 		date.setHours(0, 0, 0, 0);
-		
+
 		return date < today;
 	} catch (error) {
 		console.error('Error checking overdue date:', error);
@@ -115,11 +115,11 @@ export function truncateText(text, maxLength = 100) {
 	if (!text || typeof text !== 'string') {
 		return 'Описание не указано';
 	}
-	
+
 	if (text.length <= maxLength) {
 		return text;
 	}
-	
+
 	return text.substring(0, maxLength) + '...';
 }
 
@@ -133,7 +133,7 @@ export function isTruncated(text, maxLength = 100) {
 	if (!text || typeof text !== 'string') {
 		return false;
 	}
-	
+
 	return text.length > maxLength;
 }
 
@@ -158,19 +158,19 @@ export function formatAgentDisplay(agent) {
 	if (!agent) {
 		return 'Не назначен';
 	}
-	
+
 	if (agent.name && agent.email) {
 		return `${agent.name} (${agent.email})`;
 	}
-	
+
 	if (agent.email) {
 		return agent.email;
 	}
-	
+
 	if (agent.name) {
 		return agent.name;
 	}
-	
+
 	return `ID: ${agent.id || 'Неизвестно'}`;
 }
 
@@ -183,15 +183,15 @@ export function formatPhone(phone) {
 	if (!phone) {
 		return 'Не указан';
 	}
-	
+
 	// Convert to string and extract only digits
 	const phoneStr = String(phone).replace(/\D/g, '');
-	
+
 	// Check if phone has valid length
 	if (phoneStr.length < 10 || phoneStr.length > 11) {
 		return String(phone); // Return original if invalid
 	}
-	
+
 	// Normalize to 11 digits starting with 7
 	let normalized = phoneStr;
 	if (normalized.length === 10) {
@@ -199,11 +199,11 @@ export function formatPhone(phone) {
 	} else if (normalized.startsWith('8') && normalized.length === 11) {
 		normalized = '7' + normalized.slice(1);
 	}
-	
+
 	// Format as +7 (XXX) XXX-XX-XX
 	if (normalized.length === 11 && normalized.startsWith('7')) {
 		return `+7 (${normalized.slice(1, 4)}) ${normalized.slice(4, 7)}-${normalized.slice(7, 9)}-${normalized.slice(9, 11)}`;
 	}
-	
+
 	return String(phone); // Return original if can't format
 }

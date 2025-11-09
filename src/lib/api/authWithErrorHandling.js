@@ -1,11 +1,11 @@
 /**
  * Enhanced Authentication API with Error Handling
- * 
+ *
  * Wraps the base auth API functions with centralized error handling,
  * retry mechanisms, and toast notifications.
  */
 
-import { 
+import {
 	loginUser as baseLoginUser,
 	registerUser as baseRegisterUser,
 	logoutUser as baseLogoutUser,
@@ -15,7 +15,7 @@ import {
 	verifyEmail as baseVerifyEmail
 } from './auth.js';
 
-import { 
+import {
 	executeCriticalAuthOperation,
 	handleAuthError,
 	formatValidationErrors,
@@ -34,17 +34,13 @@ import { addSuccessToast } from '../utils/toastStore.js';
  * @returns {Promise<Object>} Login response
  */
 export async function loginUser(email, password, remember = false, options = {}) {
-	const { 
-		showSuccessToast = true, 
-		showErrorToast = true,
-		maxRetries = 2 
-	} = options;
+	const { showSuccessToast = true, showErrorToast = true, maxRetries = 2 } = options;
 
 	try {
 		const result = await executeCriticalAuthOperation(
 			() => baseLoginUser(email, password, remember),
 			CRITICAL_OPERATIONS.LOGIN,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -79,8 +75,8 @@ export async function loginUser(email, password, remember = false, options = {})
  * @returns {Promise<Object>} Registration response
  */
 export async function registerUser(userData, options = {}) {
-	const { 
-		showSuccessToast = true, 
+	const {
+		showSuccessToast = true,
 		showErrorToast = true,
 		maxRetries = 1 // Registration usually shouldn't be retried automatically
 	} = options;
@@ -89,7 +85,7 @@ export async function registerUser(userData, options = {}) {
 		const result = await executeCriticalAuthOperation(
 			() => baseRegisterUser(userData),
 			CRITICAL_OPERATIONS.REGISTER,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -123,8 +119,8 @@ export async function registerUser(userData, options = {}) {
  * @returns {Promise<Object>} Logout response
  */
 export async function logoutUser(options = {}) {
-	const { 
-		showSuccessToast = true, 
+	const {
+		showSuccessToast = true,
 		showErrorToast = false, // Usually don't show error toasts for logout
 		maxRetries = 2
 	} = options;
@@ -133,7 +129,7 @@ export async function logoutUser(options = {}) {
 		const result = await executeCriticalAuthOperation(
 			() => baseLogoutUser(),
 			CRITICAL_OPERATIONS.LOGOUT,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -150,7 +146,7 @@ export async function logoutUser(options = {}) {
 		if (showSuccessToast) {
 			addSuccessToast('Выход выполнен');
 		}
-		
+
 		return {
 			success: true,
 			message: 'Выход выполнен'
@@ -164,17 +160,13 @@ export async function logoutUser(options = {}) {
  * @returns {Promise<Object>} User data response
  */
 export async function getCurrentUser(options = {}) {
-	const { 
-		showErrorToast = true,
-		maxRetries = 2,
-		redirectOnAuth = true
-	} = options;
+	const { showErrorToast = true, maxRetries = 2, redirectOnAuth = true } = options;
 
 	try {
 		const result = await executeCriticalAuthOperation(
 			() => baseGetCurrentUser(),
 			CRITICAL_OPERATIONS.GET_USER,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast,
@@ -199,17 +191,13 @@ export async function getCurrentUser(options = {}) {
  * @returns {Promise<Object>} Email verification response
  */
 export async function sendEmailVerification(options = {}) {
-	const { 
-		showSuccessToast = true, 
-		showErrorToast = true,
-		maxRetries = 2
-	} = options;
+	const { showSuccessToast = true, showErrorToast = true, maxRetries = 2 } = options;
 
 	try {
 		const result = await executeCriticalAuthOperation(
 			() => baseSendEmailVerification(),
 			CRITICAL_OPERATIONS.EMAIL_VERIFICATION,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -237,17 +225,13 @@ export async function sendEmailVerification(options = {}) {
  * @returns {Promise<Object>} Email verification response
  */
 export async function resendEmailVerification(options = {}) {
-	const { 
-		showSuccessToast = true, 
-		showErrorToast = true,
-		maxRetries = 2
-	} = options;
+	const { showSuccessToast = true, showErrorToast = true, maxRetries = 2 } = options;
 
 	try {
 		const result = await executeCriticalAuthOperation(
 			() => baseResendEmailVerification(),
 			CRITICAL_OPERATIONS.EMAIL_VERIFICATION,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -278,8 +262,8 @@ export async function resendEmailVerification(options = {}) {
  * @returns {Promise<Object>} Email verification response
  */
 export async function verifyEmail(id, hash, signature, options = {}) {
-	const { 
-		showSuccessToast = true, 
+	const {
+		showSuccessToast = true,
 		showErrorToast = true,
 		maxRetries = 1 // Email verification links are usually one-time use
 	} = options;
@@ -288,7 +272,7 @@ export async function verifyEmail(id, hash, signature, options = {}) {
 		const result = await executeCriticalAuthOperation(
 			() => baseVerifyEmail(id, hash, signature),
 			CRITICAL_OPERATIONS.EMAIL_VERIFICATION,
-			{ 
+			{
 				maxRetries,
 				showRetryToasts: showErrorToast,
 				showToast: showErrorToast
@@ -317,10 +301,7 @@ export async function verifyEmail(id, hash, signature, options = {}) {
  * @returns {Promise<Array>} Array of operation results
  */
 export async function batchAuthOperations(operations, options = {}) {
-	const { 
-		stopOnFirstError = false,
-		showProgressToasts = false
-	} = options;
+	const { stopOnFirstError = false, showProgressToasts = false } = options;
 
 	const results = [];
 
@@ -354,7 +335,7 @@ export async function batchAuthOperations(operations, options = {}) {
 export async function authHealthCheck() {
 	try {
 		// Try to get current user without showing toasts
-		const result = await getCurrentUser({ 
+		const result = await getCurrentUser({
 			showErrorToast: false,
 			maxRetries: 1,
 			redirectOnAuth: false
@@ -363,7 +344,9 @@ export async function authHealthCheck() {
 		return {
 			healthy: result.success,
 			authenticated: result.success,
-			message: result.success ? 'Authentication system is healthy' : 'Authentication system has issues',
+			message: result.success
+				? 'Authentication system is healthy'
+				: 'Authentication system has issues',
 			details: result
 		};
 	} catch (error) {

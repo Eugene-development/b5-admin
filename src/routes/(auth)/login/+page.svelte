@@ -79,15 +79,15 @@
 			if (success) {
 				// Check user type/status
 				const userType = authState.user?.type;
-				
+
 				// Allow access ONLY for Админ, Куратор, Менеджер
 				const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
-				
+
 				if (!userType || !allowedTypes.includes(userType)) {
 					goto('/access-denied');
 					return;
 				}
-				
+
 				// Check if email is verified
 				if (authState.user && !authState.user.email_verified) {
 					// Email not verified - redirect to email verification page
@@ -143,7 +143,9 @@
 </svelte:head>
 
 <!-- Header with Logo -->
-<div class="fixed top-0 left-0 right-0 z-50 bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 dark:bg-gray-950/80 dark:border-gray-800">
+<div
+	class="fixed top-0 right-0 left-0 z-50 border-b border-gray-200 bg-gray-50/80 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/80"
+>
 	<div class="mx-auto max-w-7xl px-6 lg:px-8">
 		<div class="flex h-16 items-center justify-start">
 			<a
@@ -171,7 +173,7 @@
 				<div
 					class="absolute inset-0 bg-gradient-to-r from-indigo-600/90 via-purple-600/90 to-blue-600/90"
 				></div>
-				<div class="absolute left-0 top-0 h-full w-full opacity-10">
+				<div class="absolute top-0 left-0 h-full w-full opacity-10">
 					<div
 						class="h-full w-full bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"
 					></div>
@@ -181,7 +183,7 @@
 					<!-- Логотип -->
 					<div class="mb-4 hidden sm:block lg:mb-6">
 						<div
-							class="w-13 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
+							class="inline-flex h-11 w-13 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16 lg:w-18"
 						>
 							<svg
 								class="h-4 w-4 text-white lg:h-8 lg:w-8"
@@ -261,7 +263,7 @@
 								bind:value={email}
 								oninput={() => handleInputChange('email')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-4 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pr-4 pl-12 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 focus:outline-none dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('email')}
 								class:focus:ring-red-500={getFieldError('email')}
 								class:focus:border-red-500={getFieldError('email')}
@@ -311,7 +313,7 @@
 								bind:value={password}
 								oninput={() => handleInputChange('password')}
 								disabled={isLoading()}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pl-12 pr-16 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-4 pr-16 pl-12 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20 focus:outline-none dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
 								class:border-red-300={getFieldError('password')}
 								class:focus:ring-red-500={getFieldError('password')}
 								class:focus:border-red-500={getFieldError('password')}
@@ -380,7 +382,7 @@
 					<button
 						type="submit"
 						disabled={isLoading()}
-						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+						class="relative w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-indigo-700 hover:via-purple-700 hover:to-blue-700 focus:ring-4 focus:ring-indigo-500/20 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 					>
 						<div class="flex items-center justify-center space-x-2">
 							{#if isLoading()}

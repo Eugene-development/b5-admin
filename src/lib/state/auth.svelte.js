@@ -64,12 +64,12 @@ export const authState = $state({
  */
 function normalizeUserData(user) {
 	if (!user) return null;
-	
+
 	// If status exists but userStatus doesn't, map status to userStatus
 	if (user.status && !user.userStatus) {
 		user.userStatus = user.status;
 	}
-	
+
 	return user;
 }
 

@@ -5,17 +5,20 @@ This page handles email verification for B5-Admin users. It supports both automa
 ## Features
 
 ### Automatic Verification
+
 - Processes verification links from email with `id`, `hash`, and `signature` parameters
 - Automatically verifies the email and redirects to dashboard on success
 - Shows appropriate error messages on failure
 
 ### Manual Verification
+
 - Displays pending verification state for users who visit the page directly
 - Shows the user's email address that needs verification
 - Provides a resend button with cooldown timer (60 seconds)
 - Allows navigation back to dashboard
 
 ### Authentication Checks
+
 - Redirects unauthenticated users to login page with return URL
 - Redirects users with already verified emails to dashboard
 - Shows success message for already verified users
@@ -28,6 +31,7 @@ The page accepts the following URL parameters for email verification links:
 - `hash` - Hash from the verification email
 
 Example verification URL:
+
 ```
 /email-verify?id=123&hash=abc123
 ```
@@ -44,17 +48,20 @@ The page has four main states:
 ## Integration
 
 ### Auth Store Integration
+
 - Uses `authState` for user data and loading states
 - Calls `verifyEmailAddress()` for link verification
 - Calls `resendEmailVerificationNotification()` for resending emails
 - Uses `isAuthenticated()` to check authentication status
 
 ### Navigation Integration
+
 - Redirects to `/login` for unauthenticated users
 - Redirects to `/dashboard` after successful verification
 - Preserves return URL for post-login redirect
 
 ### Toast Integration
+
 - Shows success messages for completed actions
 - Shows error messages for failed operations
 - Uses existing toast system from `toastStore.js`

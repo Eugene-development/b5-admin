@@ -60,18 +60,25 @@
 	let isRefreshing = $state(false);
 
 	// Local suppliers state for updates
-	let localSuppliers = $state([
-		...(data?.suppliers || []).map((supplier) => ({
-			...supplier,
-			status: supplier.status?.toLowerCase() || 'active'
-		}))
-	]);
+	let localSuppliers = $state([]);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
 
 	// Check for server-side load errors
-	let loadError = $state(data?.error || null);
+	let loadError = $state(null);
+
+	// Derived state that transforms streamed data without mutation
+	function getProcessedCompanies(data) {
+		if (!data || !data.suppliers) {
+			return [];
+		}
+
+		return data.suppliers.map((supplier) => ({
+			...supplier,
+			status: supplier.status?.toLowerCase() || 'active'
+		}));
+	}
 
 	// Computed filteredSuppliers reactive statement
 	let filteredSuppliers = $derived.by(() => {
@@ -334,9 +341,7 @@
 		try {
 			const companies = await refreshCompanies();
 			// Filter companies by status slug 'suppliers'
-			const suppliersData = companies.filter(
-				(company) => company.status?.slug === 'suppliers'
-			);
+			const suppliersData = companies.filter((company) => company.status?.slug === 'suppliers');
 			localSuppliers = suppliersData.map((company) => ({
 				...company,
 				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
@@ -399,132 +404,161 @@
 			fallbackMessage="An error occurred while loading the suppliers page."
 			showDetails={true}
 		>
-			<div class="space-y-6 bg-gray-950">
-				<main id="main-content" aria-labelledby="page-title">
-					<div
-						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-					>
-						<div class="flex-auto">
-							<h1
-								id="page-title"
-								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
-							>
-								Поставщики
-							</h1>
-						</div>
-						<div class="flex items-center space-x-3">
-							<button
-								type="button"
-								onclick={refreshData}
-								disabled={isRefreshing}
-								class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-								aria-label="Refresh suppliers data from server"
-							>
-								{#if isRefreshing}
-									<svg
-										class="mr-2 h-4 w-4 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
+			{#await data.suppliersData}
+				<div class="flex min-h-screen items-center justify-center bg-gray-950">
+					<LoadingSpinner message="Загрузка поставщиков..." />
+				</div>
+			{:then suppliersData}
+				{@const processedCompanies = getProcessedCompanies(suppliersData)}
+
+				<!-- Update local state only once when data arrives -->
+				{#if localSuppliers.length === 0 && processedCompanies.length > 0}
+					{(localSuppliers = processedCompanies, '')}
+				{/if}
+
+				<!-- Set load error if present -->
+				{#if suppliersData.error && !loadError}
+					{(loadError = suppliersData.error, '')}
+				{/if}
+
+				<div class="space-y-6 bg-gray-950">
+					<main id="main-content" aria-labelledby="page-title">
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
+							<div class="flex-auto">
+								<h1
+									id="page-title"
+									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+								>
+									Поставщики
+								</h1>
+							</div>
+							<div class="flex items-center space-x-3">
+								<button
+									type="button"
+									onclick={refreshData}
+									disabled={isRefreshing}
+									class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+									aria-label="Refresh suppliers data from server"
+								>
+									{#if isRefreshing}
+										<svg
+											class="mr-2 h-4 w-4 animate-spin"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+										>
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
+											<path
+												class="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+									{:else}
+										<svg
+											class="mr-2 h-4 w-4"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
 											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else}
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+											></path>
+										</svg>
+									{/if}
+									Обновить
+								</button>
+								<button
+									type="button"
+									onclick={handleAddCompany}
+									disabled={isActionLoading}
+									class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+								>
 									<svg
 										class="mr-2 h-4 w-4"
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
+										aria-hidden="true"
 									>
 										<path
 											stroke-linecap="round"
 											stroke-linejoin="round"
 											stroke-width="2"
-											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-										></path>
+											d="M12 4v16m8-8H4"
+										/>
 									</svg>
-								{/if}
-								Обновить
-							</button>
-							<button
-								type="button"
-								onclick={handleAddCompany}
-								disabled={isActionLoading}
-								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+									Добавить
+								</button>
+							</div>
+						</div>
+
+						<!-- Search Bar -->
+						<div class="w-full sm:max-w-md" role="search" aria-label="Supplier search">
+							<SearchBar
+								placeholder="Поиск поставщиков"
+								onSearch={handleSearch}
+								value={searchTerm}
+							/>
+						</div>
+
+						<!-- Results summary -->
+						{#if searchTerm.trim()}
+							<div
+								class="py-2 text-sm text-gray-600 dark:text-gray-400"
+								role="status"
+								aria-live="polite"
+								aria-atomic="true"
 							>
-								<svg
-									class="mr-2 h-4 w-4"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 4v16m8-8H4"
-									/>
-								</svg>
-								Добавить
-							</button>
-						</div>
+								{#if filteredSuppliers.length === 0}
+									<p>Поставщики не найдены</p>
+								{:else}
+									<p>
+										Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1
+											? ''
+											: filteredSuppliers.length < 5
+												? 'а'
+												: 'ов'} по запросу "{searchTerm}"
+									</p>
+								{/if}
+							</div>
+						{/if}
+
+						<CompanyTable
+							companies={filteredSuppliers}
+							isLoading={isActionLoading}
+							onBanCompany={handleBanSupplier}
+							onDeleteCompany={handleDeleteSupplier}
+							onViewCompany={handleViewSupplier}
+							onEditCompany={handleEditCompany}
+							{updateCounter}
+							{searchTerm}
+							hasSearched={searchTerm.trim().length > 0}
+						/>
+					</main>
+				</div>
+			{:catch error}
+				<div class="flex min-h-screen items-center justify-center bg-gray-950">
+					<div class="text-center">
+						<p class="text-lg text-red-500">Ошибка загрузки данных</p>
+						<p class="mt-2 text-sm text-gray-400">{error.message}</p>
 					</div>
-
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Supplier search">
-						<SearchBar placeholder="Поиск поставщиков" onSearch={handleSearch} value={searchTerm} />
-					</div>
-
-					<!-- Results summary -->
-					{#if searchTerm.trim()}
-						<div
-							class="py-2 text-sm text-gray-600 dark:text-gray-400"
-							role="status"
-							aria-live="polite"
-							aria-atomic="true"
-						>
-							{#if filteredSuppliers.length === 0}
-								<p>Поставщики не найдены</p>
-							{:else}
-								<p>
-									Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1
-										? ''
-										: filteredSuppliers.length < 5
-											? 'а'
-											: 'ов'} по запросу "{searchTerm}"
-								</p>
-							{/if}
-						</div>
-					{/if}
-
-					<CompanyTable
-						companies={filteredSuppliers}
-						isLoading={isActionLoading}
-						onBanCompany={handleBanSupplier}
-						onDeleteCompany={handleDeleteSupplier}
-						onViewCompany={handleViewSupplier}
-						onEditCompany={handleEditCompany}
-						{updateCounter}
-						{searchTerm}
-						hasSearched={searchTerm.trim().length > 0}
-					/>
-				</main>
-			</div>
+				</div>
+			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

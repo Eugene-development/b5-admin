@@ -36,17 +36,17 @@
 	let errors = $state({});
 	let isFormValid = $derived(
 		formData.company_id !== '' &&
-		formData.project_id !== '' &&
-		positions.length > 0 &&
-		positions.every(
-			(p) =>
-				p.value.trim() &&
-				p.article.trim() &&
-				p.price !== '' &&
-				parseFloat(p.price) > 0 &&
-				p.count > 0
-		) &&
-		Object.keys(errors).length === 0
+			formData.project_id !== '' &&
+			positions.length > 0 &&
+			positions.every(
+				(p) =>
+					p.value.trim() &&
+					p.article.trim() &&
+					p.price !== '' &&
+					parseFloat(p.price) > 0 &&
+					p.count > 0
+			) &&
+			Object.keys(errors).length === 0
 	);
 
 	// Reset form when modal opens or order changes
@@ -63,19 +63,21 @@
 				is_active: order.is_active ?? true,
 				is_urgent: order.is_urgent ?? false
 			};
-			
+
 			// Load existing positions
-			positions = order.positions ? order.positions.map(p => ({
-				id: p.id,
-				value: p.value || '',
-				article: p.article || '',
-				price: p.price || '',
-				count: p.count || 1,
-				is_active: p.is_active ?? true,
-				is_urgent: p.is_urgent ?? false,
-				isExisting: true // Mark as existing position
-			})) : [];
-			
+			positions = order.positions
+				? order.positions.map((p) => ({
+						id: p.id,
+						value: p.value || '',
+						article: p.article || '',
+						price: p.price || '',
+						count: p.count || 1,
+						is_active: p.is_active ?? true,
+						is_urgent: p.is_urgent ?? false,
+						isExisting: true // Mark as existing position
+					}))
+				: [];
+
 			deletedPositionIds = [];
 			errors = {};
 		}
@@ -202,7 +204,7 @@
 
 {#if isOpen}
 	<div
-		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
 	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<div
@@ -213,7 +215,7 @@
 
 			<div
 				bind:this={modalElement}
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-5xl sm:p-6 dark:bg-gray-800"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-5xl sm:p-6 dark:bg-gray-800"
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
@@ -221,14 +223,12 @@
 			>
 				<div class="mb-6">
 					<h3
-						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
 						Редактировать заказ
 					</h3>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Обновите информацию о заказе
-					</p>
+					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Обновите информацию о заказе</p>
 				</div>
 
 				<form onsubmit={handleSubmit} class="space-y-6">
@@ -413,9 +413,13 @@
 											<span class="text-sm font-medium text-gray-700 dark:text-gray-300">
 												Позиция #{index + 1}
 												{#if position.isExisting}
-													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400">(существующая)</span>
+													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400"
+														>(существующая)</span
+													>
 												{:else}
-													<span class="ml-2 text-xs text-green-600 dark:text-green-400">(новая)</span>
+													<span class="ml-2 text-xs text-green-600 dark:text-green-400"
+														>(новая)</span
+													>
 												{/if}
 											</span>
 											<button
@@ -438,7 +442,10 @@
 
 										<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 											<div>
-												<label for="position-value-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-value-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Наименование <span class="text-red-500">*</span>
 												</label>
 												<input
@@ -453,7 +460,10 @@
 											</div>
 
 											<div>
-												<label for="position-article-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-article-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Артикул <span class="text-red-500">*</span>
 												</label>
 												<input
@@ -468,7 +478,10 @@
 											</div>
 
 											<div>
-												<label for="position-price-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-price-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Цена <span class="text-red-500">*</span>
 												</label>
 												<input
@@ -485,7 +498,10 @@
 											</div>
 
 											<div>
-												<label for="position-count-{position.id}" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+												<label
+													for="position-count-{position.id}"
+													class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+												>
 													Количество <span class="text-red-500">*</span>
 												</label>
 												<input
@@ -507,7 +523,8 @@
 													<input
 														type="checkbox"
 														bind:checked={position.is_active}
-														oninput={(e) => updatePosition(position.id, 'is_active', e.target.checked)}
+														oninput={(e) =>
+															updatePosition(position.id, 'is_active', e.target.checked)}
 														disabled={isLoading}
 														class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
 													/>
@@ -518,7 +535,8 @@
 													<input
 														type="checkbox"
 														bind:checked={position.is_urgent}
-														oninput={(e) => updatePosition(position.id, 'is_urgent', e.target.checked)}
+														oninput={(e) =>
+															updatePosition(position.id, 'is_urgent', e.target.checked)}
 														disabled={isLoading}
 														class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
 													/>
@@ -552,7 +570,7 @@
 
 					<!-- Action buttons -->
 					<div
-						class="flex flex-col space-y-3 border-t border-gray-200 pt-6 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse dark:border-gray-700"
+						class="flex flex-col space-y-3 border-t border-gray-200 pt-6 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse dark:border-gray-700"
 					>
 						<button
 							type="submit"
@@ -589,7 +607,7 @@
 							type="button"
 							onclick={handleCancel}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
+							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
 						>
 							Отмена
 						</button>

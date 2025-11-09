@@ -14,14 +14,14 @@ export async function exampleApiUsage() {
 	try {
 		// Initialize CSRF protection (requirement 5.2, 5.4)
 		await api.initCsrf();
-		
+
 		// Make authenticated requests (requirement 4.4, 5.1)
 		const userData = await api.get('/api/user');
 		const loginResult = await api.post('/api/login', {
 			email: 'user@example.com',
 			password: 'password'
 		});
-		
+
 		return { userData, loginResult };
 	} catch (error) {
 		// Automatic error handling and 401 redirects (requirement 5.3)
@@ -40,7 +40,7 @@ export async function exampleHttpClientUsage() {
 		// - credentials: 'include' (requirement 4.4, 5.1)
 		// - X-XSRF-TOKEN header (requirement 5.2, 5.4)
 		// - Proper error handling (requirement 5.3)
-		
+
 		const response = await httpClient.requestJson('/api/protected-resource');
 		return response;
 	} catch (error) {
@@ -76,37 +76,37 @@ export function createCustomApiClient() {
  */
 export async function exampleAllMethods() {
 	const client = httpClient;
-	
+
 	// All of these automatically include credentials and CSRF token
 	const getResult = await client.get('/api/data');
 	const postResult = await client.post('/api/data', { name: 'test' });
 	const putResult = await client.put('/api/data/1', { name: 'updated' });
 	const patchResult = await client.patch('/api/data/1', { status: 'active' });
 	const deleteResult = await client.delete('/api/data/1');
-	
+
 	return { getResult, postResult, putResult, patchResult, deleteResult };
 }
 
 /**
  * Task Requirements Summary:
- * 
+ *
  * ✅ 4.4 - Configure fetch to send credentials with requests
  *    - All requests use credentials: 'include'
  *    - Cookies are automatically sent with every request
- * 
- * ✅ 5.1 - Configure fetch to send credentials with requests  
+ *
+ * ✅ 5.1 - Configure fetch to send credentials with requests
  *    - Same as 4.4, implemented in HttpClient.request()
- * 
+ *
  * ✅ 5.2 - Add automatic XSRF token sending in headers
  *    - getCsrfToken() extracts token from cookies
  *    - prepareHeaders() automatically adds X-XSRF-TOKEN header
  *    - initCsrf() initializes CSRF protection
- * 
+ *
  * ✅ 5.3 - Create wrapper for API requests with error handling
  *    - HttpClient class provides comprehensive wrapper
  *    - requestJson() handles response parsing and errors
  *    - Automatic 401 handling with onUnauthorized callback
- * 
+ *
  * ✅ 5.4 - Implement automatic redirection on 401 errors
  *    - HttpClient.request() detects 401 responses
  *    - Calls onUnauthorized handler (defaults to redirect to /login)

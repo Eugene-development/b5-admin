@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 B5 Admin - административная панель для управления системой Bonus5. Построено на SvelteKit 2 + Svelte 5 с использованием Tailwind CSS 4. Приложение взаимодействует с теми же backend сервисами что и b5-agent:
+
 - **b5-api-2**: GraphQL API сервер (порт 8000)
 - **b5-auth-2**: сервер аутентификации (порт 8001)
 
@@ -13,12 +14,14 @@ B5 Admin - административная панель для управлен
 ## Commands
 
 ### Development
+
 ```bash
 npm run dev              # Запуск dev сервера с development конфигурацией
 npm run dev:prod         # Запуск dev сервера с production конфигурацией
 ```
 
 ### Build & Preview
+
 ```bash
 npm run build            # Production сборка
 npm run build:dev        # Development сборка для тестирования
@@ -26,6 +29,7 @@ npm run preview          # Предварительный просмотр produ
 ```
 
 ### Testing & Linting
+
 ```bash
 npm test                 # Запуск тестов в watch режиме (vitest)
 npm run test:run         # Запуск тестов один раз
@@ -69,6 +73,7 @@ npm run format           # Форматирование кода (prettier)
 ### Authentication System
 
 Идентична системе в b5-agent:
+
 - Использует **Svelte 5 runes** ($state, $effect, $derived)
 - `src/lib/auth/auth.svelte.js` - центральное хранилище состояния аутентификации
 - `src/lib/auth/auth-guard.svelte.js` - middleware для защиты маршрутов
@@ -78,6 +83,7 @@ npm run format           # Форматирование кода (prettier)
 ### Environment Configuration
 
 Использует те же переменные что и b5-agent:
+
 ```
 VITE_API_BASE_URL=http://localhost:8000      # GraphQL API (b5-api-2)
 VITE_AUTH_API_URL=http://localhost:8001      # Auth API (b5-auth-2)
@@ -93,6 +99,7 @@ VITE_FRONTEND_URL=http://localhost:5174      # Frontend URL (другой пор
 ### State Management
 
 Проект использует **Svelte 5 runes**:
+
 - `$state()` для реактивного состояния
 - `$derived()` для вычисляемых значений
 - `$effect()` для side effects

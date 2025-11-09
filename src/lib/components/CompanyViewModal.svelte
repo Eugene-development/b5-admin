@@ -3,11 +3,7 @@
 	import { formatPhone } from '$lib/utils/formatters.js';
 	import { getCompanyStatuses } from '$lib/api/companies.js';
 
-	let {
-		isOpen = false,
-		company = null,
-		onClose
-	} = $props();
+	let { isOpen = false, company = null, onClose } = $props();
 
 	let companyStatuses = $state([]);
 	let isLoadingStatus = $state(false);
@@ -26,7 +22,9 @@
 
 	// Get company status for StatusBadge
 	function getCompanyStatus(company) {
-		return company?.operationalStatus === 'banned' || company?.operationalStatus === 'inactive' || company?.operationalStatus === 'suspended'
+		return company?.operationalStatus === 'banned' ||
+			company?.operationalStatus === 'inactive' ||
+			company?.operationalStatus === 'suspended'
 			? 'banned'
 			: 'active';
 	}
@@ -67,7 +65,7 @@
 	// Get company status by status_id
 	function getCompanyStatusById(statusId) {
 		if (!statusId || companyStatuses.length === 0) return null;
-		return companyStatuses.find(status => status.id === statusId);
+		return companyStatuses.find((status) => status.id === statusId);
 	}
 
 	$effect(() => {
@@ -90,14 +88,12 @@
 {#if isOpen && company}
 	<!-- Modal backdrop -->
 	<div
-		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
 		aria-labelledby="modal-title"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div
-			class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0"
-		>
+		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Background overlay -->
 			<div
 				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
@@ -111,24 +107,35 @@
 
 			<!-- Modal panel -->
 			<div
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				onclick={handleModalClick}
 				onkeydown={handleKeydown}
 				tabindex="0"
 				role="dialog"
 			>
 				<!-- Modal header -->
-				<div class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600">
-					<h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white" id="modal-title">
+				<div
+					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
+				>
+					<h3
+						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
+						id="modal-title"
+					>
 						Информация о компании
 					</h3>
 					<button
 						type="button"
 						onclick={onClose}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
+						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
 						aria-label="Закрыть модальное окно"
 					>
-						<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+						<svg
+							class="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+						>
 							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</button>
@@ -160,11 +167,11 @@
 							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
 								Основная информация:
 							</h5>
-							
-							
 
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									ИНН:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -173,7 +180,9 @@
 							</div>
 
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									Регион:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -182,7 +191,9 @@
 							</div>
 
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									Статус компании:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -191,8 +202,8 @@
 									{:else}
 										{@const companyStatus = getCompanyStatusById(company.status_id)}
 										{#if companyStatus}
-											<span 
-												class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-800"
+											<span
+												class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
 											>
 												{companyStatus.value}
 											</span>
@@ -209,15 +220,17 @@
 							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
 								Контактная информация:
 							</h5>
-							
+
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									Email:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if company.email}
-										<a 
-											href="mailto:{company.email}" 
+										<a
+											href="mailto:{company.email}"
 											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{company.email}
@@ -229,13 +242,15 @@
 							</div>
 
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									Телефон:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{#if company.phone}
-										<a 
-											href="tel:{company.phone}" 
+										<a
+											href="tel:{company.phone}"
 											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
 											{formatPhone(company.phone)}
@@ -247,7 +262,9 @@
 							</div>
 
 							<div>
-								<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
 									Контактное лицо:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -257,13 +274,15 @@
 
 							{#if company.website}
 								<div>
-									<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+									<dt
+										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									>
 										Веб-сайт:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										<a 
-											href={company.website} 
-											target="_blank" 
+										<a
+											href={company.website}
+											target="_blank"
 											rel="noopener noreferrer"
 											class="text-gray-900 hover:text-gray-700 dark:text-white dark:hover:text-gray-300"
 										>
@@ -275,7 +294,9 @@
 
 							{#if company.address}
 								<div>
-									<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+									<dt
+										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									>
 										Адрес:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -292,14 +313,16 @@
 							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
 								Дополнительная информация:
 							</h5>
-							
+
 							<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
 								{#if company.description}
 									<div>
-										<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+										<dt
+											class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										>
 											Описание:
 										</dt>
-										<dd class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+										<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
 											{company.description}
 										</dd>
 									</div>
@@ -308,7 +331,9 @@
 								<div class="space-y-4">
 									{#if company.created_at}
 										<div>
-											<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+											<dt
+												class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+											>
 												Дата создания:
 											</dt>
 											<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -319,7 +344,9 @@
 
 									{#if company.updated_at}
 										<div>
-											<dt class="text-sm font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-400">
+											<dt
+												class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+											>
 												Дата обновления:
 											</dt>
 											<dd class="mt-1 text-sm text-gray-900 dark:text-white">
@@ -338,7 +365,7 @@
 					<button
 						type="button"
 						onclick={onClose}
-						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
 					>
 						Закрыть
 					</button>

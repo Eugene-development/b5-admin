@@ -57,7 +57,7 @@
 	<!-- Animated gradient background -->
 	<div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
 		<div
-			class="absolute left-1/2 top-0 -translate-x-1/2 blur-3xl"
+			class="absolute top-0 left-1/2 -translate-x-1/2 blur-3xl"
 			style="width: 90rem; height: 50rem;"
 		>
 			<div
@@ -172,9 +172,7 @@
 						<div>
 							<label for="email" class="block text-sm font-medium text-gray-200">Email</label>
 							<div class="relative mt-2">
-								<div
-									class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-								>
+								<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
 									<svg
 										class="h-5 w-5 text-gray-500"
 										fill="none"
@@ -197,7 +195,7 @@
 									bind:value={email}
 									disabled={isLoading}
 									placeholder="your@email.com"
-									class="block w-full rounded-lg border-0 bg-white/5 py-3 pl-10 pr-4 text-white shadow-sm ring-1 ring-inset ring-white/10 transition-all placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 {errors.email
+									class="block w-full rounded-lg border-0 bg-white/5 py-3 pr-4 pl-10 text-white shadow-sm ring-1 ring-white/10 transition-all ring-inset placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50 {errors.email
 										? 'ring-red-500/50 focus:ring-red-500'
 										: ''}"
 								/>
@@ -211,7 +209,7 @@
 						<button
 							type="submit"
 							disabled={isLoading}
-							class="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+							class="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/40 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
 						>
 							<span class="relative z-10 flex items-center justify-center gap-2">
 								{#if isLoading}

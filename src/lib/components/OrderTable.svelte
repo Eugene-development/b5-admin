@@ -65,7 +65,7 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+<div class="ring-opacity-5 w-full overflow-x-auto shadow ring-1 ring-black md:rounded-lg">
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -74,58 +74,56 @@
 		style="min-width: 1200px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица управления заказами с {orders.length} заказ{orders.length === 1
-				? 'ом'
-				: 'ами'}
+			Таблица управления заказами с {orders.length} заказ{orders.length === 1 ? 'ом' : 'ами'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Заказ
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Поставщик
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					Срочность
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					Статус
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Комментарий
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Действия
@@ -161,59 +159,67 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-500 dark:text-gray-400"
+							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
 							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4">
 								{#if order.is_urgent || order.urgency === 'high'}
-									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+									<span
+										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+									>
 										Срочный
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
 										Обычный
 									</span>
 								{/if}
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4">
 								{#if order.is_active}
-									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+									<span
+										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+									>
 										Активен
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
 										Неактивен
 									</span>
 								{/if}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{order.value || order.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
+						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button
@@ -347,10 +353,10 @@
 					<!-- Order Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
+							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								{order.order_number || order.deal || 'Номер не указан'}
 							</h3>
-							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
+							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
 								{order.company?.name || order.supplier || 'Поставщик не указан'}
 							</p>
 						</div>
@@ -367,17 +373,21 @@
 					<dl class="mb-4 grid grid-cols-1 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Срочность
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{#if order.is_urgent || order.urgency === 'high'}
-									<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200">
+									<span
+										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+									>
 										Срочный
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
 										Обычный
 									</span>
 								{/if}
@@ -385,17 +395,21 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{#if order.is_active}
-									<span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
+									<span
+										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+									>
 										Активен
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
 										Неактивен
 									</span>
 								{/if}
@@ -403,7 +417,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Описание
 							</dt>

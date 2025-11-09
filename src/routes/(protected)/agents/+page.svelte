@@ -46,10 +46,23 @@
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local users state for updates - normalize status and sort by created_at descending
-	// Filter only agents (users with status slug 'agents')
-	let localUsers = $state([
-		...(data?.agents || [])
+	// Local users state for updates (will be initialized from streamed data)
+	let localUsers = $state([]);
+
+	// Force update counter for reactivity
+	let updateCounter = $state(0);
+
+	// Check for server-side load errors (will be set from streamed data)
+	let loadError = $state(null);
+
+	// Derived state that transforms streamed data without mutation
+	function getProcessedUsers(agentsData) {
+		if (!agentsData || !agentsData.agents) {
+			return [];
+		}
+
+		// Filter only agents (users with status slug 'agents') and normalize
+		return agentsData.agents
 			.filter((user) => user.userStatus?.slug === 'agents')
 			.map((user) => ({
 				...user,
@@ -59,14 +72,8 @@
 				status_id: user.status_id,
 				userStatus: user.userStatus
 			}))
-			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-	]);
-
-	// Force update counter for reactivity
-	let updateCounter = $state(0);
-
-	// Check for server-side load errors
-	let loadError = $state(data?.error || null);
+			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+	}
 
 	// Computed filteredUsers reactive statement
 	let filteredUsers = $derived.by(() => {
@@ -273,7 +280,10 @@
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
-			handleApiError(error, isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные');
+			handleApiError(
+				error,
+				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
+			);
 		} finally {
 			isRefreshing = false;
 		}
@@ -327,126 +337,158 @@
 			fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Skip link for keyboard navigation -->
-			<a
-				href="#main-content"
-				class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-			>
-				Перейти к основному контенту
-			</a>
+			<!-- Streamed Agents Data with SSR -->
+			{#await data.agentsData}
+				<!-- Loading state: Show skeleton -->
+				<div class="flex min-h-screen items-center justify-center">
+					<div class="text-center">
+						<LoadingSpinner size="lg" />
+						<p class="mt-4 text-gray-400">Загрузка агентов...</p>
+					</div>
+				</div>
+			{:then agentsData}
+				<!-- Success state: Show data -->
+				{@const processedUsers = getProcessedUsers(agentsData)}
 
-			<div class="space-y-6 bg-gray-950">
-				<!-- Page landmark -->
-				<main id="main-content" aria-labelledby="page-title">
-					<div
-						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-					>
-						<div class="flex-auto">
-							<h1
-								id="page-title"
-								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
-							>
-								Агенты
-							</h1>
-						</div>
-						<div class="flex-none">
-							<button
-								type="button"
-								onclick={refreshData}
-								disabled={isRefreshing}
-								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-								aria-label="Refresh agents data from server"
-								aria-describedby="refresh-button-description"
-							>
-								{#if isRefreshing}
-									<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
-								{/if}
-								{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
-							</button>
-							<div id="refresh-button-description" class="sr-only">
-								Обновить данные агентов с сервера
+				<!-- Update local state only once when data arrives -->
+				{#if localUsers.length === 0 && processedUsers.length > 0}
+					{(localUsers = processedUsers, '')}
+				{/if}
+
+				<!-- Set load error if present -->
+				{#if agentsData.error && !loadError}
+					{(loadError = agentsData, '')}
+				{/if}
+
+				<!-- Skip link for keyboard navigation -->
+				<a
+					href="#main-content"
+					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				>
+					Перейти к основному контенту
+				</a>
+
+				<div class="space-y-6 bg-gray-950">
+					<!-- Page landmark -->
+					<main id="main-content" aria-labelledby="page-title">
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
+							<div class="flex-auto">
+								<h1
+									id="page-title"
+									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+								>
+									Агенты
+								</h1>
+							</div>
+							<div class="flex-none">
+								<button
+									type="button"
+									onclick={refreshData}
+									disabled={isRefreshing}
+									class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+									aria-label="Refresh agents data from server"
+									aria-describedby="refresh-button-description"
+								>
+									{#if isRefreshing}
+										<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
+									{/if}
+									{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
+								</button>
+								<div id="refresh-button-description" class="sr-only">
+									Обновить данные агентов с сервера
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<!-- Load Error Banner -->
-					{#if loadError && loadError.canRetry}
-						<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-							<div class="flex">
-								<div class="flex-shrink-0">
-									<svg
-										class="h-5 w-5 text-yellow-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-								</div>
-								<div class="ml-3">
-									<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-										Ошибка загрузки данных
-									</h3>
-									<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-										<p>{loadError.message}</p>
+						<!-- Load Error Banner -->
+						{#if loadError && loadError.canRetry}
+							<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
+								<div class="flex">
+									<div class="flex-shrink-0">
+										<svg
+											class="h-5 w-5 text-yellow-400"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+												clip-rule="evenodd"
+											/>
+										</svg>
 									</div>
-									<div class="mt-4">
-										<div class="-mx-2 -my-1.5 flex">
-											<button
-												type="button"
-												onclick={refreshData}
-												disabled={isRefreshing}
-												class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
-											>
-												{isRefreshing ? 'Retrying...' : 'Retry'}
-											</button>
+									<div class="ml-3">
+										<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+											Ошибка загрузки данных
+										</h3>
+										<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+											<p>{loadError.message}</p>
+										</div>
+										<div class="mt-4">
+											<div class="-mx-2 -my-1.5 flex">
+												<button
+													type="button"
+													onclick={refreshData}
+													disabled={isRefreshing}
+													class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+												>
+													{isRefreshing ? 'Retrying...' : 'Retry'}
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
+						{/if}
+
+						<!-- Search Bar -->
+						<div class="w-full sm:max-w-md" role="search" aria-label="Agent search">
+							<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
 						</div>
-					{/if}
 
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Agent search">
-						<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
-					</div>
-
-					<!-- Results summary -->
-					{#if searchTerm.trim()}
-						<div
-							class="py-2 text-sm text-gray-600 dark:text-gray-400"
-							role="status"
-							aria-live="polite"
-							aria-atomic="true"
-						>
-							{#if filteredUsers.length === 0}
-								<p>Агенты не найдены</p>
-								<!-- {:else if filteredUsers.length === 1}
+						<!-- Results summary -->
+						{#if searchTerm.trim()}
+							<div
+								class="py-2 text-sm text-gray-600 dark:text-gray-400"
+								role="status"
+								aria-live="polite"
+								aria-atomic="true"
+							>
+								{#if filteredUsers.length === 0}
+									<p>Агенты не найдены</p>
+									<!-- {:else if filteredUsers.length === 1}
 							<p>Найдена 1 запись по запросу "{searchTerm}"</p> -->
-							{:else}
-								<p>Найдено {filteredUsers.length} поз. по запросу "{searchTerm}"</p>
-							{/if}
-						</div>
-					{/if}
+								{:else}
+									<p>Найдено {filteredUsers.length} поз. по запросу "{searchTerm}"</p>
+								{/if}
+							</div>
+						{/if}
 
-					<UsersTable
-						users={filteredUsers}
-						isLoading={isActionLoading}
-						onBanUser={handleBanUser}
-						onDeleteUser={handleDeleteUser}
-						onViewUser={handleViewUser}
-						onEditUser={handleEditUser}
-						{updateCounter}
-						{searchTerm}
-						hasSearched={searchTerm.trim().length > 0}
-					/>
-				</main>
-			</div>
+						<UsersTable
+							users={filteredUsers}
+							isLoading={isActionLoading}
+							onBanUser={handleBanUser}
+							onDeleteUser={handleDeleteUser}
+							onViewUser={handleViewUser}
+							onEditUser={handleEditUser}
+							{updateCounter}
+							{searchTerm}
+							hasSearched={searchTerm.trim().length > 0}
+						/>
+					</main>
+				</div>
+			{:catch error}
+				<!-- Critical error state -->
+				<div class="flex min-h-screen items-center justify-center">
+					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
+						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки агентов</h3>
+						<p class="text-red-300">Не удалось загрузить агентов. Попробуйте обновить страницу.</p>
+					</div>
+				</div>
+			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>
@@ -479,5 +521,3 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
-
-

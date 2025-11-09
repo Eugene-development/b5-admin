@@ -5,6 +5,7 @@
 ### Добавлено
 
 #### Компоненты
+
 - **ActionAddModal.svelte** - Модальное окно для добавления акций
   - Форма с валидацией всех полей
   - Выбор компании из выпадающего списка
@@ -13,6 +14,7 @@
   - Адаптивный дизайн и доступность
 
 #### API
+
 - **actions.js** - Полный набор API функций:
   - `createAction()` - создание акции
   - `updateAction()` - обновление акции
@@ -21,6 +23,7 @@
   - `getCompaniesForActions()` - получение активных компаний
 
 #### Интеграция
+
 - Обновлена страница `/actions`:
   - Кнопка "Добавить акцию"
   - Интеграция модального окна
@@ -34,6 +37,7 @@
   - Обработка ошибок с fallback на mock данные
 
 #### Документация
+
 - **ACTION_ADD_FEATURE.md** - Описание функционала
 - **ACTIONS_API_BACKEND.md** - Требования к бэкенду API
 
@@ -50,6 +54,7 @@
 ### Технические детали
 
 #### Структура данных акции:
+
 ```javascript
 {
   name: string,           // Название акции
@@ -62,11 +67,13 @@
 ```
 
 #### GraphQL Endpoint:
+
 - URL: `http://localhost:8000/graphql`
 - Метод: POST
 - Credentials: include (для cookies)
 
 #### Валидация:
+
 - Все обязательные поля проверяются
 - Дата окончания должна быть позже даты начала
 - Компания должна существовать и быть активной
@@ -75,6 +82,7 @@
 ### Требования к бэкенду
 
 Для работы функционала необходимо реализовать на бэкенде:
+
 1. GraphQL mutation `createAction`
 2. GraphQL query `actions` для получения списка
 3. GraphQL query `companies` для получения списка компаний
@@ -85,12 +93,14 @@
 ### Файлы
 
 **Созданные:**
+
 - `src/lib/components/ActionAddModal.svelte`
 - `src/lib/api/actions.js`
 - `docs/ACTION_ADD_FEATURE.md`
 - `docs/ACTIONS_API_BACKEND.md`
 
 **Измененные:**
+
 - `src/routes/(protected)/actions/+page.svelte`
 - `src/routes/(protected)/actions/+page.js`
 - `src/lib/index.js`

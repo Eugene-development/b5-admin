@@ -280,11 +280,7 @@ export async function getTechnicalSpecifications(
 }
 
 // Function to create a technical specification
-export async function createTechnicalSpecification(
-	tzData,
-	customFetch = null,
-	cookies = null
-) {
+export async function createTechnicalSpecification(tzData, customFetch = null, cookies = null) {
 	try {
 		const result = await makeGraphQLRequest(
 			CREATE_TECHNICAL_SPECIFICATION_MUTATION,
@@ -302,11 +298,7 @@ export async function createTechnicalSpecification(
 }
 
 // Function to update a technical specification
-export async function updateTechnicalSpecification(
-	tzData,
-	customFetch = null,
-	cookies = null
-) {
+export async function updateTechnicalSpecification(tzData, customFetch = null, cookies = null) {
 	try {
 		const result = await makeGraphQLRequest(
 			UPDATE_TECHNICAL_SPECIFICATION_MUTATION,
@@ -324,11 +316,7 @@ export async function updateTechnicalSpecification(
 }
 
 // Function to delete a technical specification
-export async function deleteTechnicalSpecification(
-	tzId,
-	customFetch = null,
-	cookies = null
-) {
+export async function deleteTechnicalSpecification(tzId, customFetch = null, cookies = null) {
 	try {
 		const result = await makeGraphQLRequest(
 			DELETE_TECHNICAL_SPECIFICATION_MUTATION,
@@ -380,7 +368,7 @@ export async function uploadSketchFile(projectId, file) {
 				variables: { project_id: projectId, file: null }
 			})
 		);
-		formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
+		formData.append('map', JSON.stringify({ 0: ['variables.file'] }));
 		formData.append('0', file);
 
 		const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -417,7 +405,7 @@ export async function uploadOfferFile(projectId, file) {
 				variables: { project_id: projectId, file: null }
 			})
 		);
-		formData.append('map', JSON.stringify({ '0': ['variables.file'] }));
+		formData.append('map', JSON.stringify({ 0: ['variables.file'] }));
 		formData.append('0', file);
 
 		const response = await fetch(GRAPHQL_ENDPOINT, {
@@ -450,12 +438,9 @@ export function createTechnicalSpecificationsApiWithFetch(fetch, cookies) {
 	return {
 		getTechnicalSpecifications: (first, page) =>
 			getTechnicalSpecifications(first, page, fetch, cookies),
-		createTechnicalSpecification: (tzData) =>
-			createTechnicalSpecification(tzData, fetch, cookies),
-		updateTechnicalSpecification: (tzData) =>
-			updateTechnicalSpecification(tzData, fetch, cookies),
-		deleteTechnicalSpecification: (tzId) =>
-			deleteTechnicalSpecification(tzId, fetch, cookies),
+		createTechnicalSpecification: (tzData) => createTechnicalSpecification(tzData, fetch, cookies),
+		updateTechnicalSpecification: (tzData) => updateTechnicalSpecification(tzData, fetch, cookies),
+		deleteTechnicalSpecification: (tzId) => deleteTechnicalSpecification(tzId, fetch, cookies),
 		refreshTechnicalSpecifications: (first, page) =>
 			refreshTechnicalSpecifications(first, page, fetch, cookies)
 	};

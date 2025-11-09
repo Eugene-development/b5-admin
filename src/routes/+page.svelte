@@ -36,10 +36,10 @@
 		<div class="absolute inset-0 overflow-hidden">
 			<!-- Gradient Orbs -->
 			<div
-				class="absolute -left-1/4 top-0 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px]"
+				class="absolute top-0 -left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px]"
 			></div>
 			<div
-				class="absolute -right-1/4 top-1/4 h-[600px] w-[600px] rounded-full bg-purple-600/20 blur-[120px]"
+				class="absolute top-1/4 -right-1/4 h-[600px] w-[600px] rounded-full bg-purple-600/20 blur-[120px]"
 			></div>
 			<div
 				class="absolute bottom-0 left-1/2 h-[400px] w-[400px] -translate-x-1/2 rounded-full bg-blue-600/20 blur-[120px]"
@@ -47,12 +47,12 @@
 
 			<!-- Grid Pattern -->
 			<div
-				class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]"
+				class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.03)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)] bg-[size:64px_64px]"
 			></div>
 		</div>
 
 		<!-- Content -->
-		<div class="relative mx-auto max-w-7xl px-4 pb-32 pt-32 sm:px-6 lg:px-8">
+		<div class="relative mx-auto max-w-7xl px-4 pt-32 pb-32 sm:px-6 lg:px-8">
 			<!-- Main Title -->
 			<div class="text-center">
 				<div
@@ -216,7 +216,7 @@
 					class="group relative overflow-hidden rounded-3xl border border-gray-800 bg-gradient-to-b from-gray-900/50 to-gray-950/50 p-8 backdrop-blur-sm transition-all duration-300 hover:border-indigo-500/50"
 				>
 					<div
-						class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-600/10 blur-3xl transition-all duration-300 group-hover:bg-indigo-600/20"
+						class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-indigo-600/10 blur-3xl transition-all duration-300 group-hover:bg-indigo-600/20"
 					></div>
 
 					<div
@@ -244,7 +244,7 @@
 					class="group relative overflow-hidden rounded-3xl border border-gray-800 bg-gradient-to-b from-gray-900/50 to-gray-950/50 p-8 backdrop-blur-sm transition-all duration-300 hover:border-purple-500/50"
 				>
 					<div
-						class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-purple-600/10 blur-3xl transition-all duration-300 group-hover:bg-purple-600/20"
+						class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-purple-600/10 blur-3xl transition-all duration-300 group-hover:bg-purple-600/20"
 					></div>
 
 					<div
@@ -271,7 +271,7 @@
 					class="group relative overflow-hidden rounded-3xl border border-gray-800 bg-gradient-to-b from-gray-900/50 to-gray-950/50 p-8 backdrop-blur-sm transition-all duration-300 hover:border-green-500/50"
 				>
 					<div
-						class="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-green-600/10 blur-3xl transition-all duration-300 group-hover:bg-green-600/20"
+						class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-green-600/10 blur-3xl transition-all duration-300 group-hover:bg-green-600/20"
 					></div>
 
 					<div
@@ -456,7 +456,7 @@
 				class="relative overflow-hidden rounded-3xl border border-gray-800 bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-12 backdrop-blur-sm"
 			>
 				<div
-					class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl"
+					class="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl"
 				></div>
 				<div
 					class="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-purple-600/20 blur-3xl"

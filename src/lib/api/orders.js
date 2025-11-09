@@ -73,11 +73,11 @@ export async function createOrder(orderData) {
 
 		if (result.errors) {
 			const errorMessage = result.errors[0]?.message || 'Failed to create order';
-			
+
 			if (errorMessage.includes('Duplicate entry') && errorMessage.includes('order_number')) {
 				throw new Error('Заказ с таким номером уже существует в системе');
 			}
-			
+
 			throw new Error(errorMessage);
 		}
 

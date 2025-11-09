@@ -1,9 +1,11 @@
 # Финальное решение проблемы с logout на localhost
 
 ## Проблема
+
 После logout cookie `b5_auth_2_session` удалялись, но **сразу снова появлялись** при переходе на любую страницу.
 
 ## Причина
+
 Laravel middleware `StartSession` создавал новую сессию при **каждом** запросе к API, даже если session cookie не было. Это происходило потому, что:
 
 1. После logout браузер делал запрос к SvelteKit серверу (например, `/login`)
@@ -46,6 +48,7 @@ public function handle($request, Closure $next): Response
 ### 2. Заменен middleware в `bootstrap/app.php`
 
 **Было:**
+
 ```php
 $middleware->api(prepend: [
     \Illuminate\Http\Middleware\HandleCors::class,
@@ -54,6 +57,7 @@ $middleware->api(prepend: [
 ```
 
 **Стало:**
+
 ```php
 $middleware->api(prepend: [
     \Illuminate\Http\Middleware\HandleCors::class,
@@ -91,6 +95,7 @@ $middleware->api(prepend: [
 ## Тестирование
 
 ### Локально
+
 1. Войдите в систему
 2. Откройте DevTools → Application → Cookies
 3. Нажмите "Выйти"
@@ -99,11 +104,13 @@ $middleware->api(prepend: [
 6. Попробуйте войти снова - должно работать
 
 ### На продакшене
+
 После деплоя проверьте те же шаги.
 
 ## Важно
 
 После изменения middleware **обязательно перезапустите** Laravel сервер:
+
 ```bash
 cd b5-auth-2
 php artisan config:clear
@@ -114,11 +121,13 @@ php artisan cache:clear
 ## Файлы изменены
 
 ### Backend (b5-auth-2)
+
 - `app/Http/Middleware/StartSessionIfExists.php` (новый файл)
 - `bootstrap/app.php`
 - `app/Http/Controllers/AuthController.php`
 
 ### Frontend (b5-admin)
+
 - `src/routes/+layout.server.js`
 - `src/routes/(protected)/+layout.svelte`
 - `src/routes/(protected)/profile/+page.svelte`

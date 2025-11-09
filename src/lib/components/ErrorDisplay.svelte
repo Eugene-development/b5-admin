@@ -17,13 +17,7 @@
 	 * @type {string} className - Additional CSS classes
 	 * @type {string} separator - Separator for multiple error messages
 	 */
-	let { 
-		errors = {},
-		field = null,
-		showFirst = false,
-		className = '',
-		separator = ' '
-	} = $props();
+	let { errors = {}, field = null, showFirst = false, className = '', separator = ' ' } = $props();
 
 	// Reactive computed values
 	let displayMessages = $derived(createDisplayMessages(errors, separator));

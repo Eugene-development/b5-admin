@@ -87,11 +87,7 @@ export function hasOrderAccess() {
 		return false;
 	}
 
-	return (
-		domainState.isAdminDomain ||
-		domainState.isRegularDomain ||
-		domainState.isLocalhost
-	);
+	return domainState.isAdminDomain || domainState.isRegularDomain || domainState.isLocalhost;
 }
 
 /**

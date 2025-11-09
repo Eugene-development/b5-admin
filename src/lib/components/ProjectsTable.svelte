@@ -128,11 +128,7 @@
 		// Show accept button only if:
 		// 1. Project is not accepted yet
 		// 2. Project status is "Новый проект" (slug: 'new-project')
-		return (
-			!isProjectAccepted(project) &&
-			project.status &&
-			project.status.slug === 'new-project'
-		);
+		return !isProjectAccepted(project) && project.status && project.status.slug === 'new-project';
 	}
 
 	// Handle accept project
@@ -152,7 +148,7 @@
 
 		try {
 			acceptingProjectId = projectId;
-			
+
 			// Call parent callback which handles the actual API call
 			if (onAcceptProject) {
 				await onAcceptProject(projectId);
@@ -171,7 +167,7 @@
 </div>
 
 <!-- Desktop Table View (hidden on mobile) -->
-<div class="hidden overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg">
+<div class="ring-opacity-5 hidden overflow-hidden shadow ring-1 ring-black md:block md:rounded-lg">
 	<table
 		id={tableId}
 		class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"
@@ -192,7 +188,7 @@
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -201,7 +197,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Проект
@@ -210,7 +206,7 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Адрес объекта
@@ -219,7 +215,7 @@
 					id="col-contract"
 					scope="col"
 					role="columnheader"
-					class="hidden px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 lg:table-cell dark:text-gray-400"
+					class="hidden px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase lg:table-cell dark:text-gray-400"
 					aria-sort="none"
 				>
 					Номер
@@ -229,7 +225,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус
@@ -238,7 +234,7 @@
 					id="col-accept"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-6 py-3 text-center text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 				</th>
@@ -281,21 +277,21 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-500 dark:text-gray-400"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{index + 1}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{project.value || ' - '}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 							title={project.region || ''}
@@ -303,21 +299,21 @@
 							{truncateText(project.region)}
 						</td>
 						<td
-							class="hidden whitespace-nowrap px-6 py-4 text-sm text-gray-900 lg:table-cell dark:text-white"
+							class="hidden px-6 py-4 text-sm whitespace-nowrap text-gray-900 lg:table-cell dark:text-white"
 							role="cell"
 							headers="col-contract"
 						>
 							{project.contract_name || ' - '}
 						</td>
 						<td
-							class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-white"
+							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-status"
 						>
 							<StatusBadge status={project.status} />
 						</td>
 
-						<td class="whitespace-nowrap px-6 py-4 text-center" role="cell" headers="col-accept">
+						<td class="px-6 py-4 text-center whitespace-nowrap" role="cell" headers="col-accept">
 							<!-- TODO: Temporarily disabled - will be fixed later -->
 							<!-- {#if canAcceptProject(project)}
 								<button
@@ -367,7 +363,7 @@
 						</td>
 
 						<td
-							class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
+							class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
@@ -455,7 +451,7 @@
 					<dl id="project-{project.id}-details" class="mb-4 grid grid-cols-1 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Номер
 							</dt>
@@ -465,7 +461,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</dt>
@@ -544,30 +540,30 @@
 <div class="hidden sm:block md:hidden">
 	<div class="overflow-x-auto">
 		<div class="inline-block min-w-full align-middle">
-			<div class="overflow-hidden rounded-lg shadow ring-1 ring-black ring-opacity-5">
+			<div class="ring-opacity-5 overflow-hidden rounded-lg shadow ring-1 ring-black">
 				<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 					<thead class="bg-gray-50 dark:bg-gray-800">
 						<tr>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Название
 							</th>
 							<th
 								scope="col"
-								class="whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Адрес объекта
 							</th>
 
-							<th scope="col" class="relative whitespace-nowrap px-4 py-3">
+							<th scope="col" class="relative px-4 py-3 whitespace-nowrap">
 								<span class="sr-only">Действия</span>
 							</th>
 						</tr>
@@ -600,23 +596,23 @@
 						{:else}
 							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="whitespace-nowrap px-4 py-4 text-sm text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{index + 1}
 									</td>
 									<td
-										class="whitespace-nowrap px-4 py-4 text-sm font-medium text-gray-900 dark:text-white"
+										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{project.value || ' - '}
 									</td>
 									<td
-										class="whitespace-nowrap px-4 py-4 text-sm text-gray-900 dark:text-white"
+										class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 										title={project.region || ''}
 									>
 										{truncateText(project.region)}
 									</td>
 
 									<td
-										class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium"
+										class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap"
 									>
 										<ActionButtons
 											agent={project}

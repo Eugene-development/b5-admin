@@ -25,6 +25,7 @@ php artisan migrate
 ```
 
 Будут созданы таблицы:
+
 - `project_sketches` - для эскизов
 - `project_offers` - для коммерческих предложений
 

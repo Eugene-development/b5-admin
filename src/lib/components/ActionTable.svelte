@@ -61,7 +61,7 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+<div class="ring-opacity-5 w-full overflow-x-auto shadow ring-1 ring-black md:rounded-lg">
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -77,35 +77,35 @@
 			<tr>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Компания
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Акция
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Период
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Действия
@@ -141,23 +141,23 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{action.company_name || 'Не указано'}
 							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{action.action_name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4">
@@ -172,7 +172,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
+						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button
@@ -305,10 +305,10 @@
 					<!-- Action Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
+							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								{action.action_name || 'Не указано'}
 							</h3>
-							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
+							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
 								{action.company_name || 'Компания не указана'}
 							</p>
 						</div>
@@ -325,7 +325,7 @@
 					<dl class="mb-4">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Период
 							</dt>

@@ -5,6 +5,7 @@
 Сейчас страница `/actions` работает с **моковыми данными** (тестовыми данными), так как бэкенд API еще не реализован.
 
 При попытке использовать API возникает ошибка:
+
 ```
 Cannot query field "actions" on type "Query"
 ```
@@ -18,6 +19,7 @@ Cannot query field "actions" on type "Query"
 Следуйте инструкциям в файле `ACTIONS_API_BACKEND.md`:
 
 1. Запустите миграцию (уже создана):
+
    ```bash
    cd b5-db-2
    php artisan migrate
@@ -26,57 +28,59 @@ Cannot query field "actions" on type "Query"
 2. Создайте модель `Action` (см. `ACTIONS_API_BACKEND.md`)
 
 3. Добавьте GraphQL схему в `graphql/schema.graphql`:
+
    ```graphql
    extend type Query {
-       actions(first: Int = 10, page: Int): ActionConnection! @paginate
-       action(id: ID! @eq): Action @find
+   	actions(first: Int = 10, page: Int): ActionConnection! @paginate
+   	action(id: ID! @eq): Action @find
    }
 
    extend type Mutation {
-       createAction(input: CreateActionInput! @spread): Action! @create
-       updateAction(input: UpdateActionInput! @spread): Action! @update
-       deleteAction(id: ID!): Action! @delete
+   	createAction(input: CreateActionInput! @spread): Action! @create
+   	updateAction(input: UpdateActionInput! @spread): Action! @update
+   	deleteAction(id: ID!): Action! @delete
    }
 
    type Action {
-       id: ID!
-       name: String!
-       description: String!
-       start: Date!
-       end: Date!
-       company_id: ID!
-       is_active: Boolean!
-       created_at: DateTime!
-       updated_at: DateTime!
-       company: Company @belongsTo
+   	id: ID!
+   	name: String!
+   	description: String!
+   	start: Date!
+   	end: Date!
+   	company_id: ID!
+   	is_active: Boolean!
+   	created_at: DateTime!
+   	updated_at: DateTime!
+   	company: Company @belongsTo
    }
 
    type ActionConnection {
-       data: [Action!]!
-       paginatorInfo: PaginatorInfo!
+   	data: [Action!]!
+   	paginatorInfo: PaginatorInfo!
    }
 
    input CreateActionInput {
-       name: String! @rules(apply: ["required", "string", "max:255"])
-       description: String! @rules(apply: ["required", "string"])
-       start: Date! @rules(apply: ["required", "date"])
-       end: Date! @rules(apply: ["required", "date", "after:start"])
-       company_id: ID! @rules(apply: ["required", "exists:companies,id"])
-       is_active: Boolean! @rules(apply: ["required", "boolean"])
+   	name: String! @rules(apply: ["required", "string", "max:255"])
+   	description: String! @rules(apply: ["required", "string"])
+   	start: Date! @rules(apply: ["required", "date"])
+   	end: Date! @rules(apply: ["required", "date", "after:start"])
+   	company_id: ID! @rules(apply: ["required", "exists:companies,id"])
+   	is_active: Boolean! @rules(apply: ["required", "boolean"])
    }
 
    input UpdateActionInput {
-       id: ID! @rules(apply: ["required", "exists:actions,id"])
-       name: String @rules(apply: ["string", "max:255"])
-       description: String @rules(apply: ["string"])
-       start: Date @rules(apply: ["date"])
-       end: Date @rules(apply: ["date", "after:start"])
-       company_id: ID @rules(apply: ["exists:companies,id"])
-       is_active: Boolean @rules(apply: ["boolean"])
+   	id: ID! @rules(apply: ["required", "exists:actions,id"])
+   	name: String @rules(apply: ["string", "max:255"])
+   	description: String @rules(apply: ["string"])
+   	start: Date @rules(apply: ["date"])
+   	end: Date @rules(apply: ["date", "after:start"])
+   	company_id: ID @rules(apply: ["exists:companies,id"])
+   	is_active: Boolean @rules(apply: ["boolean"])
    }
    ```
 
 4. Очистите кэш GraphQL:
+
    ```bash
    php artisan lighthouse:clear-cache
    ```
@@ -92,20 +96,20 @@ Cannot query field "actions" on type "Query"
 
 ```graphql
 query {
-  actions(first: 10) {
-    data {
-      id
-      name
-      description
-      start
-      end
-      is_active
-      company {
-        id
-        name
-      }
-    }
-  }
+	actions(first: 10) {
+		data {
+			id
+			name
+			description
+			start
+			end
+			is_active
+			company {
+				id
+				name
+			}
+		}
+	}
 }
 ```
 
@@ -134,26 +138,24 @@ import { refreshActions, getCompaniesForActions } from '$lib/api/actions.js';
 
 // Станет:
 export async function load() {
-  try {
-    const [actions, companies] = await Promise.all([
-      refreshActions(),
-      getCompaniesForActions()
-    ]);
-    return { actions, companies };
-  } catch (error) {
-    console.error('Failed to load actions page data:', error);
-    return {
-      actions: mockActions,
-      companies: mockCompanies,
-      error: { message: 'Не удалось загрузить данные. Показаны тестовые данные.' }
-    };
-  }
+	try {
+		const [actions, companies] = await Promise.all([refreshActions(), getCompaniesForActions()]);
+		return { actions, companies };
+	} catch (error) {
+		console.error('Failed to load actions page data:', error);
+		return {
+			actions: mockActions,
+			companies: mockCompanies,
+			error: { message: 'Не удалось загрузить данные. Показаны тестовые данные.' }
+		};
+	}
 }
 ```
 
 #### Файл: `b5-admin/src/routes/(protected)/actions/+page.svelte`
 
 1. Раскомментируйте импорт:
+
 ```javascript
 // Было:
 // import { createAction, refreshActions } from '$lib/api/actions.js';
@@ -163,21 +165,23 @@ import { createAction, refreshActions } from '$lib/api/actions.js';
 ```
 
 2. В функции `handleSaveNewAction` замените моковую реализацию:
+
 ```javascript
 // Удалите весь блок с "Temporary mock implementation"
 // И раскомментируйте:
 await retryOperation(
-  async () => {
-    const newAction = await createAction(actionData);
-    await invalidateAll();
-    addSuccessToast(`Акция "${actionData.name}" успешно добавлена.`);
-  },
-  2,
-  1000
+	async () => {
+		const newAction = await createAction(actionData);
+		await invalidateAll();
+		addSuccessToast(`Акция "${actionData.name}" успешно добавлена.`);
+	},
+	2,
+	1000
 );
 ```
 
 3. В функции `refreshData` раскомментируйте:
+
 ```javascript
 // Было:
 // const refreshedActions = await refreshActions();
@@ -193,6 +197,7 @@ allActions = refreshedActions;
 ### 4. Проверьте работу
 
 1. Перезапустите dev-сервер фронтенда:
+
    ```bash
    cd b5-admin
    npm run dev

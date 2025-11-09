@@ -60,7 +60,7 @@ export async function load({ fetch, cookies, request }) {
 			if (response.status === 401 || response.status === 403) {
 				cookies.delete('b5_auth_2_session', { path: '/' });
 			}
-			
+
 			return {
 				user: null,
 				isAuthenticated: false

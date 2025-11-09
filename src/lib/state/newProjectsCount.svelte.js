@@ -16,12 +16,12 @@ class NewProjectsCountState {
 		try {
 			const projectsResult = await getProjectsWithPagination(1000, 1);
 			const projects = projectsResult.data || [];
-			
+
 			// Count projects with status slug 'new-project'
 			const count = projects.filter(
 				(project) => project.status && project.status.slug === 'new-project'
 			).length;
-			
+
 			this.count = count;
 		} catch (error) {
 			console.error('Failed to load new projects count:', error);

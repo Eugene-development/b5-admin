@@ -8,6 +8,7 @@ php artisan db:seed --class=ProjectStatusSeeder
 ```
 
 Это создаст 8 статусов проектов:
+
 - Новый проект (по умолчанию)
 - Принят куратором
 - ТЗ отправлено
@@ -20,41 +21,41 @@ php artisan db:seed --class=ProjectStatusSeeder
 ## Шаг 2: Проверка GraphQL API
 
 ### Получение списка статусов
+
 ```graphql
 query {
-  projectStatuses {
-    id
-    value
-    slug
-    color
-    icon
-    sort_order
-    is_active
-  }
+	projectStatuses {
+		id
+		value
+		slug
+		color
+		icon
+		sort_order
+		is_active
+	}
 }
 ```
 
 ### Обновление статуса проекта
+
 ```graphql
 mutation {
-  updateProject(input: {
-    id: "01JBEXAMPLE123456789"
-    status_id: "01JBEXAMPLE987654321"
-  }) {
-    id
-    value
-    status {
-      id
-      value
-      slug
-    }
-  }
+	updateProject(input: { id: "01JBEXAMPLE123456789", status_id: "01JBEXAMPLE987654321" }) {
+		id
+		value
+		status {
+			id
+			value
+			slug
+		}
+	}
 }
 ```
 
 ## Шаг 3: Тестирование в UI
 
 1. Запустите b5-admin:
+
    ```bash
    cd b5-admin
    npm run dev
@@ -75,16 +76,19 @@ mutation {
 ## Возможные проблемы
 
 ### Статусы не загружаются
+
 - Проверьте, что сидер был запущен
 - Проверьте консоль браузера на наличие ошибок
 - Проверьте, что GraphQL API доступен
 
 ### Ошибка при сохранении
+
 - Проверьте, что выбран валидный статус
 - Проверьте консоль браузера на наличие ошибок
 - Проверьте логи b5-api-2
 
 ### Статус не отображается после сохранения
+
 - Обновите страницу
 - Проверьте, что мутация updateProject возвращает обновленные данные
 - Проверьте, что в запросе projects включено поле status

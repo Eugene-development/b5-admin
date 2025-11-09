@@ -55,6 +55,7 @@
 ## Функционал
 
 ### Реализовано
+
 - ✅ Отображение списка техзаданий
 - ✅ Просмотр деталей техзадания
 - ✅ Создание нового техзадания
@@ -65,6 +66,7 @@
 - ✅ Валидация формы создания
 
 ### Планируется
+
 - ⏳ Редактирование техзадания
 - ⏳ Загрузка файлов (эскиз, КП)
 - ⏳ Скачивание файлов
@@ -72,43 +74,45 @@
 ## Структура данных
 
 ### GraphQL Query
+
 ```graphql
 query GetTechnicalSpecifications {
-  technicalSpecifications(first: 1000) {
-    data {
-      id
-      project_id
-      project {
-        id
-        value
-        region
-        contract_name
-        agent {
-          id
-          name
-          email
-          phones {
-            id
-            value
-            is_primary
-          }
-        }
-      }
-      description
-      comment
-      is_active
-      requires_approval
-      is_approved
-      created_at
-      updated_at
-    }
-  }
+	technicalSpecifications(first: 1000) {
+		data {
+			id
+			project_id
+			project {
+				id
+				value
+				region
+				contract_name
+				agent {
+					id
+					name
+					email
+					phones {
+						id
+						value
+						is_primary
+					}
+				}
+			}
+			description
+			comment
+			is_active
+			requires_approval
+			is_approved
+			created_at
+			updated_at
+		}
+	}
 }
 ```
 
 ## Тестовые данные
 
 Созданы 3 тестовых техзадания для существующих проектов:
+
 - Проект "Наташа2" - куратор Евгений
 - Проект "Серёга" - куратор www
 - Проект "счцс" - куратор www

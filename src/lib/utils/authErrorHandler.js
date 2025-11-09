@@ -1,15 +1,15 @@
 /**
  * Authentication Error Handler Utilities
- * 
+ *
  * Provides centralized error handling for authentication-related operations
  * with integration to the toast system and retry mechanisms.
  */
 
-import { 
-	addErrorToast, 
-	addWarningToast, 
+import {
+	addErrorToast,
+	addWarningToast,
 	addSuccessToast,
-	retryOperation as baseRetryOperation 
+	retryOperation as baseRetryOperation
 } from './toastStore.js';
 import { ApiError } from '../api/client.js';
 import { removeAuthToken } from '../api/config.js';
@@ -54,11 +54,7 @@ export const CRITICAL_OPERATIONS = {
  * @returns {Object} Processed error information
  */
 export function handleAuthError(error, operation = null, options = {}) {
-	const {
-		showToast = true,
-		redirectOnAuth = true,
-		customMessage = null
-	} = options;
+	const { showToast = true, redirectOnAuth = true, customMessage = null } = options;
 
 	console.error('Authentication Error:', { error, operation, options });
 
@@ -81,7 +77,7 @@ export function handleAuthError(error, operation = null, options = {}) {
 				errorMessage = AUTH_ERROR_MESSAGES.UNAUTHORIZED;
 				errorType = 'unauthorized';
 				shouldRedirect = redirectOnAuth;
-				
+
 				// Clear auth token and redirect to login
 				if (redirectOnAuth) {
 					removeAuthToken();
@@ -111,7 +107,7 @@ export function handleAuthError(error, operation = null, options = {}) {
 				errorMessage = AUTH_ERROR_MESSAGES.VALIDATION_ERROR;
 				errorType = 'validation';
 				validationErrors = error.data?.errors || {};
-				
+
 				// Handle specific validation messages
 				if (error.data?.message) {
 					errorMessage = error.data.message;
@@ -173,7 +169,7 @@ export function handleNetworkError(error, options = {}) {
 	console.error('Network Error:', { error, operation });
 
 	let errorMessage = AUTH_ERROR_MESSAGES.NETWORK_ERROR;
-	
+
 	// Provide more specific network error messages
 	if (error.message.includes('Failed to fetch')) {
 		errorMessage = 'Не удается подключиться к серверу. Проверьте подключение к интернету.';
@@ -289,7 +285,7 @@ export async function retryAuthOperation(operation, operationType, options = {})
 	}
 
 	// All retries failed
-	const errorInfo = handleAuthError(lastError, operationType, { 
+	const errorInfo = handleAuthError(lastError, operationType, {
 		showToast: showRetryToasts,
 		customMessage: `Операция "${operationType}" не удалась после ${maxRetries} попыток`
 	});
@@ -306,7 +302,7 @@ export async function retryAuthOperation(operation, operationType, options = {})
  */
 export async function executeCriticalAuthOperation(operation, operationType, options = {}) {
 	const isCritical = Object.values(CRITICAL_OPERATIONS).includes(operationType);
-	
+
 	if (isCritical) {
 		return retryAuthOperation(operation, operationType, options);
 	} else {
@@ -331,7 +327,7 @@ export function formatValidationErrors(validationErrors) {
 	}
 
 	const formatted = {};
-	
+
 	for (const [field, messages] of Object.entries(validationErrors)) {
 		if (Array.isArray(messages) && messages.length > 0) {
 			formatted[field] = messages[0]; // Take the first error message
@@ -378,7 +374,7 @@ export function createDebouncedErrorHandler(handler, delay = 1000) {
 	let timeoutId = null;
 	let lastError = null;
 
-	return function(error, ...args) {
+	return function (error, ...args) {
 		lastError = error;
 
 		if (timeoutId) {

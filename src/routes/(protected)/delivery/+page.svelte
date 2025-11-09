@@ -60,18 +60,25 @@
 	let isRefreshing = $state(false);
 
 	// Local delivery companies state for updates
-	let localDeliveryCompanies = $state([
-		...(data?.deliveryCompanies || []).map((company) => ({
-			...company,
-			status: company.status?.toLowerCase() || 'active'
-		}))
-	]);
+	let localDeliveryCompanies = $state([]);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
 
 	// Check for server-side load errors
-	let loadError = $state(data?.error || null);
+	let loadError = $state(null);
+
+	// Derived state that transforms streamed data without mutation
+	function getProcessedCompanies(data) {
+		if (!data || !data.deliveryCompanies) {
+			return [];
+		}
+
+		return data.deliveryCompanies.map((company) => ({
+			...company,
+			status: company.status?.toLowerCase() || 'active'
+		}));
+	}
 
 	// Computed filteredDeliveryCompanies reactive statement
 	let filteredDeliveryCompanies = $derived.by(() => {
@@ -317,9 +324,7 @@
 		try {
 			const companies = await refreshCompanies();
 			// Filter companies by status slug 'delivery'
-			const deliveryData = companies.filter(
-				(company) => company.status?.slug === 'delivery'
-			);
+			const deliveryData = companies.filter((company) => company.status?.slug === 'delivery');
 			localDeliveryCompanies = deliveryData.map((company) => ({
 				...company,
 				status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
@@ -379,137 +384,162 @@
 			fallbackMessage="An error occurred while loading the delivery page."
 			showDetails={true}
 		>
-			<div class="space-y-6 bg-gray-950">
-				<main id="main-content" aria-labelledby="page-title">
-					<div
-						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-					>
-						<div class="flex-auto">
-							<h1
-								id="page-title"
-								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
-							>
-								Службы доставки
-							</h1>
-						</div>
-						<div class="flex items-center space-x-3">
-							<button
-								type="button"
-								onclick={refreshData}
-								disabled={isRefreshing}
-								class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-								aria-label="Refresh delivery companies data from server"
-							>
-								{#if isRefreshing}
-									<svg
-										class="mr-2 h-4 w-4 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
+			{#await data.deliveryData}
+				<div class="flex min-h-screen items-center justify-center bg-gray-950">
+					<LoadingSpinner message="Загрузка служб доставки..." />
+				</div>
+			{:then deliveryData}
+				{@const processedCompanies = getProcessedCompanies(deliveryData)}
+
+				<!-- Update local state only once when data arrives -->
+				{#if localDeliveryCompanies.length === 0 && processedCompanies.length > 0}
+					{(localDeliveryCompanies = processedCompanies, '')}
+				{/if}
+
+				<!-- Set load error if present -->
+				{#if deliveryData.error && !loadError}
+					{(loadError = deliveryData.error, '')}
+				{/if}
+
+				<div class="space-y-6 bg-gray-950">
+					<main id="main-content" aria-labelledby="page-title">
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
+							<div class="flex-auto">
+								<h1
+									id="page-title"
+									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+								>
+									Службы доставки
+								</h1>
+							</div>
+							<div class="flex items-center space-x-3">
+								<button
+									type="button"
+									onclick={refreshData}
+									disabled={isRefreshing}
+									class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+									aria-label="Refresh delivery companies data from server"
+								>
+									{#if isRefreshing}
+										<svg
+											class="mr-2 h-4 w-4 animate-spin"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+										>
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
+											<path
+												class="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+									{:else}
+										<svg
+											class="mr-2 h-4 w-4"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
 											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else}
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+											></path>
+										</svg>
+									{/if}
+									Обновить
+								</button>
+								<button
+									type="button"
+									onclick={handleAddCompany}
+									disabled={isActionLoading}
+									class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+								>
 									<svg
 										class="mr-2 h-4 w-4"
 										xmlns="http://www.w3.org/2000/svg"
 										fill="none"
 										viewBox="0 0 24 24"
 										stroke="currentColor"
+										aria-hidden="true"
 									>
 										<path
 											stroke-linecap="round"
 											stroke-linejoin="round"
 											stroke-width="2"
-											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-										></path>
+											d="M12 4v16m8-8H4"
+										/>
 									</svg>
-								{/if}
-								Обновить
-							</button>
-							<button
-								type="button"
-								onclick={handleAddCompany}
-								disabled={isActionLoading}
-								class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+									Добавить
+								</button>
+							</div>
+						</div>
+
+						<!-- Search Bar -->
+						<div class="w-full sm:max-w-md" role="search" aria-label="Delivery company search">
+							<SearchBar
+								placeholder="Поиск служб доставки"
+								onSearch={handleSearch}
+								value={searchTerm}
+							/>
+						</div>
+
+						<!-- Results summary -->
+						{#if searchTerm.trim()}
+							<div
+								class="py-2 text-sm text-gray-600 dark:text-gray-400"
+								role="status"
+								aria-live="polite"
+								aria-atomic="true"
 							>
-								<svg
-									class="mr-2 h-4 w-4"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 4v16m8-8H4"
-									/>
-								</svg>
-								Добавить
-							</button>
-						</div>
-					</div>
+								{#if filteredDeliveryCompanies.length === 0}
+									<p>Службы доставки не найдены</p>
+								{:else}
+									<p>
+										Найдено {filteredDeliveryCompanies.length} служб{filteredDeliveryCompanies.length ===
+										1
+											? 'а'
+											: filteredDeliveryCompanies.length < 5
+												? 'ы'
+												: ''} доставки по запросу "{searchTerm}"
+									</p>
+								{/if}
+							</div>
+						{/if}
 
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Delivery company search">
-						<SearchBar
-							placeholder="Поиск служб доставки"
-							onSearch={handleSearch}
-							value={searchTerm}
+						<CompanyTable
+							companies={filteredDeliveryCompanies}
+							isLoading={isActionLoading}
+							onBanCompany={handleBanDeliveryCompany}
+							onDeleteCompany={handleDeleteDeliveryCompany}
+							onViewCompany={handleViewDeliveryCompany}
+							onEditCompany={handleEditCompany}
+							{updateCounter}
+							{searchTerm}
+							hasSearched={searchTerm.trim().length > 0}
 						/>
+					</main>
+				</div>
+			{:catch error}
+				<div class="flex min-h-screen items-center justify-center bg-gray-950">
+					<div class="text-center">
+						<p class="text-lg text-red-500">Ошибка загрузки данных</p>
+						<p class="mt-2 text-sm text-gray-400">{error.message}</p>
 					</div>
-
-					<!-- Results summary -->
-					{#if searchTerm.trim()}
-						<div
-							class="py-2 text-sm text-gray-600 dark:text-gray-400"
-							role="status"
-							aria-live="polite"
-							aria-atomic="true"
-						>
-							{#if filteredDeliveryCompanies.length === 0}
-								<p>Службы доставки не найдены</p>
-							{:else}
-								<p>
-									Найдено {filteredDeliveryCompanies.length} служб{filteredDeliveryCompanies.length ===
-									1
-										? 'а'
-										: filteredDeliveryCompanies.length < 5
-											? 'ы'
-											: ''} доставки по запросу "{searchTerm}"
-								</p>
-							{/if}
-						</div>
-					{/if}
-
-					<CompanyTable
-						companies={filteredDeliveryCompanies}
-						isLoading={isActionLoading}
-						onBanCompany={handleBanDeliveryCompany}
-						onDeleteCompany={handleDeleteDeliveryCompany}
-						onViewCompany={handleViewDeliveryCompany}
-						onEditCompany={handleEditCompany}
-						{updateCounter}
-						{searchTerm}
-						hasSearched={searchTerm.trim().length > 0}
-					/>
-				</main>
-			</div>
+				</div>
+			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

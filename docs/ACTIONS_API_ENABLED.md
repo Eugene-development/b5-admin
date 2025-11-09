@@ -41,6 +41,7 @@ php artisan config:clear
 ```
 
 Или используйте скрипт:
+
 ```bash
 cd b5-api-2
 chmod +x clear-graphql-cache.sh
@@ -57,27 +58,29 @@ php artisan serve
 ### 3. Проверьте GraphQL схему
 
 Откройте GraphQL Playground:
+
 ```
 http://localhost:8000/graphql-playground
 ```
 
 Выполните тестовый запрос:
+
 ```graphql
 query {
-  actions(first: 10) {
-    data {
-      id
-      name
-      description
-      start
-      end
-      is_active
-      company {
-        id
-        name
-      }
-    }
-  }
+	actions(first: 10) {
+		data {
+			id
+			name
+			description
+			start
+			end
+			is_active
+			company {
+				id
+				name
+			}
+		}
+	}
 }
 ```
 
@@ -85,16 +88,16 @@ query {
 
 ```graphql
 query {
-  companies(first: 10) {
-    data {
-      id
-      name
-      legal_name
-      region
-      is_active
-      ban
-    }
-  }
+	companies(first: 10) {
+		data {
+			id
+			name
+			legal_name
+			region
+			is_active
+			ban
+		}
+	}
 }
 ```
 
@@ -102,24 +105,26 @@ query {
 
 ```graphql
 mutation {
-  createAction(input: {
-    name: "Тестовая акция"
-    description: "Описание тестовой акции"
-    start: "2025-02-01"
-    end: "2025-02-28"
-    company_id: "YOUR_COMPANY_ID_HERE"
-    is_active: false
-  }) {
-    id
-    name
-    description
-    start
-    end
-    is_active
-    company {
-      name
-    }
-  }
+	createAction(
+		input: {
+			name: "Тестовая акция"
+			description: "Описание тестовой акции"
+			start: "2025-02-01"
+			end: "2025-02-28"
+			company_id: "YOUR_COMPANY_ID_HERE"
+			is_active: false
+		}
+	) {
+		id
+		name
+		description
+		start
+		end
+		is_active
+		company {
+			name
+		}
+	}
 }
 ```
 
@@ -145,6 +150,7 @@ npm run dev
 ### Ошибка: "Cannot query field 'actions'"
 
 **Решение:**
+
 ```bash
 cd b5-api-2
 php artisan lighthouse:clear-cache
@@ -153,6 +159,7 @@ php artisan lighthouse:clear-cache
 ### Ошибка: "Table 'actions' doesn't exist"
 
 **Решение:**
+
 ```bash
 cd b5-db-2
 php artisan migrate
@@ -161,6 +168,7 @@ php artisan migrate
 ### Ошибка: "Class 'App\Models\Action' not found"
 
 **Решение:**
+
 ```bash
 cd b5-api-2
 composer dump-autoload
@@ -169,6 +177,7 @@ composer dump-autoload
 ### Ошибка CORS
 
 Проверьте `b5-api-2/config/cors.php`:
+
 ```php
 'paths' => ['api/*', 'graphql', 'sanctum/csrf-cookie'],
 'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173')],
@@ -178,6 +187,7 @@ composer dump-autoload
 ### Пустой список компаний
 
 Убедитесь, что в БД есть активные компании:
+
 ```sql
 SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 ```
@@ -185,6 +195,7 @@ SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 ## Структура данных
 
 ### Action (из БД)
+
 ```javascript
 {
   id: "01HQZX...",           // ULID
@@ -200,6 +211,7 @@ SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 ```
 
 ### Action (для таблицы - старый формат)
+
 Если таблица ожидает старый формат, нужно будет добавить трансформацию данных.
 
 ## Откат к моковым данным
@@ -207,11 +219,13 @@ SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 Если нужно вернуться к моковым данным:
 
 1. В `+page.js` закомментируйте:
+
 ```javascript
 // import { refreshActions, getCompaniesForActions } from '$lib/api/actions.js';
 ```
 
 2. В `+page.svelte` закомментируйте:
+
 ```javascript
 // import { createAction, refreshActions } from '$lib/api/actions.js';
 ```
@@ -221,6 +235,7 @@ SELECT * FROM companies WHERE is_active = 1 AND ban = 0;
 ## Проверка работы
 
 ### Быстрая проверка API:
+
 ```bash
 curl -X POST http://localhost:8000/graphql \
   -H "Content-Type: application/json" \
@@ -230,6 +245,7 @@ curl -X POST http://localhost:8000/graphql \
 Ожидаемый результат: JSON с данными или пустой массив `{"data":{"actions":{"data":[]}}}`
 
 ### Проверка фронтенда:
+
 1. Откройте DevTools (F12)
 2. Перейдите на `/actions`
 3. Проверьте Network tab - должны быть запросы к `/graphql`

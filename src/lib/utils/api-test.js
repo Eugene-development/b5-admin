@@ -9,15 +9,15 @@ import { API_BASE_URL, AUTH_API_URL } from '$lib/config/api.js';
  */
 export async function testGraphQLConnection() {
 	const endpoint = `${API_BASE_URL}/graphql`;
-	
+
 	console.log('🧪 Testing GraphQL connection:', endpoint);
-	
+
 	try {
 		const response = await fetch(endpoint, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -59,14 +59,14 @@ export async function testGraphQLConnection() {
  */
 export async function testAuthConnection() {
 	const endpoint = `${AUTH_API_URL}/api/user`;
-	
+
 	console.log('🧪 Testing Auth API connection:', endpoint);
-	
+
 	try {
 		const response = await fetch(endpoint, {
 			method: 'GET',
 			headers: {
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			},
 			credentials: 'include'
 		});
@@ -85,10 +85,10 @@ export async function testAuthConnection() {
 			dataKeys: Object.keys(data)
 		});
 
-		return { 
+		return {
 			success: response.status === 200 || response.status === 401, // 401 is also valid (not authenticated)
 			authenticated: response.status === 200,
-			data 
+			data
 		};
 	} catch (error) {
 		console.error('❌ Auth API connection failed:', {
@@ -105,7 +105,7 @@ export async function testAuthConnection() {
  */
 export async function testAllConnections() {
 	console.log('🚀 Starting API connectivity tests...');
-	
+
 	const results = {
 		graphql: await testGraphQLConnection(),
 		auth: await testAuthConnection(),

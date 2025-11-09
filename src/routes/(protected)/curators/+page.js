@@ -1,7 +1,7 @@
 /**
- * Client-side load function for agents page
- * Handles data fetching and processing with error handling on the client-side
- * Uses client-side loading to match the project's authentication pattern
+ * Client-side load function for curators page with streaming
+ * Allows instant page navigation with data loading in background
+ * Uses streaming to show loading state while data is being fetched
  * Requirements: Client-side data loading, error handling, authentication state management
  */
 
@@ -166,18 +166,12 @@ function calculateCuratorStats(curators) {
 	return stats;
 }
 
-/** @type {import('./$types').PageLoad} */
-export async function load({ fetch }) {
+/**
+ * Load curators data asynchronously for streaming
+ */
+async function loadCuratorsData(fetch) {
 	const startTime = Date.now();
 
-	// Check if we're in browser - for SSR safety
-	if (!browser) {
-		// Return fallback data for SSR
-		return createCuratorsFallbackData();
-	}
-
-	// Since auth is handled client-side and the check might not be ready yet,
-	// we'll proceed with the API call and let the API handle authentication errors
 	try {
 		// Add timeout to prevent hanging requests
 		const timeoutPromise = new Promise((_, reject) => {
@@ -210,9 +204,8 @@ export async function load({ fetch }) {
 		};
 
 		const loadTime = Date.now() - startTime;
-// FIX: agents: curators?
-		return {
 
+		return {
 			agents: curators, // Keep as 'agents' for backward compatibility with existing page code
 			stats,
 			pagination,
@@ -226,7 +219,7 @@ export async function load({ fetch }) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
 
-		console.error('Failed to load agents data:', {
+		console.error('Failed to load curators data:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
@@ -244,4 +237,14 @@ export async function load({ fetch }) {
 			loadTime: Date.now() - startTime
 		};
 	}
+}
+
+/** @type {import('./$types').PageLoad} */
+export async function load({ fetch }) {
+	// Return immediately with streamed Promise
+	// Page will render instantly, data will load in background
+	return {
+		// Don't await - return Promise for streaming!
+		usersData: loadCuratorsData(fetch)
+	};
 }

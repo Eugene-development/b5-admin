@@ -20,15 +20,15 @@ export async function initializeAuth() {
 	if (authState.initialized) {
 		return authState.user;
 	}
-	
+
 	// Fallback to localStorage if auth state not initialized
 	const hasToken = hasAuthToken();
 	const storedUser = getUserData();
-	
+
 	if (hasToken && storedUser) {
 		return storedUser;
 	}
-	
+
 	return null;
 }
 
@@ -42,7 +42,7 @@ export function isAuthenticated() {
 	if (authState.initialized) {
 		return authState.isAuthenticated;
 	}
-	
+
 	// Fallback to localStorage check if auth state not initialized
 	const hasToken = hasAuthToken();
 	const storedUser = getUserData();
@@ -89,17 +89,13 @@ export function requireGuest(redirectTo = '/dashboard') {
  * @returns {Function} SvelteKit load function
  */
 export function createAuthLoad(options = {}) {
-	const { 
-		redirectTo = '/login', 
-		requireAuth = true, 
-		requireEmailVerification = false 
-	} = options;
+	const { redirectTo = '/login', requireAuth = true, requireEmailVerification = false } = options;
 
 	return async ({ url, route }) => {
 		// Check authentication requirement with fallback to localStorage
 		let isAuth = false;
 		let userData = null;
-		
+
 		if (authState.initialized) {
 			isAuth = authState.isAuthenticated;
 			userData = authState.user;
@@ -110,7 +106,7 @@ export function createAuthLoad(options = {}) {
 			isAuth = hasToken && storedUser;
 			userData = storedUser;
 		}
-		
+
 		if (requireAuth && !isAuth) {
 			// Store the intended destination for post-login redirect
 			const returnTo = url.pathname + url.search;
@@ -156,7 +152,7 @@ export function createGuestLoad(options = {}) {
 	return async ({ url }) => {
 		// Check authentication with fallback to localStorage
 		let isAuth = false;
-		
+
 		if (authState.initialized) {
 			isAuth = authState.isAuthenticated;
 		} else {
@@ -223,7 +219,7 @@ export async function navigationGuard(pathname, options = {}) {
 
 	// Check authentication with fallback to localStorage
 	let isAuth = false;
-	
+
 	if (authState.initialized) {
 		isAuth = authState.isAuthenticated;
 	} else {

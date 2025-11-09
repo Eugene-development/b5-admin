@@ -15,7 +15,7 @@
 			authState.isAuthenticated = true;
 			authState.emailVerified = data.user.email_verified || false;
 			authState.initialized = true;
-			
+
 			// Store user data in localStorage for offline access
 			if (browser) {
 				import('$lib/api/config.js').then(({ setUserData }) => {
@@ -27,7 +27,7 @@
 			authState.user = null;
 			authState.isAuthenticated = false;
 			authState.initialized = true;
-			
+
 			// Clear localStorage
 			if (browser) {
 				import('$lib/api/config.js').then(({ removeAuthToken }) => {
@@ -35,7 +35,7 @@
 				});
 			}
 		}
-		
+
 		// Initialize domain detection
 		initializeDomainDetection();
 	});
@@ -49,7 +49,9 @@
 {#if !authState.initialized && browser}
 	<div class="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
 		<div class="text-center">
-			<div class="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"></div>
+			<div
+				class="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-indigo-500 border-t-transparent"
+			></div>
 			<p class="text-gray-600 dark:text-gray-400">Загрузка...</p>
 		</div>
 	</div>

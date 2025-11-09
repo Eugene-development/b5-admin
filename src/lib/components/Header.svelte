@@ -14,7 +14,7 @@
 </script>
 
 <header
-	class="fixed left-0 right-0 top-0 z-50 transition-all duration-300 {isScrolled
+	class="fixed top-0 right-0 left-0 z-50 transition-all duration-300 {isScrolled
 		? 'bg-white/95 shadow-lg backdrop-blur-md dark:bg-gray-900/95'
 		: 'bg-transparent'}"
 >

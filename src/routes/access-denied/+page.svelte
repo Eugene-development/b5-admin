@@ -63,7 +63,7 @@
 				</div>
 
 				<!-- Заголовок -->
-				<h1 class="mb-4 text-5xl font-black uppercase tracking-wider text-red-500 md:text-7xl">
+				<h1 class="mb-4 text-5xl font-black tracking-wider text-red-500 uppercase md:text-7xl">
 					<span class="animate-pulse">ДОСТУП</span>
 					<br />
 					<span class="text-white">ЗАПРЕЩЁН</span>
@@ -97,7 +97,8 @@
 								/>
 							</svg>
 							<p class="text-gray-300">
-								<span class="font-bold text-red-400">Причина блокировки:</span> Ваш статус пользователя не имеет прав доступа к административной панели
+								<span class="font-bold text-red-400">Причина блокировки:</span> Ваш статус пользователя
+								не имеет прав доступа к административной панели
 							</p>
 						</div>
 
@@ -116,7 +117,8 @@
 								/>
 							</svg>
 							<p class="text-gray-300">
-								<span class="font-bold text-red-400">Доступ разрешён только для:</span> Админ, Куратор, Менеджер
+								<span class="font-bold text-red-400">Доступ разрешён только для:</span> Админ, Куратор,
+								Менеджер
 							</p>
 						</div>
 						<div class="flex items-start space-x-3">
@@ -134,7 +136,8 @@
 								/>
 							</svg>
 							<p class="text-gray-300">
-								<span class="font-bold text-red-400">Действие:</span> Обратитесь к администратору системы для получения соответствующих прав доступа
+								<span class="font-bold text-red-400">Действие:</span> Обратитесь к администратору системы
+								для получения соответствующих прав доступа
 							</p>
 						</div>
 					</div>
@@ -142,7 +145,7 @@
 
 				<!-- Кнопки действий -->
 				<div
-					class="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0"
+					class="flex flex-col items-center justify-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4"
 				>
 					<button
 						onclick={handleLogout}
@@ -199,10 +202,10 @@
 
 		<!-- Декоративные элементы -->
 		<div
-			class="absolute left-1/4 top-1/4 -z-10 h-96 w-96 animate-pulse rounded-full bg-red-600/10 blur-3xl"
+			class="absolute top-1/4 left-1/4 -z-10 h-96 w-96 animate-pulse rounded-full bg-red-600/10 blur-3xl"
 		></div>
 		<div
-			class="absolute bottom-1/4 right-1/4 -z-10 h-96 w-96 animate-pulse rounded-full bg-red-800/10 blur-3xl"
+			class="absolute right-1/4 bottom-1/4 -z-10 h-96 w-96 animate-pulse rounded-full bg-red-800/10 blur-3xl"
 			style="animation-delay: 1s;"
 		></div>
 	</div>

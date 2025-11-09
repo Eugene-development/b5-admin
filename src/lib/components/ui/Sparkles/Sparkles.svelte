@@ -36,6 +36,27 @@
 	});
 </script>
 
+<div class={cn('relative h-48', className)} style="--particle-color: {particleColor};">
+	<div class="absolute inset-0">
+		{#each particles as particle (particle.id)}
+			<span
+				class="particle"
+				style="
+					width: {particle.size}px;
+					height: {particle.size}px;
+					top: {particle.top}%;
+					left: {particle.left}%;
+					--moveX: {particle.moveX}px;
+					--moveY: {particle.moveY}px;
+					--opacity: {particle.opacity};
+					animation-duration: {particle.duration}s;
+					animation-delay: {particle.delay}s;
+				"
+			></span>
+		{/each}
+	</div>
+</div>
+
 <style>
 	@keyframes sparkle {
 		0% {
@@ -68,24 +89,3 @@
 		will-change: transform, opacity;
 	}
 </style>
-
-<div class={cn('relative h-48', className)} style="--particle-color: {particleColor};">
-	<div class="absolute inset-0">
-		{#each particles as particle (particle.id)}
-			<span
-				class="particle"
-				style="
-					width: {particle.size}px;
-					height: {particle.size}px;
-					top: {particle.top}%;
-					left: {particle.left}%;
-					--moveX: {particle.moveX}px;
-					--moveY: {particle.moveY}px;
-					--opacity: {particle.opacity};
-					animation-duration: {particle.duration}s;
-					animation-delay: {particle.delay}s;
-				"
-			></span>
-		{/each}
-	</div>
-</div>

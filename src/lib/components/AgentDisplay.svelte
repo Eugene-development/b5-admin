@@ -1,12 +1,7 @@
 <script>
 	import { formatAgentDisplay } from '../utils/formatters.js';
 
-	let { 
-		agent = null,
-		showId = false,
-		clickable = false,
-		className = ''
-	} = $props();
+	let { agent = null, showId = false, clickable = false, className = '' } = $props();
 
 	let displayText = $derived(formatAgentDisplay(agent));
 	let isAssigned = $derived(agent && (agent.name || agent.email));

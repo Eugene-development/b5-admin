@@ -35,9 +35,9 @@
 	function getCuratorPhone(tz) {
 		const phones = tz.project?.agent?.phones;
 		if (!phones || phones.length === 0) return null;
-		
+
 		// Find primary phone or return first phone
-		const primaryPhone = phones.find(p => p.is_primary);
+		const primaryPhone = phones.find((p) => p.is_primary);
 		return primaryPhone?.value || phones[0]?.value || null;
 	}
 
@@ -92,7 +92,7 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+<div class="ring-opacity-5 w-full overflow-x-auto shadow ring-1 ring-black md:rounded-lg">
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -110,14 +110,14 @@
 			<tr>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Куратор
@@ -125,14 +125,14 @@
 
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Комментарий
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px; width: 250px;"
 				>
 					Действия
@@ -168,23 +168,23 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{getCuratorName(tz)}
 							</div>
 						</td>
 
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="max-w-xs break-words pr-4 leading-relaxed">
+							<div class="max-w-xs pr-4 leading-relaxed break-words">
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
+						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-1">
 								<!-- View Button -->
 								<button
@@ -366,10 +366,10 @@
 					<!-- TZ Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
+							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								Куратор: {getCuratorName(tz)}
 							</h3>
-							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
+							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
 								{formatPhone(getCuratorPhone(tz)) || 'Телефон не указан'}
 							</p>
 						</div>
@@ -386,29 +386,33 @@
 					<dl class="mb-4 space-y-3">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Комментарий
 							</dt>
-							<dd class="mt-1 break-words text-sm text-gray-900 dark:text-white">
+							<dd class="mt-1 text-sm break-words text-gray-900 dark:text-white">
 								{tz.comment || 'Нет комментария'}
 							</dd>
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Файлы
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{#if tz.project?.sketches && tz.project.sketches.length > 0}
-									<span class="text-blue-600 dark:text-blue-400">{tz.project.sketches.length} эскиз(ов)</span>
+									<span class="text-blue-600 dark:text-blue-400"
+										>{tz.project.sketches.length} эскиз(ов)</span
+									>
 								{:else}
 									<span class="text-gray-500">Нет эскизов</span>
 								{/if}
 								{' • '}
 								{#if tz.project?.offers && tz.project.offers.length > 0}
-									<span class="text-green-600 dark:text-green-400">{tz.project.offers.length} КП</span>
+									<span class="text-green-600 dark:text-green-400"
+										>{tz.project.offers.length} КП</span
+									>
 								{:else}
 									<span class="text-gray-500">Нет КП</span>
 								{/if}

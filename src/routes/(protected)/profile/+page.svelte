@@ -271,7 +271,7 @@
 				<!-- Success Notifications -->
 				{#if showSuccessMessage}
 					<div
-						class="animate-in fade-in slide-in-from-top-4 fixed left-1/2 top-6 z-50 -translate-x-1/2 transform duration-300"
+						class="animate-in fade-in slide-in-from-top-4 fixed top-6 left-1/2 z-50 -translate-x-1/2 transform duration-300"
 					>
 						<div
 							class="rounded-xl border border-green-500/30 bg-green-500/20 p-4 shadow-2xl shadow-green-500/10 backdrop-blur-md"
@@ -286,7 +286,7 @@
 										/>
 									</svg>
 								</div>
-								<p class="text-sm font-medium leading-relaxed text-green-300">{successMessage}</p>
+								<p class="text-sm leading-relaxed font-medium text-green-300">{successMessage}</p>
 							</div>
 						</div>
 					</div>
@@ -306,7 +306,7 @@
 					<div class="grid gap-6 sm:grid-cols-2 lg:gap-8">
 						<!-- Name -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Имя
 							</div>
 							<div
@@ -318,7 +318,7 @@
 
 						<!-- Email -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Email
 							</div>
 							<div
@@ -361,7 +361,7 @@
 
 						<!-- Region -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Регион
 							</div>
 							<div
@@ -373,7 +373,7 @@
 
 						<!-- Phone -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Телефон
 							</div>
 							<div
@@ -385,7 +385,7 @@
 
 						<!-- User Status -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Статус пользователя
 							</div>
 							<div
@@ -410,7 +410,7 @@
 
 						<!-- Registration Date -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Дата регистрации
 							</div>
 							<div
@@ -434,13 +434,13 @@
 
 						<!-- Secret Key -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Секретный ключ
 							</div>
 							<button
 								onclick={copyKey}
 								disabled={isCopyingKey}
-								class="group/key w-full rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+								class="group/key w-full rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 								title="Нажмите для копирования в буфер обмена"
 							>
 								<div class="flex items-center justify-between">
@@ -473,13 +473,13 @@
 
 						<!-- Logout Button -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
+							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
 								Действия
 							</div>
 							<button
 								onclick={handleLogoutClick}
 								disabled={isLogoutLoading || isRedirecting}
-								class="group/logout flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-red-500 bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+								class="group/logout flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-red-500 bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								{#if isLogoutLoading}
 									<LoadingSpinner size="sm" color="white" inline={true} />
@@ -507,7 +507,9 @@
 									<span>Выйти из аккаунта</span>
 								{/if}
 							</button>
-							<p class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400">
+							<p
+								class="mt-2 text-xs text-gray-500 transition-colors duration-200 group-hover:text-gray-400"
+							>
 								Завершение текущей сессии
 							</p>
 						</div>
@@ -603,7 +605,7 @@
 								</p>
 								<button
 									onclick={() => goto('/email-verify')}
-									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98]"
+									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
 								>
 									<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
 										<path
@@ -660,7 +662,11 @@
 					<div
 						class="flex w-full items-center justify-center gap-3 rounded-lg border border-gray-700/50 bg-gray-800/30 px-6 py-4 backdrop-blur-sm"
 					>
-						<svg class="h-5 w-5 flex-shrink-0 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+						<svg
+							class="h-5 w-5 flex-shrink-0 text-green-400"
+							viewBox="0 0 20 20"
+							fill="currentColor"
+						>
 							<path
 								fill-rule="evenodd"
 								d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"

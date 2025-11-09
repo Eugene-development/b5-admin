@@ -12,7 +12,7 @@ import { browser } from '$app/environment';
  */
 export const ERROR_TYPES = {
 	VALIDATION: 'validation',
-	AUTHENTICATION: 'authentication', 
+	AUTHENTICATION: 'authentication',
 	AUTHORIZATION: 'authorization',
 	NETWORK: 'network',
 	SERVER: 'server',
@@ -114,7 +114,7 @@ export function formatValidationErrors(validationErrors) {
 	}
 
 	const formattedErrors = {};
-	
+
 	for (const [field, messages] of Object.entries(validationErrors)) {
 		if (Array.isArray(messages) && messages.length > 0) {
 			// Take the first error message for each field
@@ -147,9 +147,9 @@ export function handleValidationError(error) {
  */
 export function handleAuthenticationError(error, options = {}) {
 	const { redirect = true, redirectPath = '/login' } = options;
-	
+
 	const errorMessage = getErrorMessage(error, DEFAULT_ERROR_MESSAGES[ERROR_TYPES.AUTHENTICATION]);
-	
+
 	// Redirect to login page if in browser and redirect is enabled
 	if (redirect && browser) {
 		// Use setTimeout to avoid blocking the error handling
@@ -171,7 +171,7 @@ export function handleAuthenticationError(error, options = {}) {
  */
 export function handleAuthorizationError(error) {
 	const errorMessage = getErrorMessage(error, DEFAULT_ERROR_MESSAGES[ERROR_TYPES.AUTHORIZATION]);
-	
+
 	return {
 		auth: [errorMessage]
 	};
@@ -185,7 +185,7 @@ export function handleAuthorizationError(error) {
  */
 export function handleNetworkError(error) {
 	let errorMessage = DEFAULT_ERROR_MESSAGES[ERROR_TYPES.NETWORK];
-	
+
 	// Provide more specific messages for common network issues
 	if (error.message) {
 		if (error.message.includes('fetch')) {
@@ -210,7 +210,7 @@ export function handleNetworkError(error) {
  */
 export function handleServerError(error) {
 	let errorMessage = DEFAULT_ERROR_MESSAGES[ERROR_TYPES.SERVER];
-	
+
 	// Provide more specific messages based on status code
 	switch (error.status) {
 		case HTTP_STATUS.INTERNAL_SERVER_ERROR:
@@ -252,22 +252,22 @@ export function handleApiError(error, options = {}) {
 	switch (errorType) {
 		case ERROR_TYPES.VALIDATION:
 			return handleValidationError(error);
-		
+
 		case ERROR_TYPES.AUTHENTICATION:
 			return handleAuthenticationError(error, {
 				redirect: options.redirectOnAuth !== false,
 				redirectPath: options.authRedirectPath
 			});
-		
+
 		case ERROR_TYPES.AUTHORIZATION:
 			return handleAuthorizationError(error);
-		
+
 		case ERROR_TYPES.NETWORK:
 			return handleNetworkError(error);
-		
+
 		case ERROR_TYPES.SERVER:
 			return handleServerError(error);
-		
+
 		default:
 			return {
 				general: [getErrorMessage(error, DEFAULT_ERROR_MESSAGES[ERROR_TYPES.UNKNOWN])]
@@ -352,7 +352,7 @@ export function clearErrorFields(errors, fields) {
 	const fieldsArray = Array.isArray(fields) ? fields : [fields];
 	const newErrors = { ...errors };
 
-	fieldsArray.forEach(field => {
+	fieldsArray.forEach((field) => {
 		delete newErrors[field];
 	});
 
@@ -368,7 +368,7 @@ export function clearErrorFields(errors, fields) {
 export function mergeErrors(...errorObjects) {
 	const mergedErrors = {};
 
-	errorObjects.forEach(errors => {
+	errorObjects.forEach((errors) => {
 		if (errors && typeof errors === 'object') {
 			Object.assign(mergedErrors, errors);
 		}

@@ -72,20 +72,23 @@ export async function createCompany(companyData) {
 		if (result.errors) {
 			const errorMessage = result.errors[0]?.message || 'Failed to create company';
 			const extensions = result.errors[0]?.extensions;
-			
+
 			// Check for duplicate INN error (validation or database constraint)
-			const isDuplicateInn = 
-				errorMessage.includes('Duplicate entry') && errorMessage.includes('companies_inn_unique') ||
+			const isDuplicateInn =
+				(errorMessage.includes('Duplicate entry') &&
+					errorMessage.includes('companies_inn_unique')) ||
 				errorMessage.includes('inn has already been taken') ||
-				errorMessage.includes('inn') && errorMessage.includes('already') ||
+				(errorMessage.includes('inn') && errorMessage.includes('already')) ||
 				(extensions?.validation && extensions.validation['input.inn']);
-			
+
 			if (isDuplicateInn) {
-				const duplicateError = new DuplicateInnError('Компания с таким ИНН уже существует в системе');
+				const duplicateError = new DuplicateInnError(
+					'Компания с таким ИНН уже существует в системе'
+				);
 				addWarningToast(duplicateError.message, { duration: 6000 });
 				throw duplicateError;
 			}
-			
+
 			throw new Error(errorMessage);
 		}
 
@@ -344,7 +347,10 @@ export async function toggleCompanyBan(companyId, shouldBan) {
 
 		return result.data.updateCompany;
 	} catch (error) {
-		handleApiError(error, shouldBan ? 'Не удалось забанить компанию' : 'Не удалось разбанить компанию');
+		handleApiError(
+			error,
+			shouldBan ? 'Не удалось забанить компанию' : 'Не удалось разбанить компанию'
+		);
 		throw error;
 	}
 }

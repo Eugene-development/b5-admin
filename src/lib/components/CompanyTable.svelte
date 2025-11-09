@@ -73,7 +73,9 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="hidden w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg">
+<div
+	class="ring-opacity-5 hidden w-full overflow-x-auto shadow ring-1 ring-black md:block md:rounded-lg"
+>
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -91,49 +93,49 @@
 			<tr>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Компания
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Почта
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px; width: 150px;"
 				>
 					Телефон
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Контактное лицо
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					СОСТОЯНИЕ
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-4 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 160px; width: 160px;"
 				>
 					Действия
@@ -169,18 +171,18 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm font-medium text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="break-words pr-4 leading-relaxed">
+							<div class="pr-4 leading-relaxed break-words">
 								{company.name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4" title={company.email || 'Не указана'}>
@@ -188,7 +190,7 @@
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4" title={formatPhone(company.phone)}>
@@ -196,14 +198,14 @@
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-4 py-5 align-top text-sm text-gray-900 dark:text-white"
+							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4" title={company.contact_person || 'Не указано'}>
 								{company.contact_person || 'Не указано'}
 							</div>
 						</td>
-						<td class="whitespace-nowrap px-4 py-5 align-top text-sm" role="cell">
+						<td class="px-4 py-5 align-top text-sm whitespace-nowrap" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanCompany(company)}
@@ -223,7 +225,7 @@
 								{/if}
 							</button>
 						</td>
-						<td class="relative whitespace-nowrap px-4 py-5 text-center align-top" role="cell">
+						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button
@@ -357,10 +359,10 @@
 					<!-- Company Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
+							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								{company.name || 'Не указано'}
 							</h3>
-							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
+							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
 								{company.legal_name || 'Юр. название не указано'}
 							</p>
 						</div>
@@ -377,7 +379,7 @@
 					<dl class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Почта
 							</dt>
@@ -387,7 +389,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Телефон
 							</dt>
@@ -397,7 +399,7 @@
 						</div>
 						<div class="col-span-2">
 							<dt
-								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
 								Контактное лицо
 							</dt>

@@ -1,12 +1,5 @@
 <script>
-	let {
-		isOpen = false,
-		tz = null,
-		projects = [],
-		onSave,
-		onCancel,
-		isLoading = false
-	} = $props();
+	let { isOpen = false, tz = null, projects = [], onSave, onCancel, isLoading = false } = $props();
 
 	// Form state
 	let formData = $state({
@@ -139,7 +132,7 @@
 
 			<!-- Modal panel -->
 			<div
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				onclick={handleModalClick}
 				onkeydown={handleKeydown}
 				tabindex="0"
@@ -150,7 +143,7 @@
 					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
 				>
 					<h3
-						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
 						Редактировать техническое задание #{tz?.id}
@@ -159,7 +152,7 @@
 						type="button"
 						onclick={onCancel}
 						disabled={isLoading}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
+						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
 						aria-label="Закрыть модальное окно"
 					>
 						<svg
@@ -189,7 +182,7 @@
 								id="project_id"
 								bind:value={formData.project_id}
 								disabled={isLoading}
-								class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-gray-700 dark:text-white dark:ring-gray-600 sm:text-sm sm:leading-6"
+								class="mt-2 block w-full rounded-md border-0 py-1.5 pr-10 pl-3 text-gray-900 ring-1 ring-gray-300 ring-inset focus:ring-2 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600"
 								class:ring-red-500={errors.project_id}
 								class:focus:ring-red-500={errors.project_id}
 							>
@@ -220,7 +213,7 @@
 								bind:value={formData.description}
 								disabled={isLoading}
 								rows="6"
-								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 sm:text-sm sm:leading-6"
+								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 								class:ring-red-500={errors.description}
 								class:focus:ring-red-500={errors.description}
 								placeholder="Опишите требования и задачи проекта..."
@@ -237,10 +230,7 @@
 
 						<!-- Comment -->
 						<div>
-							<label
-								for="comment"
-								class="block text-sm font-medium text-gray-900 dark:text-white"
-							>
+							<label for="comment" class="block text-sm font-medium text-gray-900 dark:text-white">
 								Комментарий
 							</label>
 							<textarea
@@ -248,12 +238,10 @@
 								bind:value={formData.comment}
 								disabled={isLoading}
 								rows="3"
-								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 sm:text-sm sm:leading-6"
+								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 								placeholder="Дополнительные примечания или комментарии..."
 							></textarea>
-							<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-								Необязательное поле
-							</p>
+							<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Необязательное поле</p>
 						</div>
 
 						<!-- Checkboxes -->
@@ -289,10 +277,7 @@
 									/>
 								</div>
 								<div class="ml-3 text-sm leading-6">
-									<label
-										for="requires_approval"
-										class="font-medium text-gray-900 dark:text-white"
-									>
+									<label for="requires_approval" class="font-medium text-gray-900 dark:text-white">
 										Требуется согласование
 									</label>
 									<p class="text-gray-500 dark:text-gray-400">
@@ -315,9 +300,7 @@
 									<label for="is_approved" class="font-medium text-gray-900 dark:text-white">
 										Согласовано
 									</label>
-									<p class="text-gray-500 dark:text-gray-400">
-										Техзадание уже согласовано
-									</p>
+									<p class="text-gray-500 dark:text-gray-400">Техзадание уже согласовано</p>
 								</div>
 							</div>
 						</div>
@@ -331,7 +314,7 @@
 							type="button"
 							onclick={onCancel}
 							disabled={isLoading}
-							class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+							class="inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
 						>
 							Отмена
 						</button>

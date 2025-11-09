@@ -26,4 +26,3 @@ export function closeMobileMenu() {
 export function openMobileMenu() {
 	visibleMobileMenu.value = true;
 }
-

@@ -78,7 +78,13 @@ const UPDATE_USER_MUTATION = gql`
 `;
 
 // Helper function to make GraphQL requests with proper error handling, authentication, and SvelteKit fetch support
-async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQL operation', customFetch = null, cookies = null) {
+async function makeGraphQLRequest(
+	query,
+	variables = {},
+	operationName = 'GraphQL operation',
+	customFetch = null,
+	cookies = null
+) {
 	try {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
@@ -93,7 +99,7 @@ async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQ
 
 		// Use custom fetch if provided (for SvelteKit SSR support)
 		const requestConfig = customFetch ? { fetch: customFetch } : {};
-		
+
 		// Use the configured GraphQL endpoint (now with status field support)
 		const result = await request(GRAPHQL_ENDPOINT, query, variables, headers, requestConfig);
 
@@ -101,10 +107,10 @@ async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQ
 		return result;
 	} catch (err) {
 		console.error(`GraphQL Error in ${operationName}:`, err);
-		
+
 		// Handle authentication errors
 		handleAuthError(err, '/agents');
-		
+
 		throw err;
 	}
 }
@@ -112,7 +118,13 @@ async function makeGraphQLRequest(query, variables = {}, operationName = 'GraphQ
 // Function to ban a user
 export async function banUser(agentId, customFetch = null, cookies = null) {
 	try {
-		const result = await makeGraphQLRequest(BAN_USER_MUTATION, { id: agentId }, 'banUser', customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			BAN_USER_MUTATION,
+			{ id: agentId },
+			'banUser',
+			customFetch,
+			cookies
+		);
 		return result.banUser;
 	} catch (err) {
 		console.error('Ban request failed:', err);
@@ -123,7 +135,13 @@ export async function banUser(agentId, customFetch = null, cookies = null) {
 // Function to unban a user
 export async function unbanUser(agentId, customFetch = null, cookies = null) {
 	try {
-		const result = await makeGraphQLRequest(UNBAN_USER_MUTATION, { id: agentId }, 'unbanUser', customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			UNBAN_USER_MUTATION,
+			{ id: agentId },
+			'unbanUser',
+			customFetch,
+			cookies
+		);
 		return result.unbanUser;
 	} catch (err) {
 		console.error('Unban request failed:', err);
@@ -134,7 +152,13 @@ export async function unbanUser(agentId, customFetch = null, cookies = null) {
 // Function to delete a user
 export async function deleteUser(agentId, customFetch = null, cookies = null) {
 	try {
-		const result = await makeGraphQLRequest(DELETE_USER_MUTATION, { id: agentId }, 'deleteUser', customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			DELETE_USER_MUTATION,
+			{ id: agentId },
+			'deleteUser',
+			customFetch,
+			cookies
+		);
 		return result.deleteUser;
 	} catch (err) {
 		console.error('Delete request failed:', err);
@@ -165,12 +189,23 @@ export async function getAllUsers(customFetch = null, cookies = null) {
 }
 
 // Function to get users with pagination support (fallback to simple query since users doesn't support pagination)
-export async function getUsersWithPagination(first = 1000, page = 1, customFetch = null, cookies = null) {
+export async function getUsersWithPagination(
+	first = 1000,
+	page = 1,
+	customFetch = null,
+	cookies = null
+) {
 	try {
 		// Users API doesn't support pagination, so we use the simple query and simulate pagination structure
-		const result = await makeGraphQLRequest(USERS_QUERY, {}, 'getUsersWithPagination', customFetch, cookies);
+		const result = await makeGraphQLRequest(
+			USERS_QUERY,
+			{},
+			'getUsersWithPagination',
+			customFetch,
+			cookies
+		);
 		const users = result.users || [];
-		
+
 		// Simulate pagination structure to match projects API pattern
 		return {
 			data: users,

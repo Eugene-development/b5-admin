@@ -11,13 +11,13 @@ export function getRelativeTime(dateString) {
 	if (!dateString) {
 		return '';
 	}
-	
+
 	try {
 		const date = new Date(dateString);
 		const now = new Date();
 		const diffMs = date.getTime() - now.getTime();
 		const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-		
+
 		if (diffDays === 0) {
 			return 'Сегодня';
 		} else if (diffDays === 1) {
@@ -43,19 +43,19 @@ export function getRelativeTime(dateString) {
 function getDaysWord(days) {
 	const lastDigit = days % 10;
 	const lastTwoDigits = days % 100;
-	
+
 	if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
 		return 'дней';
 	}
-	
+
 	if (lastDigit === 1) {
 		return 'день';
 	}
-	
+
 	if (lastDigit >= 2 && lastDigit <= 4) {
 		return 'дня';
 	}
-	
+
 	return 'дней';
 }
 
@@ -68,13 +68,13 @@ export function getDateUrgency(dateString) {
 	if (!dateString) {
 		return 'normal';
 	}
-	
+
 	try {
 		const date = new Date(dateString);
 		const now = new Date();
 		const diffMs = date.getTime() - now.getTime();
 		const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-		
+
 		if (diffDays < 0) {
 			return 'overdue';
 		} else if (diffDays <= 3) {
@@ -97,7 +97,7 @@ export function getDateUrgency(dateString) {
  */
 export function getDateUrgencyClasses(dateString) {
 	const urgency = getDateUrgency(dateString);
-	
+
 	switch (urgency) {
 		case 'overdue':
 			return 'text-red-600 font-semibold bg-red-50 px-2 py-1 rounded';

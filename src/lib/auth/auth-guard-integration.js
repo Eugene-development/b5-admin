@@ -4,18 +4,14 @@
  * Requirements: 3.4, 4.3, 5.1
  */
 
-import { 
-	isProtectedRoute, 
-	isGuestRoute, 
-	getPostLoginRedirect 
-} from './auth-guard.svelte.js';
+import { isProtectedRoute, isGuestRoute, getPostLoginRedirect } from './auth-guard.svelte.js';
 
 /**
  * Test route detection functions
  */
 export function testRouteDetection() {
 	console.log('Testing route detection...');
-	
+
 	// Test protected routes
 	const protectedTests = [
 		{ path: '/dashboard', expected: true },
@@ -27,11 +23,13 @@ export function testRouteDetection() {
 		{ path: '/', expected: false }
 	];
 
-	protectedTests.forEach(test => {
+	protectedTests.forEach((test) => {
 		const result = isProtectedRoute(test.path);
 		console.log(`isProtectedRoute('${test.path}') = ${result} (expected: ${test.expected})`);
 		if (result !== test.expected) {
-			throw new Error(`Failed: isProtectedRoute('${test.path}') returned ${result}, expected ${test.expected}`);
+			throw new Error(
+				`Failed: isProtectedRoute('${test.path}') returned ${result}, expected ${test.expected}`
+			);
 		}
 	});
 
@@ -44,11 +42,13 @@ export function testRouteDetection() {
 		{ path: '/', expected: false }
 	];
 
-	guestTests.forEach(test => {
+	guestTests.forEach((test) => {
 		const result = isGuestRoute(test.path);
 		console.log(`isGuestRoute('${test.path}') = ${result} (expected: ${test.expected})`);
 		if (result !== test.expected) {
-			throw new Error(`Failed: isGuestRoute('${test.path}') returned ${result}, expected ${test.expected}`);
+			throw new Error(
+				`Failed: isGuestRoute('${test.path}') returned ${result}, expected ${test.expected}`
+			);
 		}
 	});
 
@@ -102,7 +102,7 @@ export function testRedirectUtilities() {
  */
 export function runIntegrationTests() {
 	console.log('🧪 Running auth-guard integration tests...');
-	
+
 	try {
 		testRouteDetection();
 		testRedirectUtilities();

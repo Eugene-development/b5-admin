@@ -15,7 +15,6 @@ export * from './auth/auth-guard.svelte.js';
 export * from './utils/errorHandler.svelte.js';
 export { HttpClient, api, createHttpClient, initCsrf } from './utils/http-client.js';
 
-
 // place files you want to import through the `$lib` alias in this folder.
 export { default as AgentsTable } from './components/AgentsTable.svelte';
 export { default as UsersTable } from './components/UsersTable.svelte';

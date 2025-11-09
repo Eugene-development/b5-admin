@@ -102,6 +102,7 @@ php artisan migrate
 5. Нажмите "Загрузить"
 
 Поддерживаемые форматы:
+
 - PDF, DOC, DOCX
 - XLS, XLSX
 - PNG, JPG, JPEG

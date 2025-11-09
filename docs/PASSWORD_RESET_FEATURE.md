@@ -1,17 +1,20 @@
 # Функционал восстановления пароля для B5-Admin
 
 ## Описание
+
 Реализован полный функционал восстановления пароля для административной панели b5-admin с использованием бэкенда b5-auth-2.
 
 ## Сценарий работы
 
 ### 1. Запрос на восстановление пароля
+
 - Администратор переходит на страницу `/forgot-password`
 - Вводит свой email
 - Нажимает "Отправить ссылку"
 - На email отправляется письмо со ссылкой для сброса пароля
 
 ### 2. Сброс пароля
+
 - Администратор переходит по ссылке из письма
 - Открывается страница `/reset-password` с токеном и email в URL
 - Администратор вводит новый пароль и подтверждение
@@ -24,11 +27,13 @@
 #### 1. API функции (src/lib/api/auth.js)
 
 **forgotPassword(email)**
+
 - Отправляет запрос на восстановление пароля
 - Endpoint: `/api/forgot-password`
 - Обработка ошибок с понятными сообщениями на русском
 
 **resetPassword(token, email, password, password_confirmation)**
+
 - Сбрасывает пароль по токену
 - Endpoint: `/api/reset-password`
 - Валидация и обработка ошибок
@@ -36,6 +41,7 @@
 #### 2. Конфигурация (src/lib/api/config.js)
 
 Добавлены endpoints:
+
 ```javascript
 forgotPassword: '/api/forgot-password',
 resetPassword: '/api/reset-password'
@@ -44,6 +50,7 @@ resetPassword: '/api/reset-password'
 #### 3. Страницы
 
 **`/forgot-password`**
+
 - Форма запроса восстановления пароля
 - Валидация email
 - Отображение успешной отправки
@@ -51,6 +58,7 @@ resetPassword: '/api/reset-password'
 - Единый дизайн с другими auth страницами
 
 **`/reset-password`**
+
 - Форма сброса пароля
 - Получение токена и email из URL
 - Валидация паролей (минимум 8 символов, совпадение)
@@ -64,6 +72,7 @@ resetPassword: '/api/reset-password'
 ### Бэкенд (b5-auth-2)
 
 Используется общий бэкенд для всех фронтендов:
+
 - AuthController с методами `forgotPassword()` и `resetPassword()`
 - ResetPasswordNotification для отправки email
 - Мультидоменность: ссылка формируется с учетом `registration_domain`
@@ -72,6 +81,7 @@ resetPassword: '/api/reset-password'
 ## Дизайн
 
 Страницы выполнены в едином стиле с другими auth страницами b5-admin:
+
 - Темная тема с градиентами
 - Стеклянный морфизм эффект
 - Адаптивный дизайн
@@ -91,6 +101,7 @@ resetPassword: '/api/reset-password'
 ## Мультидоменность
 
 Ссылка в письме автоматически формируется с учетом домена регистрации администратора:
+
 - Если админ зарегистрирован через `admin.bonus.band` → ссылка ведет на `admin.bonus.band/reset-password`
 - Fallback на `FRONTEND_URL` если домен не указан
 
@@ -99,23 +110,27 @@ resetPassword: '/api/reset-password'
 ### Локальное тестирование
 
 1. **Запустите бэкенд:**
+
 ```bash
 cd b5-auth-2
 php artisan serve --port=8001
 ```
 
 2. **Запустите фронтенд:**
+
 ```bash
 cd b5-admin
 npm run dev
 ```
 
 3. **Откройте страницу:**
+
 ```
 http://localhost:5173/forgot-password
 ```
 
 4. **Проверьте письмо:**
+
 - Если `MAIL_MAILER=log`: смотрите `b5-auth-2/storage/logs/laravel.log`
 - Если Mailtrap: проверьте inbox
 
@@ -132,6 +147,7 @@ http://localhost:5173/forgot-password
 ## API Endpoints
 
 ### Forgot Password
+
 ```
 POST /api/forgot-password
 Content-Type: application/json
@@ -148,6 +164,7 @@ Response:
 ```
 
 ### Reset Password
+
 ```
 POST /api/reset-password
 Content-Type: application/json
@@ -169,11 +186,13 @@ Response:
 ## Обработка ошибок
 
 ### Forgot Password
+
 - 422: Некорректный email
 - 429: Слишком много запросов
 - 0: Сетевая ошибка
 
 ### Reset Password
+
 - 422: Некорректные данные (пароль, подтверждение)
 - 400: Недействительный или истекший токен
 - 404: Пользователь не найден
@@ -191,6 +210,7 @@ Response:
 ## Связанные файлы
 
 ### Фронтенд (b5-admin)
+
 - `src/lib/api/auth.js` - API функции
 - `src/lib/api/config.js` - Конфигурация endpoints
 - `src/routes/(auth)/forgot-password/+page.svelte` - Страница запроса
@@ -198,6 +218,7 @@ Response:
 - `src/routes/(auth)/login/+page.svelte` - Ссылка "Забыли пароль?"
 
 ### Бэкенд (b5-auth-2)
+
 - `app/Http/Controllers/AuthController.php` - Контроллер
 - `app/Notifications/ResetPasswordNotification.php` - Email уведомление
 - `resources/views/emails/reset-password-russian.blade.php` - Шаблон письма
@@ -205,4 +226,5 @@ Response:
 - `bootstrap/app.php` - CSRF исключения
 
 ### База данных (b5-db-2)
+
 - `database/migrations/0001_01_01_000000_create_users_table.php` - Таблица password_reset_tokens

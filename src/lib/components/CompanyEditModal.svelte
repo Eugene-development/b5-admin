@@ -66,7 +66,7 @@
 				status_id: company.status_id || ''
 			};
 			errors = {};
-			
+
 			// Load statuses if not already loaded
 			if (companyStatuses.length === 0) {
 				loadCompanyStatuses();
@@ -228,7 +228,7 @@
 <!-- Modal backdrop and container -->
 {#if isOpen && company}
 	<div
-		class="animate-fade animate-duration-100 animate-ease-linear fixed inset-0 z-50 overflow-y-auto"
+		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
 	>
 		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
 			<!-- Backdrop -->
@@ -241,7 +241,7 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
+				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
@@ -251,7 +251,7 @@
 				<!-- Modal Header -->
 				<div class="mb-6">
 					<h3
-						class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
 						Редактировать компанию
@@ -319,10 +319,7 @@
 					<!-- INN and Region -->
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<div>
-							<label
-								for="inn"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-							>
+							<label for="inn" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 								ИНН <span class="text-red-500">*</span>
 							</label>
 							<input
@@ -365,10 +362,7 @@
 
 					<!-- Company Status -->
 					<div>
-						<label
-							for="status"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-						>
+						<label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 							Статус компании
 						</label>
 						<select
@@ -386,15 +380,13 @@
 							{/each}
 						</select>
 						{#if isLoadingStatuses}
-							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-								Загрузка статусов...
-							</p>
+							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Загрузка статусов...</p>
 						{/if}
 					</div>
 
 					<!-- Action buttons -->
 					<div
-						class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse"
+						class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse"
 					>
 						<!-- Save button -->
 						<button
@@ -433,7 +425,7 @@
 							type="button"
 							onclick={handleCancel}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition-colors duration-200 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
+							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
 						>
 							Отмена
 						</button>

@@ -8,23 +8,23 @@
 
 ```sql
 -- Пользователь с неопределённым статусом
-INSERT INTO users (name, email, password, type, email_verified) 
+INSERT INTO users (name, email, password, type, email_verified)
 VALUES ('Тест Неопределённый', 'test-undefined@example.com', 'hashed_password', NULL, 1);
 
 -- Пользователь с неразрешённым статусом
-INSERT INTO users (name, email, password, type, email_verified) 
+INSERT INTO users (name, email, password, type, email_verified)
 VALUES ('Тест Администратор', 'test-admin@example.com', 'hashed_password', 'Администратор', 1);
 
 -- Пользователь со статусом "Клиент"
-INSERT INTO users (name, email, password, type, email_verified) 
+INSERT INTO users (name, email, password, type, email_verified)
 VALUES ('Тест Клиент', 'test-client@example.com', 'hashed_password', 'Клиент', 1);
 
 -- Пользователь со статусом "Агент"
-INSERT INTO users (name, email, password, type, email_verified) 
+INSERT INTO users (name, email, password, type, email_verified)
 VALUES ('Тест Агент', 'test-agent@example.com', 'hashed_password', 'Агент', 1);
 
 -- Пользователь со статусом "Дизайнер"
-INSERT INTO users (name, email, password, type, email_verified) 
+INSERT INTO users (name, email, password, type, email_verified)
 VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_password', 'Дизайнер', 1);
 ```
 
@@ -33,12 +33,14 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 1: Логин со статусом "Админ"
 
 **Шаги:**
+
 1. Открыть страницу `/login`
 2. Ввести email: `test-admin@example.com`
 3. Ввести пароль
 4. Нажать "Войти в систему"
 
 **Ожидаемый результат:**
+
 - Успешный вход в систему
 - Редирект на `/dashboard` (или на страницу из параметра `returnUrl`)
 - Доступ ко всем защищённым маршрутам
@@ -48,12 +50,14 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 2: Логин со статусом "Куратор"
 
 **Шаги:**
+
 1. Открыть страницу `/login`
 2. Ввести email: `test-curator@example.com`
 3. Ввести пароль
 4. Нажать "Войти в систему"
 
 **Ожидаемый результат:**
+
 - Успешный вход в систему
 - Полный доступ к функционалу
 
@@ -62,12 +66,14 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 3: Логин со статусом "Менеджер"
 
 **Шаги:**
+
 1. Открыть страницу `/login`
 2. Ввести email: `test-manager@example.com`
 3. Ввести пароль
 4. Нажать "Войти в систему"
 
 **Ожидаемый результат:**
+
 - Успешный вход в систему
 - Полный доступ к функционалу
 
@@ -76,12 +82,14 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 4: Логин со статусом "Клиент"
 
 **Шаги:**
+
 1. Открыть страницу `/login`
 2. Ввести email: `test-client@example.com`
 3. Ввести пароль
 4. Нажать "Войти в систему"
 
 **Ожидаемый результат:**
+
 - Редирект на `/access-denied`
 - Отображается агрессивная страница с предупреждением
 - Видны кнопки "ВЫЙТИ ИЗ СИСТЕМЫ" и "СВЯЗАТЬСЯ С ПОДДЕРЖКОЙ"
@@ -91,12 +99,14 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 5: Логин с неопределённым статусом
 
 **Шаги:**
+
 1. Открыть страницу `/login`
 2. Ввести email: `test-undefined@example.com` (пользователь с `type: null`)
 3. Ввести пароль
 4. Нажать "Войти в систему"
 
 **Ожидаемый результат:**
+
 - Редирект на `/access-denied`
 - Доступ запрещён (статус не входит в список разрешённых)
 
@@ -105,11 +115,13 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 6: Прямой доступ к защищённым маршрутам
 
 **Шаги:**
+
 1. Войти в систему с пользователем с неразрешённым статусом
 2. В адресной строке ввести `/dashboard`
 3. Нажать Enter
 
 **Ожидаемый результат:**
+
 - Редирект на `/access-denied`
 - Невозможность обойти проверку статуса
 
@@ -118,10 +130,12 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 7: Проверка кнопки "ВЫЙТИ ИЗ СИСТЕМЫ"
 
 **Шаги:**
+
 1. Находясь на странице `/access-denied`
 2. Нажать кнопку "ВЫЙТИ ИЗ СИСТЕМЫ"
 
 **Ожидаемый результат:**
+
 - Выход из системы
 - Редирект на `/login`
 - Очистка токена авторизации
@@ -131,10 +145,12 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 8: Проверка кнопки "СВЯЗАТЬСЯ С ПОДДЕРЖКОЙ"
 
 **Шаги:**
+
 1. Находясь на странице `/access-denied`
 2. Нажать кнопку "СВЯЗАТЬСЯ С ПОДДЕРЖКОЙ"
 
 **Ожидаемый результат:**
+
 - Открывается почтовый клиент
 - В поле "Кому" указан адрес: `support@b5.ru`
 
@@ -143,10 +159,12 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 9: Проверка анимаций
 
 **Шаги:**
+
 1. Открыть страницу `/access-denied`
 2. Наблюдать за анимациями
 
 **Ожидаемый результат:**
+
 - Пульсирующая иконка предупреждения
 - Анимированный фон с полосами
 - Плавное появление элементов
@@ -157,10 +175,12 @@ VALUES ('Тест Дизайнер', 'test-designer@example.com', 'hashed_passwo
 ### Тест 10: Адаптивность
 
 **Шаги:**
+
 1. Открыть страницу `/access-denied`
 2. Изменить размер окна браузера (мобильный, планшет, десктоп)
 
 **Ожидаемый результат:**
+
 - Корректное отображение на всех разрешениях
 - Кнопки адаптируются под размер экрана
 - Текст остаётся читаемым
@@ -214,9 +234,9 @@ location.reload();
 
 Если обнаружены проблемы, запишите их здесь:
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Примечания
 

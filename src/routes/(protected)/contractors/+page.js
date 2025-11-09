@@ -1,9 +1,9 @@
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
 
 /**
- * Load contractors from GraphQL API
+ * Load contractors from GraphQL API with streaming
  */
-export async function load() {
+async function loadContractorsData(fetch) {
 	const query = `
 		query GetCompanies {
 			companies(first: 1000) {
@@ -101,4 +101,10 @@ export async function load() {
 			}
 		};
 	}
+}
+
+export function load({ fetch }) {
+	return {
+		contractorsData: loadContractorsData(fetch)
+	};
 }

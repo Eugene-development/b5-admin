@@ -55,8 +55,8 @@
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
 
-	// Local projects state for updates
-	let localProjects = $state([...(data?.projects || [])]);
+	// Local projects state for updates (will be initialized from streamed data)
+	let localProjects = $state([]);
 
 	// Local state for accepted projects (to show immediately in modal)
 	let acceptedProjects = $state(new Map()); // Map<projectId, {user, acceptedAt}>
@@ -69,8 +69,8 @@
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
 
-	// Check for server-side load errors
-	let loadError = $state(data?.error || null);
+	// Check for server-side load errors (will be set from streamed data)
+	let loadError = $state(null);
 
 	// Computed filteredProjects reactive statement
 	let filteredProjects = $derived.by(() => {
@@ -323,6 +323,15 @@
 		await refreshData();
 	}
 
+	// Derived state that transforms streamed data without mutation
+	function getProcessedProjects(projectsData) {
+		if (!projectsData || !projectsData.projects) {
+			return [];
+		}
+
+		return [...projectsData.projects];
+	}
+
 	// Load project statuses immediately
 	async function loadProjectStatuses() {
 		isLoadingStatuses = true;
@@ -344,19 +353,10 @@
 		}
 	}
 
-	// Handle initial load error and load data if empty
+	// Handle initial load
 	onMount(async () => {
-		if (loadError) {
-			addErrorToast(loadError.message, { duration: 0 });
-		}
-
 		// Load project statuses immediately on page load
 		await loadProjectStatuses();
-
-		// Load data if we have empty initial data (server-side data loading was disabled)
-		if (!localProjects.length && !loadError) {
-			refreshData(true); // Pass true to indicate initial load
-		}
 	});
 </script>
 
@@ -371,128 +371,160 @@
 			fallbackMessage="An error occurred while loading the projects page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Skip link for keyboard navigation -->
-			<a
-				href="#main-content"
-				class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-			>
-				Перейти к основному контенту
-			</a>
+			<!-- Streamed Projects Data with SSR -->
+			{#await data.projectsData}
+				<!-- Loading state: Show skeleton -->
+				<div class="flex min-h-screen items-center justify-center">
+					<div class="text-center">
+						<LoadingSpinner size="lg" />
+						<p class="mt-4 text-gray-400">Загрузка проектов...</p>
+					</div>
+				</div>
+			{:then projectsData}
+				<!-- Success state: Show data -->
+				{@const processedProjects = getProcessedProjects(projectsData)}
 
-			<div class="space-y-6 bg-gray-950">
-				<!-- Page landmark -->
-				<main id="main-content" aria-labelledby="page-title">
-					<div
-						class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-					>
-						<div class="flex-auto">
-							<h1
-								id="page-title"
-								class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
-							>
-								Проекты
-							</h1>
-						</div>
-						<div class="flex-none">
-							<button
-								type="button"
-								onclick={(event) => {
-									event.stopPropagation();
-									refreshData();
-								}}
-								disabled={isRefreshing}
-								class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-cyan-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
-								aria-label="Refresh projects data from server"
-								aria-describedby="refresh-button-description"
-							>
-								{#if isRefreshing}
-									<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
-								{/if}
-								{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
-							</button>
-							<div id="refresh-button-description" class="sr-only">
-								Обновить данные проектов с сервера
+				<!-- Update local state only once when data arrives -->
+				{#if localProjects.length === 0 && processedProjects.length > 0}
+					{(localProjects = processedProjects, '')}
+				{/if}
+
+				<!-- Set load error if present -->
+				{#if projectsData.error && !loadError}
+					{(loadError = projectsData, '')}
+				{/if}
+
+				<!-- Skip link for keyboard navigation -->
+				<a
+					href="#main-content"
+					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+				>
+					Перейти к основному контенту
+				</a>
+
+				<div class="space-y-6 bg-gray-950">
+					<!-- Page landmark -->
+					<main id="main-content" aria-labelledby="page-title">
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
+							<div class="flex-auto">
+								<h1
+									id="page-title"
+									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+								>
+									Проекты
+								</h1>
+							</div>
+							<div class="flex-none">
+								<button
+									type="button"
+									onclick={(event) => {
+										event.stopPropagation();
+										refreshData();
+									}}
+									disabled={isRefreshing}
+									class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-cyan-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors duration-150 ease-in-out hover:bg-cyan-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+									aria-label="Refresh projects data from server"
+									aria-describedby="refresh-button-description"
+								>
+									{#if isRefreshing}
+										<LoadingSpinner size="sm" color="white" inline={true} class="mr-2" />
+									{/if}
+									{isRefreshing ? 'Обновляю...' : 'Обновить данные'}
+								</button>
+								<div id="refresh-button-description" class="sr-only">
+									Обновить данные проектов с сервера
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<!-- Load Error Banner -->
-					{#if loadError && loadError.canRetry}
-						<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-							<div class="flex">
-								<div class="flex-shrink-0">
-									<svg
-										class="h-5 w-5 text-yellow-400"
-										viewBox="0 0 20 20"
-										fill="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											fill-rule="evenodd"
-											d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-											clip-rule="evenodd"
-										/>
-									</svg>
-								</div>
-								<div class="ml-3">
-									<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-										Ошибка загрузки данных
-									</h3>
-									<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-										<p>{loadError.message}</p>
+						<!-- Load Error Banner -->
+						{#if loadError && loadError.canRetry}
+							<div class="rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
+								<div class="flex">
+									<div class="flex-shrink-0">
+										<svg
+											class="h-5 w-5 text-yellow-400"
+											viewBox="0 0 20 20"
+											fill="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												fill-rule="evenodd"
+												d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+												clip-rule="evenodd"
+											/>
+										</svg>
 									</div>
-									<div class="mt-4">
-										<div class="-mx-2 -my-1.5 flex">
-											<button
-												type="button"
-												onclick={refreshData}
-												disabled={isRefreshing}
-												class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
-											>
-												{isRefreshing ? 'Retrying...' : 'Retry'}
-											</button>
+									<div class="ml-3">
+										<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+											Ошибка загрузки данных
+										</h3>
+										<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+											<p>{loadError.message}</p>
+										</div>
+										<div class="mt-4">
+											<div class="-mx-2 -my-1.5 flex">
+												<button
+													type="button"
+													onclick={refreshData}
+													disabled={isRefreshing}
+													class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+												>
+													{isRefreshing ? 'Retrying...' : 'Retry'}
+												</button>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					{/if}
+						{/if}
 
-					<!-- Search Bar -->
-					<div class="w-full sm:max-w-md" role="search" aria-label="Project search">
-						<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
+						<!-- Search Bar -->
+						<div class="w-full sm:max-w-md" role="search" aria-label="Project search">
+							<SearchBar placeholder="Локальный поиск" onSearch={handleSearch} value={searchTerm} />
+						</div>
+
+						<!-- Results summary -->
+						{#if searchTerm.trim()}
+							<div
+								class="py-2 text-sm text-gray-600 dark:text-gray-400"
+								role="status"
+								aria-live="polite"
+								aria-atomic="true"
+							>
+								{#if filteredProjects.length === 0}
+									<p>Проекты не найдены</p>
+								{:else}
+									<p>Найдено {filteredProjects.length} проектов по запросу "{searchTerm}"</p>
+								{/if}
+							</div>
+						{/if}
+
+						<ProjectsTable
+							projects={filteredProjects}
+							isLoading={isActionLoading}
+							onEditProject={handleEditProject}
+							onDeleteProject={handleDeleteProject}
+							onViewProject={handleViewProject}
+							onAcceptProject={handleAcceptProject}
+							{updateCounter}
+							{searchTerm}
+							hasSearched={searchTerm.trim().length > 0}
+							currentUserId={authState.user?.id}
+						/>
+					</main>
+				</div>
+			{:catch error}
+				<!-- Critical error state -->
+				<div class="flex min-h-screen items-center justify-center">
+					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
+						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки проектов</h3>
+						<p class="text-red-300">Не удалось загрузить проекты. Попробуйте обновить страницу.</p>
 					</div>
-
-					<!-- Results summary -->
-					{#if searchTerm.trim()}
-						<div
-							class="py-2 text-sm text-gray-600 dark:text-gray-400"
-							role="status"
-							aria-live="polite"
-							aria-atomic="true"
-						>
-							{#if filteredProjects.length === 0}
-								<p>Проекты не найдены</p>
-							{:else}
-								<p>Найдено {filteredProjects.length} проектов по запросу "{searchTerm}"</p>
-							{/if}
-						</div>
-					{/if}
-
-					<ProjectsTable
-						projects={filteredProjects}
-						isLoading={isActionLoading}
-						onEditProject={handleEditProject}
-						onDeleteProject={handleDeleteProject}
-						onViewProject={handleViewProject}
-						onAcceptProject={handleAcceptProject}
-						{updateCounter}
-						{searchTerm}
-						hasSearched={searchTerm.trim().length > 0}
-						currentUserId={authState.user?.id}
-					/>
-				</main>
-			</div>
+				</div>
+			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>
