@@ -388,11 +388,7 @@
 
 <!-- Mobile Card View (visible on mobile only) -->
 <div class="md:hidden">
-	{#if isLoading}
-		<div class="flex justify-center py-8">
-			<div class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"></div>
-		</div>
-	{:else if projects.length === 0}
+	{#if projects.length === 0}
 		<div class="px-4 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}

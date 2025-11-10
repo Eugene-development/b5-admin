@@ -5,6 +5,7 @@
 	import TzEditModal from '$lib/components/TzEditModal.svelte';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import FileUploadModal from '$lib/components/FileUploadModal.svelte';
+	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
 	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
@@ -34,6 +35,7 @@
 	// State
 	let tzList = $state([]);
 	let isLoading = $state(false);
+	let isRefreshing = $state(false);
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
@@ -131,7 +133,7 @@
 
 	// Load TZ data
 	async function loadServices() {
-		isLoading = true;
+		isRefreshing = true;
 		try {
 			const refreshedData = await refreshTechnicalSpecifications();
 			tzList = refreshedData || [];
@@ -140,7 +142,7 @@
 		} catch (error) {
 			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
-			isLoading = false;
+			isRefreshing = false;
 		}
 	}
 
@@ -320,44 +322,7 @@
 		>
 			{#await data.tzData}
 				<!-- Loading state: Show skeleton -->
-				<div class="space-y-6">
-					<!-- Page Header Skeleton -->
-					<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
-						<div class="flex items-center justify-between">
-							<div>
-								<div class="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-								<div class="mt-2 h-4 w-96 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-							</div>
-							<div class="flex items-center space-x-3">
-								<div class="h-10 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-								<div class="h-10 w-28 animate-pulse rounded bg-gray-200 dark:bg-gray-700"></div>
-							</div>
-						</div>
-					</div>
-					<!-- Loading Spinner -->
-					<div class="flex items-center justify-center py-12">
-						<svg
-							class="h-12 w-12 animate-spin text-indigo-600"
-							xmlns="http://www.w3.org/2000/svg"
-							fill="none"
-							viewBox="0 0 24 24"
-						>
-							<circle
-								class="opacity-25"
-								cx="12"
-								cy="12"
-								r="10"
-								stroke="currentColor"
-								stroke-width="4"
-							></circle>
-							<path
-								class="opacity-75"
-								fill="currentColor"
-								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-							></path>
-						</svg>
-					</div>
-				</div>
+				<TableSkeleton columns={6} />
 			{:then tzData}
 				<!-- Success state: Show data -->
 				{#if tzData.error}
@@ -410,10 +375,10 @@
 									<button
 										type="button"
 										onclick={loadServices}
-										disabled={isLoading}
+										disabled={isRefreshing}
 										class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 									>
-										{#if isLoading}
+										{#if isRefreshing}
 											<svg
 												class="mr-2 h-4 w-4 animate-spin"
 												xmlns="http://www.w3.org/2000/svg"

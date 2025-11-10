@@ -141,16 +141,15 @@
 
 	// Wait for global auth initialization and handle redirects
 	onMount(async () => {
-		// Wait for global auth initialization to complete
+		// Immediately stop showing initializing state to show skeleton ASAP
+		isInitializing = false;
+
+		// Wait for global auth initialization to complete in background
 		let attempts = 0;
 		while (!authState.initialized && attempts < 50) {
 			await new Promise((resolve) => setTimeout(resolve, 100));
 			attempts++;
 		}
-
-		// Add a small delay to ensure all reactive states are settled
-		await new Promise((resolve) => setTimeout(resolve, 50));
-		isInitializing = false;
 
 		// Handle redirect after initialization
 		handleRedirect();
@@ -169,19 +168,14 @@
 	});
 </script>
 
-<!-- Show loading spinner while initializing or during auth operations -->
-{#if !authState.initialized || isLoading() || isInitializing}
-	<div class="flex min-h-screen items-center justify-center">
-		<!-- <LoadingSpinner /> -->
-	</div>
-	<!-- Show protected content if access is granted -->
-{:else if hasAccess}
+<!-- Show protected content immediately, let page's TableSkeleton handle loading state -->
+{#if hasAccess || !authState.initialized}
 	<div class="animate-fade">
 		{@render children()}
 	</div>
 	<!-- Show nothing while redirecting (component will redirect) -->
 {:else}
 	<div class="flex min-h-screen items-center justify-center">
-		<LoadingSpinner />
+		<!-- <LoadingSpinner /> -->
 	</div>
 {/if}

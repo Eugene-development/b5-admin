@@ -384,9 +384,7 @@
 			showDetails={true}
 		>
 			{#await data.deliveryData}
-				<div class="flex min-h-screen items-center justify-center bg-gray-950">
-					<LoadingSpinner message="Загрузка служб доставки..." />
-				</div>
+				<TableSkeleton columns={7} />
 			{:then deliveryData}
 				{@const processedCompanies = getProcessedCompanies(deliveryData)}
 

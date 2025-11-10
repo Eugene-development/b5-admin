@@ -23,6 +23,7 @@
 	let hasAccess = $state(false);
 	let orders = $state([]);
 	let isLoading = $state(false);
+	let isRefreshing = $state(false);
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let filteredOrders = $state([]);
@@ -168,7 +169,7 @@
 
 	// Load orders
 	async function loadServices() {
-		isLoading = true;
+		isRefreshing = true;
 		try {
 			const refreshedOrders = await refreshOrders();
 			orders = refreshedOrders;
@@ -178,7 +179,7 @@
 		} catch (error) {
 			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
-			isLoading = false;
+			isRefreshing = false;
 		}
 	}
 
@@ -461,10 +462,10 @@
 										<button
 											type="button"
 											onclick={loadServices}
-											disabled={isLoading}
+											disabled={isRefreshing}
 											class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 										>
-											{#if isLoading}
+											{#if isRefreshing}
 												<svg
 													class="mr-2 h-4 w-4 animate-spin"
 													xmlns="http://www.w3.org/2000/svg"

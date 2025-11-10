@@ -188,12 +188,12 @@
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
-			{#if isLoading}
+			{#if false && isLoading}
 				<tr>
 					<td colspan="10" class="px-4 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading users data">
 							<div
-								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
+								class="h-6 w-6 hidden"
 								aria-hidden="true"
 							></div>
 						</div>
@@ -404,9 +404,9 @@
 
 <!-- Mobile Card View (visible on mobile only) -->
 <div class="md:hidden">
-	{#if isLoading}
+	{#if false && isLoading}
 		<div class="flex justify-center py-8">
-			<div class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"></div>
+			<div class="h-6 w-6 hidden"></div>
 		</div>
 	{:else if users.length === 0}
 		<div class="px-4 py-6">
@@ -669,12 +669,12 @@
 						</tr>
 					</thead>
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
-						{#if isLoading}
+						{#if false && isLoading}
 							<tr>
 								<td colspan="9" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
 										<div
-											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
+											class="h-6 w-6 hidden"
 										></div>
 									</div>
 								</td>

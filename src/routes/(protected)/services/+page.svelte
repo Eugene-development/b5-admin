@@ -337,9 +337,7 @@
 			showDetails={true}
 		>
 			{#await data.servicesData}
-				<div class="flex min-h-screen items-center justify-center bg-gray-950">
-					<LoadingSpinner message="Загрузка сервисов..." />
-				</div>
+				<TableSkeleton columns={7} />
 			{:then servicesData}
 				{@const processedCompanies = getProcessedCompanies(servicesData)}
 
