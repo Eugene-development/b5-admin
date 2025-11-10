@@ -437,10 +437,13 @@
 					{:else}
 						<!-- Initialize local state from loaded data -->
 						{#if orders.length === 0 && ordersData.orders.length > 0}
-							{((orders = ordersData.orders),
-							(companies = ordersData.companies),
-							(projects = ordersData.projects),
-							'')}
+							{((orders = ordersData.orders), '')}
+						{/if}
+						{#if companies.length === 0 && ordersData.companies.length > 0}
+							{((companies = ordersData.companies), '')}
+						{/if}
+						{#if projects.length === 0 && ordersData.projects.length > 0}
+							{((projects = ordersData.projects), '')}
 						{/if}
 
 						<div class="space-y-6">
