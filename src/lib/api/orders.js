@@ -98,7 +98,7 @@ export async function createOrder(orderData) {
  * @param {number} page - Page number
  * @returns {Promise<Array>} List of orders
  */
-export async function getOrders(first = 1000, page = 1) {
+export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 	const query = `
 		query GetOrders($first: Int!, $page: Int!) {
 			orders(first: $first, page: $page) {
@@ -159,7 +159,7 @@ export async function getOrders(first = 1000, page = 1) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -316,7 +316,7 @@ export async function refreshOrders() {
  * Get all companies for dropdown
  * @returns {Promise<Array>} List of companies
  */
-export async function getCompaniesForDropdown() {
+export async function getCompaniesForDropdown(fetchFn = fetch) {
 	const query = `
 		query GetCompanies {
 			companies(first: 1000) {
@@ -330,7 +330,7 @@ export async function getCompaniesForDropdown() {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -361,7 +361,7 @@ export async function getCompaniesForDropdown() {
  * Get all projects for dropdown
  * @returns {Promise<Array>} List of projects
  */
-export async function getProjectsForDropdown() {
+export async function getProjectsForDropdown(fetchFn = fetch) {
 	const query = `
 		query GetProjects {
 			projects(first: 1000) {
@@ -374,7 +374,7 @@ export async function getProjectsForDropdown() {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

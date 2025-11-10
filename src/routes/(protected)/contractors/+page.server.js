@@ -103,7 +103,7 @@ async function loadContractorsData(fetch) {
 	}
 }
 
-export function load({ fetch }) {
+export async function load({ fetch }) {
 	return {
 		contractorsData: loadContractorsData(fetch)
 	};

@@ -4,7 +4,6 @@
  */
 
 import { error } from '@sveltejs/kit';
-import { hasOrderAccess } from '$lib/utils/domainAccess.svelte.js';
 import { getOrders, getCompaniesForDropdown, getProjectsForDropdown } from '$lib/api/orders.js';
 
 /**
@@ -67,7 +66,7 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 /**
  * Load orders data asynchronously for streaming
  */
-async function loadOrdersData() {
+async function loadOrdersData(fetch) {
 	try {
 		// Add timeout to prevent hanging requests
 		const timeoutPromise = new Promise((_, reject) => {
@@ -77,15 +76,15 @@ async function loadOrdersData() {
 		// Load orders data, companies, and projects in parallel with timeout
 		const [orders, companies, projects] = await Promise.race([
 			Promise.all([
-				getOrders(1000, 1).catch((err) => {
+				getOrders(1000, 1, fetch).catch((err) => {
 					console.error('Error loading orders:', err);
 					return [];
 				}),
-				getCompaniesForDropdown().catch((err) => {
+				getCompaniesForDropdown(fetch).catch((err) => {
 					console.error('Error loading companies:', err);
 					return [];
 				}),
-				getProjectsForDropdown().catch((err) => {
+				getProjectsForDropdown(fetch).catch((err) => {
 					console.error('Error loading projects:', err);
 					return [];
 				})
@@ -126,17 +125,10 @@ async function loadOrdersData() {
 }
 
 export async function load({ fetch }) {
-	// Проверяем доступ к странице order только для разрешенных доменов
-	if (browser && !hasOrderAccess()) {
-		throw error(403, {
-			message: 'Доступ к странице заказов запрещен для данного домена'
-		});
-	}
-
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background
 	return {
 		// Don't await - return Promise for streaming!
-		ordersData: loadOrdersData()
+		ordersData: loadOrdersData(fetch)
 	};
 }

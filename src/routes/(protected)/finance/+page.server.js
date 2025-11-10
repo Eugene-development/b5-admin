@@ -1,3 +1,4 @@
-export async function load() {
+
+export async function load({ parent }) {
 	return {};
 }

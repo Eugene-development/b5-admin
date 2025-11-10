@@ -106,7 +106,7 @@ async function loadSuppliersData(fetch) {
 	}
 }
 
-export function load({ fetch }) {
+export async function load({ fetch }) {
 	return {
 		suppliersData: loadSuppliersData(fetch)
 	};

@@ -103,7 +103,7 @@ async function loadServicesData(fetch) {
 	}
 }
 
-export function load({ fetch }) {
+export async function load({ fetch }) {
 	return {
 		servicesData: loadServicesData(fetch)
 	};

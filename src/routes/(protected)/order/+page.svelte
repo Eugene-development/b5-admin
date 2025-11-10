@@ -2,7 +2,7 @@
 	import OrderTable from '$lib/components/OrderTable.svelte';
 	import OrderAddModal from '$lib/components/OrderAddModal.svelte';
 	import OrderEditModal from '$lib/components/OrderEditModal.svelte';
-	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
@@ -377,13 +377,8 @@
 				</div>
 			{:else}
 				{#await data.ordersData}
-					<!-- Loading state: Show spinner -->
-					<div class="flex min-h-[400px] items-center justify-center">
-						<div class="text-center">
-							<LoadingSpinner size="xl" color="primary" />
-							<p class="mt-4 text-sm text-gray-500 dark:text-gray-400">Загрузка заказов...</p>
-						</div>
-					</div>
+					<!-- Loading state: Show skeleton -->
+					<TableSkeleton columns={6} />
 				{:then ordersData}
 					<!-- Success state: Show data or error -->
 					{#if ordersData.error}

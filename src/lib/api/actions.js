@@ -180,7 +180,7 @@ export async function deleteAction(actionId) {
  * Refresh actions list
  * @returns {Promise<Array>} List of actions
  */
-export async function refreshActions() {
+export async function refreshActions(fetchFn = fetch) {
 	const query = `
 		query GetActions {
 			actions(first: 1000) {
@@ -210,7 +210,7 @@ export async function refreshActions() {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -242,7 +242,7 @@ export async function refreshActions() {
  * Get companies for action creation
  * @returns {Promise<Array>} List of companies
  */
-export async function getCompaniesForActions() {
+export async function getCompaniesForActions(fetchFn = fetch) {
 	const query = `
 		query GetCompanies {
 			companies(first: 1000) {
@@ -263,7 +263,7 @@ export async function getCompaniesForActions() {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

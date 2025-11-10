@@ -3,7 +3,6 @@
  * Data is rendered on the server for SEO and better performance
  */
 
-import { error } from '@sveltejs/kit';
 import { refreshActions, getCompaniesForActions } from '$lib/api/actions.js';
 
 /**
@@ -66,7 +65,7 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 /**
  * Load actions data asynchronously for streaming
  */
-async function loadActionsData() {
+async function loadActionsData(fetch) {
 	try {
 		// Add timeout to prevent hanging requests
 		const timeoutPromise = new Promise((_, reject) => {
@@ -75,7 +74,7 @@ async function loadActionsData() {
 
 		// Load actions data and companies in parallel with timeout
 		const [actionsData, companies] = await Promise.race([
-			Promise.all([refreshActions(), getCompaniesForActions()]),
+			Promise.all([refreshActions(fetch), getCompaniesForActions(fetch)]),
 			timeoutPromise
 		]);
 
@@ -135,37 +134,11 @@ async function loadActionsData() {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ parent }) {
-	try {
-		// Get authentication data from parent layout (fast)
-		const { user, isAuthenticated } = await parent();
-
-		// Check authentication
-		if (!isAuthenticated || !user) {
-			throw error(401, {
-				message: 'Необходима авторизация для просмотра акций'
-			});
-		}
-
-		// Return immediately with streamed Promise
-		// Page will render instantly, data will load in background
-		return {
-			// Don't await - return Promise for streaming!
-			actionsData: loadActionsData()
-		};
-	} catch (err) {
-		// Handle authentication errors
-		if (err.status === 401) {
-			throw err;
-		}
-
-		console.error('Client load error for actions page:', {
-			error: err.message,
-			stack: err.stack
-		});
-
-		throw error(500, {
-			message: 'Внутренняя ошибка при загрузке страницы акций'
-		});
-	}
+export async function load({ fetch }) {
+	// Return immediately with streamed Promise
+	// Page will render instantly, data will load in background
+	return {
+		// Don't await - return Promise for streaming!
+		actionsData: loadActionsData(fetch)
+	};
 }

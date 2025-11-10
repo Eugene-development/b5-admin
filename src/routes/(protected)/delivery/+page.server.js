@@ -103,7 +103,7 @@ async function loadDeliveryData(fetch) {
 	}
 }
 
-export function load({ fetch }) {
+export async function load({ fetch }) {
 	return {
 		deliveryData: loadDeliveryData(fetch)
 	};
