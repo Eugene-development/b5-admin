@@ -1,9 +1,8 @@
 /**
- * Client-side load function for orders page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for orders page with streaming
+ * Data is rendered on the server for SEO and better performance
  */
 
-import { browser } from '$app/environment';
 import { error } from '@sveltejs/kit';
 import { hasOrderAccess } from '$lib/utils/domainAccess.svelte.js';
 import { getOrders, getCompaniesForDropdown, getProjectsForDropdown } from '$lib/api/orders.js';

@@ -6,8 +6,7 @@
 		SearchBar,
 		ConfirmationModal,
 		ErrorBoundary,
-		LoadingSpinner,
-		EmptyState
+		TableSkeleton
 	} from '$lib';
 	import {
 		toasts,
@@ -374,12 +373,7 @@
 			<!-- Streamed Projects Data with SSR -->
 			{#await data.projectsData}
 				<!-- Loading state: Show skeleton -->
-				<div class="flex min-h-screen items-center justify-center">
-					<div class="text-center">
-						<LoadingSpinner size="lg" />
-						<p class="mt-4 text-gray-400">Загрузка проектов...</p>
-					</div>
-				</div>
+				<TableSkeleton columns={8} />
 			{:then projectsData}
 				<!-- Success state: Show data -->
 				{@const processedProjects = getProcessedProjects(projectsData)}
@@ -432,8 +426,6 @@
 											}}
 											disabled={isRefreshing}
 											class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-											aria-label="Refresh projects data from server"
-											aria-describedby="refresh-button-description"
 										>
 											{#if isRefreshing}
 												<svg
@@ -474,9 +466,6 @@
 											{/if}
 											Обновить
 										</button>
-										<div id="refresh-button-description" class="sr-only">
-											Обновить данные проектов с сервера
-										</div>
 									</div>
 								</div>
 

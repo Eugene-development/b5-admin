@@ -39,6 +39,7 @@ export { default as Toast } from './components/Toast.svelte';
 export { default as ToastContainer } from './components/ToastContainer.svelte';
 export { default as ErrorBoundary } from './components/ErrorBoundary.svelte';
 export { default as EmptyState } from './components/EmptyState.svelte';
+export { default as TableSkeleton } from './components/TableSkeleton.svelte';
 export { default as TruncatedText } from './components/TruncatedText.svelte';
 export { default as DateDisplay } from './components/DateDisplay.svelte';
 export { default as CurrencyDisplay } from './components/CurrencyDisplay.svelte';

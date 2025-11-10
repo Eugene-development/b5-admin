@@ -1,13 +1,11 @@
 /**
- * Client-side load function for projects page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function for projects page with SSR
+ * Data is rendered on the server for SEO and better performance
  * Uses streaming to show loading state while data is being fetched
- * Requirements: Client-side data loading, error handling, authentication state management
+ * Requirements: Server-side data loading, error handling, authentication state management
  */
 
 import { getProjectsWithPagination } from '$lib/api/projects.js';
-import { authState } from '$lib/state/auth.svelte.js';
-import { browser } from '$app/environment';
 
 /**
  * Error types for better error categorization
@@ -242,7 +240,7 @@ async function loadProjectsData(fetch) {
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background

@@ -1,17 +1,11 @@
 /**
- * Client-side load function for agents page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for managers page with streaming
+ * Data is rendered on the server for SEO and better performance
  * Uses streaming to show loading state while data is being fetched
- * Requirements: Client-side data loading, error handling, authentication state management
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
-import { authState } from '$lib/state/auth.svelte.js';
-import { browser } from '$app/environment';
 
-/**
- * Error types for better error categorization
- */
 const ERROR_TYPES = {
 	NETWORK: 'network',
 	API: 'api',
@@ -21,11 +15,6 @@ const ERROR_TYPES = {
 	UNKNOWN: 'unknown'
 };
 
-/**
- * Categorize error based on error message and properties
- * @param {Error} error - The error to categorize
- * @returns {string} Error type
- */
 function categorizeError(error) {
 	const message = error.message?.toLowerCase() || '';
 
@@ -48,12 +37,6 @@ function categorizeError(error) {
 	return ERROR_TYPES.UNKNOWN;
 }
 
-/**
- * Get user-friendly error message based on error type
- * @param {string} errorType - Error type
- * @param {string} originalMessage - Original error message
- * @returns {string} User-friendly error message
- */
 function getUserFriendlyErrorMessage(errorType, originalMessage) {
 	switch (errorType) {
 		case ERROR_TYPES.NETWORK:
@@ -71,11 +54,7 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 	}
 }
 
-/**
- * Create fallback data structure for agents page
- * @returns {Object} Fallback data structure
- */
-function createAgentsFallbackData() {
+function createManagersFallbackData() {
 	return {
 		agents: [],
 		stats: {
@@ -99,22 +78,16 @@ function createAgentsFallbackData() {
 	};
 }
 
-/**
- * Validate agents data structure
- * @param {any} agentsResult - Agents result from API
- * @returns {boolean} Whether data is valid
- */
-function validateAgentsData(agentsResult) {
-	if (!agentsResult || typeof agentsResult !== 'object') {
+function validateManagersData(managersResult) {
+	if (!managersResult || typeof managersResult !== 'object') {
 		return false;
 	}
 
-	if (!Array.isArray(agentsResult.data)) {
+	if (!Array.isArray(managersResult.data)) {
 		return false;
 	}
 
-	// Validate pagination info structure
-	const paginatorInfo = agentsResult.paginatorInfo;
+	const paginatorInfo = managersResult.paginatorInfo;
 	if (paginatorInfo && typeof paginatorInfo !== 'object') {
 		return false;
 	}
@@ -122,13 +95,8 @@ function validateAgentsData(agentsResult) {
 	return true;
 }
 
-/**
- * Safely calculate agent statistics
- * @param {Array} agents - Array of agents
- * @returns {Object} Statistics object
- */
-function calculateAgentStats(agents) {
-	if (!Array.isArray(agents)) {
+function calculateManagerStats(managers) {
+	if (!Array.isArray(managers)) {
 		return {
 			total: 0,
 			active: 0,
@@ -139,24 +107,22 @@ function calculateAgentStats(agents) {
 	}
 
 	const stats = {
-		total: agents.length,
+		total: managers.length,
 		active: 0,
 		banned: 0,
 		verified: 0,
 		unverified: 0
 	};
 
-	for (const agent of agents) {
-		// Safely check agent status
-		const status = agent?.status?.toLowerCase() || 'active';
+	for (const manager of managers) {
+		const status = manager?.status?.toLowerCase() || 'active';
 		if (status === 'active') {
 			stats.active++;
 		} else if (status === 'banned') {
 			stats.banned++;
 		}
 
-		// Safely check email verification status
-		if (agent?.email_verified_at) {
+		if (manager?.email_verified_at) {
 			stats.verified++;
 		} else {
 			stats.unverified++;
@@ -167,38 +133,32 @@ function calculateAgentStats(agents) {
 }
 
 /**
- * Load agents data asynchronously for streaming
+ * Load managers data asynchronously for streaming
  */
-async function loadAgentsData(fetch) {
+async function loadManagersData(fetch) {
 	const startTime = Date.now();
 
 	try {
-		// Add timeout to prevent hanging requests
 		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 seconds
+			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		// Load agents data - use SvelteKit fetch for proper SSR support
-		const agentsResult = await Promise.race([
-			getUsersWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
+		const managersResult = await Promise.race([
+			getUsersWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
 
-		// Validate data structure
-		if (!validateAgentsData(agentsResult)) {
+		if (!validateManagersData(managersResult)) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const agents = agentsResult.data || [];
+		const managers = managersResult.data || [];
+		const stats = calculateManagerStats(managers);
 
-		// Calculate statistics with error handling
-		const stats = calculateAgentStats(agents);
-
-		// Ensure pagination info is valid
-		const pagination = agentsResult.paginatorInfo || {
+		const pagination = managersResult.paginatorInfo || {
 			currentPage: 1,
 			lastPage: 1,
-			total: agents.length,
+			total: managers.length,
 			perPage: 1000,
 			hasMorePages: false
 		};
@@ -206,7 +166,7 @@ async function loadAgentsData(fetch) {
 		const loadTime = Date.now() - startTime;
 
 		return {
-			agents,
+			agents: managers,
 			stats,
 			pagination,
 			error: null,
@@ -219,32 +179,31 @@ async function loadAgentsData(fetch) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
 
-		console.error('Failed to load agents data:', {
+		console.error('Failed to load managers data:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
 
-		// Return error state with detailed information for graceful error handling
-		const fallbackData = createAgentsFallbackData();
+		const fallbackData = createManagersFallbackData();
 		return {
 			...fallbackData,
 			error: userMessage,
 			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH, // Don't allow retry for auth errors
-			originalError: apiError.message, // For debugging
+			canRetry: errorType !== ERROR_TYPES.AUTH,
+			originalError: apiError.message,
 			loadTime: Date.now() - startTime
 		};
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background
 	return {
 		// Don't await - return Promise for streaming!
-		agentsData: loadAgentsData(fetch)
+		usersData: loadManagersData(fetch)
 	};
 }

@@ -5,8 +5,7 @@
 		SearchBar,
 		ConfirmationModal,
 		ErrorBoundary,
-		LoadingSpinner,
-		EmptyState,
+		TableSkeleton,
 		CompanyViewModal,
 		CompanyEditModal
 	} from '$lib';

@@ -1,6 +1,6 @@
 /**
- * Client-side load function for actions page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for actions page with streaming
+ * Data is rendered on the server for SEO and better performance
  */
 
 import { error } from '@sveltejs/kit';
@@ -134,7 +134,7 @@ async function loadActionsData() {
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ parent }) {
 	try {
 		// Get authentication data from parent layout (fast)

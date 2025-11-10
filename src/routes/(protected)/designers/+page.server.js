@@ -1,12 +1,10 @@
 /**
- * Client-side load function for managers page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for designers page with streaming
+ * Data is rendered on the server for SEO and better performance
  * Uses streaming to show loading state while data is being fetched
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
-import { authState } from '$lib/state/auth.svelte.js';
-import { browser } from '$app/environment';
 
 const ERROR_TYPES = {
 	NETWORK: 'network',
@@ -56,7 +54,7 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 	}
 }
 
-function createManagersFallbackData() {
+function createDesignersFallbackData() {
 	return {
 		agents: [],
 		stats: {
@@ -80,16 +78,16 @@ function createManagersFallbackData() {
 	};
 }
 
-function validateManagersData(managersResult) {
-	if (!managersResult || typeof managersResult !== 'object') {
+function validateDesignersData(designersResult) {
+	if (!designersResult || typeof designersResult !== 'object') {
 		return false;
 	}
 
-	if (!Array.isArray(managersResult.data)) {
+	if (!Array.isArray(designersResult.data)) {
 		return false;
 	}
 
-	const paginatorInfo = managersResult.paginatorInfo;
+	const paginatorInfo = designersResult.paginatorInfo;
 	if (paginatorInfo && typeof paginatorInfo !== 'object') {
 		return false;
 	}
@@ -97,8 +95,8 @@ function validateManagersData(managersResult) {
 	return true;
 }
 
-function calculateManagerStats(managers) {
-	if (!Array.isArray(managers)) {
+function calculateDesignerStats(designers) {
+	if (!Array.isArray(designers)) {
 		return {
 			total: 0,
 			active: 0,
@@ -109,22 +107,22 @@ function calculateManagerStats(managers) {
 	}
 
 	const stats = {
-		total: managers.length,
+		total: designers.length,
 		active: 0,
 		banned: 0,
 		verified: 0,
 		unverified: 0
 	};
 
-	for (const manager of managers) {
-		const status = manager?.status?.toLowerCase() || 'active';
+	for (const designer of designers) {
+		const status = designer?.status?.toLowerCase() || 'active';
 		if (status === 'active') {
 			stats.active++;
 		} else if (status === 'banned') {
 			stats.banned++;
 		}
 
-		if (manager?.email_verified_at) {
+		if (designer?.email_verified_at) {
 			stats.verified++;
 		} else {
 			stats.unverified++;
@@ -135,9 +133,9 @@ function calculateManagerStats(managers) {
 }
 
 /**
- * Load managers data asynchronously for streaming
+ * Load designers data asynchronously for streaming
  */
-async function loadManagersData(fetch) {
+async function loadDesignersData(fetch) {
 	const startTime = Date.now();
 
 	try {
@@ -145,22 +143,22 @@ async function loadManagersData(fetch) {
 			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		const managersResult = await Promise.race([
+		const designersResult = await Promise.race([
 			getUsersWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
 
-		if (!validateManagersData(managersResult)) {
+		if (!validateDesignersData(designersResult)) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const managers = managersResult.data || [];
-		const stats = calculateManagerStats(managers);
+		const designers = designersResult.data || [];
+		const stats = calculateDesignerStats(designers);
 
-		const pagination = managersResult.paginatorInfo || {
+		const pagination = designersResult.paginatorInfo || {
 			currentPage: 1,
 			lastPage: 1,
-			total: managers.length,
+			total: designers.length,
 			perPage: 1000,
 			hasMorePages: false
 		};
@@ -168,7 +166,7 @@ async function loadManagersData(fetch) {
 		const loadTime = Date.now() - startTime;
 
 		return {
-			agents: managers,
+			agents: designers,
 			stats,
 			pagination,
 			error: null,
@@ -181,14 +179,14 @@ async function loadManagersData(fetch) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
 
-		console.error('Failed to load managers data:', {
+		console.error('Failed to load designers data:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
 
-		const fallbackData = createManagersFallbackData();
+		const fallbackData = createDesignersFallbackData();
 		return {
 			...fallbackData,
 			error: userMessage,
@@ -200,12 +198,12 @@ async function loadManagersData(fetch) {
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background
 	return {
 		// Don't await - return Promise for streaming!
-		usersData: loadManagersData(fetch)
+		usersData: loadDesignersData(fetch)
 	};
 }

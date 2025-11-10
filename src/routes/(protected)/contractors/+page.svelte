@@ -5,7 +5,7 @@
 		SearchBar,
 		ConfirmationModal,
 		ErrorBoundary,
-		LoadingSpinner,
+		TableSkeleton,
 		CompanyViewModal,
 		CompanyEditModal
 	} from '$lib';
@@ -337,9 +337,7 @@
 			showDetails={true}
 		>
 			{#await data.contractorsData}
-				<div class="flex min-h-screen items-center justify-center bg-gray-950">
-					<LoadingSpinner message="Загрузка подрядчиков..." />
-				</div>
+				<TableSkeleton columns={7} />
 			{:then contractorsData}
 				{@const processedCompanies = getProcessedCompanies(contractorsData)}
 

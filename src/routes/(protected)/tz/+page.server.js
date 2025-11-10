@@ -1,6 +1,6 @@
 /**
- * Client-side load function for technical specifications page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for technical specifications page with streaming
+ * Data is rendered on the server for SEO and better performance
  */
 
 import { createTechnicalSpecificationsApiWithFetch } from '$lib/api/technicalSpecifications.js';
@@ -109,7 +109,7 @@ async function loadTzData(fetch, cookies) {
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch, cookies }) {
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background

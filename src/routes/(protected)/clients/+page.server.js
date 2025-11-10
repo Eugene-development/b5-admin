@@ -1,12 +1,10 @@
 /**
- * Client-side load function for clients page with streaming
- * Allows instant page navigation with data loading in background
+ * Server-side load function with SSR for clients page with streaming
+ * Data is rendered on the server for SEO and better performance
  * Uses streaming to show loading state while data is being fetched
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
-import { authState } from '$lib/state/auth.svelte.js';
-import { browser } from '$app/environment';
 
 const ERROR_TYPES = {
 	NETWORK: 'network',
@@ -200,7 +198,7 @@ async function loadClientsData(fetch) {
 	}
 }
 
-/** @type {import('./$types').PageLoad} */
+/** @type {import('./$types').PageServerLoad} */
 export async function load({ fetch }) {
 	// Return immediately with streamed Promise
 	// Page will render instantly, data will load in background
