@@ -37,9 +37,9 @@
 		const message =
 			orders.length === 0
 				? hasSearched
-					? `Заказы не найдены по запросу "${searchTerm}"`
-					: 'Нет доступных заказов'
-				: `${orders.length} заказ${orders.length === 1 ? '' : orders.length < 5 ? 'а' : 'ов'} ${hasSearched ? `найдено по запросу "${searchTerm}"` : 'отображено'}`;
+					? `Закупки не найдены по запросу "${searchTerm}"`
+					: 'Нет доступных закупок'
+				: `${orders.length} закуп${orders.length === 1 ? 'ка' : orders.length < 5 ? 'ки' : 'ок'} ${hasSearched ? `найдено по запросу "${searchTerm}"` : 'отображено'}`;
 
 		// Use a live region to announce changes
 		const announcement = document.getElementById(`${tableId}-announcements`);
@@ -74,7 +74,7 @@
 		style="min-width: 1200px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица управления заказами с {orders.length} заказ{orders.length === 1 ? 'ом' : 'ами'}
+			Таблица управления закупками с {orders.length} закуп{orders.length === 1 ? 'кой' : 'ками'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
@@ -91,7 +91,7 @@
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Заказ
+					Закупка
 				</th>
 				<th
 					scope="col"
@@ -117,9 +117,9 @@
 				<th
 					scope="col"
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 250px;"
+					style="min-width: 150px;"
 				>
-					Комментарий
+					Проект
 				</th>
 				<th
 					scope="col"
@@ -204,7 +204,7 @@
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
-								{order.value || order.comment || 'Нет комментария'}
+								{order.project?.contract_number || order.contract_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
@@ -214,7 +214,7 @@
 									type="button"
 									onclick={() => handleViewOrder(order)}
 									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-									aria-label="Просмотреть заказ № {index + 1}"
+									aria-label="Просмотреть закупку № {index + 1}"
 								>
 									<svg
 										class="h-4 w-4"
@@ -243,7 +243,7 @@
 									type="button"
 									onclick={() => onEditOrder && onEditOrder(order)}
 									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-									aria-label="Редактировать заказ № {index + 1}"
+									aria-label="Редактировать закупку № {index + 1}"
 								>
 									<svg
 										class="h-4 w-4"
@@ -267,7 +267,7 @@
 									onclick={() => onDeleteOrder && onDeleteOrder(order)}
 									disabled={isLoading}
 									class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-									aria-label="Удалить заказ № {index + 1}"
+									aria-label="Удалить закупку № {index + 1}"
 								>
 									{#if isLoading}
 										<svg
@@ -328,7 +328,7 @@
 			/>
 		</div>
 	{:else}
-		<div class="space-y-4" role="list" aria-label="Список заказов">
+		<div class="space-y-4" role="list" aria-label="Список закупок">
 			{#each orders as order, index (order.id + '-' + updateCounter)}
 				<div
 					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
@@ -403,10 +403,10 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Описание
+								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.value || order.comment || 'Не указано'}
+								{order.project?.contract_number || order.contract_number || 'Не указан'}
 							</dd>
 						</div>
 					</dl>

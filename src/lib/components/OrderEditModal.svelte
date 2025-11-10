@@ -262,7 +262,7 @@
 									for="project-id"
 									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 								>
-									Клиент <span class="text-red-500">*</span>
+									Номер проекта <span class="text-red-500">*</span>
 								</label>
 								<select
 									id="project-id"
@@ -273,7 +273,7 @@
 								>
 									<option value="">Не указан</option>
 									{#each projects as project}
-										<option value={project.id}>{project.value || project.name}</option>
+										<option value={project.id}>{project.name || project.value || 'Без названия'}</option>
 									{/each}
 								</select>
 							</div>

@@ -351,18 +351,26 @@
 					{(loadError = servicesData.error, '')}
 				{/if}
 
-				<div class="space-y-6 bg-gray-950">
-					<main id="main-content" aria-labelledby="page-title">
-						<div
-							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-						>
-							<div class="flex-auto">
-								<h1
-									id="page-title"
-									class="text-lg font-semibold text-gray-900 sm:text-base dark:text-white"
+				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+					<div class="px-4 py-8 sm:px-6 lg:px-8">
+						<div class="mx-auto max-w-7xl">
+							<main id="main-content" aria-labelledby="page-title">
+								<!-- Header with Refresh Button -->
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 								>
-									Сервисы
-								</h1>
+							<div class="flex items-center justify-between">
+								<div>
+									<h1
+										id="page-title"
+										class="text-2xl font-semibold text-gray-900 dark:text-white"
+									>
+										Сервисы
+									</h1>
+									<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
+										Управление сервисами системы
+									</p>
+								</div>
 							</div>
 							<div class="flex items-center space-x-3">
 								<button
@@ -432,41 +440,46 @@
 									</svg>
 									Добавить
 								</button>
-							</div>
-						</div>
+									</div>
+								</div>
 
-						<div class="w-full sm:max-w-md">
-							<SearchBar placeholder="Поиск сервисов" onSearch={handleSearch} value={searchTerm} />
-						</div>
+								<!-- Separator -->
+								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
-						{#if searchTerm.trim()}
-							<div class="py-2 text-sm text-gray-600 dark:text-gray-400">
-								{#if filteredServices.length === 0}
-									<p>Сервисы не найдены</p>
-								{:else}
-									<p>
-										Найдено {filteredServices.length} сервис{filteredServices.length === 1
-											? ''
-											: filteredServices.length < 5
-												? 'а'
-												: 'ов'} по запросу "{searchTerm}"
-									</p>
+								<div class="w-full sm:max-w-md">
+									<SearchBar placeholder="Поиск сервисов" onSearch={handleSearch} value={searchTerm} />
+								</div>
+
+								{#if searchTerm.trim()}
+									<div class="py-2 text-sm text-gray-600 dark:text-gray-400">
+										{#if filteredServices.length === 0}
+											<p>Сервисы не найдены</p>
+										{:else}
+											<p>
+												Найдено {filteredServices.length} сервис{filteredServices.length === 1
+													? ''
+													: filteredServices.length < 5
+														? 'а'
+														: 'ов'} по запросу "{searchTerm}"
+											</p>
+										{/if}
+									</div>
 								{/if}
-							</div>
-						{/if}
 
-						<CompanyTable
-							companies={filteredServices}
-							isLoading={isActionLoading}
-							onBanCompany={handleBanService}
-							onDeleteCompany={handleDeleteService}
-							onViewCompany={handleViewService}
-							onEditCompany={handleEditCompany}
-							{updateCounter}
-							{searchTerm}
-							hasSearched={searchTerm.trim().length > 0}
-						/>
-					</main>
+								<CompanyTable
+									companies={filteredServices}
+									isLoading={isActionLoading}
+									onBanCompany={handleBanService}
+									onDeleteCompany={handleDeleteService}
+									onViewCompany={handleViewService}
+									onEditCompany={handleEditCompany}
+									{updateCounter}
+									{searchTerm}
+									hasSearched={searchTerm.trim().length > 0}
+								/>
+							</main>
+						</div>
+					</div>
 				</div>
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">

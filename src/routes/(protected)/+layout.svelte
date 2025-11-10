@@ -459,7 +459,7 @@
 											onclick={() => handleMobileNavigation('/order')}
 										>
 											<span class={getSpanIconClasses('/order')}>Зк</span>
-											<span class="truncate">Заказы</span>
+											<span class="truncate">Закупка</span>
 										</button>
 									</li>
 								{/if}
@@ -752,7 +752,7 @@
 								<li>
 									<a href="/order" class={getNavClassesWithSpan('/order')}>
 										<span class={getSpanIconClasses('/order')}>Зк</span>
-										<span class="truncate">Заказы</span>
+										<span class="truncate">Закупка</span>
 									</a>
 								</li>
 							{/if}

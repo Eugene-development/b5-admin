@@ -368,6 +368,8 @@ export async function getProjectsForDropdown(fetchFn = fetch) {
 				data {
 					id
 					value
+					name
+					contract_number
 				}
 			}
 		}

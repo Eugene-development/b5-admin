@@ -372,7 +372,7 @@
 							Доступ запрещен
 						</h3>
 						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-							Страница заказов доступна только с доменов admin.bonus.band и bonus.band
+							Страница закупок доступна только с доменов admin.bonus.band и bonus.band
 						</p>
 					</div>
 				</div>
@@ -404,7 +404,7 @@
 										/>
 									</svg>
 									<h3 class="mt-4 mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-										Ошибка загрузки заказов
+										Ошибка загрузки закупок
 									</h3>
 									<p class="mb-6 text-sm text-red-600 dark:text-red-300">
 										{ordersData.error}
@@ -451,10 +451,10 @@
 										<h1
 											class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 										>
-											Заказы
+											Закупка
 										</h1>
 										<p class="mt-1 hidden text-sm text-gray-500 sm:block dark:text-gray-400">
-											Управление заказами и их статусами
+											Управление закупками и их статусами
 										</p>
 									</div>
 									<div class="flex items-center space-x-3">
@@ -563,8 +563,8 @@
 											bind:value={searchTerm}
 											oninput={handleSearch}
 											class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-											placeholder="Поиск заказов... (Ctrl+K)"
-											aria-label="Поиск заказов"
+											placeholder="Поиск закупок... (Ctrl+K)"
+											aria-label="Поиск закупок"
 										/>
 										{#if searchTerm}
 											<button
@@ -600,7 +600,7 @@
 										</span>
 									{:else}
 										<span>
-											Всего заказов: {orders.length}
+											Всего закупок: {orders.length}
 										</span>
 									{/if}
 								</div>
@@ -643,7 +643,7 @@
 									Критическая ошибка
 								</h3>
 								<p class="mb-6 text-sm text-red-600 dark:text-red-300">
-									Не удалось загрузить данные заказов. Попробуйте обновить страницу.
+									Не удалось загрузить данные закупок. Попробуйте обновить страницу.
 								</p>
 								<button
 									onclick={handleRetry}
