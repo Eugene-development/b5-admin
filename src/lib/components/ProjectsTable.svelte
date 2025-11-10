@@ -13,7 +13,10 @@
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false,
-		currentUserId = null
+		currentUserId = null,
+		sortColumn = null,
+		sortDirection = 'asc',
+		onSort
 	} = $props();
 
 	let acceptingProjectId = $state(null);
@@ -194,13 +197,22 @@
 					№
 				</th>
 				<th
+					id="col-contract"
+					scope="col"
+					role="columnheader"
+					class="hidden px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase lg:table-cell dark:text-gray-400"
+					aria-sort="none"
+				>
+					Проект
+				</th>
+				<th
 					id="col-name"
 					scope="col"
 					role="columnheader"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
-					Проект
+					Имя клиента
 				</th>
 				<th
 					id="col-region"
@@ -211,24 +223,41 @@
 				>
 					Адрес объекта
 				</th>
-				<th
-					id="col-contract"
-					scope="col"
-					role="columnheader"
-					class="hidden px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase lg:table-cell dark:text-gray-400"
-					aria-sort="none"
-				>
-					Номер
-				</th>
 
 				<th
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					aria-sort="none"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide uppercase dark:text-gray-400"
+					aria-sort={sortColumn === 'status' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
 				>
-					Статус
+					<button
+						type="button"
+						onclick={() => onSort && onSort('status')}
+						class="group inline-flex items-center gap-2 text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+					>
+						Статус
+						<span class="flex flex-col">
+							{#if sortColumn === 'status'}
+								{#if sortDirection === 'asc'}
+									<!-- Up arrow (ascending) -->
+									<svg class="h-3 w-3 text-gray-700 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+									</svg>
+								{:else}
+									<!-- Down arrow (descending) -->
+									<svg class="h-3 w-3 text-gray-700 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
+										<path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+									</svg>
+								{/if}
+							{:else}
+								<!-- Neutral arrows (not sorted) -->
+								<svg class="h-3 w-3 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+									<path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
+								</svg>
+							{/if}
+						</span>
+					</button>
 				</th>
 				<th
 					id="col-accept"
@@ -281,7 +310,14 @@
 							role="cell"
 							headers="col-number"
 						>
-							{index + 1}
+							{project.sequentialNumber || index + 1}
+						</td>
+						<td
+							class="hidden px-6 py-4 text-sm whitespace-nowrap text-gray-900 lg:table-cell dark:text-white"
+							role="cell"
+							headers="col-contract"
+						>
+							{project.contract_name || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
@@ -297,13 +333,6 @@
 							title={project.region || ''}
 						>
 							{truncateText(project.region)}
-						</td>
-						<td
-							class="hidden px-6 py-4 text-sm whitespace-nowrap text-gray-900 lg:table-cell dark:text-white"
-							role="cell"
-							headers="col-contract"
-						>
-							{project.contract_name || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -415,9 +444,9 @@
 							<div class="mb-1 flex items-center gap-2">
 								<span
 									class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
-									aria-label="Номер по порядку {index + 1}"
+									aria-label="Номер по порядку {project.sequentialNumber || index + 1}"
 								>
-									№ {index + 1}
+									№ {project.sequentialNumber || index + 1}
 								</span>
 							</div>
 							<h3
@@ -449,7 +478,7 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Номер
+								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{project.contract_name || ' - '}
@@ -550,7 +579,7 @@
 								scope="col"
 								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
-								Название
+								Имя клиента
 							</th>
 							<th
 								scope="col"
@@ -593,7 +622,7 @@
 							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-										{index + 1}
+										{project.sequentialNumber || index + 1}
 									</td>
 									<td
 										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"

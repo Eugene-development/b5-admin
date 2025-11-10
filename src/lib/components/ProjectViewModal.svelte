@@ -196,12 +196,22 @@
 				<div
 					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
 				>
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						Просмотр проекта
-					</h3>
+					{#if project.status}
+						<span
+							class="inline-flex items-center rounded-full px-4 py-1.5 text-base font-medium"
+							style="background-color: {project.status.color}20; color: {project.status.color};"
+							id="modal-title"
+						>
+							{project.status.value}
+						</span>
+					{:else}
+						<h3
+							class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
+							id="modal-title"
+						>
+							Просмотр проекта
+						</h3>
+					{/if}
 					<button
 						type="button"
 						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
@@ -241,10 +251,6 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
 						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Основная информация:
-							</h5>
-
 							<div>
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
@@ -309,27 +315,6 @@
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 								>
-									Статус:
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if project.status}
-										<span
-											class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-											style="background-color: {project.status.color}20; color: {project.status
-												.color};"
-										>
-											{project.status.value}
-										</span>
-									{:else}
-										Не указан
-									{/if}
-								</dd>
-							</div>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
 									Описание:
 								</dt>
 								<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
@@ -340,15 +325,11 @@
 
 						<!-- Contract Information -->
 						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Информация о проекте:
-							</h5>
-
 							<div>
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 								>
-									Номер:
+									Номер проекта:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{project.contract_name || 'Не указан'}
@@ -363,17 +344,6 @@
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(project.contract_date)}
-								</dd>
-							</div>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
-									Сумма договора:
-								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{formatCurrency(project.contract_amount)}
 								</dd>
 							</div>
 
@@ -397,20 +367,65 @@
 						</div>
 					</div>
 
+					<!-- Finance Information -->
+					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+							<div>
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
+									Подрядчик:
+								</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{formatCurrency(project.contract_amount)}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
+									Закупка:
+								</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{formatCurrency(project.purchase_amount)}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
+									Камень:
+								</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{formatCurrency(project.stone_amount)}
+								</dd>
+							</div>
+
+							<div>
+								<dt
+									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								>
+									Стекло:
+								</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{formatCurrency(project.glass_amount)}
+								</dd>
+							</div>
+						</div>
+					</div>
+
 					<!-- Agent and System Information -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 							<!-- Agent Information -->
 							<div class="space-y-4">
-								<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-									Информация об агенте:
-								</h5>
-
 								<div>
 									<dt
 										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 									>
-										Назначенный агент:
+										Агент:
 									</dt>
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										{#if project.agent}
@@ -482,10 +497,6 @@
 
 							<!-- System Information -->
 							<div class="space-y-4">
-								<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-									Системная информация:
-								</h5>
-
 								<div>
 									<dt
 										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"

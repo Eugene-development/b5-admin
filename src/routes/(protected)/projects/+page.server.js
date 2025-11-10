@@ -190,7 +190,20 @@ async function loadProjectsData(fetch) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const projects = projectsResult.data || [];
+		const rawProjects = projectsResult.data || [];
+
+		// Sort projects by created_at in descending order (newest first)
+		const sortedProjects = [...rawProjects].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+
+		// Add sequential numbers to projects (1, 2, 3, ...)
+		const projects = sortedProjects.map((project, index) => ({
+			...project,
+			sequentialNumber: index + 1
+		}));
 
 		// Calculate statistics with error handling
 		const stats = calculateProjectStats(projects);

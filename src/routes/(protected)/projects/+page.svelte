@@ -71,29 +71,71 @@
 	// Check for server-side load errors (will be set from streamed data)
 	let loadError = $state(null);
 
+	// Sort state management
+	let sortColumn = $state(null);
+	let sortDirection = $state('asc'); // 'asc' or 'desc'
+
 	// Computed filteredProjects reactive statement
 	let filteredProjects = $derived.by(() => {
-		if (!searchTerm.trim()) {
-			return localProjects;
+		let filtered = localProjects;
+
+		// Apply search filter
+		if (searchTerm.trim()) {
+			const term = searchTerm.toLowerCase().trim();
+			filtered = filtered.filter((project) => {
+				const name = (project.value || '').toLowerCase();
+				const region = (project.region || '').toLowerCase();
+				const contractNumber = (project.contract_name || '').toLowerCase();
+				const agentName = (project.agent?.name || '').toLowerCase();
+				const agentEmail = (project.agent?.email || '').toLowerCase();
+
+				return (
+					name.includes(term) ||
+					region.includes(term) ||
+					contractNumber.includes(term) ||
+					agentName.includes(term) ||
+					agentEmail.includes(term)
+				);
+			});
 		}
 
-		const term = searchTerm.toLowerCase().trim();
-		return localProjects.filter((project) => {
-			const name = (project.value || '').toLowerCase();
-			const region = (project.region || '').toLowerCase();
-			const contractNumber = (project.contract_name || '').toLowerCase();
-			const agentName = (project.agent?.name || '').toLowerCase();
-			const agentEmail = (project.agent?.email || '').toLowerCase();
+		// Apply sorting
+		if (sortColumn) {
+			filtered = [...filtered].sort((a, b) => {
+				let compareResult = 0;
 
-			return (
-				name.includes(term) ||
-				region.includes(term) ||
-				contractNumber.includes(term) ||
-				agentName.includes(term) ||
-				agentEmail.includes(term)
-			);
-		});
+				if (sortColumn === 'status') {
+					// Sort by status sort_order if available, otherwise by status value
+					const aOrder = a.status?.sort_order ?? 999;
+					const bOrder = b.status?.sort_order ?? 999;
+					const aValue = a.status?.value ?? '';
+					const bValue = b.status?.value ?? '';
+
+					if (aOrder !== bOrder) {
+						compareResult = aOrder - bOrder;
+					} else {
+						compareResult = aValue.localeCompare(bValue, 'ru');
+					}
+				}
+
+				return sortDirection === 'asc' ? compareResult : -compareResult;
+			});
+		}
+
+		return filtered;
 	});
+
+	// Handle sort
+	function handleSort(column) {
+		if (sortColumn === column) {
+			// Toggle direction if same column
+			sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		} else {
+			// Set new column with ascending direction
+			sortColumn = column;
+			sortDirection = 'asc';
+		}
+	}
 
 	// Search handler function
 	function handleSearch(term) {
@@ -261,7 +303,9 @@
 	// Update project in local state after editing
 	function updateProjectInList(updatedProject) {
 		localProjects = localProjects.map((project) =>
-			project.id === updatedProject.id ? updatedProject : project
+			project.id === updatedProject.id
+				? { ...updatedProject, sequentialNumber: project.sequentialNumber } // Preserve sequentialNumber
+				: project
 		);
 		updateCounter++;
 	}
@@ -270,7 +314,28 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			const projects = await refreshProjects();
+			const rawProjects = await refreshProjects();
+
+			// Sort projects by created_at in descending order (newest first)
+			const sortedProjects = [...rawProjects].sort((a, b) => {
+				const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+				const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+				return dateB - dateA;
+			});
+
+			// Add sequential numbers to projects (1, 2, 3, ...)
+			const projects = sortedProjects.map((project, index) => ({
+				...project,
+				sequentialNumber: index + 1
+			}));
+
+			// Debug: log first 3 projects from refresh
+			console.log('Refreshed projects (first 3):', projects.slice(0, 3).map(p => ({
+				id: p.id,
+				value: p.value,
+				sequentialNumber: p.sequentialNumber,
+				created_at: p.created_at
+			})));
 			localProjects = projects;
 			loadError = null;
 
@@ -295,7 +360,21 @@
 	// Silent refresh without showing loading state (for background updates after actions)
 	async function silentRefreshData() {
 		try {
-			const projects = await refreshProjects();
+			const rawProjects = await refreshProjects();
+
+			// Sort projects by created_at in descending order (newest first)
+			const sortedProjects = [...rawProjects].sort((a, b) => {
+				const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+				const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+				return dateB - dateA;
+			});
+
+			// Add sequential numbers to projects (1, 2, 3, ...)
+			const projects = sortedProjects.map((project, index) => ({
+				...project,
+				sequentialNumber: index + 1
+			}));
+
 			localProjects = projects;
 			loadError = null;
 
@@ -328,7 +407,15 @@
 			return [];
 		}
 
-		return [...projectsData.projects];
+		const projects = [...projectsData.projects];
+		// Debug: log first 3 projects to verify sequentialNumber
+		console.log('Processed projects (first 3):', projects.slice(0, 3).map(p => ({
+			id: p.id,
+			value: p.value,
+			sequentialNumber: p.sequentialNumber,
+			created_at: p.created_at
+		})));
+		return projects;
 	}
 
 	// Load project statuses immediately
@@ -585,6 +672,9 @@
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}
 										currentUserId={authState.user?.id}
+										{sortColumn}
+										{sortDirection}
+										onSort={handleSort}
 									/>
 								</div>
 							</main>
