@@ -112,6 +112,8 @@ export function getDomainPageConfig() {
 		'admin.bonus.band': [
 			'/agents',
 			'/curators',
+			'/managers',
+			'/designers',
 			'/contractors',
 			'/suppliers',
 			'/delivery',
@@ -127,6 +129,8 @@ export function getDomainPageConfig() {
 		localhost: [
 			'/agents',
 			'/curators',
+			'/managers',
+			'/designers',
 			'/contractors',
 			'/suppliers',
 			'/delivery',
@@ -210,6 +214,8 @@ export function getNavigationVisibility() {
 		// Main navigation sections
 		showAgents: shouldShowNavItem('/agents'),
 		showCurators: shouldShowNavItem('/curators'),
+		showManagers: shouldShowNavItem('/managers'),
+		showDesigners: shouldShowNavItem('/designers'),
 		showContractors: shouldShowNavItem('/contractors'),
 		showSuppliers: shouldShowNavItem('/suppliers'),
 		showDelivery: shouldShowNavItem('/delivery'),

@@ -83,9 +83,9 @@
 		if (searchTerm.trim()) {
 			const term = searchTerm.toLowerCase().trim();
 			filtered = filtered.filter((project) => {
-				const name = (project.value || '').toLowerCase();
+				const name = (project.name || '').toLowerCase();
 				const region = (project.region || '').toLowerCase();
-				const contractNumber = (project.contract_name || '').toLowerCase();
+				const contractNumber = (project.contract_number || '').toLowerCase();
 				const agentName = (project.agent?.name || '').toLowerCase();
 				const agentEmail = (project.agent?.email || '').toLowerCase();
 
@@ -162,7 +162,7 @@
 			type: 'delete',
 			project: project,
 			title: 'Удалить проект',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить проект "${project.value}"? Это действие нельзя отменить. Все данные проекта будут потеряны.`,
+			message: `Вы уверены, что хотите НАВСЕГДА удалить проект "${project.name}"? Это действие нельзя отменить. Все данные проекта будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -185,7 +185,7 @@
 					if (type === 'delete') {
 						await deleteProject(project.id);
 						removeProjectFromList(project.id);
-						addSuccessToast(`Проект "${project.value}" успешно удален.`);
+						addSuccessToast(`Проект "${project.name}" успешно удален.`);
 						// Refresh new projects count in sidebar (in case deleted project was new)
 						await newProjectsCountState.refresh();
 					}

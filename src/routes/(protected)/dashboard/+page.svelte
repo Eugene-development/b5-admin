@@ -17,7 +17,7 @@
 			</div>
 
 			<!-- Менеджмент -->
-			{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
+			{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators || navigationVisibility.showManagers || navigationVisibility.showDesigners}
 				<div>
 					<h2 class="mb-4 text-lg font-semibold text-gray-400">Менеджмент</h2>
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -130,6 +130,80 @@
 										Кураторы
 									</h3>
 									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление кураторами</p>
+								</div>
+							</a>
+						{/if}
+
+						{#if navigationVisibility.showManagers}
+							<a
+								href="/managers"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-violet-200/50 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-violet-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-violet-300 hover:shadow-xl dark:border-violet-900/30 dark:from-violet-950/20 dark:via-gray-800 dark:to-purple-950/20 dark:hover:border-violet-700"
+							>
+								<div
+									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-violet-400/10 to-purple-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								></div>
+								<span
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-violet-400 to-purple-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-violet-400/50"
+								>
+									<svg
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"
+										/>
+									</svg>
+								</span>
+								<div class="relative">
+									<h3
+										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400"
+									>
+										<span class="absolute inset-0" aria-hidden="true"></span>
+										Менеджеры
+									</h3>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление менеджерами</p>
+								</div>
+							</a>
+						{/if}
+
+						{#if navigationVisibility.showDesigners}
+							<a
+								href="/designers"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50 via-white to-pink-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-fuchsia-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-fuchsia-300 hover:shadow-xl dark:border-fuchsia-900/30 dark:from-fuchsia-950/20 dark:via-gray-800 dark:to-pink-950/20 dark:hover:border-fuchsia-700"
+							>
+								<div
+									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-fuchsia-400/10 to-pink-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								></div>
+								<span
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-fuchsia-400 to-pink-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-fuchsia-400/50"
+								>
+									<svg
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"
+										/>
+									</svg>
+								</span>
+								<div class="relative">
+									<h3
+										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-fuchsia-600 dark:text-white dark:group-hover:text-fuchsia-400"
+									>
+										<span class="absolute inset-0" aria-hidden="true"></span>
+										Дизайнеры
+									</h3>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление дизайнерами</p>
 								</div>
 							</a>
 						{/if}
@@ -419,45 +493,84 @@
 			{/if}
 
 			<!-- Информация -->
-			{#if navigationVisibility.showActions}
+			{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 				<div>
 					<h2 class="mb-4 text-lg font-semibold text-gray-400">Информация</h2>
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						<a
-							href="/actions"
-							class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-red-200/50 bg-gradient-to-br from-red-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-red-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-red-300 hover:shadow-xl dark:border-red-900/30 dark:from-red-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-red-700"
-						>
-							<div
-								class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-red-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
-							></div>
-							<span
-								class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-red-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-red-400/50"
+						{#if navigationVisibility.showActions}
+							<a
+								href="/actions"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-red-200/50 bg-gradient-to-br from-red-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-red-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-red-300 hover:shadow-xl dark:border-red-900/30 dark:from-red-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-red-700"
 							>
-								<svg
-									class="h-6 w-6"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke-width="1.5"
-									stroke="currentColor"
+								<div
+									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-red-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								></div>
+								<span
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-red-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-red-400/50"
 								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
-									/>
-									<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
-								</svg>
-							</span>
-							<div class="relative">
-								<h3
-									class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400"
+									<svg
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"
+										/>
+										<path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z" />
+									</svg>
+								</span>
+								<div class="relative">
+									<h3
+										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400"
+									>
+										<span class="absolute inset-0" aria-hidden="true"></span>
+										Акции
+									</h3>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление акциями</p>
+								</div>
+							</a>
+						{/if}
+
+						{#if navigationVisibility.showDocumentation}
+							<a
+								href="/documentation"
+								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-slate-200/50 bg-gradient-to-br from-slate-50 via-white to-gray-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-slate-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-slate-300 hover:shadow-xl dark:border-slate-900/30 dark:from-slate-950/20 dark:via-gray-800 dark:to-gray-950/20 dark:hover:border-slate-700"
+							>
+								<div
+									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-slate-400/10 to-gray-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								></div>
+								<span
+									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-slate-400 to-gray-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-slate-400/50"
 								>
-									<span class="absolute inset-0" aria-hidden="true"></span>
-									Акции
-								</h3>
-								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление акциями</p>
-							</div>
-						</a>
+									<svg
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke-width="1.5"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"
+										/>
+									</svg>
+								</span>
+								<div class="relative">
+									<h3
+										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-slate-600 dark:text-white dark:group-hover:text-slate-400"
+									>
+										<span class="absolute inset-0" aria-hidden="true"></span>
+										Документация
+									</h3>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">База знаний и документы</p>
+								</div>
+							</a>
+						{/if}
 					</div>
 				</div>
 			{/if}

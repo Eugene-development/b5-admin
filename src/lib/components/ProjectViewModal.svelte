@@ -83,6 +83,7 @@
 		return `${rate}%`;
 	}
 
+
 	// Get agent display text
 	function getAgentDisplay(agent) {
 		if (!agent) return 'Не назначен';
@@ -255,10 +256,10 @@
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 								>
-									Имя клиента:
+									Номер проекта:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.value || project.name || 'Не указано'}
+									{project.name || 'Не указан'}
 								</dd>
 							</div>
 
@@ -329,10 +330,10 @@
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 								>
-									Номер проекта:
+									Номер договора:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.contract_name || 'Не указан'}
+									{project.contract_number || 'Не указан'}
 								</dd>
 							</div>
 

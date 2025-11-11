@@ -2,27 +2,34 @@
  * Mobile menu visibility state
  * Using Svelte 5's $state for reactive state management
  */
-export const visibleMobileMenu = $state({
-	value: false
-});
+let isOpen = $state(false);
+
+export const visibleMobileMenu = {
+	get value() {
+		return isOpen;
+	},
+	set value(val) {
+		isOpen = val;
+	}
+};
 
 /**
  * Helper function to toggle mobile menu
  */
 export function toggleMobileMenu() {
-	visibleMobileMenu.value = !visibleMobileMenu.value;
+	isOpen = !isOpen;
 }
 
 /**
  * Helper function to close mobile menu
  */
 export function closeMobileMenu() {
-	visibleMobileMenu.value = false;
+	isOpen = false;
 }
 
 /**
  * Helper function to open mobile menu
  */
 export function openMobileMenu() {
-	visibleMobileMenu.value = true;
+	isOpen = true;
 }

@@ -9,7 +9,7 @@ const PROJECTS_QUERY = gql`
 		projects(first: $first, page: $page) {
 			data {
 				id
-				value
+				name
 				user_id
 				status_id
 				agent {
@@ -41,7 +41,7 @@ const PROJECTS_QUERY = gql`
 				region
 				description
 				is_active
-				contract_name
+				contract_number
 				contract_date
 				contract_amount
 				agent_percentage

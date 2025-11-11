@@ -517,32 +517,7 @@
 											</div>
 										</div>
 
-										<div class="mt-3 flex items-center justify-between">
-											<div class="flex items-center space-x-4">
-												<label class="flex items-center">
-													<input
-														type="checkbox"
-														bind:checked={position.is_active}
-														oninput={(e) =>
-															updatePosition(position.id, 'is_active', e.target.checked)}
-														disabled={isLoading}
-														class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
-													/>
-													<span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Активна</span>
-												</label>
-
-												<label class="flex items-center">
-													<input
-														type="checkbox"
-														bind:checked={position.is_urgent}
-														oninput={(e) =>
-															updatePosition(position.id, 'is_urgent', e.target.checked)}
-														disabled={isLoading}
-														class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
-													/>
-													<span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Срочная</span>
-												</label>
-											</div>
+										<div class="mt-3 flex items-center justify-end">
 											<div class="text-sm font-medium text-gray-900 dark:text-white">
 												Итого: {position.price && position.count
 													? ((parseFloat(position.price) || 0) * position.count).toFixed(0)

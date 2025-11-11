@@ -76,6 +76,7 @@
 		return text.substring(0, maxLength) + '...';
 	}
 
+
 	// Generate unique table ID for accessibility
 	const tableId = `projects-table-${Math.random().toString(36).substr(2, 9)}`;
 	const tableCaptionId = `${tableId}-caption`;
@@ -317,14 +318,14 @@
 							role="cell"
 							headers="col-contract"
 						>
-							{project.contract_name || ' - '}
+							{project.name || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
-							{project.value || ' - '}
+							{project.name || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -441,19 +442,11 @@
 					<!-- Project Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<div class="mb-1 flex items-center gap-2">
-								<span
-									class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
-									aria-label="Номер по порядку {project.sequentialNumber || index + 1}"
-								>
-									№ {project.sequentialNumber || index + 1}
-								</span>
-							</div>
 							<h3
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{project.value || ' - '}
+								{project.name || ' - '}
 							</h3>
 							<p
 								class="truncate text-sm text-gray-500 dark:text-gray-400"
@@ -462,13 +455,14 @@
 								{truncateText(project.region)}
 							</p>
 						</div>
-						<div class="ml-3 flex-shrink-0">
+						<div class="ml-3 flex flex-col items-end gap-2 flex-shrink-0">
 							<span
-								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-								aria-label="ID проекта {project.id}"
+								class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
+								aria-label="Номер проекта {project.sequentialNumber || index + 1}"
 							>
-								ID: {project.id}
+								№ {project.sequentialNumber || index + 1}
 							</span>
+							<StatusBadge status={project.status} />
 						</div>
 					</div>
 
@@ -481,17 +475,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.contract_name || ' - '}
-							</dd>
-						</div>
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Статус
-							</dt>
-							<dd class="mt-1">
-								<StatusBadge status={project.status} />
+								{project.name || ' - '}
 							</dd>
 						</div>
 					</dl>
@@ -627,7 +611,7 @@
 									<td
 										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
-										{project.value || ' - '}
+										{project.name || ' - '}
 									</td>
 									<td
 										class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"

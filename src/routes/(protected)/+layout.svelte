@@ -428,7 +428,7 @@
 										>
 											<span class={getSpanIconClasses('/projects')}>Пр</span>
 											<span class="truncate">Проекты</span>
-											{#if newProjectsCount > 0}
+											{#if newProjectsCountState.count > 0}
 												<span
 													class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
 													title={newProjectsTooltip}
