@@ -256,10 +256,10 @@
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
 								>
-									Номер проекта:
+									Проект:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.name || 'Не указан'}
+									{project.value || project.name || 'Не указан'}
 								</dd>
 							</div>
 
@@ -333,7 +333,7 @@
 									Номер договора:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.contract_number || 'Не указан'}
+									{project.contract_name || project.contract_number || 'Не указан'}
 								</dd>
 							</div>
 

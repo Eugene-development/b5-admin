@@ -10,6 +10,7 @@ const PROJECTS_QUERY = gql`
 			data {
 				id
 				name
+				value
 				user_id
 				status_id
 				agent {
@@ -41,6 +42,7 @@ const PROJECTS_QUERY = gql`
 				region
 				description
 				is_active
+				contract_name
 				contract_number
 				contract_date
 				contract_amount
