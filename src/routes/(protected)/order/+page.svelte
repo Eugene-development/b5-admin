@@ -121,8 +121,16 @@
 				async () => {
 					if (type === 'delete') {
 						await deleteOrder(order.id);
-						orders = orders.filter((o) => o.id !== order.id);
-						filteredOrders = filteredOrders.filter((o) => o.id !== order.id);
+						// Remove order and recalculate sequential numbers
+						const remainingOrders = orders.filter((o) => o.id !== order.id);
+						orders = remainingOrders.map((o, index) => ({
+							...o,
+							sequentialNumber: index + 1
+						}));
+						filteredOrders = filteredOrders.filter((o) => o.id !== order.id).map((o, index) => ({
+							...o,
+							sequentialNumber: index + 1
+						}));
 						updateCounter++;
 						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
 					}
@@ -171,7 +179,21 @@
 	async function loadServices() {
 		isRefreshing = true;
 		try {
-			const refreshedOrders = await refreshOrders();
+			const rawOrders = await refreshOrders();
+
+			// Sort orders by created_at in descending order (newest first)
+			const sortedOrders = [...rawOrders].sort((a, b) => {
+				const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+				const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+				return dateB - dateA;
+			});
+
+			// Add sequential numbers to orders (1, 2, 3, ...)
+			const refreshedOrders = sortedOrders.map((order, index) => ({
+				...order,
+				sequentialNumber: index + 1
+			}));
+
 			orders = refreshedOrders;
 			filteredOrders = refreshedOrders;
 			addSuccessToast('Данные успешно обновлены');
@@ -227,11 +249,17 @@
 					const enrichedOrder = {
 						...newOrder,
 						company,
-						project
+						project,
+						sequentialNumber: 1 // New order gets #1
 					};
 
-					orders = [...orders, enrichedOrder];
-					filteredOrders = [...filteredOrders, enrichedOrder];
+					// Add new order at the beginning and recalculate sequential numbers
+					const allOrders = [enrichedOrder, ...orders];
+					orders = allOrders.map((order, index) => ({
+						...order,
+						sequentialNumber: index + 1
+					}));
+					filteredOrders = orders;
 					updateCounter++;
 
 					addSuccessToast(`Заказ #${newOrder.order_number} успешно добавлен`);
@@ -315,8 +343,14 @@
 					const fullOrder = refreshedOrders.find((o) => o.id === orderData.id);
 
 					if (fullOrder) {
-						orders = orders.map((o) => (o.id === fullOrder.id ? fullOrder : o));
-						filteredOrders = filteredOrders.map((o) => (o.id === fullOrder.id ? fullOrder : o));
+						// Preserve sequentialNumber when updating order
+						const currentOrder = orders.find((o) => o.id === fullOrder.id);
+						const enrichedOrder = {
+							...fullOrder,
+							sequentialNumber: currentOrder?.sequentialNumber
+						};
+						orders = orders.map((o) => (o.id === enrichedOrder.id ? enrichedOrder : o));
+						filteredOrders = filteredOrders.map((o) => (o.id === enrichedOrder.id ? enrichedOrder : o));
 					}
 
 					updateCounter++;

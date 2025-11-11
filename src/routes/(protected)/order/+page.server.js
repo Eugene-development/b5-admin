@@ -74,7 +74,7 @@ async function loadOrdersData(fetch) {
 		});
 
 		// Load orders data, companies, and projects in parallel with timeout
-		const [orders, companies, projects] = await Promise.race([
+		const [rawOrders, companies, projects] = await Promise.race([
 			Promise.all([
 				getOrders(1000, 1, fetch).catch((err) => {
 					console.error('Error loading orders:', err);
@@ -92,8 +92,21 @@ async function loadOrdersData(fetch) {
 			timeoutPromise
 		]);
 
+		// Sort orders by created_at in descending order (newest first)
+		const sortedOrders = [...(Array.isArray(rawOrders) ? rawOrders : [])].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+
+		// Add sequential numbers to orders (1, 2, 3, ...)
+		const orders = sortedOrders.map((order, index) => ({
+			...order,
+			sequentialNumber: index + 1
+		}));
+
 		return {
-			orders: Array.isArray(orders) ? orders : [],
+			orders,
 			companies: Array.isArray(companies) ? companies : [],
 			projects: Array.isArray(projects) ? projects : [],
 			error: null,

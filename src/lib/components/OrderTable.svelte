@@ -15,6 +15,60 @@
 	let showViewModal = $state(false);
 	let selectedOrder = $state(null);
 
+	// Sorting state
+	let sortColumn = $state(null); // 'supplier', 'urgency', 'status', null
+	let sortDirection = $state('asc'); // 'asc' or 'desc'
+
+	// Sorted orders derived from orders and sort state
+	let sortedOrders = $derived.by(() => {
+		if (!sortColumn || orders.length === 0) {
+			return orders;
+		}
+
+		const sorted = [...orders];
+
+		sorted.sort((a, b) => {
+			let compareResult = 0;
+
+			switch (sortColumn) {
+				case 'supplier': {
+					const aSupplier = (a.company?.name || a.supplier || '').toLowerCase();
+					const bSupplier = (b.company?.name || b.supplier || '').toLowerCase();
+					compareResult = aSupplier.localeCompare(bSupplier, 'ru');
+					break;
+				}
+				case 'urgency': {
+					const aUrgent = a.is_urgent || a.urgency === 'high' ? 1 : 0;
+					const bUrgent = b.is_urgent || b.urgency === 'high' ? 1 : 0;
+					compareResult = bUrgent - aUrgent; // Срочные сначала при asc
+					break;
+				}
+				case 'status': {
+					const aActive = a.is_active ? 1 : 0;
+					const bActive = b.is_active ? 1 : 0;
+					compareResult = bActive - aActive; // Активные сначала при asc
+					break;
+				}
+			}
+
+			return sortDirection === 'asc' ? compareResult : -compareResult;
+		});
+
+		return sorted;
+	});
+
+	// Handle sorting
+	function handleSort(column) {
+		if (sortColumn === column) {
+			// Toggle direction if same column
+			sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		} else {
+			// Set new column with default ascending direction
+			sortColumn = column;
+			sortDirection = 'asc';
+		}
+	}
+
 	// Handle view order
 	function handleViewOrder(order) {
 		selectedOrder = order;
@@ -35,11 +89,11 @@
 	// Announce table updates to screen readers
 	function announceTableUpdate() {
 		const message =
-			orders.length === 0
+			sortedOrders.length === 0
 				? hasSearched
 					? `Закупки не найдены по запросу "${searchTerm}"`
 					: 'Нет доступных закупок'
-				: `${orders.length} закуп${orders.length === 1 ? 'ка' : orders.length < 5 ? 'ки' : 'ок'} ${hasSearched ? `найдено по запросу "${searchTerm}"` : 'отображено'}`;
+				: `${sortedOrders.length} закуп${sortedOrders.length === 1 ? 'ка' : sortedOrders.length < 5 ? 'ки' : 'ок'} ${hasSearched ? `найдено по запросу "${searchTerm}"` : 'отображено'}`;
 
 		// Use a live region to announce changes
 		const announcement = document.getElementById(`${tableId}-announcements`);
@@ -53,7 +107,7 @@
 
 	// Announce updates when orders change
 	$effect(() => {
-		if (orders) {
+		if (sortedOrders) {
 			setTimeout(announceTableUpdate, 100);
 		}
 	});
@@ -98,21 +152,114 @@
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
-					Поставщик
+					<button
+						type="button"
+						onclick={() => handleSort('supplier')}
+						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+					>
+						<span>Поставщик</span>
+						{#if sortColumn === 'supplier'}
+							<svg
+								class="h-4 w-4"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								{#if sortDirection === 'asc'}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 15l7-7 7 7"
+									/>
+								{:else}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 9l-7 7-7-7"
+									/>
+								{/if}
+							</svg>
+						{/if}
+					</button>
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
-					Срочность
+					<button
+						type="button"
+						onclick={() => handleSort('urgency')}
+						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+					>
+						<span>Срочность</span>
+						{#if sortColumn === 'urgency'}
+							<svg
+								class="h-4 w-4"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								{#if sortDirection === 'asc'}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 15l7-7 7 7"
+									/>
+								{:else}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 9l-7 7-7-7"
+									/>
+								{/if}
+							</svg>
+						{/if}
+					</button>
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
-					Статус
+					<button
+						type="button"
+						onclick={() => handleSort('status')}
+						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+					>
+						<span>Статус</span>
+						{#if sortColumn === 'status'}
+							<svg
+								class="h-4 w-4"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								{#if sortDirection === 'asc'}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 15l7-7 7 7"
+									/>
+								{:else}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 9l-7 7-7-7"
+									/>
+								{/if}
+							</svg>
+						{/if}
+					</button>
 				</th>
 				<th
 					scope="col"
@@ -131,9 +278,9 @@
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
-			{#if orders.length === 0}
+			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="7" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -141,7 +288,7 @@
 					</td>
 				</tr>
 			{:else}
-				{#each orders as order, index (order.id + '-' + updateCounter)}
+				{#each sortedOrders as order, index (order.id + '-' + updateCounter)}
 					<tr
 						class="transition-colors duration-150 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800"
 						aria-rowindex={index + 2}
@@ -150,7 +297,7 @@
 							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
-							{index + 1}
+							{order.sequentialNumber || index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
@@ -320,7 +467,7 @@
 
 <!-- Mobile Card View -->
 <div class="md:hidden">
-	{#if orders.length === 0}
+	{#if sortedOrders.length === 0}
 		<div class="px-4 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
@@ -329,7 +476,7 @@
 		</div>
 	{:else}
 		<div class="space-y-4" role="list" aria-label="Список закупок">
-			{#each orders as order, index (order.id + '-' + updateCounter)}
+			{#each sortedOrders as order, index (order.id + '-' + updateCounter)}
 				<div
 					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
 					role="listitem"
@@ -348,7 +495,7 @@
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								№ {index + 1}
+								№ {order.sequentialNumber || index + 1}
 							</span>
 						</div>
 					</div>
