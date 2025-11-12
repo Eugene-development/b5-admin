@@ -220,7 +220,7 @@
 							role="cell"
 							headers="col-number"
 						>
-							{index + 1}
+							{agent.sequentialNumber || index + 1}
 						</td>
 						<td
 							class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
@@ -430,9 +430,9 @@
 							<div class="mb-1 flex items-center gap-2">
 								<span
 									class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
-									aria-label="Номер по порядку {index + 1}"
+									aria-label="Номер по порядку {agent.sequentialNumber || index + 1}"
 								>
-									№ {index + 1}
+									№ {agent.sequentialNumber || index + 1}
 								</span>
 							</div>
 							<h3
@@ -692,7 +692,7 @@
 							{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-										{index + 1}
+										{agent.sequentialNumber || index + 1}
 									</td>
 									<td
 										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"

@@ -144,7 +144,7 @@
 							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{index + 1}
+							{action.sequentialNumber || index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
@@ -312,7 +312,7 @@
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
-								№ {index + 1}
+								№ {action.sequentialNumber || index + 1}
 							</span>
 						</div>
 					</div>

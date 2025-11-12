@@ -1,3 +1,5 @@
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
+
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
 
 /**
@@ -76,7 +78,7 @@ async function loadContractorsData(fetch) {
 		);
 
 		// Transform data to match expected format
-		const contractors = contractorsData.map((company) => ({
+		const rawContractors = contractorsData.map((company) => ({
 			...company,
 			status: company.ban ? 'banned' : company.is_active ? 'active' : 'inactive',
 			phone: company.phones?.find((p) => p.is_primary)?.value || company.phones?.[0]?.value,
@@ -87,6 +89,9 @@ async function loadContractorsData(fetch) {
 				company.phones?.[0]?.contact_person ||
 				company.emails?.[0]?.contact_person
 		}));
+
+		// Add sequential numbers based on created_at date
+		const contractors = addSequentialNumbers(rawContractors);
 
 		return {
 			contractors

@@ -6,6 +6,7 @@
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 /**
  * Error types for better error categorization
@@ -187,7 +188,10 @@ async function loadCuratorsData(fetch) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const curators = curatorsResult.data || [];
+		const rawCurators = curatorsResult.data || [];
+
+		// Add sequential numbers based on created_at date
+		const curators = addSequentialNumbers(rawCurators);
 
 		// Calculate statistics with error handling
 		const stats = calculateCuratorStats(curators);

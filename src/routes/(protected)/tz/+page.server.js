@@ -4,6 +4,7 @@
  */
 
 import { createTechnicalSpecificationsApiWithFetch } from '$lib/api/technicalSpecifications.js';
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 /**
  * Error types for better error categorization
@@ -74,12 +75,15 @@ async function loadTzData(fetch, cookies) {
 
 		// Load TZ data with timeout
 		const api = createTechnicalSpecificationsApiWithFetch(fetch, cookies);
-		const tzList = await Promise.race([api.getTechnicalSpecifications(), timeoutPromise]);
+		const rawTzList = await Promise.race([api.getTechnicalSpecifications(), timeoutPromise]);
 
 		// Validate data structure
-		if (!Array.isArray(tzList)) {
+		if (!Array.isArray(rawTzList)) {
 			throw new Error('Invalid data format received from API');
 		}
+
+		// Add sequential numbers based on created_at date
+		const tzList = addSequentialNumbers(rawTzList);
 
 		return {
 			tzList,

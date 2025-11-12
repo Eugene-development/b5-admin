@@ -6,6 +6,7 @@
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 /**
  * Error types for better error categorization
@@ -187,7 +188,10 @@ async function loadAgentsData(fetch) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const agents = agentsResult.data || [];
+		const rawAgents = agentsResult.data || [];
+
+		// Add sequential numbers to agents (sorted by created_at, newest first)
+		const agents = addSequentialNumbers(rawAgents);
 
 		// Calculate statistics with error handling
 		const stats = calculateAgentStats(agents);

@@ -81,7 +81,7 @@
 					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
-					ID
+					№
 				</th>
 				<th
 					scope="col"
@@ -166,7 +166,7 @@
 							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							{service.id}
+							{service.sequentialNumber || index + 1}
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
@@ -406,7 +406,7 @@ bile Card View -->
 								{service.service_name || 'Не указано'}
 							</h3>
 							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
-								ID: {service.id}
+								№ {service.sequentialNumber || index + 1}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">

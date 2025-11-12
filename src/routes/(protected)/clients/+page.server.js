@@ -5,6 +5,7 @@
  */
 
 import { getUsersWithPagination } from '$lib/api/agents.js';
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 const ERROR_TYPES = {
 	NETWORK: 'network',
@@ -152,7 +153,11 @@ async function loadClientsData(fetch) {
 			throw new Error('Invalid data format received from API');
 		}
 
-		const clients = clientsResult.data || [];
+		const rawClients = clientsResult.data || [];
+
+		// Add sequential numbers based on created_at date
+		const clients = addSequentialNumbers(rawClients);
+
 		const stats = calculateClientStats(clients);
 
 		const pagination = clientsResult.paginatorInfo || {

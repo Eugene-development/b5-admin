@@ -4,6 +4,7 @@
  */
 
 import { refreshActions, getCompaniesForActions } from '$lib/api/actions.js';
+import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 /**
  * Error types for better error categorization
@@ -84,7 +85,7 @@ async function loadActionsData(fetch) {
 		}
 
 		// Transform actions data to match table format
-		const actions = actionsData.map((action) => ({
+		const rawActions = actionsData.map((action) => ({
 			id: action.id,
 			company_name: action.company?.name || 'Не указано',
 			action_name: action.name,
@@ -102,6 +103,9 @@ async function loadActionsData(fetch) {
 			// Keep original data for editing
 			_original: action
 		}));
+
+		// Add sequential numbers based on created_at date
+		const actions = addSequentialNumbers(rawActions);
 
 		return {
 			actions,
