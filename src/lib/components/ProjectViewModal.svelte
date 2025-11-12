@@ -259,7 +259,7 @@
 									Проект:
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{project.value || project.name || 'Не указан'}
+									{project.value || 'Не указан'}
 								</dd>
 							</div>
 

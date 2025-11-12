@@ -9,9 +9,9 @@ const PROJECTS_QUERY = gql`
 		projects(first: $first, page: $page) {
 			data {
 				id
-				name
 				value
 				user_id
+				client_id
 				status_id
 				agent {
 					id
@@ -24,6 +24,12 @@ const PROJECTS_QUERY = gql`
 						value
 						is_primary
 					}
+				}
+				client {
+					id
+					name
+					birthday
+					ban
 				}
 				status {
 					id
@@ -71,11 +77,16 @@ const UPDATE_PROJECT_MUTATION = gql`
 			id
 			value
 			user_id
+			client_id
 			status_id
 			agent {
 				id
 				name
 				email
+			}
+			client {
+				id
+				name
 			}
 			status {
 				id

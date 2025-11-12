@@ -318,14 +318,14 @@
 							role="cell"
 							headers="col-contract"
 						>
-							{project.name || ' - '}
+							{project.value || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
-							{project.name || ' - '}
+							{project.client?.name || ' - '}
 						</td>
 						<td
 							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -446,7 +446,7 @@
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{project.name || ' - '}
+								{project.value || ' - '}
 							</h3>
 							<p
 								class="truncate text-sm text-gray-500 dark:text-gray-400"
@@ -475,7 +475,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.name || ' - '}
+								{project.value || ' - '}
 							</dd>
 						</div>
 					</dl>
@@ -611,7 +611,7 @@
 									<td
 										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
-										{project.name || ' - '}
+										{project.client?.name || ' - '}
 									</td>
 									<td
 										class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
