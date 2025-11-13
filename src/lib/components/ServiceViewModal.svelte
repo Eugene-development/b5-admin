@@ -153,7 +153,7 @@
 								{#if service.email}
 									<a
 										href="mailto:{service.email}"
-										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 									>
 										{service.email}
 									</a>
@@ -169,7 +169,7 @@
 								{#if service.phone}
 									<a
 										href="tel:{service.phone}"
-										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+										class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 									>
 										{formatPhone(service.phone)}
 									</a>

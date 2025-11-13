@@ -172,7 +172,7 @@
 									{#if user.email}
 										<a
 											href="mailto:{user.email}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 										>
 											{user.email}
 										</a>
@@ -203,7 +203,7 @@
 									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 										<a
 											href="tel:{user.phone}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 										>
 											{formatPhone(user.phone)}
 										</a>
@@ -307,7 +307,7 @@
 												href={user.website}
 												target="_blank"
 												rel="noopener noreferrer"
-												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 											>
 												{user.website}
 											</a>

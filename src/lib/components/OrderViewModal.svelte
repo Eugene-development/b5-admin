@@ -147,7 +147,7 @@
 					<div class="space-y-4">
 						<div>
 							<dt
-								class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 							>
 								Поставщик:
 							</dt>
@@ -163,7 +163,7 @@
 
 						<div>
 							<dt
-								class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 							>
 								Проект:
 							</dt>
@@ -175,7 +175,7 @@
 						{#if order.project?.phones && order.project.phones.length > 0}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Телефон клиента:
 								</dt>
@@ -201,7 +201,7 @@
 						{#if order.project?.region}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Адрес объекта:
 								</dt>
@@ -216,7 +216,7 @@
 					<div class="space-y-4">
 						<div>
 							<dt
-								class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+								class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 							>
 								Комментарий:
 							</dt>
@@ -228,7 +228,7 @@
 						{#if order.delivery_date}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Планируемая дата поставки:
 								</dt>
@@ -241,7 +241,7 @@
 						{#if order.actual_delivery_date}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Фактическая дата поставки:
 								</dt>
@@ -254,7 +254,7 @@
 						{#if order.created_at}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Дата создания:
 								</dt>
@@ -267,7 +267,7 @@
 						{#if order.updated_at}
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Дата обновления:
 								</dt>

@@ -121,7 +121,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Компания:
 								</dt>
@@ -132,7 +132,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Название акции:
 								</dt>
@@ -144,7 +144,7 @@
 							{#if action.description}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Описание:
 									</dt>
@@ -157,7 +157,7 @@
 							{#if action.comment}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Комментарий:
 									</dt>
@@ -176,7 +176,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Период проведения:
 								</dt>
@@ -196,7 +196,7 @@
 							{#if action.created_at}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Дата создания:
 									</dt>
@@ -209,7 +209,7 @@
 							{#if action.updated_at}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Дата обновления:
 									</dt>

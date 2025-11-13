@@ -178,7 +178,7 @@
 									{#if getCuratorPhone(tz)}
 										<a
 											href="tel:{getCuratorPhone(tz)}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 										>
 											{formatPhone(getCuratorPhone(tz))}
 										</a>

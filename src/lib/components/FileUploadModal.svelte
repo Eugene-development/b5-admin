@@ -197,7 +197,7 @@
 										/>
 									</svg>
 									<p class="mb-2 text-sm text-gray-700 dark:text-gray-300">
-										<span class="font-semibold text-indigo-600 dark:text-indigo-400"
+										<span class="font-semibold text-indigo-600 dark:text-indigo-300"
 											>Нажмите для выбора</span
 										>
 										или перетащите файл
@@ -225,7 +225,7 @@
 							>
 								<div class="flex items-center space-x-3">
 									<svg
-										class="h-8 w-8 text-indigo-600 dark:text-indigo-400"
+										class="h-8 w-8 text-indigo-600 dark:text-indigo-300"
 										fill="none"
 										stroke="currentColor"
 										viewBox="0 0 24 24"

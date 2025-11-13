@@ -170,7 +170,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									ИНН:
 								</dt>
@@ -181,7 +181,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Регион:
 								</dt>
@@ -192,7 +192,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Статус компании:
 								</dt>
@@ -223,7 +223,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Email:
 								</dt>
@@ -243,7 +243,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Телефон:
 								</dt>
@@ -263,7 +263,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Контактное лицо:
 								</dt>
@@ -275,7 +275,7 @@
 							{#if company.website}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Веб-сайт:
 									</dt>
@@ -295,7 +295,7 @@
 							{#if company.address}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Адрес:
 									</dt>
@@ -318,7 +318,7 @@
 								{#if company.description}
 									<div>
 										<dt
-											class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+											class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 										>
 											Описание:
 										</dt>
@@ -332,7 +332,7 @@
 									{#if company.created_at}
 										<div>
 											<dt
-												class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+												class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 											>
 												Дата создания:
 											</dt>
@@ -345,7 +345,7 @@
 									{#if company.updated_at}
 										<div>
 											<dt
-												class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+												class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 											>
 												Дата обновления:
 											</dt>

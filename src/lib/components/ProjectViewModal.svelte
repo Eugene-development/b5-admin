@@ -254,7 +254,7 @@
 						<div class="space-y-4">
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Проект:
 								</dt>
@@ -265,7 +265,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Адрес объекта:
 								</dt>
@@ -277,7 +277,7 @@
 							{#if (project?.phones && project.phones.length > 0) || project?.phone}
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Телефон клиента:
 									</dt>
@@ -288,7 +288,7 @@
 													<li>
 														<a
 															href="tel:{phone.value}"
-															class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+															class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 														>
 															{formatPhone(phone.value)}
 														</a>
@@ -303,7 +303,7 @@
 										{:else}
 											<a
 												href="tel:{project.phone}"
-												class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 											>
 												{formatPhone(project.phone)}
 											</a>
@@ -314,7 +314,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Описание:
 								</dt>
@@ -328,7 +328,7 @@
 						<div class="space-y-4">
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Номер договора:
 								</dt>
@@ -339,7 +339,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Дата договора с подрядчиком:
 								</dt>
@@ -350,7 +350,7 @@
 
 							<div>
 								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 								>
 									Планируемое завершение:
 								</dt>
@@ -368,53 +368,141 @@
 						</div>
 					</div>
 
-					<!-- Finance Information -->
+					<!-- Contracts Section -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
-									Подрядчик:
-								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{formatCurrency(project.contract_amount)}
-								</dd>
+						<h4
+							class="mb-4 text-base font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+						>
+							Контракты:
+						</h4>
+						{#if project.contracts && project.contracts.length > 0}
+							<div class="space-y-3">
+								{#each project.contracts as contract}
+									<div
+										class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
+									>
+										<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Компания:
+												</dt>
+												<dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+													{contract.company?.name || contract.company?.legal_name || 'Не указана'}
+												</dd>
+											</div>
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Номер контракта:
+												</dt>
+												<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+													{contract.contract_number || 'Не указан'}
+												</dd>
+											</div>
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Дата заключения:
+												</dt>
+												<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+													{formatDate(contract.contract_date)}
+												</dd>
+											</div>
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Планируемое завершение:
+												</dt>
+												<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+													{formatDate(contract.planned_completion_date)}
+													{#if isOverdue(contract.planned_completion_date) && !contract.actual_completion_date}
+														<span
+															class="ml-2 inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
+														>
+															Просрочено
+														</span>
+													{/if}
+												</dd>
+											</div>
+											{#if contract.actual_completion_date}
+												<div>
+													<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+														Фактическое завершение:
+													</dt>
+													<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+														{formatDate(contract.actual_completion_date)}
+													</dd>
+												</div>
+											{/if}
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Процент агента / куратора:
+												</dt>
+												<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+													{formatAgentRate(contract.agent_percentage)} / {formatAgentRate(contract.curator_percentage)}
+												</dd>
+											</div>
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Статус:
+												</dt>
+												<dd class="mt-1">
+													<span
+														class="inline-flex items-center rounded-full {contract.is_active
+															? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+															: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'} px-2.5 py-0.5 text-xs font-medium"
+													>
+														{contract.is_active ? 'Активен' : 'Неактивен'}
+													</span>
+												</dd>
+											</div>
+										</div>
+									</div>
+								{/each}
 							</div>
+						{:else}
+							<p class="text-sm text-gray-500 dark:text-gray-400">
+								Контракты не найдены
+							</p>
+						{/if}
+					</div>
 
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
-									Закупка:
-								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{formatCurrency(project.purchase_amount)}
-								</dd>
+					<!-- Purchases Section -->
+					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+						<h4
+							class="mb-4 text-base font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+						>
+							Закупки:
+						</h4>
+						{#if project.purchases && project.purchases.length > 0}
+							<div class="space-y-3">
+								{#each project.purchases as purchase}
+									<div
+										class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
+									>
+										<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Название:
+												</dt>
+												<dd class="mt-1 text-sm font-medium text-gray-900 dark:text-white">
+													{purchase.name || 'Не указано'}
+												</dd>
+											</div>
+											<div>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+													Сумма:
+												</dt>
+												<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+													{formatCurrency(purchase.amount)}
+												</dd>
+											</div>
+										</div>
+									</div>
+								{/each}
 							</div>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
-									Камень:
-								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{formatCurrency(project.stone_amount)}
-								</dd>
-							</div>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
-								>
-									Стекло:
-								</dt>
-								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-									{formatCurrency(project.glass_amount)}
-								</dd>
-							</div>
-						</div>
+						{:else}
+							<p class="text-sm text-gray-500 dark:text-gray-400">
+								Закупки не найдены
+							</p>
+						{/if}
 					</div>
 
 					<!-- Agent and System Information -->
@@ -424,7 +512,7 @@
 							<div class="space-y-4">
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Агент:
 									</dt>
@@ -437,7 +525,7 @@
 														<button
 															type="button"
 															onclick={() => copyEmailToClipboard(project.agent.email)}
-															class="text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+															class="text-indigo-700 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-200"
 															aria-label="Скопировать email агента"
 															title={emailCopied ? 'Скопировано' : 'Нажмите, чтобы скопировать'}
 														>
@@ -453,7 +541,7 @@
 													<button
 														type="button"
 														onclick={() => copyEmailToClipboard(project.agent.email)}
-														class="text-amber-700 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300"
+														class="text-indigo-700 hover:text-indigo-900 dark:text-indigo-300 dark:hover:text-indigo-200"
 														aria-label="Скопировать email агента"
 														title={emailCopied ? 'Скопировано' : 'Нажмите, чтобы скопировать'}
 													>
@@ -471,7 +559,7 @@
 													{#each project.agent.phones as phone}
 														<a
 															href="tel:{phone.value}"
-															class="text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300"
+															class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
 														>
 															{formatPhone(phone.value)}
 														</a>
@@ -486,7 +574,7 @@
 
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Ставка агенту:
 									</dt>
@@ -500,7 +588,7 @@
 							<div class="space-y-4">
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Дата создания:
 									</dt>
@@ -511,7 +599,7 @@
 
 								<div>
 									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 									>
 										Дата обновления:
 									</dt>
@@ -523,7 +611,7 @@
 								{#if acceptedByCurrentUser || (project.users && project.users.length > 0)}
 									<div>
 										<dt
-											class="text-sm font-semibold tracking-wide text-indigo-700 uppercase dark:text-indigo-400"
+											class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 										>
 											Принят куратором:
 										</dt>

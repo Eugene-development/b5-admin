@@ -45,6 +45,21 @@ const PROJECTS_QUERY = gql`
 					name
 					email
 				}
+				contracts {
+					id
+					contract_number
+					contract_date
+					planned_completion_date
+					actual_completion_date
+					agent_percentage
+					curator_percentage
+					is_active
+					company {
+						id
+						name
+						legal_name
+					}
+				}
 				region
 				description
 				is_active
