@@ -1,6 +1,7 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
 	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
@@ -32,6 +33,11 @@
 	let { data } = $props();
 
 	let searchTerm = $state('');
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
+	
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
@@ -81,9 +87,23 @@
 		});
 	});
 
+	// Get paginated contractors
+	let paginatedContractors = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredContractors.slice(startIndex, endIndex);
+	});
+
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1;
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	function handleBanContractor(contractor) {
 		const isBanned = contractor.operationalStatus === 'banned';
@@ -503,7 +523,7 @@
 								<!-- Company Table -->
 								<div class="mt-8">
 									<CompanyTable
-										companies={filteredContractors}
+										companies={paginatedContractors}
 										isLoading={isActionLoading}
 										onBanCompany={handleBanContractor}
 										onDeleteCompany={handleDeleteContractor}
@@ -514,6 +534,14 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
+
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredContractors.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localContractors.length : null}
+								/>
 							</main>
 						</div>
 					</div>

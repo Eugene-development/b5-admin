@@ -1,6 +1,7 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
 	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
@@ -34,6 +35,10 @@
 
 	// Search state management
 	let searchTerm = $state('');
+
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -105,10 +110,24 @@
 		});
 	});
 
+	// Get paginated suppliers
+	let paginatedSuppliers = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredSuppliers.slice(startIndex, endIndex);
+	});
+
 	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1;
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Ban supplier handler with confirmation
 	function handleBanSupplier(supplier) {
@@ -575,7 +594,7 @@
 								<!-- Company Table -->
 								<div class="mt-8">
 									<CompanyTable
-										companies={filteredSuppliers}
+										companies={paginatedSuppliers}
 										isLoading={isActionLoading}
 										onBanCompany={handleBanSupplier}
 										onDeleteCompany={handleDeleteSupplier}
@@ -586,6 +605,14 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
+
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredSuppliers.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localSuppliers.length : null}
+								/>
 							</main>
 						</div>
 					</div>

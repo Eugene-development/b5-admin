@@ -3,6 +3,7 @@
 	import OrderAddModal from '$lib/components/OrderAddModal.svelte';
 	import OrderEditModal from '$lib/components/OrderEditModal.svelte';
 	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
@@ -28,6 +29,10 @@
 	let hasSearched = $state(false);
 	let filteredOrders = $state([]);
 	let updateCounter = $state(0);
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Add modal state
 	let showAddModal = $state(false);
@@ -55,23 +60,14 @@
 		hasAccess = hasOrderAccess();
 	});
 
-	// Initialize filtered orders
-	$effect(() => {
-		filteredOrders = orders;
-	});
-
-	// Search functionality
-	function handleSearch() {
+	// Computed filtered orders
+	let computedFilteredOrders = $derived.by(() => {
 		if (!searchTerm.trim()) {
-			filteredOrders = orders;
-			hasSearched = false;
-			return;
+			return orders;
 		}
 
-		hasSearched = true;
 		const term = searchTerm.toLowerCase().trim();
-
-		filteredOrders = orders.filter((order) => {
+		return orders.filter((order) => {
 			return (
 				order.id.toString().includes(term) ||
 				(order.order_number && order.order_number.toLowerCase().includes(term)) ||
@@ -84,14 +80,38 @@
 				(order.comment && order.comment.toLowerCase().includes(term))
 			);
 		});
+	});
+	
+	// Get paginated orders
+	let paginatedOrders = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return computedFilteredOrders.slice(startIndex, endIndex);
+	});
+	
+	// Update filteredOrders for compatibility
+	$effect(() => {
+		filteredOrders = computedFilteredOrders;
+	});
+
+	// Search functionality
+	function handleSearch() {
+		hasSearched = searchTerm.trim().length > 0;
+		currentPage = 1;
 	}
 
 	// Clear search
 	function clearSearch() {
 		searchTerm = '';
-		filteredOrders = orders;
 		hasSearched = false;
+		currentPage = 1;
 	}
+	
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Handle delete order with confirmation
 	function handleDeleteOrder(order) {
@@ -629,24 +649,28 @@
 									</div>
 								</div>
 
-								<!-- Results Counter -->
-								<div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-									{#if hasSearched}
-										<span>
-											Найдено: {filteredOrders.length} из {orders.length}
-										</span>
+
+							</div>
+
+							<!-- Results summary -->
+							{#if searchTerm.trim()}
+								<div class="text-sm text-gray-600 dark:text-gray-400">
+									{#if filteredOrders.length === 0}
+										Закупки не найдены по запросу "{searchTerm}"
 									{:else}
-										<span>
-											Всего закупок: {orders.length}
-										</span>
+										Найдено {filteredOrders.length} закуп{filteredOrders.length === 1
+											? 'ка'
+											: filteredOrders.length < 5
+												? 'ки'
+												: 'ок'} по запросу "{searchTerm}"
 									{/if}
 								</div>
-							</div>
+							{/if}
 
 							<!-- Orders Table -->
 							<div class="rounded-lg bg-white shadow dark:bg-gray-800">
 								<OrderTable
-									orders={filteredOrders}
+									orders={paginatedOrders}
 									{isLoading}
 									{searchTerm}
 									{hasSearched}
@@ -655,6 +679,14 @@
 									onEditOrder={handleEditOrder}
 								/>
 							</div>
+							
+							<!-- Pagination -->
+							<Pagination
+								bind:currentPage
+								totalItems={filteredOrders.length}
+								{itemsPerPage}
+								filteredFrom={searchTerm.trim() ? orders.length : null}
+							/>
 						</div>
 					{/if}
 				{:catch error}

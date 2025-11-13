@@ -8,6 +8,7 @@
 		ErrorBoundary,
 		TableSkeleton
 	} from '$lib';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -33,6 +34,10 @@
 
 	// Search state management
 	let searchTerm = $state('');
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -123,6 +128,21 @@
 		}
 
 		return filtered;
+	});
+	
+	// Get paginated projects
+	let paginatedProjects = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredProjects.slice(startIndex, endIndex);
+	});
+	
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		sortColumn;
+		sortDirection;
+		currentPage = 1;
 	});
 
 	// Handle sort
@@ -662,7 +682,7 @@
 								<!-- Projects Table -->
 								<div class="mt-8">
 									<ProjectsTable
-										projects={filteredProjects}
+										projects={paginatedProjects}
 										isLoading={isActionLoading}
 										onEditProject={handleEditProject}
 										onDeleteProject={handleDeleteProject}
@@ -677,6 +697,14 @@
 										onSort={handleSort}
 									/>
 								</div>
+								
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredProjects.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localProjects.length : null}
+								/>
 							</main>
 						</div>
 					</div>

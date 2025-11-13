@@ -1,6 +1,7 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
 	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
@@ -32,6 +33,11 @@
 	let { data } = $props();
 
 	let searchTerm = $state('');
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
+	
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
@@ -81,9 +87,23 @@
 		});
 	});
 
+	// Get paginated services
+	let paginatedServices = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredServices.slice(startIndex, endIndex);
+	});
+
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1;
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	function handleBanService(service) {
 		const isBanned = service.status === 'banned';
@@ -467,7 +487,7 @@
 								{/if}
 
 								<CompanyTable
-									companies={filteredServices}
+									companies={paginatedServices}
 									isLoading={isActionLoading}
 									onBanCompany={handleBanService}
 									onDeleteCompany={handleDeleteService}
@@ -476,6 +496,14 @@
 									{updateCounter}
 									{searchTerm}
 									hasSearched={searchTerm.trim().length > 0}
+								/>
+
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredServices.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localServices.length : null}
 								/>
 							</main>
 						</div>

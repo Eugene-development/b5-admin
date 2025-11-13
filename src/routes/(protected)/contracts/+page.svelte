@@ -8,6 +8,7 @@
 		ErrorBoundary,
 		TableSkeleton
 	} from '$lib';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		addSuccessToast,
 		addErrorToast,
@@ -28,6 +29,10 @@
 
 	// Search state management
 	let searchTerm = $state('');
+
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -85,10 +90,24 @@
 		return filtered;
 	});
 
+	// Get paginated contracts
+	let paginatedContracts = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredContracts.slice(startIndex, endIndex);
+	});
+
 	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1;
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Add contract handler
 	function handleAddContract() {
@@ -524,7 +543,7 @@
 								<!-- Contracts Table -->
 								<div class="mt-8">
 									<ContractsTable
-										contracts={filteredContracts}
+										contracts={paginatedContracts}
 										isLoading={isActionLoading}
 										onEditContract={handleEditContract}
 										onDeleteContract={handleDeleteContract}
@@ -534,6 +553,14 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
+								
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredContracts.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localContracts.length : null}
+								/>
 							</main>
 						</div>
 					</div>

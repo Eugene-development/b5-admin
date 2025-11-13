@@ -6,6 +6,7 @@
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
 	import FileUploadModal from '$lib/components/FileUploadModal.svelte';
 	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import { ErrorBoundary } from '$lib';
 	import {
 		toasts,
@@ -39,6 +40,10 @@
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Modal state
 	let isViewModalOpen = $state(false);
@@ -126,10 +131,37 @@
 		selectedTz = null;
 	}
 
+	// Computed filtered TZ list
+	let filteredTzList = $derived.by(() => {
+		if (!searchTerm.trim()) {
+			return tzList;
+		}
+		
+		const term = searchTerm.toLowerCase().trim();
+		return tzList.filter((tz) => {
+			const projectValue = (tz.project?.value || '').toLowerCase();
+			const id = tz.id.toString();
+			return projectValue.includes(term) || id.includes(term);
+		});
+	});
+	
+	// Get paginated TZ list
+	let paginatedTzList = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredTzList.slice(startIndex, endIndex);
+	});
+	
 	function handleSearch() {
-		hasSearched = true;
-		// TODO: Implement search functionality
+		hasSearched = searchTerm.trim().length > 0;
+		currentPage = 1;
 	}
+	
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Load TZ data
 	async function loadServices() {
@@ -481,16 +513,35 @@
 
 							<!-- Total TZ count -->
 							<div class="text-sm text-gray-700 dark:text-gray-300">
-								<span>Всего элементов: <strong>{tzList.length}</strong></span>
+								{#if searchTerm.trim()}
+									<span>Найдено: <strong>{filteredTzList.length}</strong> из <strong>{tzList.length}</strong></span>
+								{:else}
+									<span>Всего элементов: <strong>{tzList.length}</strong></span>
+								{/if}
 							</div>
 						</div>
 
 						<!-- Separator -->
 
+						<!-- Results summary -->
+						{#if searchTerm.trim()}
+							<div class="text-sm text-gray-600 dark:text-gray-400">
+								{#if filteredTzList.length === 0}
+									Техзадания не найдены по запросу "{searchTerm}"
+								{:else}
+									Найдено {filteredTzList.length} техзадани{filteredTzList.length === 1
+										? 'е'
+										: filteredTzList.length < 5
+											? 'я'
+											: 'й'} по запросу "{searchTerm}"
+								{/if}
+							</div>
+						{/if}
+
 						<!-- Table -->
 						<div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl dark:bg-gray-800">
 							<TzTable
-								{tzList}
+								tzList={paginatedTzList}
 								{isLoading}
 								{searchTerm}
 								{hasSearched}
@@ -502,6 +553,14 @@
 								onUploadCP={handleUploadCP}
 							/>
 						</div>
+						
+						<!-- Pagination -->
+						<Pagination
+							bind:currentPage
+							totalItems={filteredTzList.length}
+							{itemsPerPage}
+							filteredFrom={searchTerm.trim() ? tzList.length : null}
+						/>
 					</div>
 				{/if}
 			{:catch error}

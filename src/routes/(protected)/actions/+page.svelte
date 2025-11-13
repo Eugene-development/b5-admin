@@ -5,6 +5,7 @@
 	import ActionAddModal from '$lib/components/ActionAddModal.svelte';
 	import ActionEditModal from '$lib/components/ActionEditModal.svelte';
 	import ActionsTableSkeleton from '$lib/components/ActionsTableSkeleton.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import { ErrorBoundary, ConfirmationModal } from '$lib';
 	import {
 		toasts,
@@ -29,6 +30,10 @@
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
+	
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Modal state
 	let selectedAction = $state(null);
@@ -201,33 +206,47 @@
 		selectedAction = null;
 	}
 
-	function handleSearch(actionsData) {
-		hasSearched = true;
-		isLoading = true;
-
-		setTimeout(() => {
-			if (searchTerm.trim()) {
-				actions = actionsData.filter(
-					(action) =>
-						action.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-						action.action_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-						action.region.toLowerCase().includes(searchTerm.toLowerCase())
-				);
-			} else {
-				actions = actionsData;
-				hasSearched = false;
-			}
-			isLoading = false;
-			updateCounter++;
-		}, 300);
-	}
-
-	function clearSearch(actionsData) {
-		searchTerm = '';
-		hasSearched = false;
-		actions = actionsData;
+	// Computed filtered actions
+	let filteredActions = $derived.by(() => {
+		if (!searchTerm.trim()) {
+			return allActions;
+		}
+		
+		const term = searchTerm.toLowerCase().trim();
+		return allActions.filter(
+			(action) =>
+				action.company_name.toLowerCase().includes(term) ||
+				action.action_name.toLowerCase().includes(term) ||
+				action.region.toLowerCase().includes(term)
+		);
+	});
+	
+	// Get paginated actions
+	let paginatedActions = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredActions.slice(startIndex, endIndex);
+	});
+	
+	function handleSearch(term) {
+		searchTerm = term;
+		hasSearched = searchTerm.trim().length > 0;
+		currentPage = 1;
 		updateCounter++;
 	}
+
+	function clearSearch() {
+		searchTerm = '';
+		hasSearched = false;
+		currentPage = 1;
+		updateCounter++;
+	}
+	
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Handle error boundary errors
 	function handleErrorBoundaryError(error) {
@@ -300,14 +319,11 @@
 					</div>
 				{:else}
 					<!-- Content when data is successfully loaded -->
-					{@const displayActions = hasSearched ? actions : actionsData.actions}
-					{@const allActionsData = actionsData.actions}
 					{@const companiesData = actionsData.companies}
 
 					<!-- Update local state -->
-					{#if !actions.length && actionsData.actions.length}
-						{((actions = actionsData.actions),
-						(allActions = actionsData.actions),
+					{#if !allActions.length && actionsData.actions.length}
+						{((allActions = actionsData.actions),
 						(companies = actionsData.companies),
 						'')}
 					{/if}
@@ -432,7 +448,7 @@
 												id="action-search"
 												type="text"
 												bind:value={searchTerm}
-												oninput={() => handleSearch(allActionsData)}
+												oninput={() => handleSearch(searchTerm)}
 												placeholder="Поиск по компании, акции или региону..."
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 											/>
@@ -440,7 +456,7 @@
 										{#if hasSearched}
 											<button
 												type="button"
-												onclick={() => clearSearch(allActionsData)}
+												onclick={clearSearch}
 												class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 											>
 												Очистить
@@ -452,12 +468,12 @@
 								<!-- Results Summary -->
 								{#if hasSearched}
 									<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-										{#if displayActions.length === 0}
+										{#if filteredActions.length === 0}
 											Акции не найдены по запросу "{searchTerm}"
 										{:else}
-											Найдено {displayActions.length} акци{displayActions.length === 1
+											Найдено {filteredActions.length} акци{filteredActions.length === 1
 												? 'я'
-												: displayActions.length < 5
+												: filteredActions.length < 5
 													? 'и'
 													: 'й'} по запросу "{searchTerm}"
 										{/if}
@@ -467,7 +483,7 @@
 								<!-- Actions Table -->
 								<div class="mt-8">
 									<ActionTable
-										actions={displayActions}
+										actions={paginatedActions}
 										{isLoading}
 										{searchTerm}
 										{hasSearched}
@@ -477,6 +493,14 @@
 										onDeleteAction={handleDeleteAction}
 									/>
 								</div>
+								
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredActions.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? allActions.length : null}
+								/>
 							</div>
 						</div>
 					</div>

@@ -1,6 +1,7 @@
 <script>
 	import CompanyTable from '$lib/components/CompanyTable.svelte';
 	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		SearchBar,
 		ConfirmationModal,
@@ -34,6 +35,10 @@
 
 	// Search state management
 	let searchTerm = $state('');
+
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -105,10 +110,24 @@
 		});
 	});
 
+	// Get paginated delivery companies
+	let paginatedDeliveryCompanies = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredDeliveryCompanies.slice(startIndex, endIndex);
+	});
+
 	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1;
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Ban delivery company handler with confirmation
 	function handleBanDeliveryCompany(company) {
@@ -528,7 +547,7 @@
 								{/if}
 
 								<CompanyTable
-									companies={filteredDeliveryCompanies}
+									companies={paginatedDeliveryCompanies}
 									isLoading={isActionLoading}
 									onBanCompany={handleBanDeliveryCompany}
 									onDeleteCompany={handleDeleteDeliveryCompany}
@@ -537,6 +556,14 @@
 									{updateCounter}
 									{searchTerm}
 									hasSearched={searchTerm.trim().length > 0}
+								/>
+
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredDeliveryCompanies.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localDeliveryCompanies.length : null}
 								/>
 							</main>
 						</div>

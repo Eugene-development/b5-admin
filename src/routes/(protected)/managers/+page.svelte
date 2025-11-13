@@ -8,6 +8,7 @@
 		UserViewModal,
 		UserEditModal
 	} from '$lib';
+	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -24,6 +25,10 @@
 
 	// Search state management
 	let searchTerm = $state('');
+
+	// Pagination state
+	let currentPage = $state(1);
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -88,10 +93,24 @@
 		});
 	});
 
+	// Get paginated users
+	let paginatedUsers = $derived.by(() => {
+		const startIndex = (currentPage - 1) * itemsPerPage;
+		const endIndex = startIndex + itemsPerPage;
+		return filteredUsers.slice(startIndex, endIndex);
+	});
+
 	// Search handler function
 	function handleSearch(term) {
 		searchTerm = term;
+		currentPage = 1; // Reset to first page on search
 	}
+
+	// Reset to first page when filters change
+	$effect(() => {
+		searchTerm;
+		currentPage = 1;
+	});
 
 	// Ban user handler with confirmation
 	function handleBanUser(user) {
@@ -522,7 +541,7 @@
 								<!-- Users Table -->
 								<div class="mt-8">
 									<UsersTable
-										users={filteredUsers}
+										users={paginatedUsers}
 										isLoading={isActionLoading}
 										onBanUser={handleBanUser}
 										onDeleteUser={handleDeleteUser}
@@ -533,6 +552,14 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
+
+								<!-- Pagination -->
+								<Pagination
+									bind:currentPage
+									totalItems={filteredUsers.length}
+									{itemsPerPage}
+									filteredFrom={searchTerm.trim() ? localUsers.length : null}
+								/>
 							</main>
 						</div>
 					</div>
