@@ -452,6 +452,42 @@
 							</a>
 						{/if}
 
+						<!-- Contracts Card -->
+						<a
+							href="/contracts"
+							class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-emerald-200/50 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-emerald-300 hover:shadow-xl dark:border-emerald-900/30 dark:from-emerald-950/20 dark:via-gray-800 dark:to-teal-950/20 dark:hover:border-emerald-700"
+						>
+							<div
+								class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/10 to-teal-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+							></div>
+							<span
+								class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-emerald-400/50"
+							>
+								<svg
+									class="h-6 w-6"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke-width="1.5"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+									/>
+								</svg>
+							</span>
+							<div class="relative">
+								<h3
+									class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
+								>
+									<span class="absolute inset-0" aria-hidden="true"></span>
+									Контракты
+								</h3>
+								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление контрактами</p>
+							</div>
+						</a>
+
 						{#if navigationVisibility.showOrder}
 							<a
 								href="/order"

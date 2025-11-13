@@ -22,6 +22,10 @@ export { default as CompanyTable } from './components/CompanyTable.svelte';
 export { default as CompanyViewModal } from './components/CompanyViewModal.svelte';
 export { default as CompanyAddModal } from './components/CompanyAddModal.svelte';
 export { default as CompanyEditModal } from './components/CompanyEditModal.svelte';
+export { default as ContractsTable } from './components/ContractsTable.svelte';
+export { default as ContractAddModal } from './components/ContractAddModal.svelte';
+export { default as ContractEditModal } from './components/ContractEditModal.svelte';
+export { default as ContractViewModal } from './components/ContractViewModal.svelte';
 export { default as ActionAddModal } from './components/ActionAddModal.svelte';
 export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as UserEditModal } from './components/UserEditModal.svelte';
@@ -31,6 +35,7 @@ export { default as ProjectViewModal } from './components/ProjectViewModal.svelt
 export { default as OrderAddModal } from './components/OrderAddModal.svelte';
 export { default as SearchBar } from './components/SearchBar.svelte';
 export { default as ActionButtons } from './components/ActionButtons.svelte';
+export { default as ContractActionButtons } from './components/ContractActionButtons.svelte';
 export { default as ConfirmationModal } from './components/ConfirmationModal.svelte';
 export { default as StatusBadge } from './components/StatusBadge.svelte';
 export { default as LoadingSpinner } from './components/LoadingSpinner.svelte';

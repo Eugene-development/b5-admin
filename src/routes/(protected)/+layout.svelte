@@ -451,6 +451,16 @@
 										</button>
 									</li>
 								{/if}
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/contracts')}
+										onclick={() => handleMobileNavigation('/contracts')}
+									>
+										<span class={getSpanIconClasses('/contracts')}>Кт</span>
+										<span class="truncate">Контракты</span>
+									</button>
+								</li>
 								{#if navigationVisibility.showOrder}
 									<li>
 										<button
@@ -748,6 +758,12 @@
 									</a>
 								</li>
 							{/if}
+							<li>
+								<a href="/contracts" class={getNavClassesWithSpan('/contracts')}>
+									<span class={getSpanIconClasses('/contracts')}>Кт</span>
+									<span class="truncate">Контракты</span>
+								</a>
+							</li>
 							{#if navigationVisibility.showOrder}
 								<li>
 									<a href="/order" class={getNavClassesWithSpan('/order')}>
