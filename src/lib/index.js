@@ -26,6 +26,10 @@ export { default as ContractsTable } from './components/ContractsTable.svelte';
 export { default as ContractAddModal } from './components/ContractAddModal.svelte';
 export { default as ContractEditModal } from './components/ContractEditModal.svelte';
 export { default as ContractViewModal } from './components/ContractViewModal.svelte';
+export { default as ComplaintsTable } from './components/ComplaintsTable.svelte';
+export { default as ComplaintAddModal } from './components/ComplaintAddModal.svelte';
+export { default as ComplaintEditModal } from './components/ComplaintEditModal.svelte';
+export { default as ComplaintViewModal } from './components/ComplaintViewModal.svelte';
 export { default as ActionAddModal } from './components/ActionAddModal.svelte';
 export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as UserEditModal } from './components/UserEditModal.svelte';
@@ -66,6 +70,9 @@ export * from './api/orders.js';
 
 // Export actions API
 export * from './api/actions.js';
+
+// Export complaints API
+export * from './api/complaints.js';
 
 // Export authentication state store
 export * from './state/auth.svelte.js';

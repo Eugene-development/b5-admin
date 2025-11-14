@@ -368,7 +368,6 @@ export async function getProjectsForDropdown(fetchFn = fetch) {
 				data {
 					id
 					value
-					name
 					contract_number
 				}
 			}
@@ -564,4 +563,23 @@ export async function createOrderPosition(positionData) {
 		handleApiError(error, 'Не удалось создать позицию');
 		throw error;
 	}
+}
+
+/**
+ * Factory function to create API client with server-side fetch support
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {Object} cookies - SvelteKit cookies object
+ * @returns {Object} API client with bound fetch and cookies
+ */
+export function createOrdersApiWithFetch(fetch, cookies) {
+	return {
+		getOrders: (first, page) => getOrders(first, page, fetch),
+		createOrder: (orderData) => createOrder(orderData),
+		updateOrder: (orderData) => updateOrder(orderData),
+		deleteOrder: (orderId) => deleteOrder(orderId),
+		refreshOrders: () => refreshOrders(),
+		createOrderPosition: (positionData) => createOrderPosition(positionData),
+		updateOrderPosition: (positionData) => updateOrderPosition(positionData),
+		deleteOrderPosition: (positionId) => deleteOrderPosition(positionId)
+	};
 }

@@ -473,6 +473,16 @@
 										</button>
 									</li>
 								{/if}
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/complaints')}
+										onclick={() => handleMobileNavigation('/complaints')}
+									>
+										<span class={getSpanIconClasses('/complaints')}>Рк</span>
+										<span class="truncate">Рекламации</span>
+									</button>
+								</li>
 							</ul>
 						</li>
 					{/if}
@@ -772,6 +782,12 @@
 									</a>
 								</li>
 							{/if}
+							<li>
+								<a href="/complaints" class={getNavClassesWithSpan('/complaints')}>
+									<span class={getSpanIconClasses('/complaints')}>Рк</span>
+									<span class="truncate">Рекламации</span>
+								</a>
+							</li>
 						</ul>
 					</li>
 				{/if}
