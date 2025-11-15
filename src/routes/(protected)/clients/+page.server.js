@@ -4,7 +4,7 @@
  * Uses streaming to show loading state while data is being fetched
  */
 
-import { getUsersWithPagination } from '$lib/api/agents.js';
+import { getClientsWithPagination } from '$lib/api/clients.js';
 import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 const ERROR_TYPES = {
@@ -57,13 +57,11 @@ function getUserFriendlyErrorMessage(errorType, originalMessage) {
 
 function createClientsFallbackData() {
 	return {
-		agents: [],
+		clients: [],
 		stats: {
 			total: 0,
 			active: 0,
-			banned: 0,
-			verified: 0,
-			unverified: 0
+			banned: 0
 		},
 		pagination: {
 			currentPage: 1,
@@ -101,32 +99,21 @@ function calculateClientStats(clients) {
 		return {
 			total: 0,
 			active: 0,
-			banned: 0,
-			verified: 0,
-			unverified: 0
+			banned: 0
 		};
 	}
 
 	const stats = {
 		total: clients.length,
 		active: 0,
-		banned: 0,
-		verified: 0,
-		unverified: 0
+		banned: 0
 	};
 
 	for (const client of clients) {
-		const status = client?.status?.toLowerCase() || 'active';
-		if (status === 'active') {
-			stats.active++;
-		} else if (status === 'banned') {
+		if (client?.ban) {
 			stats.banned++;
-		}
-
-		if (client?.email_verified_at) {
-			stats.verified++;
 		} else {
-			stats.unverified++;
+			stats.active++;
 		}
 	}
 
@@ -145,7 +132,7 @@ async function loadClientsData(fetch) {
 		});
 
 		const clientsResult = await Promise.race([
-			getUsersWithPagination(1000, 1, fetch),
+			getClientsWithPagination(1000, 1, fetch),
 			timeoutPromise
 		]);
 
@@ -171,7 +158,7 @@ async function loadClientsData(fetch) {
 		const loadTime = Date.now() - startTime;
 
 		return {
-			agents: clients,
+			clients: clients,
 			stats,
 			pagination,
 			error: null,
@@ -209,6 +196,6 @@ export async function load({ fetch }) {
 	// Page will render instantly, data will load in background
 	return {
 		// Don't await - return Promise for streaming!
-		usersData: loadClientsData(fetch)
+		clientsData: loadClientsData(fetch)
 	};
 }

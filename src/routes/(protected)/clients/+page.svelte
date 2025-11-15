@@ -1,12 +1,9 @@
 <script>
 	import {
 		UsersTable,
-		SearchBar,
-		ConfirmationModal,
 		ErrorBoundary,
 		TableSkeleton,
-		UserViewModal,
-		UserEditModal
+		UserViewModal
 	} from '$lib';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import {
@@ -18,7 +15,7 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { banUser, unbanUser, deleteUser, refreshUsers, updateUser } from '$lib/api/agents.js';
+	import { refreshClients } from '$lib/api/clients.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
@@ -29,13 +26,8 @@
 	let currentPage = $state(1);
 	const itemsPerPage = 8;
 	
-	let isActionLoading = $state(false);
-	let showConfirmModal = $state(false);
-	let confirmAction = $state(null);
 	let showViewModal = $state(false);
 	let selectedUser = $state(null);
-	let showEditModal = $state(false);
-	let editingUser = $state(null);
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
 	let isRefreshing = $state(false);
@@ -49,43 +41,39 @@
 	let loadError = $state(null);
 
 	// Derived state that transforms streamed data without mutation
-	function getProcessedUsers(usersData) {
-		if (!usersData || !usersData.agents) {
+	function getProcessedClients(clientsData) {
+		if (!clientsData || !clientsData.clients) {
 			return [];
 		}
 
-		// Filter only clients (users with status slug 'clients') and normalize
-		return usersData.agents
-			.filter((user) => user.userStatus?.slug === 'clients')
-			.map((user) => ({
-				...user,
-				status: user.ban ? 'banned' : 'active',
-				status_id: user.status_id,
-				userStatus: user.userStatus
+		// Normalize clients data
+		return clientsData.clients
+			.map((client) => ({
+				...client,
+				status: client.ban ? 'banned' : 'active'
 			}))
 			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 	}
 
-	let filteredUsers = $derived.by(() => {
+	let filteredClients = $derived.by(() => {
 		if (!searchTerm.trim()) {
 			return localUsers;
 		}
 
 		const term = searchTerm.toLowerCase().trim();
-		return localUsers.filter((user) => {
-			const name = (user.name || '').toLowerCase();
-			const email = (user.email || '').toLowerCase();
-			const region = (user.region || '').toLowerCase();
+		return localUsers.filter((client) => {
+			const name = (client.name || '').toLowerCase();
+			const phone = client.phones?.[0]?.value || '';
 
-			return name.includes(term) || email.includes(term) || region.includes(term);
+			return name.includes(term) || phone.includes(term);
 		});
 	});
 
-	// Get paginated users
-	let paginatedUsers = $derived.by(() => {
+	// Get paginated clients
+	let paginatedClients = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
-		return filteredUsers.slice(startIndex, endIndex);
+		return filteredClients.slice(startIndex, endIndex);
 	});
 
 	function handleSearch(term) {
@@ -99,37 +87,8 @@
 		currentPage = 1;
 	});
 
-	function handleBanUser(user) {
-		const isBanned = user.status === 'banned';
-		confirmAction = {
-			type: isBanned ? 'unban' : 'ban',
-			user: user,
-			title: isBanned ? 'Разбанить клиента' : 'Забанить клиента',
-			message: isBanned
-				? `Вы уверены, что хотите разбанить клиента "${user.name || user.email}"? Клиент снова сможет получить доступ к системе.`
-				: `Вы уверены, что хотите забанить клиента "${user.name || user.email}"? Клиент потеряет доступ к системе.`,
-			confirmText: isBanned ? 'Разбанить' : 'Забанить',
-			isDestructive: !isBanned
-		};
-		showConfirmModal = true;
-		clearAllToasts();
-	}
-
-	function handleDeleteUser(user) {
-		confirmAction = {
-			type: 'delete',
-			user: user,
-			title: 'Удалить клиента',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить клиента "${user.name || user.email}"? Это действие нельзя отменить. Все данные клиента будут потеряны.`,
-			confirmText: 'Удалить навсегда',
-			isDestructive: true
-		};
-		showConfirmModal = true;
-		clearAllToasts();
-	}
-
-	function handleViewUser(user) {
-		selectedUser = user;
+	function handleViewClient(client) {
+		selectedUser = client;
 		showViewModal = true;
 	}
 
@@ -138,121 +97,15 @@
 		selectedUser = null;
 	}
 
-	function handleEditUser(user) {
-		editingUser = user;
-		showEditModal = true;
-		clearAllToasts();
-	}
-
-	async function handleUpdateUser(updatedUserData) {
-		isActionLoading = true;
-
-		try {
-			await retryOperation(
-				async () => {
-					const updatedUser = await updateUser(updatedUserData);
-
-					localUsers = localUsers.map((user) =>
-						user.id === updatedUser.id
-							? {
-									...updatedUser,
-									status: updatedUser.status?.toLowerCase() || 'active',
-									status_id: updatedUser.status_id,
-									userStatus: updatedUser.userStatus
-								}
-							: user
-					);
-
-					addSuccessToast(
-						`Пользователь "${updatedUser.name || updatedUser.email}" успешно обновлен.`
-					);
-				},
-				2,
-				1000
-			);
-		} catch (error) {
-			console.error('Failed to update user:', error);
-		} finally {
-			isActionLoading = false;
-			showEditModal = false;
-			editingUser = null;
-		}
-	}
-
-	function handleCancelEditUser() {
-		showEditModal = false;
-		editingUser = null;
-		isActionLoading = false;
-	}
-
-	async function confirmActionHandler() {
-		if (!confirmAction) return;
-
-		isActionLoading = true;
-
-		try {
-			const { type, user } = confirmAction;
-
-			await retryOperation(
-				async () => {
-					if (type === 'ban') {
-						const result = await banUser(user.id);
-						const status = result?.status?.toLowerCase() || 'banned';
-						updateUserStatus(user.id, status);
-						addSuccessToast(`Клиент "${user.name || user.email}" успешно забанен.`);
-					} else if (type === 'unban') {
-						const result = await unbanUser(user.id);
-						const status = result?.status?.toLowerCase() || 'active';
-						updateUserStatus(user.id, status);
-						addSuccessToast(`Клиент "${user.name || user.email}" успешно разбанен.`);
-					} else if (type === 'delete') {
-						await deleteUser(user.id);
-						removeUserFromList(user.id);
-						addSuccessToast(`Клиент "${user.name || user.email}" успешно удален.`);
-					}
-				},
-				2,
-				1000
-			);
-		} catch (error) {
-			console.error('Action failed after retries:', error);
-		} finally {
-			isActionLoading = false;
-			showConfirmModal = false;
-			confirmAction = null;
-		}
-	}
-
-	function cancelAction() {
-		showConfirmModal = false;
-		confirmAction = null;
-		isActionLoading = false;
-	}
-
-	function updateUserStatus(userId, newStatus) {
-		localUsers = localUsers.map((user) =>
-			user.id === userId ? { ...user, status: newStatus } : user
-		);
-
-		updateCounter++;
-	}
-
-	function removeUserFromList(userId) {
-		localUsers = localUsers.filter((user) => user.id !== userId);
-	}
-
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			const users = await refreshUsers();
-			// Filter only clients
-			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'clients')
-				.map((user) => ({
-					...user,
-					status: user.ban ? 'banned' : 'active',
-					status_id: user.status_id,
-					userStatus: user.userStatus
+			const clients = await refreshClients();
+			// Normalize clients data
+			localUsers = clients
+				.map((client) => ({
+					...client,
+					status: client.ban ? 'banned' : 'active'
 				}))
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
@@ -291,13 +144,6 @@
 		}
 	});
 
-	function debugSetUserStatus(userId, status) {
-		updateUserStatus(userId, status);
-	}
-
-	if (typeof window !== 'undefined') {
-		window.debugSetUserStatus = debugSetUserStatus;
-	}
 </script>
 
 <ProtectedRoute>
@@ -312,21 +158,21 @@
 			showDetails={true}
 		>
 			<!-- Streamed Clients Data with SSR -->
-			{#await data.usersData}
+			{#await data.clientsData}
 				<!-- Loading state: Show skeleton -->
 				<TableSkeleton columns={6} />
-			{:then usersData}
+			{:then clientsData}
 				<!-- Success state: Show data -->
-				{@const processedUsers = getProcessedUsers(usersData)}
+				{@const processedClients = getProcessedClients(clientsData)}
 
 				<!-- Update local state only once when data arrives -->
-				{#if localUsers.length === 0 && processedUsers.length > 0}
-					{(localUsers = processedUsers, '')}
+				{#if localUsers.length === 0 && processedClients.length > 0}
+					{(localUsers = processedClients, '')}
 				{/if}
 
 				<!-- Set load error if present -->
-				{#if usersData.error && !loadError}
-					{(loadError = usersData, '')}
+				{#if clientsData.error && !loadError}
+					{(loadError = clientsData, '')}
 				{/if}
 
 				<a
@@ -481,7 +327,7 @@
 												type="text"
 												bind:value={searchTerm}
 												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по имени, email или региону..."
+												placeholder="Поиск по имени или телефону..."
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 											/>
 										</div>
@@ -496,37 +342,35 @@
 										aria-live="polite"
 										aria-atomic="true"
 									>
-										{#if filteredUsers.length === 0}
+										{#if filteredClients.length === 0}
 											Клиенты не найдены по запросу "{searchTerm}"
 										{:else}
-											Найдено {filteredUsers.length} клиент{filteredUsers.length === 1
+											Найдено {filteredClients.length} клиент{filteredClients.length === 1
 												? ''
-												: filteredUsers.length < 5
+												: filteredClients.length < 5
 													? 'а'
 													: 'ов'} по запросу "{searchTerm}"
 										{/if}
 									</div>
 								{/if}
 
-								<!-- Users Table -->
+								<!-- Clients Table -->
 								<div class="mt-8">
 									<UsersTable
-										users={paginatedUsers}
-										isLoading={isActionLoading}
-										onBanUser={handleBanUser}
-										onDeleteUser={handleDeleteUser}
-										onViewUser={handleViewUser}
-										onEditUser={handleEditUser}
+										users={paginatedClients}
+										isLoading={false}
+										onViewUser={handleViewClient}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}
+										showActions={false}
 									/>
 								</div>
 
 								<!-- Pagination -->
 								<Pagination
 									bind:currentPage
-									totalItems={filteredUsers.length}
+									totalItems={filteredClients.length}
 									{itemsPerPage}
 									filteredFrom={searchTerm.trim() ? localUsers.length : null}
 								/>
@@ -547,28 +391,4 @@
 	{/snippet}
 </ProtectedRoute>
 
-{#if confirmAction}
-	<ConfirmationModal
-		isOpen={showConfirmModal}
-		title={confirmAction.title}
-		message={confirmAction.message}
-		confirmText={confirmAction.confirmText}
-		cancelText="Отмена"
-		onConfirm={confirmActionHandler}
-		onCancel={cancelAction}
-		isDestructive={confirmAction.isDestructive}
-		isLoading={isActionLoading}
-	/>
-{/if}
-
 <UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
-
-{#if editingUser}
-	<UserEditModal
-		isOpen={showEditModal}
-		user={editingUser}
-		onSave={handleUpdateUser}
-		onCancel={handleCancelEditUser}
-		isLoading={isActionLoading}
-	/>
-{/if}

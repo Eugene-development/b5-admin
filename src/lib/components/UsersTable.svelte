@@ -111,15 +111,6 @@
 					№
 				</th>
 				<th
-					id="col-id"
-					scope="col"
-					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					aria-sort="none"
-				>
-					ID
-				</th>
-				<th
 					id="col-name"
 					scope="col"
 					role="columnheader"
@@ -129,16 +120,6 @@
 					Имя
 				</th>
 				<th
-					id="col-email"
-					scope="col"
-					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					aria-sort="none"
-				>
-					Почта / подтверждение
-				</th>
-
-				<th
 					id="col-region"
 					scope="col"
 					role="columnheader"
@@ -146,15 +127,6 @@
 					aria-sort="none"
 				>
 					Регион
-				</th>
-				<th
-					id="col-registration"
-					scope="col"
-					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					aria-sort="none"
-				>
-					Регистрация
 				</th>
 				<th
 					id="col-ban"
@@ -173,7 +145,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-4" role="cell">
+					<td colspan="5" class="px-4 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -194,13 +166,6 @@
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-id"
-						>
-							{user.id}
-						</td>
-						<td
 							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
@@ -210,25 +175,9 @@
 						<td
 							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
-							headers="col-email"
-						>
-							{user.email} /
-							<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
-						</td>
-
-						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
-							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
-						</td>
-						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-registration"
-						>
-							{formatDate(user.created_at)}
 						</td>
 						<td class="px-4 py-4 text-sm whitespace-nowrap" role="cell" headers="col-ban">
 							<button
@@ -386,23 +335,11 @@
 							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
 								{user.email}
 							</p>
-							<div class="mt-1 flex items-center gap-2">
-								<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
-								<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
-							</div>
-						</div>
-						<div class="ml-3 flex-shrink-0">
-							<span
-								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-								aria-label="User ID {user.id}"
-							>
-								ID: {user.id}
-							</span>
 						</div>
 					</div>
 
 					<!-- User Details Grid -->
-					<dl id="user-{user.id}-details" class="mb-4 grid grid-cols-2 gap-3">
+					<dl id="user-{user.id}-details" class="mb-4 grid grid-cols-1 gap-3">
 						<div>
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -411,16 +348,6 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{user.region || 'Не указан'}
-							</dd>
-						</div>
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Регистрация
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(user.created_at)}
 							</dd>
 						</div>
 					</dl>
@@ -558,12 +485,6 @@
 								scope="col"
 								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
-								Почта
-							</th>
-							<th
-								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-							>
 								Регион
 							</th>
 							<th
@@ -580,17 +501,15 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="7" class="px-4 py-4 text-center">
+								<td colspan="5" class="px-4 py-4 text-center">
 									<div class="flex justify-center">
-										<div
-											class="h-6 w-6 hidden"
-										></div>
+										<div class="hidden h-6 w-6"></div>
 									</div>
 								</td>
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="7" class="px-4 py-4">
+								<td colspan="5" class="px-4 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -612,9 +531,6 @@
 										{user.name || 'Not specified'}
 									</td>
 									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
-										{user.email}
-									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
 									<td class="px-4 py-4 text-sm whitespace-nowrap">
@@ -624,7 +540,6 @@
 											{:else}
 												<StatusBadge status="verified" text="Активен" />
 											{/if}
-											<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 										</div>
 									</td>
 									<td
