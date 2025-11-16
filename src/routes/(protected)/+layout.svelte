@@ -281,6 +281,8 @@
 						</ul>
 					</li>
 					{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
+						<!-- Separator -->
+						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
 							<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -345,6 +347,8 @@
 						</li>
 					{/if}
 					{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
+						<!-- Separator -->
+						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
 							<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -400,6 +404,8 @@
 						</li>
 					{/if}
 					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
+						<!-- Separator -->
+						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
 							<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -471,6 +477,8 @@
 						</li>
 					{/if}
 					{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
+						<!-- Separator -->
+						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
 							<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -642,6 +650,8 @@
 					</ul>
 				</li>
 				{#if navigationVisibility.showClients || navigationVisibility.showAgents || navigationVisibility.showCurators}
+					<!-- Separator -->
+					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
 						<ul role="list" class="mt-2 space-y-1">
@@ -686,6 +696,8 @@
 					</li>
 				{/if}
 				{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
+					<!-- Separator -->
+					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
 						<ul role="list" class="mt-2 space-y-1">
@@ -725,6 +737,8 @@
 					</li>
 				{/if}
 				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
+					<!-- Separator -->
+					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
 						<ul role="list" class="mt-2 space-y-1">
@@ -776,6 +790,8 @@
 					</li>
 				{/if}
 				{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
+					<!-- Separator -->
+					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
 						<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
 						<ul role="list" class="mt-2 space-y-1">
