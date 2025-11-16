@@ -265,7 +265,7 @@
 			<!-- Navigation content -->
 			<nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-6">
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
-					<li>
+					<li class="mb-2">
 						<ul role="list" class="space-y-1">
 							<li>
 								<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
@@ -417,15 +417,12 @@
 											onclick={() => handleMobileNavigation('/projects')}
 										>
 											<span class={getSpanIconClasses('/projects')}>Пр</span>
-											<span class="truncate">Проекты</span>
-											{#if newProjectsState.hasNew}
-												<span
-													class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
-													title="Есть новые проекты"
-												>
-													!
-												</span>
-											{/if}
+											<span class="truncate"
+												>Проекты{#if newProjectsState.hasNew}<span
+														class="ml-2 text-red-600"
+														title="Есть новые проекты">!</span
+													>{/if}</span
+											>
 										</button>
 									</li>
 								{/if}
@@ -638,7 +635,7 @@
 		</div>
 		<nav class="flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-x-hidden overflow-y-auto">
 			<ul role="list" class="flex flex-1 flex-col gap-y-3">
-				<li>
+				<li class="mb-2">
 					<ul role="list" class="space-y-1">
 						<li>
 							<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
@@ -746,15 +743,12 @@
 								<li>
 									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
 										<span class={getSpanIconClasses('/projects')}>Пр</span>
-										<span class="truncate">Проекты</span>
-										{#if newProjectsState.hasNew}
-											<span
-												class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
-												title="Есть новые проекты"
-											>
-												!
-											</span>
-										{/if}
+										<span class="truncate"
+											>Проекты{#if newProjectsState.hasNew}<span
+													class="ml-2 text-red-600"
+													title="Есть новые проекты">!</span
+												>{/if}</span
+										>
 									</a>
 								</li>
 							{/if}
