@@ -169,7 +169,7 @@ async function makeGraphQLRequest(
 	for (let attempt = 1; attempt <= retries; attempt++) {
 		try {
 			const controller = new AbortController();
-			const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+			const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
 			// Use custom fetch for server-side or default for client-side
 			const fetchFunction =
