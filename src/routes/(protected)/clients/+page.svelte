@@ -5,6 +5,7 @@
 		TableSkeleton,
 		UserViewModal
 	} from '$lib';
+	import EditClientModal from '$lib/components/EditClientModal.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import {
 		toasts,
@@ -15,7 +16,7 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { refreshClients } from '$lib/api/clients.js';
+	import { refreshClients, updateClient } from '$lib/api/clients.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
@@ -27,6 +28,7 @@
 	const itemsPerPage = 8;
 	
 	let showViewModal = $state(false);
+	let showEditModal = $state(false);
 	let selectedUser = $state(null);
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
@@ -106,6 +108,37 @@
 	function closeViewModal() {
 		showViewModal = false;
 		selectedUser = null;
+	}
+
+	function handleEditClient(client) {
+		selectedUser = client;
+		showEditModal = true;
+	}
+
+	function closeEditModal() {
+		showEditModal = false;
+		selectedUser = null;
+	}
+
+	async function handleSaveClient(input) {
+		try {
+			const updatedClient = await updateClient(input);
+
+			// Update local state
+			localUsers = localUsers.map(c =>
+				c.id === updatedClient.id ? {
+					...updatedClient,
+					status: updatedClient.ban ? 'banned' : 'active',
+					agent: updatedClient.projects?.[0]?.agent || null
+				} : c
+			);
+
+			updateCounter++;
+			addSuccessToast('Клиент успешно обновлен');
+		} catch (error) {
+			console.error('Error updating client:', error);
+			throw error;
+		}
 	}
 
 	async function refreshData(isInitialLoad = false) {
@@ -382,6 +415,7 @@
 										users={paginatedClients}
 										isLoading={false}
 										onViewUser={handleViewClient}
+										onEditUser={handleEditClient}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}
@@ -414,3 +448,4 @@
 </ProtectedRoute>
 
 <UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
+<EditClientModal isOpen={showEditModal} client={selectedUser} onClose={closeEditModal} onSave={handleSaveClient} />

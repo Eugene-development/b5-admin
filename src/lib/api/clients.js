@@ -170,3 +170,50 @@ export async function getClientsWithPagination(first = 1000, page = 1, customFet
 		throw err;
 	}
 }
+
+// GraphQL mutation for updating client with phones
+const UPDATE_CLIENT_MUTATION = gql`
+	mutation UpdateClientWithPhones($input: UpdateClientWithPhonesInput!) {
+		updateClientWithPhones(input: $input) {
+			id
+			name
+			birthday
+			ban
+			status_id
+			phones {
+				id
+				value
+				is_primary
+			}
+			projects {
+				id
+				value
+				contract_number
+				status_id
+				agent {
+					id
+					name
+					email
+				}
+			}
+			created_at
+			updated_at
+		}
+	}
+`;
+
+// Function to update a client with phones
+export async function updateClient(input, customFetch = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			UPDATE_CLIENT_MUTATION,
+			{ input },
+			'updateClient',
+			customFetch
+		);
+		return result.updateClientWithPhones;
+	} catch (err) {
+		console.error('Update client failed:', err);
+		throw err;
+	}
+}

@@ -1,90 +1,37 @@
-<script>
-	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import DomainAccessInfo from '$lib/components/DomainAccessInfo.svelte';
-
-	let currentDomain = $state('');
-	let fullUrl = $state('');
-
-	onMount(() => {
-		currentDomain = window.location.hostname;
-		fullUrl = window.location.href;
-	});
-</script>
-
 <svelte:head>
 	<title>Настройки - B5 Admin</title>
 	<meta name="description" content="Настройки системы и пользователя" />
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-	<div class="mx-auto max-w-4xl">
-		<div class="rounded-lg bg-white p-8 shadow-lg">
-			<div class="mb-8 text-center">
-				<h1 class="mb-4 text-4xl font-bold text-gray-900">Настройки</h1>
-				<p class="text-lg text-gray-600">Настройки системы и пользовательские предпочтения</p>
+<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+	<div class="max-w-md w-full text-center">
+		<div class="bg-white rounded-lg shadow-lg p-8">
+			<div class="mb-6">
+				<svg
+					class="mx-auto h-16 w-16 text-yellow-500"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+					/>
+				</svg>
 			</div>
-
-			<div class="grid gap-6 md:grid-cols-2">
-				<div class="rounded-lg bg-blue-50 p-6">
-					<h2 class="mb-3 text-xl font-semibold text-blue-900">Информация о доступе</h2>
-					<div class="space-y-2 text-blue-800">
-						<p><strong>Текущий домен:</strong> {currentDomain}</p>
-						<p><strong>Полный URL:</strong> {fullUrl}</p>
-						<p><strong>Доступ для:</strong> Все домены (общая страница)</p>
-					</div>
-				</div>
-
-				<div class="rounded-lg bg-green-50 p-6">
-					<h2 class="mb-3 text-xl font-semibold text-green-900">Функциональность</h2>
-					<div class="space-y-2 text-green-800">
-						<div class="flex items-center">
-							<span class="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
-							<span>Пользовательские настройки</span>
-						</div>
-						<div class="flex items-center">
-							<span class="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
-							<span>Системные параметры</span>
-						</div>
-						<div class="flex items-center">
-							<span class="mr-2 h-2 w-2 rounded-full bg-green-500"></span>
-							<span>Безопасность</span>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="mt-8 rounded-lg bg-gray-50 p-6">
-				<h2 class="mb-3 text-xl font-semibold text-gray-900">Описание</h2>
-				<p class="text-gray-700">
-					Страница настроек позволяет управлять пользовательскими предпочтениями, системными
-					параметрами и настройками безопасности. Это общая страница, доступная пользователям всех
-					доменов для настройки личных параметров и системных конфигураций.
-				</p>
-			</div>
-
-			<div class="mt-8">
-				<h2 class="mb-3 text-xl font-semibold text-gray-900">Статус доступа к домену</h2>
-				<DomainAccessInfo showDetails={true} />
-			</div>
-
-			<div class="mt-8 text-center">
-				<p class="text-sm text-gray-500">
-					Страница загружена: {new Date().toLocaleString()}
-				</p>
-			</div>
+			<h1 class="text-3xl font-bold text-gray-900 mb-4">Раздел в разработке</h1>
+			<p class="text-gray-600 mb-8">
+				Страница "Настройки" находится в процессе разработки. Скоро здесь появится функционал для
+				управления настройками системы и пользовательскими предпочтениями.
+			</p>
+			<a
+				href="/dashboard"
+				class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+			>
+				Вернуться на главную
+			</a>
 		</div>
 	</div>
 </div>
-
-<style>
-	:global(body) {
-		font-family:
-			'Inter',
-			-apple-system,
-			BlinkMacSystemFont,
-			'Segoe UI',
-			Roboto,
-			sans-serif;
-	}
-</style>

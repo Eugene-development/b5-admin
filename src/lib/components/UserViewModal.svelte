@@ -300,6 +300,80 @@
 						</div>
 					</div>
 
+					<!-- Agents and Projects Section (for clients) -->
+					{#if user.projects && user.projects.length > 0}
+						{@const uniqueAgents = user.projects
+							.filter(p => p.agent)
+							.reduce((acc, p) => {
+								if (!acc.find(a => a.id === p.agent.id)) {
+									acc.push(p.agent);
+								}
+								return acc;
+							}, [])}
+
+						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+							<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+								<!-- Agents Column -->
+								<div>
+									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">
+										Агенты
+									</h5>
+									<div class="space-y-3">
+										{#if uniqueAgents.length > 0}
+											{#each uniqueAgents as agent}
+												<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
+													<div class="font-medium text-gray-900 dark:text-white">
+														{agent.name}
+													</div>
+													{#if agent.email}
+														<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+															<a
+																href="mailto:{agent.email}"
+																class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
+															>
+																{agent.email}
+															</a>
+														</div>
+													{/if}
+												</div>
+											{/each}
+										{:else}
+											<p class="text-sm text-gray-500 dark:text-gray-400">Нет связанных агентов</p>
+										{/if}
+									</div>
+								</div>
+
+								<!-- Projects Column -->
+								<div>
+									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">
+										Проекты
+									</h5>
+									<div class="space-y-3">
+										{#each user.projects as project}
+											<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
+												{#if project.value}
+													<div class="font-medium text-gray-900 dark:text-white">
+														{project.value}
+													</div>
+												{/if}
+												{#if project.contract_number}
+													<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+														Договор: {project.contract_number}
+													</div>
+												{/if}
+												{#if project.agent}
+													<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+														Агент: {project.agent.name}
+													</div>
+												{/if}
+											</div>
+										{/each}
+									</div>
+								</div>
+							</div>
+						</div>
+					{/if}
+
 					<!-- Additional Information -->
 					{#if user.bio || user.website || user.address || user.birth_date}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
