@@ -46,12 +46,23 @@
 			return [];
 		}
 
-		// Normalize clients data
+		// Normalize clients data and extract agent info from first project
 		return clientsData.clients
-			.map((client) => ({
-				...client,
-				status: client.ban ? 'banned' : 'active'
-			}))
+			.map((client) => {
+				// Get agent from first project (if exists)
+				const firstProject = client.projects?.[0];
+				const agent = firstProject?.agent;
+
+				return {
+					...client,
+					status: client.ban ? 'banned' : 'active',
+					agent: agent ? {
+						id: agent.id,
+						name: agent.name,
+						email: agent.email
+					} : null
+				};
+			})
 			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 	}
 
@@ -101,12 +112,23 @@
 		isRefreshing = true;
 		try {
 			const clients = await refreshClients();
-			// Normalize clients data
+			// Normalize clients data and extract agent info
 			localUsers = clients
-				.map((client) => ({
-					...client,
-					status: client.ban ? 'banned' : 'active'
-				}))
+				.map((client) => {
+					// Get agent from first project (if exists)
+					const firstProject = client.projects?.[0];
+					const agent = firstProject?.agent;
+
+					return {
+						...client,
+						status: client.ban ? 'banned' : 'active',
+						agent: agent ? {
+							id: agent.id,
+							name: agent.name,
+							email: agent.email
+						} : null
+					};
+				})
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
 			if (!isInitialLoad) {

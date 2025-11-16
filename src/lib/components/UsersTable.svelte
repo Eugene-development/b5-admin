@@ -120,6 +120,15 @@
 					Имя
 				</th>
 				<th
+					id="col-agent"
+					scope="col"
+					role="columnheader"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					aria-sort="none"
+				>
+					Агент
+				</th>
+				<th
 					id="col-region"
 					scope="col"
 					role="columnheader"
@@ -145,7 +154,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan="5" class="px-4 py-4" role="cell">
+					<td colspan="6" class="px-4 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -171,6 +180,13 @@
 							headers="col-name"
 						>
 							{user.name || 'Not specified'}
+						</td>
+						<td
+							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							role="cell"
+							headers="col-agent"
+						>
+							{user.agent?.name || 'Не указан'}
 						</td>
 						<td
 							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -340,6 +356,16 @@
 
 					<!-- User Details Grid -->
 					<dl id="user-{user.id}-details" class="mb-4 grid grid-cols-1 gap-3">
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Агент
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{user.agent?.name || 'Не указан'}
+							</dd>
+						</div>
 						<div>
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"

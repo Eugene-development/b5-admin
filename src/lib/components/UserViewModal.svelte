@@ -23,11 +23,6 @@
 			: 'active';
 	}
 
-	// Get email verification status
-	function getEmailVerificationStatus(emailVerifiedAt) {
-		return emailVerifiedAt ? 'verified' : 'unverified';
-	}
-
 	// Handle backdrop click to close modal
 	function handleBackdropClick(event) {
 		if (event.target === event.currentTarget) {
@@ -128,9 +123,6 @@
 							<!-- <h4 class="text-xl font-bold text-gray-900 dark:text-white">
 								{user.name || 'Имя не указано'}
 							</h4> -->
-							<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-								ID: {user.id}
-							</p>
 							<!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
 								{user.email}
 							</p> -->
@@ -138,9 +130,6 @@
 						<div class="ml-4 flex flex-shrink-0 gap-2 space-y-2">
 							<div>
 								<StatusBadge status={getUserStatus(user)} />
-							</div>
-							<div>
-								<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 							</div>
 						</div>
 					</div>
@@ -182,6 +171,30 @@
 								</dd>
 							</div>
 
+							<!-- Agent (for clients) -->
+							{#if user.agent}
+								<div>
+									<dt
+										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									>
+										Агент
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{user.agent.name}
+										{#if user.agent.email}
+											<div class="text-xs text-gray-500 dark:text-gray-400">
+												<a
+													href="mailto:{user.agent.email}"
+													class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
+												>
+													{user.agent.email}
+												</a>
+											</div>
+										{/if}
+									</dd>
+								</div>
+							{/if}
+
 							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -193,7 +206,31 @@
 								</dd>
 							</div>
 
-							{#if user.phone}
+							<!-- Phone from phones array (for clients) or direct phone field (for users) -->
+							{#if user.phones && user.phones.length > 0}
+								<div>
+									<dt
+										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									>
+										Телефон
+									</dt>
+									<dd class="mt-1 space-y-1">
+										{#each user.phones as phone, index}
+											<div class="text-sm text-gray-900 dark:text-white">
+												<a
+													href="tel:{phone.value}"
+													class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
+												>
+													{formatPhone(phone.value)}
+												</a>
+												{#if phone.is_primary}
+													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400">(основной)</span>
+												{/if}
+											</div>
+										{/each}
+									</dd>
+								</div>
+							{:else if user.phone}
 								<div>
 									<dt
 										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -236,30 +273,6 @@
 									{/if}
 								</dd>
 							</div>
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Email подтвержден
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{user.email_verified_at ? 'Да' : 'Нет'}
-								</dd>
-							</div>
-
-							{#if user.email_verified_at}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Дата подтверждения email
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(user.email_verified_at)}
-									</dd>
-								</div>
-							{/if}
 
 							<div>
 								<dt

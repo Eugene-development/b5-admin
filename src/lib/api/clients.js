@@ -22,6 +22,11 @@ const CLIENTS_QUERY = gql`
 				value
 				contract_number
 				status_id
+				agent {
+					id
+					name
+					email
+				}
 			}
 			created_at
 			updated_at
@@ -47,6 +52,11 @@ const CLIENT_QUERY = gql`
 				value
 				contract_number
 				status_id
+				agent {
+					id
+					name
+					email
+				}
 			}
 			created_at
 			updated_at
