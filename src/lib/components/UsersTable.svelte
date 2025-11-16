@@ -135,7 +135,7 @@
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
-					Почта / подтверждение
+					Почта / верификация
 				</th>
 
 				<th

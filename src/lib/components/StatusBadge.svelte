@@ -32,12 +32,14 @@
 		if (customText) return customText;
 
 		const statusSlug = getStatusSlug(status);
-		const statusValue = getStatusValue(status);
 
-		// For project statuses, use the value from the status object
-		if (statusValue) return statusValue;
+		// For project statuses (objects), use the value from the status object
+		if (typeof status === 'object' && status !== null) {
+			const statusValue = getStatusValue(status);
+			if (statusValue) return statusValue;
+		}
 
-		// For legacy user statuses
+		// For legacy user statuses (strings)
 		switch (statusSlug) {
 			case 'verified':
 				return '+';

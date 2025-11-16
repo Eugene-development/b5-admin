@@ -1,6 +1,6 @@
 <script>
+	import ClientsTable from '$lib/components/ClientsTable.svelte';
 	import {
-		UsersTable,
 		ErrorBoundary,
 		TableSkeleton,
 		UserViewModal
@@ -378,14 +378,14 @@
 
 								<!-- Clients Table -->
 								<div class="mt-8">
-									<UsersTable
+									<ClientsTable
 										users={paginatedClients}
 										isLoading={false}
 										onViewUser={handleViewClient}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}
-										showActions={false}
+										showActions={true}
 									/>
 								</div>
 
