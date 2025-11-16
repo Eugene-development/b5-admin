@@ -33,20 +33,21 @@
 	const navigationVisibility = $derived(getNavigationVisibility());
 
 	// Load new projects indicator on mount with delay to not block initial render
-	onMount(() => {
-		// Delay loading to not block initial page load
-		const loadTimeout = setTimeout(() => {
-			newProjectsState.load();
-		}, 2000); // Wait 2 seconds after page load
+	// TEMPORARILY DISABLED - causing login timeout issues
+	// onMount(() => {
+	// 	// Delay loading to not block initial page load
+	// 	const loadTimeout = setTimeout(() => {
+	// 		newProjectsState.load();
+	// 	}, 2000); // Wait 2 seconds after page load
 
-		// Refresh indicator every 5 minutes
-		const interval = setInterval(() => newProjectsState.refresh(), 5 * 60 * 1000);
+	// 	// Refresh indicator every 5 minutes
+	// 	const interval = setInterval(() => newProjectsState.refresh(), 5 * 60 * 1000);
 
-		return () => {
-			clearTimeout(loadTimeout);
-			clearInterval(interval);
-		};
-	});
+	// 	return () => {
+	// 		clearTimeout(loadTimeout);
+	// 		clearInterval(interval);
+	// 	};
+	// });
 
 	// Function to check if a route is active
 	function isActiveRoute(route) {

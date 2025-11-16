@@ -150,12 +150,7 @@ const ACCEPT_PROJECT_MUTATION = gql`
 
 const HAS_NEW_PROJECTS_QUERY = gql`
 	query HasNewProjects {
-		projects(first: 100, page: 1) {
-			data {
-				id
-				status_id
-			}
-		}
+		hasNewProjects
 	}
 `;
 
@@ -399,7 +394,7 @@ export async function getProjectsWithPagination(
 
 /**
  * Function to check if there are any new projects
- * Queries backend for projects and filters by status_id "01K7HRKTSQV1894Y3JD9WV5KZX" (Новый проект)
+ * Queries backend which returns a boolean indicating if there are projects with status_id "01K7HRKTSQV1894Y3JD9WV5KZX" (Новый проект)
  * @param {Function} customFetch - Custom fetch function for server-side requests
  * @param {Object} cookies - Cookies object for server-side requests
  * @returns {Promise<boolean>} True if there are new projects, false otherwise
@@ -415,10 +410,8 @@ export async function hasNewProjects(customFetch = null, cookies = null) {
 			cookies
 		);
 
-		// Filter projects by status_id on client side
-		const projects = result.projects?.data || [];
-		const hasNew = projects.some((project) => project.status_id === '01K7HRKTSQV1894Y3JD9WV5KZX');
-		return hasNew;
+		// Backend returns a boolean directly
+		return result.hasNewProjects === true;
 	} catch (err) {
 		console.error('Check new projects failed:', err);
 		// Return false on error to prevent UI breaking
