@@ -190,19 +190,16 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if false && isLoading}
 				<tr>
-					<td colspan="10" class="px-4 py-4 text-center" role="cell">
+					<td colspan="10" class="px-4 py-3 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading users data">
-							<div
-								class="h-6 w-6 hidden"
-								aria-hidden="true"
-							></div>
+							<div class="hidden h-6 w-6" aria-hidden="true"></div>
 						</div>
 						<span class="sr-only">Loading users data, please wait...</span>
 					</td>
 				</tr>
 			{:else if users.length === 0}
 				<tr>
-					<td colspan="10" class="px-4 py-4" role="cell">
+					<td colspan="10" class="px-4 py-3" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -216,52 +213,52 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{agent.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-id"
 						>
 							{agent.id}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{agent.name || 'Not specified'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
 							{agent.email}
 						</td>
-						<td class="px-4 py-4 text-sm whitespace-nowrap" role="cell" headers="col-verified">
+						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-verified">
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{agent.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-user-status"
 						>
@@ -280,7 +277,7 @@
 								<span class="text-gray-400">Не указан</span>
 							{/if}
 						</td>
-						<td class="px-4 py-4 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
@@ -288,7 +285,7 @@
 							{/if}
 						</td>
 						<td
-							class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
+							class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
@@ -406,7 +403,7 @@
 <div class="md:hidden">
 	{#if false && isLoading}
 		<div class="flex justify-center py-8">
-			<div class="h-6 w-6 hidden"></div>
+			<div class="hidden h-6 w-6"></div>
 		</div>
 	{:else if users.length === 0}
 		<div class="px-4 py-6">
@@ -671,17 +668,15 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="9" class="px-4 py-4 text-center">
+								<td colspan="9" class="px-4 py-3 text-center">
 									<div class="flex justify-center">
-										<div
-											class="h-6 w-6 hidden"
-										></div>
+										<div class="hidden h-6 w-6"></div>
 									</div>
 								</td>
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="9" class="px-4 py-4">
+								<td colspan="9" class="px-4 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -691,27 +686,27 @@
 						{:else}
 							{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{agent.sequentialNumber || index + 1}
 									</td>
 									<td
-										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{agent.id}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.name || 'Not specified'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.email}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{formatDate(agent.created_at)}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap">
+									<td class="px-4 py-3 text-sm whitespace-nowrap">
 										{#if agent.userStatus}
 											<span
 												class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
@@ -727,7 +722,7 @@
 											<span class="text-gray-400">Не указан</span>
 										{/if}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap">
+									<td class="px-4 py-3 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 												<StatusBadge status="banned" />
@@ -738,7 +733,7 @@
 										</div>
 									</td>
 									<td
-										class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
+										class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
 									>
 										<div class="flex items-center justify-center space-x-2">
 											<!-- View Button -->

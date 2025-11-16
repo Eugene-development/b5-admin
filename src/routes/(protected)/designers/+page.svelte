@@ -24,11 +24,11 @@
 	let { data } = $props();
 
 	let searchTerm = $state('');
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
-	
+	const itemsPerPage = 10;
+
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
@@ -321,12 +321,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localUsers.length === 0 && processedUsers.length > 0}
-					{(localUsers = processedUsers, '')}
+					{((localUsers = processedUsers), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if usersData.error && !loadError}
-					{(loadError = usersData, '')}
+					{((loadError = usersData), '')}
 				{/if}
 
 				<a
@@ -456,7 +456,11 @@
 								>
 									<div class="flex flex-1 items-center space-x-4">
 										<!-- Search Input -->
-										<div class="relative max-w-md flex-1" role="search" aria-label="Designer search">
+										<div
+											class="relative max-w-md flex-1"
+											role="search"
+											aria-label="Designer search"
+										>
 											<div
 												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 											>

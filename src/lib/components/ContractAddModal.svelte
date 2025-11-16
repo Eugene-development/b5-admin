@@ -3,12 +3,7 @@
 	import { getAllProjects } from '$lib/api/projects.js';
 	import { refreshCompanies } from '$lib/api/companies.js';
 
-	let {
-		isOpen = false,
-		onSave,
-		onCancel,
-		isLoading = false
-	} = $props();
+	let { isOpen = false, onSave, onCancel, isLoading = false } = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -34,10 +29,10 @@
 	let errors = $state({});
 	let isFormValid = $derived(
 		formData.project_id &&
-		formData.company_id &&
-		formData.contract_date &&
-		formData.planned_completion_date &&
-		Object.keys(errors).length === 0
+			formData.company_id &&
+			formData.contract_date &&
+			formData.planned_completion_date &&
+			Object.keys(errors).length === 0
 	);
 
 	// Load projects and companies
@@ -159,7 +154,8 @@
 				if (!value) {
 					newErrors.planned_completion_date = 'Укажите планируемую дату завершения';
 				} else if (formData.contract_date && value < formData.contract_date) {
-					newErrors.planned_completion_date = 'Дата завершения не может быть раньше даты заключения';
+					newErrors.planned_completion_date =
+						'Дата завершения не может быть раньше даты заключения';
 				} else {
 					delete newErrors.planned_completion_date;
 				}
@@ -228,7 +224,6 @@
 		}
 	}
 </script>
-
 
 <!-- Modal backdrop and container -->
 {#if isOpen}

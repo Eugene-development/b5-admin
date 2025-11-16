@@ -28,7 +28,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -365,12 +365,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localUsers.length === 0 && processedUsers.length > 0}
-					{(localUsers = processedUsers, '')}
+					{((localUsers = processedUsers), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if agentsData.error && !loadError}
-					{(loadError = agentsData, '')}
+					{((loadError = agentsData), '')}
 				{/if}
 
 				<!-- Skip link for keyboard navigation -->

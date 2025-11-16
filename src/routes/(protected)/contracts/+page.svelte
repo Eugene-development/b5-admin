@@ -80,9 +80,7 @@
 				const companyName = (contract.company?.name || '').toLowerCase();
 
 				return (
-					contractNumber.includes(term) ||
-					projectName.includes(term) ||
-					companyName.includes(term)
+					contractNumber.includes(term) || projectName.includes(term) || companyName.includes(term)
 				);
 			});
 		}
@@ -303,7 +301,6 @@
 	}
 </script>
 
-
 <ProtectedRoute>
 	{#snippet children()}
 		<ErrorBoundary
@@ -325,12 +322,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localContracts.length === 0 && processedContracts.length > 0}
-					{(localContracts = processedContracts, '')}
+					{((localContracts = processedContracts), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if contractsData.error && !loadError}
-					{(loadError = contractsData.error, '')}
+					{((loadError = contractsData.error), '')}
 				{/if}
 
 				<!-- Skip link for keyboard navigation -->
@@ -488,7 +485,11 @@
 								>
 									<div class="flex flex-1 items-center space-x-4">
 										<!-- Search Input -->
-										<div class="relative max-w-md flex-1" role="search" aria-label="Contract search">
+										<div
+											class="relative max-w-md flex-1"
+											role="search"
+											aria-label="Contract search"
+										>
 											<div
 												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 											>
@@ -553,7 +554,7 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
-								
+
 								<!-- Pagination -->
 								<Pagination
 									bind:currentPage
@@ -570,7 +571,9 @@
 				<div class="flex min-h-screen items-center justify-center">
 					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
 						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки контрактов</h3>
-						<p class="text-red-300">Не удалось загрузить контракты. Попробуйте обновить страницу.</p>
+						<p class="text-red-300">
+							Не удалось загрузить контракты. Попробуйте обновить страницу.
+						</p>
 					</div>
 				</div>
 			{/await}

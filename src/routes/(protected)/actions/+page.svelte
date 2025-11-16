@@ -30,10 +30,10 @@
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Modal state
 	let selectedAction = $state(null);
@@ -211,7 +211,7 @@
 		if (!searchTerm.trim()) {
 			return allActions;
 		}
-		
+
 		const term = searchTerm.toLowerCase().trim();
 		return allActions.filter(
 			(action) =>
@@ -220,14 +220,14 @@
 				action.region.toLowerCase().includes(term)
 		);
 	});
-	
+
 	// Get paginated actions
 	let paginatedActions = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredActions.slice(startIndex, endIndex);
 	});
-	
+
 	function handleSearch(term) {
 		searchTerm = term;
 		hasSearched = searchTerm.trim().length > 0;
@@ -241,7 +241,7 @@
 		currentPage = 1;
 		updateCounter++;
 	}
-	
+
 	// Reset to first page when filters change
 	$effect(() => {
 		searchTerm;
@@ -323,9 +323,7 @@
 
 					<!-- Update local state -->
 					{#if !allActions.length && actionsData.actions.length}
-						{((allActions = actionsData.actions),
-						(companies = actionsData.companies),
-						'')}
+						{((allActions = actionsData.actions), (companies = actionsData.companies), '')}
 					{/if}
 
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -493,7 +491,7 @@
 										onDeleteAction={handleDeleteAction}
 									/>
 								</div>
-								
+
 								<!-- Pagination -->
 								<Pagination
 									bind:currentPage

@@ -76,7 +76,6 @@
 		return text.substring(0, maxLength) + '...';
 	}
 
-
 	// Generate unique table ID for accessibility
 	const tableId = `projects-table-${Math.random().toString(36).substr(2, 9)}`;
 	const tableCaptionId = `${tableId}-caption`;
@@ -230,7 +229,11 @@
 					scope="col"
 					role="columnheader"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide uppercase dark:text-gray-400"
-					aria-sort={sortColumn === 'status' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+					aria-sort={sortColumn === 'status'
+						? sortDirection === 'asc'
+							? 'ascending'
+							: 'descending'
+						: 'none'}
 				>
 					<button
 						type="button"
@@ -242,19 +245,41 @@
 							{#if sortColumn === 'status'}
 								{#if sortDirection === 'asc'}
 									<!-- Up arrow (ascending) -->
-									<svg class="h-3 w-3 text-gray-700 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-										<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+									<svg
+										class="h-3 w-3 text-gray-700 dark:text-gray-200"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"
+											clip-rule="evenodd"
+										/>
 									</svg>
 								{:else}
 									<!-- Down arrow (descending) -->
-									<svg class="h-3 w-3 text-gray-700 dark:text-gray-200" fill="currentColor" viewBox="0 0 20 20">
-										<path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+									<svg
+										class="h-3 w-3 text-gray-700 dark:text-gray-200"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+									>
+										<path
+											fill-rule="evenodd"
+											d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"
+											clip-rule="evenodd"
+										/>
 									</svg>
 								{/if}
 							{:else}
 								<!-- Neutral arrows (not sorted) -->
-								<svg class="h-3 w-3 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-									<path d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
+								<svg
+									class="h-3 w-3 text-gray-400 opacity-0 transition-opacity group-hover:opacity-100 dark:text-gray-500"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+								>
+									<path
+										d="M5 12a1 1 0 102 0V6.414l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L5 6.414V12zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z"
+									/>
 								</svg>
 							{/if}
 						</span>
@@ -393,7 +418,7 @@
 						</td>
 
 						<td
-							class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6"
+							class="relative py-3 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
@@ -455,7 +480,7 @@
 								{truncateText(project.region)}
 							</p>
 						</div>
-						<div class="ml-3 flex flex-col items-end gap-2 flex-shrink-0">
+						<div class="ml-3 flex flex-shrink-0 flex-col items-end gap-2">
 							<span
 								class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
 								aria-label="Номер проекта {project.sequentialNumber || index + 1}"
@@ -580,7 +605,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if isLoading}
 							<tr>
-								<td colspan="4" class="px-4 py-4 text-center">
+								<td colspan="4" class="px-4 py-3 text-center">
 									<div class="flex justify-center">
 										<div
 											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -590,7 +615,7 @@
 							</tr>
 						{:else if projects.length === 0}
 							<tr>
-								<td colspan="4" class="px-4 py-4">
+								<td colspan="4" class="px-4 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -605,23 +630,23 @@
 						{:else}
 							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{project.sequentialNumber || index + 1}
 									</td>
 									<td
-										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{project.client?.name || ' - '}
 									</td>
 									<td
-										class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 										title={project.region || ''}
 									>
 										{truncateText(project.region)}
 									</td>
 
 									<td
-										class="relative py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap"
+										class="relative py-3 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap"
 									>
 										<ActionButtons
 											agent={project}

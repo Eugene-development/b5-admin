@@ -28,16 +28,16 @@
 	import { getProjectStatuses } from '$lib/api/projectStatuses.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
-	import { newProjectsCountState } from '$lib/state/newProjectsCount.svelte.js';
+	import { newProjectsState } from '$lib/state/newProjectsCount.svelte.js';
 
 	let { data } = $props();
 
 	// Search state management
 	let searchTerm = $state('');
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -129,14 +129,14 @@
 
 		return filtered;
 	});
-	
+
 	// Get paginated projects
 	let paginatedProjects = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredProjects.slice(startIndex, endIndex);
 	});
-	
+
 	// Reset to first page when filters change
 	$effect(() => {
 		searchTerm;
@@ -207,7 +207,7 @@
 						removeProjectFromList(project.id);
 						addSuccessToast(`Проект "${project.value}" успешно удален.`);
 						// Refresh new projects count in sidebar (in case deleted project was new)
-						await newProjectsCountState.refresh();
+						await newProjectsState.refresh();
 					}
 				},
 				2,
@@ -242,7 +242,7 @@
 					updateProjectInList(updatedProject);
 					addSuccessToast(`Проект "${updatedProject.value}" успешно обновлен.`);
 					// Refresh new projects count in sidebar (in case status changed)
-					await newProjectsCountState.refresh();
+					await newProjectsState.refresh();
 				},
 				2,
 				1000
@@ -303,7 +303,7 @@
 					// Silently refresh data in background without showing loading state
 					await silentRefreshData();
 					// Refresh new projects count in sidebar
-					await newProjectsCountState.refresh();
+					await newProjectsState.refresh();
 				},
 				2,
 				1000
@@ -350,12 +350,15 @@
 			}));
 
 			// Debug: log first 3 projects from refresh
-			console.log('Refreshed projects (first 3):', projects.slice(0, 3).map(p => ({
-				id: p.id,
-				value: p.value,
-				sequentialNumber: p.sequentialNumber,
-				created_at: p.created_at
-			})));
+			console.log(
+				'Refreshed projects (first 3):',
+				projects.slice(0, 3).map((p) => ({
+					id: p.id,
+					value: p.value,
+					sequentialNumber: p.sequentialNumber,
+					created_at: p.created_at
+				}))
+			);
 			localProjects = projects;
 			loadError = null;
 
@@ -429,12 +432,15 @@
 
 		const projects = [...projectsData.projects];
 		// Debug: log first 3 projects to verify sequentialNumber
-		console.log('Processed projects (first 3):', projects.slice(0, 3).map(p => ({
-			id: p.id,
-			value: p.value,
-			sequentialNumber: p.sequentialNumber,
-			created_at: p.created_at
-		})));
+		console.log(
+			'Processed projects (first 3):',
+			projects.slice(0, 3).map((p) => ({
+				id: p.id,
+				value: p.value,
+				sequentialNumber: p.sequentialNumber,
+				created_at: p.created_at
+			}))
+		);
 		return projects;
 	}
 
@@ -487,12 +493,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localProjects.length === 0 && processedProjects.length > 0}
-					{(localProjects = processedProjects, '')}
+					{((localProjects = processedProjects), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if projectsData.error && !loadError}
-					{(loadError = projectsData, '')}
+					{((loadError = projectsData), '')}
 				{/if}
 
 				<!-- Skip link for keyboard navigation -->
@@ -697,7 +703,7 @@
 										onSort={handleSort}
 									/>
 								</div>
-								
+
 								<!-- Pagination -->
 								<Pagination
 									bind:currentPage

@@ -113,10 +113,12 @@
 			>
 				<form onsubmit={handleSubmit}>
 					<!-- Header -->
-					<div class="border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+					<div
+						class="border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800"
+					>
 						<div class="flex items-center justify-between">
 							<h3
-								class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+								class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 								id="modal-title"
 							>
 								Добавить рекламацию
@@ -125,7 +127,7 @@
 								type="button"
 								onclick={handleCancel}
 								disabled={isLoading}
-								class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:text-gray-300"
+								class="rounded-md text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:hover:text-gray-300"
 							>
 								<span class="sr-only">Закрыть</span>
 								<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -141,11 +143,16 @@
 					</div>
 
 					<!-- Body -->
-					<div class="max-h-[calc(100vh-16rem)] overflow-y-auto bg-white px-6 py-4 dark:bg-gray-800">
+					<div
+						class="max-h-[calc(100vh-16rem)] overflow-y-auto bg-white px-6 py-4 dark:bg-gray-800"
+					>
 						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<!-- Title (required) -->
 							<div class="sm:col-span-2">
-								<label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="title"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Название <span class="text-red-500">*</span>
 								</label>
 								<input
@@ -161,7 +168,10 @@
 
 							<!-- Description -->
 							<div class="sm:col-span-2">
-								<label for="description" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="description"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Описание
 								</label>
 								<textarea
@@ -176,7 +186,10 @@
 
 							<!-- Contract -->
 							<div>
-								<label for="contract_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="contract_id"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Контракт
 								</label>
 								<select
@@ -196,7 +209,10 @@
 
 							<!-- Order -->
 							<div>
-								<label for="order_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="order_id"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Заказ
 								</label>
 								<select
@@ -216,7 +232,10 @@
 
 							<!-- Responsible Person -->
 							<div>
-								<label for="responsible_person" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="responsible_person"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Ответственный
 								</label>
 								<input
@@ -231,7 +250,10 @@
 
 							<!-- Guilty Party -->
 							<div>
-								<label for="guilty_party" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="guilty_party"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Виновная сторона
 								</label>
 								<input
@@ -246,7 +268,10 @@
 
 							<!-- Priority -->
 							<div>
-								<label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="priority"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Приоритет
 								</label>
 								<select
@@ -264,7 +289,10 @@
 
 							<!-- Status -->
 							<div>
-								<label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="status"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Статус
 								</label>
 								<select
@@ -282,7 +310,10 @@
 
 							<!-- Planned Resolution Date -->
 							<div>
-								<label for="planned_resolution_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="planned_resolution_date"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Плановая дата решения
 								</label>
 								<input
@@ -296,7 +327,10 @@
 
 							<!-- Actual Resolution Date -->
 							<div>
-								<label for="actual_resolution_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="actual_resolution_date"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Фактическая дата решения
 								</label>
 								<input
@@ -310,7 +344,10 @@
 
 							<!-- Resolution Notes -->
 							<div class="sm:col-span-2">
-								<label for="resolution_notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<label
+									for="resolution_notes"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
 									Заметки о решении
 								</label>
 								<textarea
@@ -333,7 +370,10 @@
 										disabled={isLoading}
 										class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700"
 									/>
-									<label for="is_active" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+									<label
+										for="is_active"
+										class="ml-2 block text-sm text-gray-700 dark:text-gray-300"
+									>
 										Активна
 									</label>
 								</div>
@@ -342,20 +382,22 @@
 					</div>
 
 					<!-- Footer -->
-					<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-900">
+					<div
+						class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-900"
+					>
 						<div class="flex justify-end space-x-3">
 							<button
 								type="button"
 								onclick={handleCancel}
 								disabled={isLoading}
-								class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+								class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
 							>
 								Отмена
 							</button>
 							<button
 								type="submit"
 								disabled={isLoading}
-								class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+								class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								{#if isLoading}
 									<svg

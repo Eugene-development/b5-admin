@@ -1,14 +1,11 @@
 <script>
-	let {
-		isOpen = false,
-		complaint = null,
-		onClose = () => {}
-	} = $props();
+	let { isOpen = false, complaint = null, onClose = () => {} } = $props();
 
 	// Get priority badge classes
 	function getPriorityBadgeClasses(priority) {
-		const baseClasses = 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
-		
+		const baseClasses =
+			'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
+
 		switch (priority) {
 			case 'low':
 				return `${baseClasses} bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20`;
@@ -41,8 +38,9 @@
 
 	// Get status badge classes
 	function getStatusBadgeClasses(status) {
-		const baseClasses = 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
-		
+		const baseClasses =
+			'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
+
 		switch (status) {
 			case 'open':
 				return `${baseClasses} bg-blue-50 text-blue-700 ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30`;
@@ -125,10 +123,12 @@
 				class="relative mx-4 transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-3xl dark:bg-gray-800"
 			>
 				<!-- Header -->
-				<div class="border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800">
+				<div
+					class="border-b border-gray-200 bg-white px-6 py-4 dark:border-gray-700 dark:bg-gray-800"
+				>
 					<div class="flex items-center justify-between">
 						<h3
-							class="text-lg font-semibold leading-6 text-gray-900 dark:text-white"
+							class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 							id="modal-title"
 						>
 							Просмотр рекламации
@@ -136,7 +136,7 @@
 						<button
 							type="button"
 							onclick={onClose}
-							class="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:hover:text-gray-300"
+							class="rounded-md text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:hover:text-gray-300"
 						>
 							<span class="sr-only">Закрыть</span>
 							<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,11 +167,15 @@
 									{getStatusLabel(complaint.status)}
 								</span>
 								{#if complaint.is_active}
-									<span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20 dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20">
+									<span
+										class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-500/10 dark:text-green-400 dark:ring-green-500/20"
+									>
 										Активна
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20">
+									<span
+										class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-gray-500/10 ring-inset dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20"
+									>
 										Неактивна
 									</span>
 								{/if}
@@ -246,7 +250,9 @@
 								</p>
 							</div>
 							<div>
-								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Виновная сторона</h5>
+								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Виновная сторона
+								</h5>
 								<p class="mt-1 text-sm text-gray-900 dark:text-white">
 									{complaint.guilty_party || '—'}
 								</p>
@@ -256,13 +262,17 @@
 						<!-- Dates -->
 						<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Плановая дата решения</h5>
+								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Плановая дата решения
+								</h5>
 								<p class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(complaint.planned_resolution_date)}
 								</p>
 							</div>
 							<div>
-								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Фактическая дата решения</h5>
+								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Фактическая дата решения
+								</h5>
 								<p class="mt-1 text-sm text-gray-900 dark:text-white">
 									{formatDate(complaint.actual_resolution_date)}
 								</p>
@@ -272,7 +282,9 @@
 						<!-- Resolution Notes -->
 						{#if complaint.resolution_notes}
 							<div>
-								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Заметки о решении</h5>
+								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Заметки о решении
+								</h5>
 								<p class="mt-1 text-sm text-gray-900 dark:text-white">
 									{complaint.resolution_notes}
 								</p>
@@ -300,12 +312,14 @@
 				</div>
 
 				<!-- Footer -->
-				<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-900">
+				<div
+					class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-900"
+				>
 					<div class="flex justify-end">
 						<button
 							type="button"
 							onclick={onClose}
-							class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+							class="inline-flex justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
 						>
 							Закрыть
 						</button>

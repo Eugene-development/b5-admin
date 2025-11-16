@@ -40,10 +40,10 @@
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Modal state
 	let isViewModalOpen = $state(false);
@@ -136,7 +136,7 @@
 		if (!searchTerm.trim()) {
 			return tzList;
 		}
-		
+
 		const term = searchTerm.toLowerCase().trim();
 		return tzList.filter((tz) => {
 			const projectValue = (tz.project?.value || '').toLowerCase();
@@ -144,19 +144,19 @@
 			return projectValue.includes(term) || id.includes(term);
 		});
 	});
-	
+
 	// Get paginated TZ list
 	let paginatedTzList = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredTzList.slice(startIndex, endIndex);
 	});
-	
+
 	function handleSearch() {
 		hasSearched = searchTerm.trim().length > 0;
 		currentPage = 1;
 	}
-	
+
 	// Reset to first page when filters change
 	$effect(() => {
 		searchTerm;
@@ -514,7 +514,10 @@
 							<!-- Total TZ count -->
 							<div class="text-sm text-gray-700 dark:text-gray-300">
 								{#if searchTerm.trim()}
-									<span>Найдено: <strong>{filteredTzList.length}</strong> из <strong>{tzList.length}</strong></span>
+									<span
+										>Найдено: <strong>{filteredTzList.length}</strong> из
+										<strong>{tzList.length}</strong></span
+									>
 								{:else}
 									<span>Всего элементов: <strong>{tzList.length}</strong></span>
 								{/if}
@@ -553,7 +556,7 @@
 								onUploadCP={handleUploadCP}
 							/>
 						</div>
-						
+
 						<!-- Pagination -->
 						<Pagination
 							bind:currentPage

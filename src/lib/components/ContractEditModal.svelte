@@ -3,13 +3,7 @@
 	import { getAllProjects } from '$lib/api/projects.js';
 	import { refreshCompanies } from '$lib/api/companies.js';
 
-	let {
-		isOpen = false,
-		contract = null,
-		onSave,
-		onCancel,
-		isLoading = false
-	} = $props();
+	let { isOpen = false, contract = null, onSave, onCancel, isLoading = false } = $props();
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -38,12 +32,12 @@
 	let errors = $state({});
 	let isFormValid = $derived(
 		formData.project_id &&
-		formData.company_id &&
-		formData.contract_date &&
-		formData.planned_completion_date &&
-		formData.agent_percentage !== '' &&
-		formData.curator_percentage !== '' &&
-		Object.keys(errors).length === 0
+			formData.company_id &&
+			formData.contract_date &&
+			formData.planned_completion_date &&
+			formData.agent_percentage !== '' &&
+			formData.curator_percentage !== '' &&
+			Object.keys(errors).length === 0
 	);
 
 	// Load projects and companies
@@ -176,7 +170,8 @@
 				if (!value) {
 					newErrors.planned_completion_date = 'Укажите планируемую дату завершения';
 				} else if (formData.contract_date && value < formData.contract_date) {
-					newErrors.planned_completion_date = 'Дата завершения не может быть раньше даты заключения';
+					newErrors.planned_completion_date =
+						'Дата завершения не может быть раньше даты заключения';
 				} else {
 					delete newErrors.planned_completion_date;
 				}
@@ -269,7 +264,6 @@
 		}
 	}
 </script>
-
 
 <!-- Modal backdrop and container -->
 {#if isOpen && contract}
@@ -508,12 +502,17 @@
 								oninput={(e) => handleInputChange('curator_percentage', e.target.value)}
 								disabled={isLoading}
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								aria-describedby={errors.curator_percentage ? 'curator-percentage-error' : undefined}
+								aria-describedby={errors.curator_percentage
+									? 'curator-percentage-error'
+									: undefined}
 								aria-invalid={errors.curator_percentage ? 'true' : 'false'}
 								required
 							/>
 							{#if errors.curator_percentage}
-								<p id="curator-percentage-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								<p
+									id="curator-percentage-error"
+									class="mt-1 text-sm text-red-600 dark:text-red-400"
+								>
 									{errors.curator_percentage}
 								</p>
 							{/if}

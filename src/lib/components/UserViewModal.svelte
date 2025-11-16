@@ -224,7 +224,9 @@
 													{formatPhone(phone.value)}
 												</a>
 												{#if phone.is_primary}
-													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400">(основной)</span>
+													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400"
+														>(основной)</span
+													>
 												{/if}
 											</div>
 										{/each}
@@ -303,9 +305,9 @@
 					<!-- Agents and Projects Section (for clients) -->
 					{#if user.projects && user.projects.length > 0}
 						{@const uniqueAgents = user.projects
-							.filter(p => p.agent)
+							.filter((p) => p.agent)
 							.reduce((acc, p) => {
-								if (!acc.find(a => a.id === p.agent.id)) {
+								if (!acc.find((a) => a.id === p.agent.id)) {
 									acc.push(p.agent);
 								}
 								return acc;
@@ -315,13 +317,13 @@
 							<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
 								<!-- Agents Column -->
 								<div>
-									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">
-										Агенты
-									</h5>
+									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Агенты</h5>
 									<div class="space-y-3">
 										{#if uniqueAgents.length > 0}
 											{#each uniqueAgents as agent}
-												<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
+												<div
+													class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700"
+												>
 													<div class="font-medium text-gray-900 dark:text-white">
 														{agent.name}
 													</div>
@@ -345,12 +347,12 @@
 
 								<!-- Projects Column -->
 								<div>
-									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">
-										Проекты
-									</h5>
+									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Проекты</h5>
 									<div class="space-y-3">
 										{#each user.projects as project}
-											<div class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700">
+											<div
+												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700"
+											>
 												{#if project.value}
 													<div class="font-medium text-gray-900 dark:text-white">
 														{project.value}

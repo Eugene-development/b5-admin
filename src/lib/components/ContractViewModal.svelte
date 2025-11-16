@@ -1,11 +1,7 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 
-	let {
-		isOpen = false,
-		contract = null,
-		onClose
-	} = $props();
+	let { isOpen = false, contract = null, onClose } = $props();
 
 	let modalElement = $state();
 	let previousActiveElement;
@@ -156,22 +152,18 @@
 				<div class="space-y-6">
 					<!-- Basic Information -->
 					<div>
-						<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
+						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
 							Основная информация
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Контракт
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Контракт</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{contract.contract_number || '—'}
 								</dd>
 							</div>
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Статус
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Статус</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{contract.is_active ? 'Активен' : 'Неактивен'}
 								</dd>
@@ -181,14 +173,12 @@
 
 					<!-- Related Entities -->
 					<div>
-						<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
+						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
 							Связанные сущности
 						</h4>
 						<dl class="space-y-4">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Проект
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Проект</dt>
 								<dd class="mt-1">
 									<div class="text-sm font-medium text-gray-900 dark:text-gray-100">
 										{contract.project?.value || 'Не указан'}
@@ -206,9 +196,7 @@
 								</dd>
 							</div>
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Компания
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Компания</dt>
 								<dd class="mt-1">
 									<div class="text-sm font-medium text-gray-900 dark:text-gray-100">
 										{contract.company?.name || 'Не указана'}
@@ -235,14 +223,10 @@
 
 					<!-- Dates -->
 					<div>
-						<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
-							Даты
-						</h4>
+						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Даты</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Дата
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{formatDate(contract.contract_date)}
 								</dd>
@@ -270,14 +254,12 @@
 
 					<!-- Financial Terms -->
 					<div>
-						<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
+						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
 							Финансовые условия
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Процент агента
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Процент агента</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{formatPercentage(contract.agent_percentage)}
 								</dd>
@@ -295,14 +277,10 @@
 
 					<!-- Metadata -->
 					<div>
-						<h4 class="text-sm font-medium text-gray-900 dark:text-white mb-3">
-							Метаданные
-						</h4>
+						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Метаданные</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Дата создания
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата создания</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{formatDateTime(contract.created_at)}
 								</dd>

@@ -93,49 +93,49 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Компания
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Почта
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px; width: 150px;"
 				>
 					Телефон
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Контактное лицо
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					СОСТОЯНИЕ
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 160px; width: 160px;"
 				>
 					Действия

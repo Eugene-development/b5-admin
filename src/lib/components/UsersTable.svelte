@@ -173,7 +173,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-4" role="cell">
+					<td colspan="8" class="px-4 py-3" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -187,28 +187,28 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-id"
 						>
 							{user.id}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Not specified'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
@@ -217,20 +217,20 @@
 						</td>
 
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="px-4 py-4 text-sm whitespace-nowrap" role="cell" headers="col-ban">
+						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-ban">
 							<button
 								type="button"
 								onclick={() => onBanUser(user)}
@@ -253,7 +253,7 @@
 							</button>
 						</td>
 						<td
-							class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
+							class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>
@@ -580,17 +580,15 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="7" class="px-4 py-4 text-center">
+								<td colspan="7" class="px-4 py-3 text-center">
 									<div class="flex justify-center">
-										<div
-											class="h-6 w-6 hidden"
-										></div>
+										<div class="hidden h-6 w-6"></div>
 									</div>
 								</td>
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="7" class="px-4 py-4">
+								<td colspan="7" class="px-4 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -600,24 +598,24 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
 									<td
-										class="px-4 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{user.id}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Not specified'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.email}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap">
+									<td class="px-4 py-3 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 												<StatusBadge status="banned" />
@@ -628,7 +626,7 @@
 										</div>
 									</td>
 									<td
-										class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
+										class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
 									>
 										<div class="flex items-center justify-center space-x-2">
 											<!-- View Button -->

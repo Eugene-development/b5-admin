@@ -83,7 +83,6 @@
 		return `${rate}%`;
 	}
 
-
 	// Get agent display text
 	function getAgentDisplay(agent) {
 		if (!agent) return 'Не назначен';
@@ -436,7 +435,9 @@
 													Процент агента / куратора:
 												</dt>
 												<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-													{formatAgentRate(contract.agent_percentage)} / {formatAgentRate(contract.curator_percentage)}
+													{formatAgentRate(contract.agent_percentage)} / {formatAgentRate(
+														contract.curator_percentage
+													)}
 												</dd>
 											</div>
 											<div>
@@ -458,9 +459,7 @@
 								{/each}
 							</div>
 						{:else}
-							<p class="text-sm text-gray-500 dark:text-gray-400">
-								Контракты не найдены
-							</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Контракты не найдены</p>
 						{/if}
 					</div>
 
@@ -487,9 +486,7 @@
 												</dd>
 											</div>
 											<div>
-												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
-													Сумма:
-												</dt>
+												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">Сумма:</dt>
 												<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
 													{formatCurrency(purchase.amount)}
 												</dd>
@@ -499,9 +496,7 @@
 								{/each}
 							</div>
 						{:else}
-							<p class="text-sm text-gray-500 dark:text-gray-400">
-								Закупки не найдены
-							</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Закупки не найдены</p>
 						{/if}
 					</div>
 

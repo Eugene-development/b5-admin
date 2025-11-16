@@ -74,7 +74,11 @@
 		aria-describedby={tableDescriptionId}
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица клиентов с {users.length} клиент{users.length === 1 ? 'ом' : users.length < 5 ? 'ами' : 'ами'}
+			Таблица клиентов с {users.length} клиент{users.length === 1
+				? 'ом'
+				: users.length < 5
+					? 'ами'
+					: 'ами'}
 			{hasSearched ? ` по запросу "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
@@ -152,7 +156,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan={showActions ? "7" : "6"} class="px-4 py-4" role="cell">
+					<td colspan={showActions ? '7' : '6'} class="px-4 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -166,83 +170,63 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Не указано'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-agent"
 						>
 							{user.agent?.name || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-phone"
 						>
 							{#if user.phones && user.phones.length > 0}
-								{user.phones.find(p => p.is_primary)?.value || user.phones[0]?.value || 'Не указан'}
+								{user.phones.find((p) => p.is_primary)?.value ||
+									user.phones[0]?.value ||
+									'Не указан'}
 							{:else}
 								Не указан
 							{/if}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="px-4 py-4 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							<StatusBadge status={getClientStatus(user)} />
 						</td>
 						{#if showActions}
 							<td
-								class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
+								class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
 								role="cell"
 								headers="col-actions"
 							>
-								<div class="flex gap-2 justify-center">
-									<button
-										type="button"
-										onclick={() => onEditUser && onEditUser(user)}
-										class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-										aria-label="Редактировать клиента {user.name}"
-									>
-										<svg
-											class="h-4 w-4"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-											/>
-										</svg>
-									</button>
+								<div class="flex justify-center gap-2">
 									<button
 										type="button"
 										onclick={() => onViewUser && onViewUser(user)}
@@ -268,6 +252,28 @@
 												stroke-linejoin="round"
 												stroke-width="2"
 												d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+											/>
+										</svg>
+									</button>
+									<button
+										type="button"
+										onclick={() => onEditUser && onEditUser(user)}
+										class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+										aria-label="Редактировать клиента {user.name}"
+									>
+										<svg
+											class="h-4 w-4"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+											aria-hidden="true"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 											/>
 										</svg>
 									</button>
@@ -321,7 +327,7 @@
 							</h3>
 							{#if user.phones && user.phones.length > 0}
 								<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-									{user.phones.find(p => p.is_primary)?.value || user.phones[0]?.value}
+									{user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value}
 								</p>
 							{/if}
 						</div>
@@ -366,31 +372,7 @@
 
 					<!-- Action Buttons -->
 					{#if showActions}
-						<div
-							class="flex justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-600"
-						>
-							<button
-								type="button"
-								onclick={() => onEditUser && onEditUser(user)}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500"
-								aria-label="Редактировать клиента {user.name}"
-							>
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-									/>
-								</svg>
-							</button>
+						<div class="flex justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-600">
 							<button
 								type="button"
 								onclick={() => onViewUser && onViewUser(user)}
@@ -416,6 +398,28 @@
 										stroke-linejoin="round"
 										stroke-width="2"
 										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+									/>
+								</svg>
+							</button>
+							<button
+								type="button"
+								onclick={() => onEditUser && onEditUser(user)}
+								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500"
+								aria-label="Редактировать клиента {user.name}"
+							>
+								<svg
+									class="h-5 w-5"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 									/>
 								</svg>
 							</button>
@@ -481,7 +485,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if users.length === 0}
 							<tr>
-								<td colspan={showActions ? "7" : "6"} class="px-4 py-4">
+								<td colspan={showActions ? '7' : '6'} class="px-4 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -491,55 +495,35 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Не указано'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.agent?.name || 'Не указан'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{#if user.phones && user.phones.length > 0}
-											{user.phones.find(p => p.is_primary)?.value || user.phones[0]?.value || 'Не указан'}
+											{user.phones.find((p) => p.is_primary)?.value ||
+												user.phones[0]?.value ||
+												'Не указан'}
 										{:else}
 											Не указан
 										{/if}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-4 text-sm whitespace-nowrap">
+									<td class="px-4 py-3 text-sm whitespace-nowrap">
 										<StatusBadge status={getClientStatus(user)} />
 									</td>
 									{#if showActions}
 										<td
-											class="relative py-4 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
+											class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
 										>
-											<div class="flex gap-2 justify-center">
-												<button
-													type="button"
-													onclick={() => onEditUser && onEditUser(user)}
-													class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500"
-													aria-label="Редактировать клиента {user.name}"
-												>
-													<svg
-														class="h-4 w-4"
-														xmlns="http://www.w3.org/2000/svg"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-														aria-hidden="true"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-														/>
-													</svg>
-												</button>
+											<div class="flex justify-center gap-2">
 												<button
 													type="button"
 													onclick={() => onViewUser && onViewUser(user)}
@@ -565,6 +549,28 @@
 															stroke-linejoin="round"
 															stroke-width="2"
 															d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+														/>
+													</svg>
+												</button>
+												<button
+													type="button"
+													onclick={() => onEditUser && onEditUser(user)}
+													class="inline-flex items-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500"
+													aria-label="Редактировать клиента {user.name}"
+												>
+													<svg
+														class="h-4 w-4"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+														aria-hidden="true"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
 														/>
 													</svg>
 												</button>

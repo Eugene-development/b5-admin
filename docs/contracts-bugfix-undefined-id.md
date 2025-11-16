@@ -3,6 +3,7 @@
 ## Проблема
 
 При переходе на страницу контрактов возникала ошибка:
+
 ```
 Uncaught (in promise) TypeError: Cannot read properties of undefined (reading 'id')
 ```
@@ -62,7 +63,7 @@ return contracts.filter((contract) => contract && contract.id);
 
 // В createContract и updateContract
 if (!contract || !contract.id) {
-  throw new Error('Invalid contract data returned from server');
+	throw new Error('Invalid contract data returned from server');
 }
 ```
 
@@ -78,14 +79,15 @@ if (!contract || !contract.id) {
 
 ```svelte
 <ContractActionButtons
-  onView={() => onViewContract(contract)}
-  onEdit={() => onEditContract(contract)}
-  onDelete={() => onDeleteContract(contract)}
-  {isLoading}
+	onView={() => onViewContract(contract)}
+	onEdit={() => onEditContract(contract)}
+	onDelete={() => onDeleteContract(contract)}
+	{isLoading}
 />
 ```
 
 Этот компонент:
+
 - Не требует передачи `agent` или `user` пропсов
 - Работает только с callback функциями
 - Специально разработан для управления контрактами

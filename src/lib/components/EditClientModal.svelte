@@ -23,13 +23,14 @@
 				name: client.name || '',
 				birthday: client.birthday || '',
 				ban: client.ban || false,
-				phones: client.phones?.length > 0
-					? client.phones.map(p => ({
-						id: p.id,
-						value: p.value,
-						is_primary: p.is_primary || false
-					}))
-					: [{ value: '', is_primary: true }]
+				phones:
+					client.phones?.length > 0
+						? client.phones.map((p) => ({
+								id: p.id,
+								value: p.value,
+								is_primary: p.is_primary || false
+							}))
+						: [{ value: '', is_primary: true }]
 			};
 			errors = {};
 		}
@@ -44,7 +45,7 @@
 		}
 
 		// Validate phones
-		const validPhones = formData.phones.filter(p => p.value.trim() !== '');
+		const validPhones = formData.phones.filter((p) => p.value.trim() !== '');
 		if (validPhones.length === 0) {
 			newErrors.phones = 'Необходим хотя бы один телефон';
 		}
@@ -65,7 +66,7 @@
 
 		try {
 			// Filter out empty phones
-			const phonesToSave = formData.phones.filter(p => p.value.trim() !== '');
+			const phonesToSave = formData.phones.filter((p) => p.value.trim() !== '');
 
 			const input = {
 				id: formData.id,
@@ -323,7 +324,9 @@
 					</div>
 
 					<!-- Modal footer -->
-					<div class="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-600">
+					<div
+						class="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-600"
+					>
 						<button
 							type="button"
 							onclick={onClose}

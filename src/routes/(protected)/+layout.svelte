@@ -18,7 +18,7 @@
 	import { goto } from '$app/navigation';
 	import { page, navigating } from '$app/stores';
 	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
-	import { newProjectsCountState } from '$lib/state/newProjectsCount.svelte.js';
+	import { newProjectsState } from '$lib/state/newProjectsCount.svelte.js';
 	import { onMount } from 'svelte';
 
 	let { children } = $props();
@@ -32,36 +32,20 @@
 	// Get navigation visibility reactively
 	const navigationVisibility = $derived(getNavigationVisibility());
 
-	// Get correct plural form for Russian language
-	function getProjectsPlural(count) {
-		const lastDigit = count % 10;
-		const lastTwoDigits = count % 100;
-
-		if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
-			return 'проектов';
-		}
-		if (lastDigit === 1) {
-			return 'проект';
-		}
-		if (lastDigit >= 2 && lastDigit <= 4) {
-			return 'проекта';
-		}
-		return 'проектов';
-	}
-
-	// Get new projects tooltip text
-	const newProjectsTooltip = $derived(
-		`${newProjectsCountState.count} ${newProjectsCountState.count === 1 ? 'новый' : 'новых'} ${getProjectsPlural(newProjectsCountState.count)}`
-	);
-
-	// Load new projects count on mount
+	// Load new projects indicator on mount with delay to not block initial render
 	onMount(() => {
-		newProjectsCountState.load();
+		// Delay loading to not block initial page load
+		const loadTimeout = setTimeout(() => {
+			newProjectsState.load();
+		}, 2000); // Wait 2 seconds after page load
 
-		// Refresh count every 5 minutes
-		const interval = setInterval(() => newProjectsCountState.refresh(), 5 * 60 * 1000);
+		// Refresh indicator every 5 minutes
+		const interval = setInterval(() => newProjectsState.refresh(), 5 * 60 * 1000);
 
-		return () => clearInterval(interval);
+		return () => {
+			clearTimeout(loadTimeout);
+			clearInterval(interval);
+		};
 	});
 
 	// Function to check if a route is active
@@ -428,10 +412,10 @@
 										>
 											<span class={getSpanIconClasses('/projects')}>Пр</span>
 											<span class="truncate">Проекты</span>
-											{#if newProjectsCountState.count > 0}
+											{#if newProjectsState.hasNew}
 												<span
 													class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
-													title={newProjectsTooltip}
+													title="Есть новые проекты"
 												>
 													!
 												</span>
@@ -749,10 +733,10 @@
 									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
 										<span class={getSpanIconClasses('/projects')}>Пр</span>
 										<span class="truncate">Проекты</span>
-										{#if newProjectsCountState.count > 0}
+										{#if newProjectsState.hasNew}
 											<span
 												class="ml-auto flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-600 text-[0.625rem] font-medium text-white"
-												title={newProjectsTooltip}
+												title="Есть новые проекты"
 											>
 												!
 											</span>

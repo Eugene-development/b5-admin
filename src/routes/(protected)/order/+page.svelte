@@ -29,10 +29,10 @@
 	let hasSearched = $state(false);
 	let filteredOrders = $state([]);
 	let updateCounter = $state(0);
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Add modal state
 	let showAddModal = $state(false);
@@ -81,14 +81,14 @@
 			);
 		});
 	});
-	
+
 	// Get paginated orders
 	let paginatedOrders = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return computedFilteredOrders.slice(startIndex, endIndex);
 	});
-	
+
 	// Update filteredOrders for compatibility
 	$effect(() => {
 		filteredOrders = computedFilteredOrders;
@@ -106,7 +106,7 @@
 		hasSearched = false;
 		currentPage = 1;
 	}
-	
+
 	// Reset to first page when filters change
 	$effect(() => {
 		searchTerm;
@@ -147,10 +147,12 @@
 							...o,
 							sequentialNumber: index + 1
 						}));
-						filteredOrders = filteredOrders.filter((o) => o.id !== order.id).map((o, index) => ({
-							...o,
-							sequentialNumber: index + 1
-						}));
+						filteredOrders = filteredOrders
+							.filter((o) => o.id !== order.id)
+							.map((o, index) => ({
+								...o,
+								sequentialNumber: index + 1
+							}));
 						updateCounter++;
 						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
 					}
@@ -370,7 +372,9 @@
 							sequentialNumber: currentOrder?.sequentialNumber
 						};
 						orders = orders.map((o) => (o.id === enrichedOrder.id ? enrichedOrder : o));
-						filteredOrders = filteredOrders.map((o) => (o.id === enrichedOrder.id ? enrichedOrder : o));
+						filteredOrders = filteredOrders.map((o) =>
+							o.id === enrichedOrder.id ? enrichedOrder : o
+						);
 					}
 
 					updateCounter++;
@@ -648,8 +652,6 @@
 										{/if}
 									</div>
 								</div>
-
-
 							</div>
 
 							<!-- Results summary -->
@@ -679,7 +681,7 @@
 									onEditOrder={handleEditOrder}
 								/>
 							</div>
-							
+
 							<!-- Pagination -->
 							<Pagination
 								bind:currentPage

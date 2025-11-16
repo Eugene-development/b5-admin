@@ -135,27 +135,27 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Закупка
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					<button
 						type="button"
 						onclick={() => handleSort('supplier')}
-						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
 						<span>Поставщик</span>
 						{#if sortColumn === 'supplier'}
@@ -187,13 +187,13 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					<button
 						type="button"
 						onclick={() => handleSort('urgency')}
-						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
 						<span>Срочность</span>
 						{#if sortColumn === 'urgency'}
@@ -225,13 +225,13 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					<button
 						type="button"
 						onclick={() => handleSort('status')}
-						class="inline-flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
 						<span>Статус</span>
 						{#if sortColumn === 'status'}
@@ -263,14 +263,14 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Проект
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Действия

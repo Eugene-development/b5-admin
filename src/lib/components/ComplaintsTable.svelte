@@ -12,8 +12,9 @@
 
 	// Get priority badge classes
 	function getPriorityBadgeClasses(priority) {
-		const baseClasses = 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
-		
+		const baseClasses =
+			'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
+
 		switch (priority) {
 			case 'low':
 				return `${baseClasses} bg-gray-50 text-gray-600 ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20`;
@@ -46,8 +47,9 @@
 
 	// Get status badge classes
 	function getStatusBadgeClasses(status) {
-		const baseClasses = 'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
-		
+		const baseClasses =
+			'inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset';
+
 		switch (status) {
 			case 'open':
 				return `${baseClasses} bg-blue-50 text-blue-700 ring-blue-700/10 dark:bg-blue-400/10 dark:text-blue-400 dark:ring-blue-400/30`;
@@ -188,9 +190,7 @@
 				{:else}
 					{#each complaints as complaint, index (complaint.id + updateCounter)}
 						<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-							<td
-								class="whitespace-nowrap px-3 py-4 text-sm text-gray-900 dark:text-white"
-							>
+							<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 								{index + 1}
 							</td>
 							<td class="px-3 py-4 text-sm text-gray-900 dark:text-white">
@@ -204,7 +204,7 @@
 								{/if}
 							</td>
 							<td
-								class="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 sm:table-cell dark:text-gray-400"
+								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400"
 							>
 								{#if complaint.contract}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -220,7 +220,7 @@
 								{/if}
 							</td>
 							<td
-								class="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell dark:text-gray-400"
+								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 lg:table-cell dark:text-gray-400"
 							>
 								{#if complaint.order}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -236,41 +236,40 @@
 								{/if}
 							</td>
 							<td
-								class="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 md:table-cell dark:text-gray-400"
+								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 md:table-cell dark:text-gray-400"
 							>
 								{complaint.responsible_person || '—'}
 							</td>
 							<td
-								class="hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 xl:table-cell dark:text-gray-400"
+								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 xl:table-cell dark:text-gray-400"
 							>
 								{formatDate(complaint.planned_resolution_date)}
 							</td>
-							<td class="whitespace-nowrap px-3 py-4 text-sm">
+							<td class="px-3 py-4 text-sm whitespace-nowrap">
 								<span class={getPriorityBadgeClasses(complaint.priority)}>
 									{getPriorityLabel(complaint.priority)}
 								</span>
 							</td>
-							<td class="whitespace-nowrap px-3 py-4 text-sm">
+							<td class="px-3 py-4 text-sm whitespace-nowrap">
 								<span class={getStatusBadgeClasses(complaint.status)}>
 									{getStatusLabel(complaint.status)}
 								</span>
 							</td>
-							<td
-								class="whitespace-nowrap px-3 py-4 text-right text-sm font-medium"
-							>
+							<td class="px-3 py-4 text-right text-sm font-medium whitespace-nowrap">
 								<div class="flex items-center justify-end gap-2">
 									<button
 										type="button"
 										onclick={() => onViewComplaint(complaint)}
 										disabled={isLoading}
 										class="text-indigo-600 hover:text-indigo-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-indigo-400 dark:hover:text-indigo-300"
-										title="Просмотр"
+										aria-label="Просмотреть жалобу {complaint.subject}"
 									>
 										<svg
 											class="h-5 w-5"
 											fill="none"
 											viewBox="0 0 24 24"
 											stroke="currentColor"
+											aria-hidden="true"
 										>
 											<path
 												stroke-linecap="round"
@@ -291,13 +290,14 @@
 										onclick={() => onEditComplaint(complaint)}
 										disabled={isLoading}
 										class="text-indigo-600 hover:text-indigo-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-indigo-400 dark:hover:text-indigo-300"
-										title="Редактировать"
+										aria-label="Редактировать жалобу {complaint.subject}"
 									>
 										<svg
 											class="h-5 w-5"
 											fill="none"
 											viewBox="0 0 24 24"
 											stroke="currentColor"
+											aria-hidden="true"
 										>
 											<path
 												stroke-linecap="round"
@@ -312,14 +312,9 @@
 										onclick={() => onDeleteComplaint(complaint)}
 										disabled={isLoading}
 										class="text-red-600 hover:text-red-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
-										title="Удалить"
+										aria-label="Удалить жалобу {complaint.subject}"
 									>
-										<svg
-											class="h-5 w-5"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-										>
+										<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 											<path
 												stroke-linecap="round"
 												stroke-linejoin="round"

@@ -1,42 +1,36 @@
-import { getProjectsWithPagination } from '$lib/api/projects.js';
+import { hasNewProjects } from '$lib/api/projects.js';
 
 /**
- * Reactive state for tracking new projects count
+ * Reactive state for tracking if there are new projects
  * Used to display badge in sidebar
  */
-class NewProjectsCountState {
-	count = $state(0);
+class NewProjectsState {
+	hasNew = $state(false);
 	isLoading = $state(false);
 
 	/**
-	 * Load new projects count from API
+	 * Check if there are new projects from API
+	 * Queries backend for projects with status_id "01K7HRKTSQV1894Y3JD9WV5KZX" (Новый проект)
 	 */
 	async load() {
 		this.isLoading = true;
 		try {
-			const projectsResult = await getProjectsWithPagination(1000, 1);
-			const projects = projectsResult.data || [];
-
-			// Count projects with status slug 'new-project'
-			const count = projects.filter(
-				(project) => project.status && project.status.slug === 'new-project'
-			).length;
-
-			this.count = count;
+			const hasNew = await hasNewProjects();
+			this.hasNew = hasNew;
 		} catch (error) {
-			console.error('Failed to load new projects count:', error);
-			this.count = 0;
+			console.error('Failed to check new projects:', error);
+			this.hasNew = false;
 		} finally {
 			this.isLoading = false;
 		}
 	}
 
 	/**
-	 * Refresh count (alias for load)
+	 * Refresh state (alias for load)
 	 */
 	async refresh() {
 		await this.load();
 	}
 }
 
-export const newProjectsCountState = new NewProjectsCountState();
+export const newProjectsState = new NewProjectsState();

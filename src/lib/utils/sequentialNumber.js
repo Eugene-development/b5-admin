@@ -39,9 +39,7 @@ export function preserveSequentialNumbers(currentItems, updatedItems) {
 	}
 
 	// Create a map of current items for quick lookup
-	const sequentialMap = new Map(
-		currentItems.map((item) => [item.id, item.sequentialNumber])
-	);
+	const sequentialMap = new Map(currentItems.map((item) => [item.id, item.sequentialNumber]));
 
 	// Preserve sequential numbers for existing items
 	return updatedItems.map((item) => ({

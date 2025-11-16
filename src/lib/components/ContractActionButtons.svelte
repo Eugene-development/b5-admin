@@ -10,12 +10,7 @@
 	 * @param {Function} onDelete - Callback function for delete action
 	 * @param {boolean} [isLoading=false] - Loading state for disabling buttons
 	 */
-	let {
-		onView,
-		onEdit,
-		onDelete,
-		isLoading = false
-	} = $props();
+	let { onView, onEdit, onDelete, isLoading = false } = $props();
 </script>
 
 <div class="flex justify-end space-x-2">

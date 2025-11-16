@@ -1,10 +1,6 @@
 <script>
 	import ClientsTable from '$lib/components/ClientsTable.svelte';
-	import {
-		ErrorBoundary,
-		TableSkeleton,
-		UserViewModal
-	} from '$lib';
+	import { ErrorBoundary, TableSkeleton, UserViewModal } from '$lib';
 	import EditClientModal from '$lib/components/EditClientModal.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import {
@@ -22,11 +18,11 @@
 	let { data } = $props();
 
 	let searchTerm = $state('');
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
-	
+	const itemsPerPage = 10;
+
 	let showViewModal = $state(false);
 	let showEditModal = $state(false);
 	let selectedUser = $state(null);
@@ -58,11 +54,13 @@
 				return {
 					...client,
 					status: client.ban ? 'banned' : 'active',
-					agent: agent ? {
-						id: agent.id,
-						name: agent.name,
-						email: agent.email
-					} : null
+					agent: agent
+						? {
+								id: agent.id,
+								name: agent.name,
+								email: agent.email
+							}
+						: null
 				};
 			})
 			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -125,12 +123,14 @@
 			const updatedClient = await updateClient(input);
 
 			// Update local state
-			localUsers = localUsers.map(c =>
-				c.id === updatedClient.id ? {
-					...updatedClient,
-					status: updatedClient.ban ? 'banned' : 'active',
-					agent: updatedClient.projects?.[0]?.agent || null
-				} : c
+			localUsers = localUsers.map((c) =>
+				c.id === updatedClient.id
+					? {
+							...updatedClient,
+							status: updatedClient.ban ? 'banned' : 'active',
+							agent: updatedClient.projects?.[0]?.agent || null
+						}
+					: c
 			);
 
 			updateCounter++;
@@ -155,11 +155,13 @@
 					return {
 						...client,
 						status: client.ban ? 'banned' : 'active',
-						agent: agent ? {
-							id: agent.id,
-							name: agent.name,
-							email: agent.email
-						} : null
+						agent: agent
+							? {
+									id: agent.id,
+									name: agent.name,
+									email: agent.email
+								}
+							: null
 					};
 				})
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -198,7 +200,6 @@
 			refreshData(true);
 		}
 	});
-
 </script>
 
 <ProtectedRoute>
@@ -222,12 +223,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localUsers.length === 0 && processedClients.length > 0}
-					{(localUsers = processedClients, '')}
+					{((localUsers = processedClients), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if clientsData.error && !loadError}
-					{(loadError = clientsData, '')}
+					{((loadError = clientsData), '')}
 				{/if}
 
 				<a
@@ -448,4 +449,9 @@
 </ProtectedRoute>
 
 <UserViewModal isOpen={showViewModal} user={selectedUser} onClose={closeViewModal} />
-<EditClientModal isOpen={showEditModal} client={selectedUser} onClose={closeEditModal} onSave={handleSaveClient} />
+<EditClientModal
+	isOpen={showEditModal}
+	client={selectedUser}
+	onClose={closeEditModal}
+	onSave={handleSaveClient}
+/>

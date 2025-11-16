@@ -27,7 +27,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -248,7 +248,9 @@
 
 	// Remove complaint from local state after deletion
 	function removeComplaintFromList(complaintId) {
-		localComplaints = localComplaints.filter((complaint) => complaint && complaint.id !== complaintId);
+		localComplaints = localComplaints.filter(
+			(complaint) => complaint && complaint.id !== complaintId
+		);
 		updateCounter++;
 	}
 
@@ -302,8 +304,12 @@
 		}
 
 		return {
-			complaints: (complaintsData.complaints || []).filter((complaint) => complaint != null && complaint.id),
-			contracts: (complaintsData.contracts || []).filter((contract) => contract != null && contract.id),
+			complaints: (complaintsData.complaints || []).filter(
+				(complaint) => complaint != null && complaint.id
+			),
+			contracts: (complaintsData.contracts || []).filter(
+				(contract) => contract != null && contract.id
+			),
 			orders: (complaintsData.orders || []).filter((order) => order != null && order.id)
 		};
 	}
@@ -330,18 +336,18 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localComplaints.length === 0 && processedData.complaints.length > 0}
-					{(localComplaints = processedData.complaints, '')}
+					{((localComplaints = processedData.complaints), '')}
 				{/if}
 				{#if localContracts.length === 0 && processedData.contracts.length > 0}
-					{(localContracts = processedData.contracts, '')}
+					{((localContracts = processedData.contracts), '')}
 				{/if}
 				{#if localOrders.length === 0 && processedData.orders.length > 0}
-					{(localOrders = processedData.orders, '')}
+					{((localOrders = processedData.orders), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if complaintsData.error && !loadError}
-					{(loadError = complaintsData.error, '')}
+					{((loadError = complaintsData.error), '')}
 				{/if}
 
 				<!-- Skip link for keyboard navigation -->
@@ -499,7 +505,11 @@
 								>
 									<div class="flex flex-1 items-center space-x-4">
 										<!-- Search Input -->
-										<div class="relative max-w-md flex-1" role="search" aria-label="Complaint search">
+										<div
+											class="relative max-w-md flex-1"
+											role="search"
+											aria-label="Complaint search"
+										>
 											<div
 												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 											>
@@ -564,7 +574,7 @@
 										hasSearched={searchTerm.trim().length > 0}
 									/>
 								</div>
-								
+
 								<!-- Pagination -->
 								<Pagination
 									bind:currentPage
@@ -581,7 +591,9 @@
 				<div class="flex min-h-screen items-center justify-center">
 					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
 						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки рекламаций</h3>
-						<p class="text-red-300">Не удалось загрузить рекламации. Попробуйте обновить страницу.</p>
+						<p class="text-red-300">
+							Не удалось загрузить рекламации. Попробуйте обновить страницу.
+						</p>
 					</div>
 				</div>
 			{/await}

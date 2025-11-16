@@ -3,7 +3,7 @@
 	 * Reusable Pagination Component
 	 * Based on b5-agent implementation with customizable items per page
 	 */
-	
+
 	let {
 		currentPage = $bindable(1),
 		totalItems = 0,
@@ -61,7 +61,12 @@
 					aria-label="Предыдущая страница"
 				>
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M15 19l-7-7 7-7"
+						/>
 					</svg>
 				</button>
 
@@ -72,7 +77,8 @@
 						{#if pageNum === 1 || pageNum === totalPages || (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)}
 							<button
 								onclick={() => goToPage(pageNum)}
-								class="min-w-[32px] rounded border px-2 py-1 text-sm font-medium transition-colors {currentPage === pageNum
+								class="min-w-[32px] rounded border px-2 py-1 text-sm font-medium transition-colors {currentPage ===
+								pageNum
 									? 'border-gray-400 bg-gray-200 text-gray-900 dark:border-gray-500 dark:bg-gray-700 dark:text-white'
 									: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700'}"
 								aria-label="Страница {pageNum}"
@@ -94,7 +100,12 @@
 					aria-label="Следующая страница"
 				>
 					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M9 5l7 7-7 7"
+						/>
 					</svg>
 				</button>
 			</div>

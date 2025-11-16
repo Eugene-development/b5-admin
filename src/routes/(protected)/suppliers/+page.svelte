@@ -38,7 +38,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -429,12 +429,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localSuppliers.length === 0 && processedCompanies.length > 0}
-					{(localSuppliers = processedCompanies, '')}
+					{((localSuppliers = processedCompanies), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if suppliersData.error && !loadError}
-					{(loadError = suppliersData.error, '')}
+					{((loadError = suppliersData.error), '')}
 				{/if}
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -539,7 +539,11 @@
 								>
 									<div class="flex flex-1 items-center space-x-4">
 										<!-- Search Input -->
-										<div class="relative max-w-md flex-1" role="search" aria-label="Supplier search">
+										<div
+											class="relative max-w-md flex-1"
+											role="search"
+											aria-label="Supplier search"
+										>
 											<div
 												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
 											>

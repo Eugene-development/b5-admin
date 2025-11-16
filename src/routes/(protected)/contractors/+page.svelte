@@ -33,11 +33,11 @@
 	let { data } = $props();
 
 	let searchTerm = $state('');
-	
+
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
-	
+	const itemsPerPage = 10;
+
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
@@ -363,12 +363,12 @@
 
 				<!-- Update local state only once when data arrives -->
 				{#if localContractors.length === 0 && processedCompanies.length > 0}
-					{(localContractors = processedCompanies, '')}
+					{((localContractors = processedCompanies), '')}
 				{/if}
 
 				<!-- Set load error if present -->
 				{#if contractorsData.error && !loadError}
-					{(loadError = contractorsData.error, '')}
+					{((loadError = contractorsData.error), '')}
 				{/if}
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">

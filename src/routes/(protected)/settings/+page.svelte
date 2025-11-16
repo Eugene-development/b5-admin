@@ -3,9 +3,9 @@
 	<meta name="description" content="Настройки системы и пользователя" />
 </svelte:head>
 
-<div class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-	<div class="max-w-md w-full text-center">
-		<div class="bg-white rounded-lg shadow-lg p-8">
+<div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+	<div class="w-full max-w-md text-center">
+		<div class="rounded-lg bg-white p-8 shadow-lg">
 			<div class="mb-6">
 				<svg
 					class="mx-auto h-16 w-16 text-yellow-500"
@@ -21,14 +21,14 @@
 					/>
 				</svg>
 			</div>
-			<h1 class="text-3xl font-bold text-gray-900 mb-4">Раздел в разработке</h1>
-			<p class="text-gray-600 mb-8">
+			<h1 class="mb-4 text-3xl font-bold text-gray-900">Раздел в разработке</h1>
+			<p class="mb-8 text-gray-600">
 				Страница "Настройки" находится в процессе разработки. Скоро здесь появится функционал для
 				управления настройками системы и пользовательскими предпочтениями.
 			</p>
 			<a
 				href="/dashboard"
-				class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+				class="inline-block rounded-lg bg-blue-600 px-6 py-3 text-white transition-colors hover:bg-blue-700"
 			>
 				Вернуться на главную
 			</a>

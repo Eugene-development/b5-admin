@@ -340,7 +340,12 @@ export async function deleteComplaint(complaintId, customFetch = null, cookies =
 }
 
 // Function to refresh complaints data
-export async function refreshComplaints(first = 1000, page = 1, customFetch = null, cookies = null) {
+export async function refreshComplaints(
+	first = 1000,
+	page = 1,
+	customFetch = null,
+	cookies = null
+) {
 	try {
 		const variables = { first, page };
 		const result = await makeGraphQLRequest(

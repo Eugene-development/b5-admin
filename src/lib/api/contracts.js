@@ -118,7 +118,6 @@ const DELETE_CONTRACT_MUTATION = gql`
 	}
 `;
 
-
 // Helper function to make GraphQL requests with proper error handling and retry logic
 async function makeGraphQLRequest(
 	query,
@@ -203,7 +202,6 @@ async function makeGraphQLRequest(
 
 	throw lastError;
 }
-
 
 // Function to get all contracts
 export async function getContracts(first = 1000, page = 1, customFetch = null, cookies = null) {

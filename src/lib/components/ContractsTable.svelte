@@ -145,7 +145,7 @@
 							}
 						}}
 					>
-						<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{index + 1}
 						</td>
 						<td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
@@ -171,10 +171,10 @@
 								</div>
 							{/if}
 						</td>
-						<td class="whitespace-nowrap px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(contract.contract_date)}
 						</td>
-						<td class="whitespace-nowrap px-6 py-4 text-right text-sm">
+						<td class="px-6 py-4 text-right text-sm whitespace-nowrap">
 							<ContractActionButtons
 								onView={() => onViewContract(contract)}
 								onEdit={() => onEditContract(contract)}
@@ -188,7 +188,6 @@
 		</tbody>
 	</table>
 </div>
-
 
 <!-- Mobile Card View -->
 <div class="block space-y-4 md:hidden">
