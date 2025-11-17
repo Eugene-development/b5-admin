@@ -451,13 +451,10 @@
 										<div>
 											<h1
 												id="page-title"
-												class="text-2xl font-semibold text-gray-900 dark:text-white"
+												class="text-3xl font-semibold text-gray-900 dark:text-white"
 											>
 												Кураторы
 											</h1>
-											<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-												Управление кураторами системы
-											</p>
 										</div>
 									</div>
 									<div class="flex items-center space-x-3">

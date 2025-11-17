@@ -333,10 +333,7 @@
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
 									<div class="flex items-center justify-between">
 										<div>
-											<h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Акции</h1>
-											<p class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-												Управление акциями и промо-кампаниями системы
-											</p>
+											<h1 class="text-3xl font-semibold text-gray-900 dark:text-white">Акции</h1>
 										</div>
 									</div>
 									<div class="flex items-center space-x-3">

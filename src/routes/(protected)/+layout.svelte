@@ -258,7 +258,7 @@
 			</div>
 
 			<!-- Navigation content -->
-			<nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-6 scrollbar-hide">
+			<nav class="scrollbar-hide flex flex-1 flex-col overflow-y-auto overflow-x-hidden px-6">
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li class="mb-2">
 						<ul role="list" class="space-y-1">
@@ -628,7 +628,9 @@
 				RUBONUS<span class="text-base">.pro</span>
 			</span>
 		</div>
-		<nav class="flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
+		<nav
+			class="scrollbar-hide flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
+		>
 			<ul role="list" class="flex flex-1 flex-col gap-y-3">
 				<li class="mb-2">
 					<ul role="list" class="space-y-1">
@@ -891,7 +893,7 @@
 <div class="h-screen bg-gray-950 lg:pl-72">
 	<div class="sticky top-0 z-20 lg:mx-auto lg:max-w-full">
 		<div
-			class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"
+			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"
 		>
 			<button
 				type="button"
@@ -925,7 +927,7 @@
 						name="search"
 						placeholder="Поиск"
 						aria-label="Search"
-						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:ring-0 focus:ring-offset-0 focus:outline-none sm:text-sm/6 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500"
+						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:outline-none focus:ring-0 focus:ring-offset-0 sm:text-sm/6 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500"
 						style="outline: none !important; box-shadow: none !important;"
 					/>
 					<svg
@@ -1005,7 +1007,7 @@
 									<a
 										href="/profile"
 										onclick={closeUserMenu}
-										class="block px-3 py-1 text-sm/6 text-gray-900 hover:bg-gray-50 focus:outline-hidden dark:text-white dark:hover:bg-gray-950"
+										class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-950"
 										>Ваш профиль</a
 									>
 									<button
@@ -1013,7 +1015,7 @@
 											closeUserMenu();
 											handleLogoutClick();
 										}}
-										class="block w-full px-3 py-1 text-left text-sm/6 text-gray-900 hover:bg-gray-50 focus:outline-hidden dark:text-white dark:hover:bg-gray-950"
+										class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-950"
 										>Выйти</button
 									>
 								</div>
@@ -1048,4 +1050,4 @@
 />
 
 <!-- Global loading overlay during navigation -->
-<LoadingOverlay show={$navigating !== null} message="Загрузка данных..." spinnerSize="xl" />
+<!-- <LoadingOverlay show={$navigating !== null} message="Загрузка данных..." spinnerSize="xl" /> -->
