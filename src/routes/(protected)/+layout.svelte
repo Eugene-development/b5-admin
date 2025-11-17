@@ -258,7 +258,7 @@
 			</div>
 
 			<!-- Navigation content -->
-			<nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-6">
+			<nav class="flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-6 scrollbar-hide">
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li class="mb-2">
 						<ul role="list" class="space-y-1">
@@ -628,7 +628,7 @@
 				RUBONUS<span class="text-base">.pro</span>
 			</span>
 		</div>
-		<nav class="flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-x-hidden overflow-y-auto">
+		<nav class="flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-x-hidden overflow-y-auto scrollbar-hide">
 			<ul role="list" class="flex flex-1 flex-col gap-y-3">
 				<li class="mb-2">
 					<ul role="list" class="space-y-1">
