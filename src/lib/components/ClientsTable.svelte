@@ -1,6 +1,7 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 	import EmptyState from './EmptyState.svelte';
+	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
 		users = [],
@@ -196,9 +197,7 @@
 							headers="col-phone"
 						>
 							{#if user.phones && user.phones.length > 0}
-								{user.phones.find((p) => p.is_primary)?.value ||
-									user.phones[0]?.value ||
-									'Не указан'}
+								{formatPhone(user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value)}
 							{:else}
 								Не указан
 							{/if}
@@ -327,7 +326,9 @@
 							</h3>
 							{#if user.phones && user.phones.length > 0}
 								<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-									{user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value}
+									{formatPhone(
+										user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value
+									)}
 								</p>
 							{/if}
 						</div>
@@ -506,9 +507,9 @@
 									</td>
 									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{#if user.phones && user.phones.length > 0}
-											{user.phones.find((p) => p.is_primary)?.value ||
-												user.phones[0]?.value ||
-												'Не указан'}
+											{formatPhone(
+												user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value
+											)}
 										{:else}
 											Не указан
 										{/if}

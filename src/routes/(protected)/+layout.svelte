@@ -126,17 +126,12 @@
 	// Handle logout confirmation
 	async function handleLogoutConfirm() {
 		try {
-			const success = await logout({ redirectTo: '/login' });
-			if (success) {
-				addSuccessToast('Вы успешно вышли из системы');
-				showLogoutModal = false;
-			} else {
-				addErrorToast('Произошла ошибка при выходе из системы');
-				showLogoutModal = false;
-			}
+			showLogoutModal = false;
+			// Clear all toasts before logout to prevent them from showing after re-login
+			clearAllToasts();
+			await logout({ redirectTo: '/login' });
 		} catch (error) {
 			console.error('Logout error:', error);
-			addErrorToast('Произошла ошибка при выходе из системы');
 			showLogoutModal = false;
 		}
 	}

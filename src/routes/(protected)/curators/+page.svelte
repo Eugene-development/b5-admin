@@ -6,7 +6,8 @@
 		ErrorBoundary,
 		TableSkeleton,
 		UserViewModal,
-		UserEditModal
+		UserEditModal,
+		UserAddModal
 	} from '$lib';
 	import Pagination from '$lib/components/Pagination.svelte';
 	import {
@@ -18,7 +19,14 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import { banUser, unbanUser, deleteUser, refreshUsers, updateUser } from '$lib/api/agents.js';
+	import {
+		banUser,
+		unbanUser,
+		deleteUser,
+		refreshUsers,
+		updateUser,
+		createUser
+	} from '$lib/api/agents.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
@@ -42,6 +50,9 @@
 	// Edit modal state
 	let showEditModal = $state(false);
 	let editingUser = $state(null);
+
+	// Add modal state
+	let showAddModal = $state(false);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -206,6 +217,54 @@
 	function handleCancelEditUser() {
 		showEditModal = false;
 		editingUser = null;
+		isActionLoading = false;
+	}
+
+	// Open add modal
+	function handleAddUser() {
+		showAddModal = true;
+		clearAllToasts();
+	}
+
+	// Save new user (add)
+	async function handleCreateUser(newUserData) {
+		isActionLoading = true;
+
+		try {
+			await retryOperation(
+				async () => {
+					// Create new user with status_id
+					const createdUser = await createUser(newUserData);
+
+					// Add to local list
+					localUsers = [
+						{
+							...createdUser,
+							status: createdUser.ban ? 'banned' : 'active',
+							status_id: createdUser.status_id,
+							userStatus: createdUser.userStatus
+						},
+						...localUsers
+					];
+
+					addSuccessToast(
+						`Куратор "${createdUser.name || createdUser.email}" успешно создан.`
+					);
+				},
+				2,
+				1000
+			);
+		} catch (error) {
+			console.error('Failed to create user:', error);
+		} finally {
+			isActionLoading = false;
+			showAddModal = false;
+		}
+	}
+
+	// Cancel add user
+	function handleCancelAddUser() {
+		showAddModal = false;
 		isActionLoading = false;
 	}
 
@@ -402,6 +461,29 @@
 										</div>
 									</div>
 									<div class="flex items-center space-x-3">
+										<!-- Add Button -->
+										<button
+											type="button"
+											onclick={handleAddUser}
+											class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+										>
+											<svg
+												class="mr-2 h-4 w-4"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M12 4v16m8-8H4"
+												/>
+											</svg>
+											Добавить
+										</button>
+
 										<!-- Refresh Button -->
 										<button
 											type="button"
@@ -623,3 +705,12 @@
 		isLoading={isActionLoading}
 	/>
 {/if}
+
+<!-- User Add Modal -->
+<UserAddModal
+	isOpen={showAddModal}
+	statusSlug="curators"
+	onSave={handleCreateUser}
+	onCancel={handleCancelAddUser}
+	isLoading={isActionLoading}
+/>

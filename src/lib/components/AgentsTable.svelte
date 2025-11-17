@@ -111,15 +111,6 @@
 					№
 				</th>
 				<th
-					id="col-id"
-					scope="col"
-					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					aria-sort="none"
-				>
-					ID
-				</th>
-				<th
 					id="col-name"
 					scope="col"
 					role="columnheader"
@@ -199,7 +190,7 @@
 				</tr>
 			{:else if users.length === 0}
 				<tr>
-					<td colspan="10" class="px-4 py-3" role="cell">
+					<td colspan="9" class="px-4 py-3" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -218,13 +209,6 @@
 							headers="col-number"
 						>
 							{agent.sequentialNumber || index + 1}
-						</td>
-						<td
-							class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
-							role="cell"
-							headers="col-id"
-						>
-							{agent.id}
 						</td>
 						<td
 							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -446,14 +430,6 @@
 								<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 							</div>
 						</div>
-						<div class="ml-3 flex-shrink-0">
-							<span
-								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-								aria-label="Agent ID {agent.id}"
-							>
-								ID: {agent.id}
-							</span>
-						</div>
 					</div>
 
 					<!-- Agent Details Grid -->
@@ -622,12 +598,6 @@
 								scope="col"
 								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
-								ID
-							</th>
-							<th
-								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-							>
 								Имя
 							</th>
 							<th
@@ -668,7 +638,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="9" class="px-4 py-3 text-center">
+								<td colspan="8" class="px-4 py-3 text-center">
 									<div class="flex justify-center">
 										<div class="hidden h-6 w-6"></div>
 									</div>
@@ -676,7 +646,7 @@
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="9" class="px-4 py-3">
+								<td colspan="8" class="px-4 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -688,11 +658,6 @@
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
 									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{agent.sequentialNumber || index + 1}
-									</td>
-									<td
-										class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
-									>
-										{agent.id}
 									</td>
 									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.name || 'Not specified'}

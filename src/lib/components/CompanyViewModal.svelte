@@ -1,12 +1,8 @@
 <script>
 	import StatusBadge from './StatusBadge.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
-	import { getCompanyStatuses } from '$lib/api/companies.js';
 
 	let { isOpen = false, company = null, onClose } = $props();
-
-	let companyStatuses = $state([]);
-	let isLoadingStatus = $state(false);
 
 	// Format date helper function
 	function formatDate(dateString) {
@@ -48,29 +44,8 @@
 		event.stopPropagation();
 	}
 
-	// Load company statuses when modal is opened
-	async function loadCompanyStatuses() {
-		if (companyStatuses.length === 0) {
-			isLoadingStatus = true;
-			try {
-				companyStatuses = await getCompanyStatuses();
-			} catch (error) {
-				console.error('Failed to load company statuses:', error);
-			} finally {
-				isLoadingStatus = false;
-			}
-		}
-	}
-
-	// Get company status by status_id
-	function getCompanyStatusById(statusId) {
-		if (!statusId || companyStatuses.length === 0) return null;
-		return companyStatuses.find((status) => status.id === statusId);
-	}
-
 	$effect(() => {
 		if (isOpen) {
-			loadCompanyStatuses();
 			// Prevent body scroll when modal is open
 			document.body.style.overflow = 'hidden';
 		} else {
@@ -121,7 +96,7 @@
 						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
-						Информация о компании
+						{company.name || 'Компания'}
 					</h3>
 					<button
 						type="button"
@@ -144,18 +119,8 @@
 				<!-- Modal content -->
 				<div class="mt-6">
 					<!-- Company header -->
-					<div class="mb-6 flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{company.name || 'Название не указано'}
-							</h4>
-							{#if company.legal_name}
-								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-									{company.legal_name}
-								</p>
-							{/if}
-						</div>
-						<div class="ml-4 flex-shrink-0">
+					<div class="mb-6 flex items-end justify-end">
+						<div class="flex-shrink-0">
 							<StatusBadge status={getCompanyStatus(company)} />
 						</div>
 					</div>
@@ -164,9 +129,18 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
 						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Основная информация:
-							</h5>
+							{#if company.legal_name}
+								<div>
+									<dt
+										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+									>
+										Официальное название:
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{company.legal_name}
+									</dd>
+								</div>
+							{/if}
 
 							<div>
 								<dt
@@ -190,37 +164,10 @@
 								</dd>
 							</div>
 
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-								>
-									Статус компании:
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if isLoadingStatus}
-										Загрузка...
-									{:else}
-										{@const companyStatus = getCompanyStatusById(company.status_id)}
-										{#if companyStatus}
-											<span
-												class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-											>
-												{companyStatus.value}
-											</span>
-										{:else}
-											Не указан
-										{/if}
-									{/if}
-								</dd>
-							</div>
 						</div>
 
 						<!-- Contact Information -->
 						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Контактная информация:
-							</h5>
-
 							<div>
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"

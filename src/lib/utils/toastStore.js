@@ -88,7 +88,7 @@ export function addSuccessToast(message, options = {}) {
  * @returns {string} Toast ID
  */
 export function addErrorToast(message, options = {}) {
-	return addToast({ type: 'error', message, duration: 0, ...options }); // Error toasts don't auto-dismiss by default
+	return addToast({ type: 'error', message, duration: 10000, ...options }); // Error toasts auto-dismiss after 10 seconds
 }
 
 /**
@@ -167,7 +167,8 @@ export async function retryOperation(operation, maxRetries = 3, delay = 1000) {
 
 			if (attempt < maxRetries) {
 				addWarningToast(
-					`Attempt ${attempt} failed, retrying... (${maxRetries - attempt} attempts remaining)`
+					`Attempt ${attempt} failed, retrying... (${maxRetries - attempt} attempts remaining)`,
+					{ duration: 2000 } // Short duration for retry messages
 				);
 
 				// Wait before retrying

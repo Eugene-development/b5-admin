@@ -156,13 +156,9 @@
 		showLogoutModal = false;
 
 		try {
-			const success = await logout({ redirectTo: '/login' });
-			if (success) {
-				addSuccessToast('Вы успешно вышли из системы');
-			} else {
-				authError = 'Произошла ошибка при выходе из системы';
-				addErrorToast(authError);
-			}
+			// Clear all toasts before logout to prevent them from showing after re-login
+			clearAllToasts();
+			await logout({ redirectTo: '/login' });
 		} catch (error) {
 			console.error('Logout error:', error);
 			authError = 'Произошла ошибка при выходе из системы';

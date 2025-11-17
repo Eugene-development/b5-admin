@@ -87,7 +87,7 @@ function createProjectsFallbackData() {
 			currentPage: 1,
 			lastPage: 1,
 			total: 0,
-			perPage: 1000,
+			perPage: 50,
 			hasMorePages: false
 		},
 		error: null,
@@ -180,8 +180,9 @@ async function loadProjectsData(fetch) {
 		});
 
 		// Load projects data - use SvelteKit fetch for proper SSR support
+		// Load only first page (50 items) for initial render to avoid timeout
 		const projectsResult = await Promise.race([
-			getProjectsWithPagination(1000, 1, fetch), // Pass SvelteKit fetch function
+			getProjectsWithPagination(50, 1, fetch), // Pass SvelteKit fetch function
 			timeoutPromise
 		]);
 
@@ -213,7 +214,7 @@ async function loadProjectsData(fetch) {
 			currentPage: 1,
 			lastPage: 1,
 			total: projects.length,
-			perPage: 1000,
+			perPage: 50,
 			hasMorePages: false
 		};
 

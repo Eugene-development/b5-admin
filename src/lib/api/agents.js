@@ -77,6 +77,9 @@ const UPDATE_USER_MUTATION = gql`
 	}
 `;
 
+// Note: User creation is handled through the auth API (registerUser)
+// not through GraphQL, so we don't have a CREATE_USER_MUTATION here
+
 // Helper function to make GraphQL requests with proper error handling, authentication, and SvelteKit fetch support
 async function makeGraphQLRequest(
 	query,
@@ -265,6 +268,50 @@ export async function getUserStatuses(customFetch = null, cookies = null) {
 		return result.activeUserStatuses || [];
 	} catch (err) {
 		console.error('Get user statuses failed:', err);
+		throw err;
+	}
+}
+
+// Function to create a new user via auth API and then update status
+export async function createUser(userData, customFetch = null, cookies = null) {
+	try {
+		// Import registerUser from auth API
+		const { registerUser } = await import('./auth.js');
+
+		// Register the user through auth API
+		const registerData = {
+			name: userData.name,
+			email: userData.email,
+			password: userData.password,
+			password_confirmation: userData.password_confirmation,
+			region: userData.region,
+			terms_accepted: true // Auto-accept terms for admin-created users
+		};
+
+		const result = await registerUser(registerData);
+
+		if (!result.success) {
+			throw new Error(result.message || 'Failed to create user');
+		}
+
+		// If status_id is provided, update the user's status
+		if (userData.status_id && result.user) {
+			try {
+				const updatedUser = await updateUser({
+					id: result.user.id,
+					status_id: userData.status_id
+				}, customFetch, cookies);
+				return updatedUser;
+			} catch (updateError) {
+				console.error('Failed to update user status after creation:', updateError);
+				// Return the created user even if status update fails
+				return result.user;
+			}
+		}
+
+		return result.user;
+	} catch (err) {
+		console.error('Create user failed:', err);
 		throw err;
 	}
 }

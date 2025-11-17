@@ -33,6 +33,7 @@ export { default as ComplaintViewModal } from './components/ComplaintViewModal.s
 export { default as ActionAddModal } from './components/ActionAddModal.svelte';
 export { default as UserViewModal } from './components/UserViewModal.svelte';
 export { default as UserEditModal } from './components/UserEditModal.svelte';
+export { default as UserAddModal } from './components/UserAddModal.svelte';
 export { default as ProjectsTable } from './components/ProjectsTable.svelte';
 export { default as ProjectEditModal } from './components/ProjectEditModal.svelte';
 export { default as ProjectViewModal } from './components/ProjectViewModal.svelte';

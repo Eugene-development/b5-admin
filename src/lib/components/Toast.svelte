@@ -74,16 +74,26 @@
 	}
 
 	// Auto-dismiss functionality
+	// Track isVisible and duration to recreate effect when they change
 	$effect(() => {
+		// Clear any existing timeout
+		if (timeoutId) {
+			clearTimeout(timeoutId);
+			timeoutId = undefined;
+		}
+
+		// Set new timeout if visible and duration > 0
 		if (isVisible && duration > 0) {
 			timeoutId = setTimeout(() => {
 				handleDismiss();
 			}, duration);
 		}
 
+		// Cleanup function
 		return () => {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
+				timeoutId = undefined;
 			}
 		};
 	});
