@@ -7,6 +7,11 @@
 
 	let { children, data } = $props();
 
+	// Initialize authentication from localStorage first
+	if (browser && !authState.initialized) {
+		initializeAuth();
+	}
+
 	// Initialize authentication from server data first, then check with API
 	$effect(() => {
 		// If we have server data, update auth state immediately
@@ -22,7 +27,7 @@
 					setUserData(data.user);
 				});
 			}
-		} else {
+		} else if (!authState.initialized) {
 			// No server data - user is not authenticated
 			authState.user = null;
 			authState.isAuthenticated = false;

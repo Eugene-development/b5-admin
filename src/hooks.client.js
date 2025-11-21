@@ -14,15 +14,12 @@ export async function handleError({ error, event }) {
 
 	// Handle authentication errors
 	if (error.status === 401) {
-		// Clear auth state and redirect to login
-		const { clearAuthState } = await import('$lib/auth/auth.svelte.js');
+		// Clear auth state and redirect to login using safe redirect
+		const { clearAuthState, safeRedirectToLogin } = await import('$lib/auth/auth.svelte.js');
 		clearAuthState();
 
-		// Only redirect if not already on login page
-		if (!event.url.pathname.startsWith('/login')) {
-			const { goto } = await import('$app/navigation');
-			await goto('/login');
-		}
+		// Use safe redirect to prevent multiple concurrent redirects
+		await safeRedirectToLogin(event.url.pathname);
 	}
 
 	return {
@@ -48,9 +45,8 @@ export async function beforeNavigate({ from, to, cancel }) {
 
 		if (!allowed) {
 			cancel();
-			const { goto } = await import('$app/navigation');
-			const returnTo = encodeURIComponent(pathname + to.url.search);
-			await goto(`/login?returnTo=${returnTo}`);
+			const { safeRedirectToLogin } = await import('$lib/auth/auth.svelte.js');
+			await safeRedirectToLogin(pathname + to.url.search);
 		}
 	}
 

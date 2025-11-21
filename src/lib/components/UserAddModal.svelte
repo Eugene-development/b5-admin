@@ -436,7 +436,9 @@
 							required
 							minlength="8"
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
-							aria-describedby={errors.password_confirmation ? 'user-password-confirmation-error' : undefined}
+							aria-describedby={errors.password_confirmation
+								? 'user-password-confirmation-error'
+								: undefined}
 							aria-invalid={errors.password_confirmation ? 'true' : 'false'}
 						/>
 						{#if errors.password_confirmation}

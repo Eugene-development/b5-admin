@@ -243,9 +243,7 @@
 						...localUsers
 					];
 
-					addSuccessToast(
-						`Менеджер "${createdUser.name || createdUser.email}" успешно создан.`
-					);
+					addSuccessToast(`Менеджер "${createdUser.name || createdUser.email}" успешно создан.`);
 				},
 				2,
 				1000

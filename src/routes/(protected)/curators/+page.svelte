@@ -247,9 +247,7 @@
 						...localUsers
 					];
 
-					addSuccessToast(
-						`Куратор "${createdUser.name || createdUser.email}" успешно создан.`
-					);
+					addSuccessToast(`Куратор "${createdUser.name || createdUser.email}" успешно создан.`);
 				},
 				2,
 				1000

@@ -29,7 +29,8 @@ export async function createAction(actionData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -92,7 +93,8 @@ export async function updateAction(actionData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -148,7 +150,8 @@ export async function deleteAction(actionId) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -214,7 +217,8 @@ export async function refreshActions(fetchFn = fetch) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -267,7 +271,8 @@ export async function getCompaniesForActions(fetchFn = fetch) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })

@@ -1,5 +1,4 @@
-import { gql, request } from 'graphql-request';
-import { getAuthHeaders } from './config.js';
+import { gql, GraphQLClient } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
@@ -75,19 +74,21 @@ async function makeGraphQLRequest(
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-		// Get authentication headers
-		const authHeaders = getAuthHeaders();
+		// Debug logging
+		console.log(`🌐 [${operationName}] GraphQL endpoint:`, GRAPHQL_ENDPOINT);
+
 		const headers = {
 			'Content-Type': 'application/json',
-			Accept: 'application/json',
-			...authHeaders
+			Accept: 'application/json'
 		};
 
-		// Use custom fetch if provided (for SvelteKit SSR support)
-		const requestConfig = customFetch ? { fetch: customFetch } : {};
+		// Create GraphQL client with headers (graphql-request v7 way)
+		const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+			headers: headers
+		});
 
 		// Use the configured GraphQL endpoint
-		const result = await request(GRAPHQL_ENDPOINT, query, variables, headers, requestConfig);
+		const result = await client.request(query, variables);
 
 		clearTimeout(timeoutId);
 		return result;

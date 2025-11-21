@@ -13,7 +13,6 @@ import {
 	resendEmailVerification,
 	verifyEmail
 } from '../api/auth.js';
-import { initCsrf } from '../utils/http-client.js';
 import {
 	getAuthToken,
 	setAuthToken,
@@ -159,9 +158,7 @@ export async function login(email, password, remember = false) {
 	authState.error = null;
 
 	try {
-		// Initialize CSRF protection before making login request
-		await initCsrf();
-
+		// JWT doesn't need CSRF protection - removed initCsrf()
 		const result = await loginUser(email, password, remember);
 
 		if (result.success) {
@@ -170,10 +167,15 @@ export async function login(email, password, remember = false) {
 			authState.user = normalizedUser || null;
 			authState.isAuthenticated = !!normalizedUser;
 			authState.emailVerified = normalizedUser?.email_verified || false;
-			authState.token = result.token?.access_token || result.token || null;
+			// Handle JWT token - it comes as a string in result.token
+			authState.token =
+				typeof result.token === 'string'
+					? result.token
+					: result.token?.access_token || result.token || null;
 
 			// Store token and user data
 			if (result.token) {
+				// setAuthToken now handles both string and object tokens
 				setAuthToken(result.token);
 			}
 			if (normalizedUser) {
@@ -215,9 +217,7 @@ export async function register(userData) {
 	authState.error = null;
 
 	try {
-		// Initialize CSRF protection before making registration request
-		await initCsrf();
-
+		// JWT doesn't need CSRF protection - removed initCsrf()
 		const result = await registerUser(userData);
 
 		if (result.success) {

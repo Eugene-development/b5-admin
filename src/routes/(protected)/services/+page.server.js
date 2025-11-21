@@ -109,7 +109,10 @@ async function loadServicesData(fetch) {
 }
 
 export async function load({ fetch }) {
+	// JWT tokens are stored in localStorage and not available on server
+	// Return empty data immediately and let client load data via onMount
+	// This prevents 401 errors during SSR
 	return {
-		servicesData: loadServicesData(fetch)
+		servicesData: Promise.resolve({ services: [] })
 	};
 }

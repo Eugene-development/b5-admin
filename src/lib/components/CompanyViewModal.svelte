@@ -163,7 +163,6 @@
 									{company.region || 'Не указан'}
 								</dd>
 							</div>
-
 						</div>
 
 						<!-- Contact Information -->

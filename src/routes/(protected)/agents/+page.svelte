@@ -29,8 +29,6 @@
 	} from '$lib/api/agents.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
-	let { data } = $props();
-
 	// Search state management
 	let searchTerm = $state('');
 
@@ -58,37 +56,18 @@
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
 
-	// Loading state for data refresh
+	// Loading state for data refresh and initial load
 	let isRefreshing = $state(false);
+	let isInitialLoading = $state(true);
 
-	// Local users state for updates (will be initialized from streamed data)
+	// Local users state for updates
 	let localUsers = $state([]);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
 
-	// Check for server-side load errors (will be set from streamed data)
+	// Check for load errors
 	let loadError = $state(null);
-
-	// Derived state that transforms streamed data without mutation
-	function getProcessedUsers(agentsData) {
-		if (!agentsData || !agentsData.agents) {
-			return [];
-		}
-
-		// Filter only agents (users with status slug 'agents') and normalize
-		return agentsData.agents
-			.filter((user) => user.userStatus?.slug === 'agents')
-			.map((user) => ({
-				...user,
-				// Keep old status field for backward compatibility (derived from ban field)
-				status: user.ban ? 'banned' : 'active',
-				// Add new status fields
-				status_id: user.status_id,
-				userStatus: user.userStatus
-			}))
-			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-	}
 
 	// Computed filteredUsers reactive statement
 	let filteredUsers = $derived.by(() => {
@@ -247,9 +226,7 @@
 						...localUsers
 					];
 
-					addSuccessToast(
-						`Агент "${createdUser.name || createdUser.email}" успешно создан.`
-					);
+					addSuccessToast(`Агент "${createdUser.name || createdUser.email}" успешно создан.`);
 				},
 				2,
 				1000
@@ -337,6 +314,9 @@
 	// Refresh data from server
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
+		if (isInitialLoad) {
+			isInitialLoading = true;
+		}
 		try {
 			const users = await refreshUsers();
 			// Filter only agents and normalize status
@@ -357,12 +337,16 @@
 				addSuccessToast('Данные успешно обновлены');
 			}
 		} catch (error) {
+			loadError = error;
 			handleApiError(
 				error,
 				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
 			);
 		} finally {
 			isRefreshing = false;
+			if (isInitialLoad) {
+				isInitialLoading = false;
+			}
 		}
 	}
 
@@ -380,16 +364,10 @@
 		await refreshData();
 	}
 
-	// Handle initial load error and load data if empty
+	// Load data on mount - client-side only
 	onMount(() => {
-		if (loadError) {
-			addErrorToast(loadError.message, { duration: 0 });
-		}
-
-		// Load data if we have empty initial data (server-side data loading was disabled)
-		if (!localUsers.length && !loadError) {
-			refreshData(true); // Pass true to indicate initial load
-		}
+		// Always load data on mount since we're using client-side rendering
+		refreshData(true);
 	});
 
 	// Debug function to manually set user status (for testing)
@@ -414,24 +392,12 @@
 			fallbackMessage="An error occurred while loading the agents page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Streamed Agents Data with SSR -->
-			{#await data.agentsData}
+			<!-- Client-side loaded data -->
+			{#if isInitialLoading}
 				<!-- Loading state: Show skeleton -->
 				<TableSkeleton columns={6} />
-			{:then agentsData}
+			{:else}
 				<!-- Success state: Show data -->
-				{@const processedUsers = getProcessedUsers(agentsData)}
-
-				<!-- Update local state only once when data arrives -->
-				{#if localUsers.length === 0 && processedUsers.length > 0}
-					{((localUsers = processedUsers), '')}
-				{/if}
-
-				<!-- Set load error if present -->
-				{#if agentsData.error && !loadError}
-					{((loadError = agentsData), '')}
-				{/if}
-
 				<!-- Skip link for keyboard navigation -->
 				<a
 					href="#main-content"
@@ -534,7 +500,7 @@
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 								<!-- Load Error Banner -->
-								{#if loadError && loadError.canRetry}
+								{#if loadError}
 									<div class="mb-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
 										<div class="flex">
 											<div class="flex-shrink-0">
@@ -556,7 +522,7 @@
 													Ошибка загрузки данных
 												</h3>
 												<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-													<p>{loadError.message}</p>
+													<p>{loadError.message || 'Не удалось загрузить данные'}</p>
 												</div>
 												<div class="mt-4">
 													<div class="-mx-2 -my-1.5 flex">
@@ -566,7 +532,7 @@
 															disabled={isRefreshing}
 															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
 														>
-															{isRefreshing ? 'Retrying...' : 'Retry'}
+															{isRefreshing ? 'Повтор...' : 'Повторить'}
 														</button>
 													</div>
 												</div>
@@ -659,15 +625,7 @@
 						</div>
 					</div>
 				</div>
-			{:catch error}
-				<!-- Critical error state -->
-				<div class="flex min-h-screen items-center justify-center">
-					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
-						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки агентов</h3>
-						<p class="text-red-300">Не удалось загрузить агентов. Попробуйте обновить страницу.</p>
-					</div>
-				</div>
-			{/await}
+			{/if}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

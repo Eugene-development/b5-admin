@@ -12,22 +12,7 @@ import {
 } from '../utils/authErrorHandler.js';
 import { browser } from '$app/environment';
 
-/**
- * Get CSRF token from cookie
- * @returns {string|null} CSRF token or null if not found
- */
-function getCsrfToken() {
-	if (!browser) return null;
-
-	const cookies = document.cookie.split(';');
-	for (let cookie of cookies) {
-		const [name, value] = cookie.trim().split('=');
-		if (name === 'XSRF-TOKEN') {
-			return decodeURIComponent(value);
-		}
-	}
-	return null;
-}
+// CSRF token functions removed - not needed for JWT authentication
 
 /**
  * Custom API Error class
@@ -114,13 +99,7 @@ export async function apiRequest(endpoint, options = {}, requireAuth = false) {
 		...options.headers
 	};
 
-	// Add CSRF token if available
-	const csrfToken = getCsrfToken();
-	if (csrfToken) {
-		headers['X-XSRF-TOKEN'] = csrfToken;
-	}
-
-	// Add auth headers if required and available
+	// Add auth headers (JWT Bearer token) if required and available
 	if (requireAuth) {
 		const authHeaders = getAuthHeaders();
 		if (authHeaders) {
@@ -131,12 +110,12 @@ export async function apiRequest(endpoint, options = {}, requireAuth = false) {
 		}
 	}
 
-	// Prepare fetch options
+	// Prepare fetch options (no credentials needed for JWT)
 	const fetchOptions = {
 		...options,
 		headers,
-		signal: controller.signal,
-		credentials: 'include' // Include cookies for CSRF and session management
+		signal: controller.signal
+		// credentials: 'include' removed - not needed for JWT
 	};
 
 	try {

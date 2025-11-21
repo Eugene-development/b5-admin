@@ -8,12 +8,11 @@ import { api, httpClient, createHttpClient } from './http-client.js';
 
 /**
  * Example 1: Using the default API helper functions
- * Automatically handles credentials, CSRF tokens, and error handling
+ * Automatically handles JWT authentication and error handling
  */
 export async function exampleApiUsage() {
 	try {
-		// Initialize CSRF protection (requirement 5.2, 5.4)
-		await api.initCsrf();
+		// JWT tokens are automatically added to Authorization header
 
 		// Make authenticated requests (requirement 4.4, 5.1)
 		const userData = await api.get('/api/user');
@@ -37,8 +36,7 @@ export async function exampleApiUsage() {
 export async function exampleHttpClientUsage() {
 	try {
 		// All requests automatically include:
-		// - credentials: 'include' (requirement 4.4, 5.1)
-		// - X-XSRF-TOKEN header (requirement 5.2, 5.4)
+		// - Authorization: Bearer {token} header (requirement 4.4, 5.1)
 		// - Proper error handling (requirement 5.3)
 
 		const response = await httpClient.requestJson('/api/protected-resource');
@@ -72,12 +70,12 @@ export function createCustomApiClient() {
 
 /**
  * Example 4: Demonstrating all HTTP methods
- * Shows that all methods properly handle credentials and CSRF
+ * Shows that all methods properly handle JWT authentication
  */
 export async function exampleAllMethods() {
 	const client = httpClient;
 
-	// All of these automatically include credentials and CSRF token
+	// All of these automatically include JWT Authorization header
 	const getResult = await client.get('/api/data');
 	const postResult = await client.post('/api/data', { name: 'test' });
 	const putResult = await client.put('/api/data/1', { name: 'updated' });
@@ -90,17 +88,16 @@ export async function exampleAllMethods() {
 /**
  * Task Requirements Summary:
  *
- * ✅ 4.4 - Configure fetch to send credentials with requests
- *    - All requests use credentials: 'include'
- *    - Cookies are automatically sent with every request
+ * ✅ 4.4 - Configure fetch to send authentication with requests
+ *    - JWT tokens automatically added to Authorization header
+ *    - Token retrieved from localStorage
  *
- * ✅ 5.1 - Configure fetch to send credentials with requests
+ * ✅ 5.1 - Configure fetch to send authentication with requests
  *    - Same as 4.4, implemented in HttpClient.request()
  *
- * ✅ 5.2 - Add automatic XSRF token sending in headers
- *    - getCsrfToken() extracts token from cookies
- *    - prepareHeaders() automatically adds X-XSRF-TOKEN header
- *    - initCsrf() initializes CSRF protection
+ * ✅ 5.2 - Add automatic JWT token sending in headers
+ *    - getStoredToken() retrieves token from localStorage
+ *    - prepareHeaders() automatically adds Authorization: Bearer header
  *
  * ✅ 5.3 - Create wrapper for API requests with error handling
  *    - HttpClient class provides comprehensive wrapper

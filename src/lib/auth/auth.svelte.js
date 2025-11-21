@@ -1,12 +1,75 @@
 /**
- * Authentication state management module using Svelte 5 runes
+ * Authentication state management module using Svelte 5 runes with JWT
  * Provides reactive state for user authentication, loading states, and error handling
  */
+
+import { browser } from '$app/environment';
 
 // Reactive state using Svelte 5 runes
 let user = $state(null);
 let errors = $state({});
 let isLoading = $state(false);
+let token = $state(null);
+
+// Token storage key
+const TOKEN_KEY = 'b5_auth_token';
+
+// Flag to prevent multiple concurrent redirects to login
+let isRedirectingToLogin = false;
+
+/**
+ * Safely redirect to login page, preventing multiple concurrent redirects
+ * @param {string} returnTo - Optional path to return to after login
+ * @returns {Promise<boolean>} True if redirect was performed, false if already redirecting
+ */
+export async function safeRedirectToLogin(returnTo = null) {
+	if (isRedirectingToLogin) {
+		return false;
+	}
+
+	if (!browser) {
+		return false;
+	}
+
+	const currentPath = window.location.pathname;
+
+	// Don't redirect if already on login page
+	if (currentPath === '/login' || currentPath.startsWith('/login')) {
+		return false;
+	}
+
+	isRedirectingToLogin = true;
+
+	try {
+		const { goto } = await import('$app/navigation');
+		const redirectPath = returnTo ? `/login?returnTo=${encodeURIComponent(returnTo)}` : '/login';
+		await goto(redirectPath);
+		return true;
+	} finally {
+		// Reset flag after a delay to allow for page transition
+		setTimeout(() => {
+			isRedirectingToLogin = false;
+		}, 1000);
+	}
+}
+
+/**
+ * Check if currently redirecting to login
+ * @returns {boolean}
+ */
+export function isRedirecting() {
+	return isRedirectingToLogin;
+}
+
+/**
+ * Initialize token from localStorage on client
+ */
+if (browser) {
+	const storedToken = localStorage.getItem(TOKEN_KEY);
+	if (storedToken) {
+		token = storedToken;
+	}
+}
 
 /**
  * Authentication state object with getters for reactive access
@@ -25,7 +88,7 @@ export const authState = {
 	 * @returns {boolean} True if user is authenticated, false otherwise
 	 */
 	get isAuthenticated() {
-		return !!user;
+		return !!user && !!token;
 	},
 
 	/**
@@ -42,6 +105,14 @@ export const authState = {
 	 */
 	get errors() {
 		return errors;
+	},
+
+	/**
+	 * Get current JWT token
+	 * @returns {string|null} JWT token or null
+	 */
+	get token() {
+		return token;
 	}
 };
 
@@ -51,6 +122,21 @@ export const authState = {
  */
 export function setUser(newUser) {
 	user = newUser;
+}
+
+/**
+ * Set JWT token and save to localStorage
+ * @param {string|null} newToken - JWT token or null to clear
+ */
+export function setToken(newToken) {
+	token = newToken;
+	if (browser) {
+		if (newToken) {
+			localStorage.setItem(TOKEN_KEY, newToken);
+		} else {
+			localStorage.removeItem(TOKEN_KEY);
+		}
+	}
 }
 
 /**
@@ -77,17 +163,17 @@ export function clearErrors() {
 }
 
 /**
- * Clear all authentication state (user, errors, loading)
+ * Clear all authentication state (user, errors, loading, token)
  */
 export function clearAuthState() {
 	user = null;
 	errors = {};
 	isLoading = false;
+	setToken(null);
 }
 
 /**
  * Clear specific error fields
- * Requirements: 6.1
  * @param {string|string[]} fields - Field name(s) to clear
  */
 export function clearErrorFields(fields) {
@@ -96,7 +182,6 @@ export function clearErrorFields(fields) {
 
 /**
  * Check if there are any errors in the current state
- * Requirements: 6.1, 6.2, 6.3, 6.4
  * @returns {boolean} True if there are any errors
  */
 export function hasAuthErrors() {
@@ -105,7 +190,6 @@ export function hasAuthErrors() {
 
 /**
  * Get the first error message from current errors
- * Requirements: 6.1, 6.2, 6.3, 6.4
  * @returns {string|null} First error message or null
  */
 export function getFirstAuthError() {
@@ -117,9 +201,13 @@ import { goto } from '$app/navigation';
 
 /**
  * Create HTTP client with custom unauthorized handler for auth module
- * Requirements: 4.4, 5.1, 5.2, 5.3, 5.4
  */
 const authHttpClient = createHttpClient({
+	setToken: setToken,
+	getToken: () => {
+		if (!browser) return null;
+		return localStorage.getItem('b5_auth_token');
+	},
 	onUnauthorized: async () => {
 		// Clear authentication state when unauthorized
 		clearAuthState();
@@ -132,10 +220,8 @@ const authHttpClient = createHttpClient({
 			const authError = { auth: ['Session expired. Please log in again.'] };
 			setErrors(authError);
 
-			// Redirect to login page only if not on public page
-			if (typeof window !== 'undefined') {
-				await goto('/login');
-			}
+			// Use safe redirect to prevent multiple redirects
+			await safeRedirectToLogin(currentPath);
 		}
 	}
 });
@@ -151,15 +237,6 @@ export function initAuthFromServer(serverData) {
 	}
 }
 
-/**
- * Initialize CSRF protection by fetching CSRF cookie
- * Requirements: 5.1, 5.2, 5.4
- * @returns {Promise<void>}
- */
-export async function initCsrf() {
-	return api.initCsrf();
-}
-
 import {
 	handleApiError as centralizedHandleApiError,
 	clearErrorFields as clearFields,
@@ -170,7 +247,6 @@ import {
 /**
  * Handle API errors and update state accordingly
  * Uses centralized error handler for consistent error processing
- * Requirements: 6.1, 6.2, 6.3, 6.4
  * @param {Error} error - API error
  * @returns {Object} Error object with formatted messages
  */
@@ -187,8 +263,7 @@ function handleApiError(error) {
 }
 
 /**
- * Login user with email and password
- * Requirements: 2.1, 2.2, 2.3
+ * Login user with email and password (JWT)
  * @param {string} email - User email
  * @param {string} password - User password
  * @param {Object} options - Login options
@@ -201,13 +276,11 @@ export async function login(email, password, options = {}) {
 	clearErrors();
 
 	try {
-		// Initialize CSRF protection first
-		await initCsrf();
-
 		const data = await authHttpClient.post('/api/login', { email, password });
 
-		if (data.success && data.user) {
+		if (data.success && data.user && data.token) {
 			setUser(data.user);
+			setToken(data.token);
 			setLoading(false);
 
 			// Handle post-login redirect if in browser
@@ -226,8 +299,7 @@ export async function login(email, password, options = {}) {
 }
 
 /**
- * Register new user
- * Requirements: 1.1, 1.2, 1.3
+ * Register new user (JWT)
  * @param {string} name - User name
  * @param {string} email - User email
  * @param {string} password - User password
@@ -242,9 +314,6 @@ export async function register(name, email, password, passwordConfirmation, opti
 	clearErrors();
 
 	try {
-		// Initialize CSRF protection first
-		await initCsrf();
-
 		const data = await authHttpClient.post('/api/register', {
 			name,
 			email,
@@ -252,8 +321,9 @@ export async function register(name, email, password, passwordConfirmation, opti
 			password_confirmation: passwordConfirmation
 		});
 
-		if (data.success && data.user) {
+		if (data.success && data.user && data.token) {
 			setUser(data.user);
+			setToken(data.token);
 			setLoading(false);
 
 			// Handle post-registration redirect if in browser
@@ -272,8 +342,7 @@ export async function register(name, email, password, passwordConfirmation, opti
 }
 
 /**
- * Logout current user
- * Requirements: 3.1, 3.2, 3.3
+ * Logout current user (JWT)
  * @param {Object} options - Logout options
  * @param {string} options.redirectTo - Path to redirect after logout
  * @returns {Promise<void>}
@@ -288,6 +357,7 @@ export async function logout(options = {}) {
 
 		// Clear authentication state regardless of response
 		clearAuthState();
+		setLoading(false);
 
 		// Handle post-logout redirect if in browser
 		if (typeof window !== 'undefined' && options.redirectTo) {
@@ -296,6 +366,7 @@ export async function logout(options = {}) {
 	} catch (error) {
 		// Clear state even if logout request fails
 		clearAuthState();
+		setLoading(false);
 
 		// Handle post-logout redirect even on error
 		if (typeof window !== 'undefined' && options.redirectTo) {
@@ -311,13 +382,43 @@ export async function logout(options = {}) {
 }
 
 /**
+ * Refresh JWT token
+ * @returns {Promise<string>} New JWT token
+ * @throws {Error} Refresh error
+ */
+export async function refreshToken() {
+	try {
+		const data = await authHttpClient.post('/api/refresh');
+
+		if (data.success && data.token) {
+			setToken(data.token);
+			return data.token;
+		} else {
+			throw new Error(data.message || 'Token refresh failed');
+		}
+	} catch (error) {
+		// If refresh fails, clear auth state and redirect to login
+		clearAuthState();
+		await safeRedirectToLogin();
+		throw error;
+	}
+}
+
+/**
  * Get current authenticated user data from auth state
  * User data is now loaded from server in +layout.server.js
- * Requirements: 2.1, 4.1, 4.2
  * @returns {Promise<Object|null>} User data or null if not authenticated
  */
 export async function getUser() {
 	// Return current user from auth state
 	// No longer makes fetch requests - data comes from server
 	return authState.user;
+}
+
+/**
+ * Get JWT token from state
+ * @returns {string|null} JWT token or null
+ */
+export function getToken() {
+	return token;
 }

@@ -1,5 +1,4 @@
 import { gql, request } from 'graphql-request';
-import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
@@ -180,9 +179,6 @@ async function makeGraphQLRequest(
 				'Content-Type': 'application/json',
 				Accept: 'application/json'
 			};
-
-			// Note: Authentication headers temporarily disabled for CORS compatibility
-			// TODO: Re-enable authentication after CORS is properly configured
 
 			// Make the request using fetch directly to support server-side
 			const response = await fetchFunction(GRAPHQL_ENDPOINT, {

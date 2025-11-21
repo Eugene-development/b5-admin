@@ -1,54 +1,23 @@
 /**
- * HTTP Client wrapper for API requests with authentication support
- * Handles cookies, CSRF tokens, error handling, and automatic redirects
- * Requirements: 4.4, 5.1, 5.2, 5.3, 5.4
+ * HTTP Client wrapper for API requests with JWT authentication
+ * Handles JWT tokens, error handling, and automatic redirects
  */
 
-import { goto } from '$app/navigation';
 import { browser } from '$app/environment';
 import { API_BASE_URL, AUTH_API_URL } from '$lib/config/api.js';
+import { setToken as authSetToken } from '$lib/auth/auth.svelte.js';
 
 /**
- * Get CSRF token from cookie
- * @returns {string|null} CSRF token or null if not found
+ * Get JWT token from localStorage
+ * @returns {string|null} JWT token or null if not found
  */
-function getCsrfToken() {
+function getStoredToken() {
 	if (!browser) return null;
-
-	const cookies = document.cookie.split(';');
-	for (let cookie of cookies) {
-		const [name, value] = cookie.trim().split('=');
-		if (name === 'XSRF-TOKEN') {
-			return decodeURIComponent(value);
-		}
-	}
-	return null;
+	return localStorage.getItem('b5_auth_token');
 }
 
 /**
- * Initialize CSRF protection by fetching CSRF cookie
- * Requirements: 5.1, 5.2, 5.4
- * @returns {Promise<void>}
- */
-export async function initCsrf(fetchFn = globalThis.fetch) {
-	try {
-		await fetchFn(`${AUTH_API_URL}/sanctum/csrf-cookie`, {
-			method: 'GET',
-			credentials: 'include',
-			headers: {
-				Accept: 'application/json',
-				'Content-Type': 'application/json'
-			}
-		});
-	} catch (error) {
-		console.error('Failed to initialize CSRF protection:', error);
-		throw new Error('Failed to initialize CSRF protection');
-	}
-}
-
-/**
- * HTTP Client class for making authenticated API requests
- * Requirements: 4.4, 5.1, 5.2, 5.3, 5.4
+ * HTTP Client class for making authenticated API requests with JWT
  */
 export class HttpClient {
 	constructor(options = {}) {
@@ -60,29 +29,96 @@ export class HttpClient {
 			...options.defaultHeaders
 		};
 		this.onUnauthorized = options.onUnauthorized || this.defaultUnauthorizedHandler;
+		this.getToken = options.getToken || getStoredToken;
+		this.setToken = options.setToken || this.defaultSetToken;
+		this.isRefreshing = false;
+		this.refreshPromise = null;
+	}
+
+	/**
+	 * Default token setter - stores token in localStorage
+	 * @param {string} token - JWT token to store
+	 */
+	defaultSetToken(token) {
+		if (browser && token) {
+			localStorage.setItem('b5_auth_token', token);
+		}
+	}
+
+	/**
+	 * Attempt to refresh the JWT token
+	 * @returns {Promise<string|null>} New token or null if refresh failed
+	 */
+	async refreshToken() {
+		if (!browser) return null;
+
+		// If already refreshing, wait for that promise
+		if (this.isRefreshing && this.refreshPromise) {
+			return this.refreshPromise;
+		}
+
+		this.isRefreshing = true;
+
+		this.refreshPromise = (async () => {
+			try {
+				const token = this.getToken();
+				if (!token) return null;
+
+				// Call the refresh endpoint
+				const response = await this.fetch(`${AUTH_API_URL}/api/refresh`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Accept: 'application/json',
+						Authorization: `Bearer ${token}`
+					}
+				});
+
+				if (!response.ok) {
+					return null;
+				}
+
+				const data = await response.json();
+
+				if (data.success && data.token) {
+					this.setToken(data.token);
+					return data.token;
+				}
+
+				return null;
+			} catch (error) {
+				console.error('Token refresh failed:', error);
+				return null;
+			} finally {
+				this.isRefreshing = false;
+				this.refreshPromise = null;
+			}
+		})();
+
+		return this.refreshPromise;
 	}
 
 	/**
 	 * Default handler for 401 unauthorized responses
 	 * Automatically redirects to login page
-	 * Requirements: 5.1, 5.3
 	 */
 	async defaultUnauthorizedHandler() {
 		if (browser) {
-			// Clear any stored auth state if available
+			// Clear any stored auth state
 			if (typeof window !== 'undefined' && window.localStorage) {
+				window.localStorage.removeItem('b5_auth_token');
 				window.localStorage.removeItem('auth_user');
 			}
 
-			// Redirect to login page
-			await goto('/login');
+			// Use safe redirect to prevent multiple concurrent redirects
+			const { safeRedirectToLogin } = await import('$lib/auth/auth.svelte.js');
+			await safeRedirectToLogin();
 		}
 	}
 
 	/**
 	 * Prepare headers for API request
-	 * Automatically includes CSRF token if available
-	 * Requirements: 5.2, 5.4
+	 * Automatically includes JWT Authorization header if token is available
 	 * @param {Object} customHeaders - Additional headers to include
 	 * @returns {Object} Complete headers object
 	 */
@@ -92,29 +128,28 @@ export class HttpClient {
 			...customHeaders
 		};
 
-		// Add CSRF token if available
-		const csrfToken = getCsrfToken();
-		if (csrfToken) {
-			headers['X-XSRF-TOKEN'] = csrfToken;
+		// Add JWT Authorization header if token is available
+		const token = this.getToken();
+		if (token) {
+			headers['Authorization'] = `Bearer ${token}`;
 		}
 
 		return headers;
 	}
 
 	/**
-	 * Make HTTP request with automatic credential handling
-	 * Requirements: 4.4, 5.1, 5.2, 5.3, 5.4
+	 * Make HTTP request with automatic JWT handling and token refresh
 	 * @param {string} url - Request URL (relative to baseURL or absolute)
 	 * @param {Object} options - Fetch options
+	 * @param {boolean} isRetry - Internal flag to prevent infinite refresh loop
 	 * @returns {Promise<Response>} Fetch response
 	 */
-	async request(url, options = {}) {
+	async request(url, options = {}, isRetry = false) {
 		// Resolve URL (handle both relative and absolute URLs)
 		const requestUrl = url.startsWith('http') ? url : `${this.baseURL}${url}`;
 
-		// Prepare configuration with credentials and headers
+		// Prepare configuration with headers (no credentials needed for JWT)
 		const config = {
-			credentials: 'include', // Always send cookies
 			headers: this.prepareHeaders(options.headers),
 			...options
 		};
@@ -123,10 +158,29 @@ export class HttpClient {
 			const response = await this.fetch(requestUrl, config);
 
 			// Handle 401 unauthorized responses automatically
-			if (response.status === 401) {
+			if (response.status === 401 && !isRetry) {
+				// Try to refresh the token
+				const newToken = await this.refreshToken();
+
+				if (newToken) {
+					// Retry the request with the new token
+					return this.request(url, options, true);
+				}
+
+				// If refresh failed, call unauthorized handler
 				await this.onUnauthorized();
 
 				// Create error for the calling code
+				const error = new Error('Unauthorized');
+				error.status = 401;
+				error.response = response;
+				throw error;
+			}
+
+			// If 401 on retry (refresh failed), call unauthorized handler
+			if (response.status === 401 && isRetry) {
+				await this.onUnauthorized();
+
 				const error = new Error('Unauthorized');
 				error.status = 401;
 				error.response = response;
@@ -147,7 +201,6 @@ export class HttpClient {
 
 	/**
 	 * Make HTTP request and parse JSON response
-	 * Requirements: 4.4, 5.1, 5.2, 5.3, 5.4
 	 * @param {string} url - Request URL
 	 * @param {Object} options - Fetch options
 	 * @returns {Promise<Object>} Parsed JSON response
@@ -274,13 +327,18 @@ export class HttpClient {
  * Default HTTP client instance for authentication requests
  * Uses AUTH_API_URL for login, register, logout, etc.
  */
-export const httpClient = new HttpClient();
+export const httpClient = new HttpClient({
+	setToken: authSetToken
+});
 
 /**
  * GraphQL client instance for data requests
  * Uses API_BASE_URL for GraphQL queries
  */
-export const graphqlClient = new HttpClient({ baseURL: API_BASE_URL });
+export const graphqlClient = new HttpClient({
+	baseURL: API_BASE_URL,
+	setToken: authSetToken
+});
 
 /**
  * Convenience function to create a new HTTP client with custom configuration
@@ -305,7 +363,6 @@ export function createApiClients(fetch) {
 		authClient,
 		dataClient,
 		// Convenience methods
-		initCsrf: () => initCsrf(fetch),
 		auth: {
 			get: (url, options) => authClient.get(url, options),
 			post: (url, data, options) => authClient.post(url, data, options),
@@ -325,12 +382,6 @@ export function createApiClients(fetch) {
  * API helper functions using the default client
  */
 export const api = {
-	/**
-	 * Initialize CSRF protection
-	 * @returns {Promise<void>}
-	 */
-	initCsrf: () => initCsrf(),
-
 	/**
 	 * Make GET request
 	 * @param {string} url - Request URL

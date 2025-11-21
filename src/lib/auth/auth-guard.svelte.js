@@ -1,5 +1,6 @@
 /**
  * Authentication middleware and route protection for SvelteKit
+ * Uses status-based permissions instead of domain-based access control
  * Requirements: 3.4, 4.3, 5.1
  */
 
@@ -7,6 +8,7 @@ import { redirect } from '@sveltejs/kit';
 import { browser } from '$app/environment';
 import { authState, getCurrentUserData } from '../state/auth.svelte.js';
 import { hasAuthToken, getUserData } from '../api/config.js';
+import { hasRouteAccess, PUBLIC_ROUTES } from './status-permissions.js';
 
 /**
  * Initialize authentication state on app startup
@@ -114,11 +116,13 @@ export function createAuthLoad(options = {}) {
 			throw redirect(302, loginUrl);
 		}
 
-		// Check user type/status - allow access ONLY for Админ, Куратор, Менеджер
+		// Check status-based route access permissions
 		if (requireAuth && isAuth && userData) {
-			const userType = userData.type;
-			const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
-			if (!userType || !allowedTypes.includes(userType)) {
+			const userStatusSlug = userData.status?.slug;
+			const currentRoute = url.pathname;
+
+			// Check if user has access to this route based on their status
+			if (!hasRouteAccess(userStatusSlug, currentRoute)) {
 				throw redirect(302, '/access-denied');
 			}
 		}
@@ -247,9 +251,8 @@ export async function navigationGuard(pathname, options = {}) {
  * @returns {boolean} True if route requires authentication
  */
 export function isProtectedRoute(pathname) {
-	const protectedPatterns = ['/dashboard', '/profile', '/settings', '/admin'];
-
-	return protectedPatterns.some((pattern) => pathname.startsWith(pattern));
+	// All routes except public routes require authentication
+	return !PUBLIC_ROUTES.includes(pathname);
 }
 
 /**

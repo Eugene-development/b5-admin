@@ -13,7 +13,6 @@ import {
 } from './toastStore.js';
 import { ApiError } from '../api/client.js';
 import { removeAuthToken } from '../api/config.js';
-import { goto } from '$app/navigation';
 
 /**
  * Authentication-specific error messages
@@ -78,15 +77,10 @@ export function handleAuthError(error, operation = null, options = {}) {
 				errorType = 'unauthorized';
 				shouldRedirect = redirectOnAuth;
 
-				// Clear auth token and redirect to login
+				// Clear auth token - redirect is handled centrally by safeRedirectToLogin
+				// to prevent multiple concurrent redirects
 				if (redirectOnAuth) {
 					removeAuthToken();
-					setTimeout(() => {
-						const currentPath = window.location.pathname;
-						if (currentPath !== '/login') {
-							goto(`/login?redirectTo=${encodeURIComponent(currentPath)}`);
-						}
-					}, 100);
 				}
 				break;
 

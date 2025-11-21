@@ -138,10 +138,18 @@ async function loadOrdersData(fetch) {
 }
 
 export async function load({ fetch }) {
-	// Return immediately with streamed Promise
-	// Page will render instantly, data will load in background
+	// JWT tokens are stored in localStorage and not available on server
+	// Return empty data immediately and let client load data via onMount
+	// This prevents 401 errors during SSR
 	return {
-		// Don't await - return Promise for streaming!
-		ordersData: loadOrdersData(fetch)
+		ordersData: Promise.resolve({
+			orders: [],
+			companies: [],
+			projects: [],
+			error: null,
+			errorType: null,
+			canRetry: false,
+			isLoading: false
+		})
 	};
 }

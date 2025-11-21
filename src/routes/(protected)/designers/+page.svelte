@@ -224,9 +224,7 @@
 						...localUsers
 					];
 
-					addSuccessToast(
-						`Дизайнер "${createdUser.name || createdUser.email}" успешно создан.`
-					);
+					addSuccessToast(`Дизайнер "${createdUser.name || createdUser.email}" успешно создан.`);
 				},
 				2,
 				1000

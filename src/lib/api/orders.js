@@ -44,7 +44,8 @@ export async function createOrder(orderData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -163,7 +164,8 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -218,7 +220,8 @@ export async function updateOrder(orderData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -276,7 +279,8 @@ export async function deleteOrder(orderId) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -334,7 +338,8 @@ export async function getCompaniesForDropdown(fetchFn = fetch) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -379,7 +384,8 @@ export async function getProjectsForDropdown(fetchFn = fetch) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -432,7 +438,8 @@ export async function updateOrderPosition(positionData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -479,7 +486,8 @@ export async function deleteOrderPosition(positionId) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -537,7 +545,8 @@ export async function createOrderPosition(positionData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({

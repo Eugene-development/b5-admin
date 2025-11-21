@@ -44,7 +44,8 @@ export async function createCompany(companyData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -129,7 +130,8 @@ export async function createCompanyPhone(companyId, phoneData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -188,7 +190,8 @@ export async function createCompanyEmail(companyId, emailData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -256,7 +259,8 @@ export async function updateCompany(companyData) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -321,7 +325,8 @@ export async function toggleCompanyBan(companyId, shouldBan) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -375,7 +380,8 @@ export async function deleteCompany(companyId) {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -452,7 +458,8 @@ export async function refreshCompanies() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -500,7 +507,8 @@ export async function getCompanyStatuses() {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Accept: 'application/json'
+				Accept: 'application/json',
+				...authHeaders
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })

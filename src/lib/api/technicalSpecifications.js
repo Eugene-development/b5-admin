@@ -1,5 +1,4 @@
 import { gql, request } from 'graphql-request';
-import { getAuthHeaders } from './config.js';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
 
