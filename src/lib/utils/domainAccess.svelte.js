@@ -26,6 +26,9 @@ export const domainState = $state({
 export function initializeDomainDetection() {
 	if (!browser) return;
 
+	// Skip if already initialized
+	if (domainState.initialized) return;
+
 	const hostname = window.location.hostname;
 
 	domainState.hostname = hostname;
@@ -152,11 +155,8 @@ export function getDomainPageConfig() {
  * @returns {boolean} True if the navigation item should be visible
  */
 export function shouldShowNavItem(path) {
-	if (!domainState.initialized && browser) {
-		// Fallback initialization if needed
-		initializeDomainDetection();
-	}
-
+	// Note: Domain detection should be initialized in root layout before this is called
+	// We don't initialize here to avoid state mutation in $derived contexts
 	const hostname = domainState.hostname;
 	const pageConfig = getDomainPageConfig();
 

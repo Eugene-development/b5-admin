@@ -59,20 +59,21 @@
 		const statusSlug = getStatusSlug(status);
 		const statusValue = getStatusValue(status);
 
+		// For legacy user statuses - check first
+		switch (statusSlug) {
+			case 'verified':
+				return 'Почта подтверждена';
+			case 'unverified':
+				return 'Почта не подтверждена';
+			case 'banned':
+				return 'Аккаунт забанен';
+		}
+
 		// For project statuses, use the value
 		if (statusValue) return statusValue;
 
-		// For legacy user statuses
-		switch (statusSlug) {
-			case 'verified':
-				return 'Email verified';
-			case 'unverified':
-				return 'Email not verified';
-			case 'banned':
-				return 'Account banned';
-			default:
-				return statusSlug || 'Не указан';
-		}
+		// Default fallback
+		return statusSlug || 'Не указан';
 	}
 
 	// Get the appropriate CSS classes based on status and size

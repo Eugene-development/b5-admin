@@ -498,6 +498,37 @@ function clearAuthState() {
 }
 
 /**
+ * Update authentication state from server data
+ * Safe to call from $effect blocks
+ * @param {Object} serverData - Server data containing user and authentication status
+ */
+export function updateAuthStateFromServer(serverData) {
+	if (serverData?.user && serverData?.isAuthenticated) {
+		const normalizedUser = normalizeUserData(serverData.user);
+		authState.user = normalizedUser;
+		authState.isAuthenticated = true;
+		authState.emailVerified = normalizedUser?.email_verified || false;
+		authState.initialized = true;
+
+		// Store user data in localStorage for offline access
+		if (typeof window !== 'undefined') {
+			setUserData(normalizedUser);
+		}
+	} else {
+		// No server data - user is not authenticated
+		authState.user = null;
+		authState.isAuthenticated = false;
+		authState.emailVerified = false;
+		authState.initialized = true;
+
+		// Clear localStorage
+		if (typeof window !== 'undefined') {
+			removeAuthToken();
+		}
+	}
+}
+
+/**
  * Get current authentication status
  * @returns {boolean} Whether user is authenticated
  */

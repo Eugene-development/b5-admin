@@ -1,7 +1,7 @@
 <script>
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
-	import { initializeAuth, authState } from '$lib/state/auth.svelte.js';
+	import { initializeAuth, authState, updateAuthStateFromServer } from '$lib/state/auth.svelte.js';
 	import { initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { browser } from '$app/environment';
 
@@ -12,37 +12,17 @@
 		initializeAuth();
 	}
 
+	// Initialize domain detection (must be done before components that use it)
+	if (browser) {
+		initializeDomainDetection();
+	}
+
 	// Initialize authentication from server data first, then check with API
 	$effect(() => {
-		// If we have server data, update auth state immediately
-		if (data?.user && data?.isAuthenticated) {
-			authState.user = data.user;
-			authState.isAuthenticated = true;
-			authState.emailVerified = data.user.email_verified || false;
-			authState.initialized = true;
-
-			// Store user data in localStorage for offline access
-			if (browser) {
-				import('$lib/api/config.js').then(({ setUserData }) => {
-					setUserData(data.user);
-				});
-			}
-		} else if (!authState.initialized) {
-			// No server data - user is not authenticated
-			authState.user = null;
-			authState.isAuthenticated = false;
-			authState.initialized = true;
-
-			// Clear localStorage
-			if (browser) {
-				import('$lib/api/config.js').then(({ removeAuthToken }) => {
-					removeAuthToken();
-				});
-			}
+		// Update auth state from server data using safe function
+		if (!authState.initialized || data?.user) {
+			updateAuthStateFromServer(data);
 		}
-
-		// Initialize domain detection
-		initializeDomainDetection();
 	});
 </script>
 

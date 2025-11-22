@@ -27,7 +27,6 @@
 	let isRefreshing = $state(false);
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
-	let filteredOrders = $state([]);
 	let updateCounter = $state(0);
 
 	// Pagination state
@@ -60,8 +59,8 @@
 		hasAccess = hasOrderAccess();
 	});
 
-	// Computed filtered orders
-	let computedFilteredOrders = $derived.by(() => {
+	// Filtered orders based on search term - automatically reactive
+	let filteredOrders = $derived.by(() => {
 		if (!searchTerm.trim()) {
 			return orders;
 		}
@@ -86,12 +85,7 @@
 	let paginatedOrders = $derived.by(() => {
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
-		return computedFilteredOrders.slice(startIndex, endIndex);
-	});
-
-	// Update filteredOrders for compatibility
-	$effect(() => {
-		filteredOrders = computedFilteredOrders;
+		return filteredOrders.slice(startIndex, endIndex);
 	});
 
 	// Search functionality
@@ -147,12 +141,7 @@
 							...o,
 							sequentialNumber: index + 1
 						}));
-						filteredOrders = filteredOrders
-							.filter((o) => o.id !== order.id)
-							.map((o, index) => ({
-								...o,
-								sequentialNumber: index + 1
-							}));
+						// filteredOrders automatically updates via $derived
 						updateCounter++;
 						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
 					}
@@ -217,7 +206,7 @@
 			}));
 
 			orders = refreshedOrders;
-			filteredOrders = refreshedOrders;
+			// filteredOrders automatically updates via $derived
 			addSuccessToast('Данные успешно обновлены');
 			updateCounter++;
 		} catch (error) {
@@ -281,7 +270,7 @@
 						...order,
 						sequentialNumber: index + 1
 					}));
-					filteredOrders = orders;
+					// filteredOrders automatically updates via $derived
 					updateCounter++;
 
 					addSuccessToast(`Заказ #${newOrder.order_number} успешно добавлен`);
@@ -372,9 +361,7 @@
 							sequentialNumber: currentOrder?.sequentialNumber
 						};
 						orders = orders.map((o) => (o.id === enrichedOrder.id ? enrichedOrder : o));
-						filteredOrders = filteredOrders.map((o) =>
-							o.id === enrichedOrder.id ? enrichedOrder : o
-						);
+						// filteredOrders automatically updates via $derived
 					}
 
 					updateCounter++;
