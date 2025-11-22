@@ -232,7 +232,7 @@
 								{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 									Бан
 								{:else}
-									Активно
+									Активен
 								{/if}
 							</button>
 						</td>

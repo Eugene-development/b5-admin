@@ -45,6 +45,8 @@
 				return '+';
 			case 'unverified':
 				return '-';
+			case 'active':
+				return 'Активен';
 			case 'banned':
 				return 'Забанен';
 			default:
@@ -65,6 +67,8 @@
 				return 'Почта подтверждена';
 			case 'unverified':
 				return 'Почта не подтверждена';
+			case 'active':
+				return 'Аккаунт активен';
 			case 'banned':
 				return 'Аккаунт забанен';
 		}

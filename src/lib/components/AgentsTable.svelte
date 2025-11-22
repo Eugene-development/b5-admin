@@ -344,7 +344,7 @@
 									{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 										Бан
 									{:else}
-										Активно
+										Активен
 									{/if}
 								</button>
 								<!-- Delete Button -->

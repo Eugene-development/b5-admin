@@ -221,7 +221,7 @@
 								{#if getCompanyStatus(company) === 'banned'}
 									Бан
 								{:else}
-									Активно
+									Активен
 								{/if}
 							</button>
 						</td>
@@ -422,7 +422,7 @@
 								{#if getCompanyStatus(company) === 'banned'}
 									Бан
 								{:else}
-									Активно
+									Активен
 								{/if}
 							</button>
 						</div>

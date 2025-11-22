@@ -261,25 +261,6 @@
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
-									Статус аккаунта
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if user.status === 'banned'}
-										Заблокирован
-									{:else if user.status === 'inactive'}
-										Неактивен
-									{:else if user.status === 'suspended'}
-										Приостановлен
-									{:else}
-										Активен
-									{/if}
-								</dd>
-							</div>
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
 									Дата регистрации
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
