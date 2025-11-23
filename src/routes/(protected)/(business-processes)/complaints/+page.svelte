@@ -19,8 +19,7 @@
 		refreshComplaints
 	} from '$lib/api/complaints.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
-
-	let { data } = $props();
+	import { onMount } from 'svelte';
 
 	// Search state management
 	let searchTerm = $state('');
@@ -51,6 +50,7 @@
 
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
+	let isInitialLoading = $state(true);
 
 	// Local state for complaints, contracts, and orders
 	let localComplaints = $state([]);
@@ -265,6 +265,9 @@
 	// Refresh data from server
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
+		if (isInitialLoad) {
+			isInitialLoading = true;
+		}
 		try {
 			const complaints = await refreshComplaints();
 			localComplaints = complaints;
@@ -280,6 +283,9 @@
 			);
 		} finally {
 			isRefreshing = false;
+			if (isInitialLoad) {
+				isInitialLoading = false;
+			}
 		}
 	}
 
@@ -297,22 +303,12 @@
 		await refreshData();
 	}
 
-	// Derived state that transforms streamed data without mutation
-	function getProcessedData(complaintsData) {
-		if (!complaintsData) {
-			return { complaints: [], contracts: [], orders: [] };
+	// Load data on mount if not already loaded
+	onMount(() => {
+		if (localComplaints.length === 0) {
+			refreshData(true);
 		}
-
-		return {
-			complaints: (complaintsData.complaints || []).filter(
-				(complaint) => complaint != null && complaint.id
-			),
-			contracts: (complaintsData.contracts || []).filter(
-				(contract) => contract != null && contract.id
-			),
-			orders: (complaintsData.orders || []).filter((order) => order != null && order.id)
-		};
-	}
+	});
 </script>
 
 <ProtectedRoute>
@@ -326,30 +322,12 @@
 			fallbackMessage="An error occurred while loading the complaints page."
 			showDetails={true}
 		>
-			<!-- Streamed Complaints Data with SSR -->
-			{#await data.complaintsData}
+			<!-- Client-side loaded data -->
+			{#if isRefreshing && localComplaints.length === 0}
 				<!-- Loading state: Show skeleton -->
 				<TableSkeleton columns={9} />
-			{:then complaintsData}
+			{:else}
 				<!-- Success state: Show data -->
-				{@const processedData = getProcessedData(complaintsData)}
-
-				<!-- Update local state only once when data arrives -->
-				{#if localComplaints.length === 0 && processedData.complaints.length > 0}
-					{((localComplaints = processedData.complaints), '')}
-				{/if}
-				{#if localContracts.length === 0 && processedData.contracts.length > 0}
-					{((localContracts = processedData.contracts), '')}
-				{/if}
-				{#if localOrders.length === 0 && processedData.orders.length > 0}
-					{((localOrders = processedData.orders), '')}
-				{/if}
-
-				<!-- Set load error if present -->
-				{#if complaintsData.error && !loadError}
-					{((loadError = complaintsData.error), '')}
-				{/if}
-
 				<!-- Skip link for keyboard navigation -->
 				<a
 					href="#main-content"
@@ -583,17 +561,7 @@
 						</div>
 					</div>
 				</div>
-			{:catch error}
-				<!-- Critical error state -->
-				<div class="flex min-h-screen items-center justify-center">
-					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
-						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки рекламаций</h3>
-						<p class="text-red-300">
-							Не удалось загрузить рекламации. Попробуйте обновить страницу.
-						</p>
-					</div>
-				</div>
-			{/await}
+			{/if}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

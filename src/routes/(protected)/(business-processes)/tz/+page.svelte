@@ -333,6 +333,11 @@
 	// Load projects on mount
 	onMount(() => {
 		loadProjects();
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (tzList.length === 0) {
+			loadServices();
+		}
 	});
 </script>
 
@@ -387,6 +392,11 @@
 					{#if !tzList.length && tzData.tzList.length}
 						{((tzList = tzData.tzList), '')}
 					{/if}
+
+					<!-- Show skeleton during initial data refresh when no data is available -->
+					{#if isRefreshing && tzList.length === 0}
+						<TableSkeleton columns={6} />
+					{:else}
 
 					<div class="space-y-6">
 						<!-- Page Header -->
@@ -565,6 +575,7 @@
 							filteredFrom={searchTerm.trim() ? tzList.length : null}
 						/>
 					</div>
+					{/if}
 				{/if}
 			{:catch error}
 				<!-- Critical error state -->

@@ -388,6 +388,11 @@
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (!localDeliveryCompanies.length && !loadError) {
+			refreshData(true);
+		}
 	});
 </script>
 
@@ -416,6 +421,11 @@
 				{#if deliveryData.error && !loadError}
 					{((loadError = deliveryData.error), '')}
 				{/if}
+
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localDeliveryCompanies.length === 0}
+					<TableSkeleton columns={7} />
+				{:else}
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-8 sm:px-6 lg:px-8">
@@ -566,6 +576,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">
 					<div class="text-center">

@@ -299,6 +299,18 @@
 		// Filter out any undefined or null contracts
 		return [...contractsData.contracts].filter((contract) => contract != null && contract.id);
 	}
+
+	// Handle initial load
+	onMount(() => {
+		if (loadError) {
+			addErrorToast(loadError.message, { duration: 0 });
+		}
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (!localContracts.length && !loadError) {
+			refreshData(true);
+		}
+	});
 </script>
 
 <ProtectedRoute>
@@ -329,6 +341,11 @@
 				{#if contractsData.error && !loadError}
 					{((loadError = contractsData.error), '')}
 				{/if}
+
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localContracts.length === 0}
+					<TableSkeleton columns={10} />
+				{:else}
 
 				<!-- Skip link for keyboard navigation -->
 				<a
@@ -563,6 +580,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">

@@ -1,4 +1,5 @@
 import { handleApiError } from '$lib/utils/toastStore.js';
+import { getAuthHeaders } from './config.js';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
 
@@ -45,7 +46,7 @@ export async function createOrder(orderData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -165,7 +166,7 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -221,7 +222,7 @@ export async function updateOrder(orderData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -280,7 +281,7 @@ export async function deleteOrder(orderId) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -339,7 +340,7 @@ export async function getCompaniesForDropdown(fetchFn = fetch) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -385,7 +386,7 @@ export async function getProjectsForDropdown(fetchFn = fetch) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -439,7 +440,7 @@ export async function updateOrderPosition(positionData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -487,7 +488,7 @@ export async function deleteOrderPosition(positionId) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -546,7 +547,7 @@ export async function createOrderPosition(positionData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({

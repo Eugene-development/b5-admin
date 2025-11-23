@@ -387,6 +387,11 @@
 					{((loadError = usersData), '')}
 				{/if}
 
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localUsers.length === 0}
+					<TableSkeleton columns={6} />
+				{:else}
+
 				<a
 					href="#main-content"
 					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
@@ -616,6 +621,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">

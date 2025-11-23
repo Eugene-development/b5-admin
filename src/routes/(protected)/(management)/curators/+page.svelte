@@ -430,6 +430,11 @@
 					{((loadError = usersData), '')}
 				{/if}
 
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localUsers.length === 0}
+					<TableSkeleton columns={6} />
+				{:else}
+
 				<!-- Skip link for keyboard navigation -->
 				<a
 					href="#main-content"
@@ -657,6 +662,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">

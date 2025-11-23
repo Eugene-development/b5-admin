@@ -469,6 +469,11 @@
 	onMount(async () => {
 		// Load project statuses immediately on page load
 		await loadProjectStatuses();
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (!localProjects.length && !loadError) {
+			await refreshData(true);
+		}
 	});
 </script>
 
@@ -490,6 +495,11 @@
 			{:then projectsData}
 				<!-- Success state: Show data -->
 				{@const processedProjects = getProcessedProjects(projectsData)}
+
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localProjects.length === 0}
+					<TableSkeleton columns={8} />
+				{:else}
 
 				<!-- Update local state only once when data arrives -->
 				{#if localProjects.length === 0 && processedProjects.length > 0}
@@ -712,6 +722,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">

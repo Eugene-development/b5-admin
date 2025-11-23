@@ -221,6 +221,11 @@
 				<!-- Success state: Show data -->
 				{@const processedClients = getProcessedClients(clientsData)}
 
+				<!-- Show skeleton during initial data refresh when no data is available -->
+				{#if isRefreshing && localUsers.length === 0}
+					<TableSkeleton columns={6} />
+				{:else}
+
 				<!-- Update local state only once when data arrives -->
 				{#if localUsers.length === 0 && processedClients.length > 0}
 					{((localUsers = processedClients), '')}
@@ -432,6 +437,7 @@
 						</div>
 					</div>
 				</div>
+				{/if}
 			{:catch error}
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">
