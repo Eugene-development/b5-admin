@@ -342,6 +342,11 @@
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
+
+		// Load data if we have empty initial data (server-side data loading was disabled)
+		if (!localContractors.length && !loadError) {
+			refreshData(true); // Pass true to indicate initial load
+		}
 	});
 </script>
 

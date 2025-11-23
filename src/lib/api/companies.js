@@ -1,4 +1,5 @@
 import { handleApiError, addWarningToast } from '$lib/utils/toastStore.js';
+import { getAuthHeaders } from './config.js';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
 
@@ -45,7 +46,7 @@ export async function createCompany(companyData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -131,7 +132,7 @@ export async function createCompanyPhone(companyId, phoneData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -191,7 +192,7 @@ export async function createCompanyEmail(companyId, emailData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -260,7 +261,7 @@ export async function updateCompany(companyData) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -326,7 +327,7 @@ export async function toggleCompanyBan(companyId, shouldBan) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -381,7 +382,7 @@ export async function deleteCompany(companyId) {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({
@@ -459,7 +460,7 @@ export async function refreshCompanies() {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
@@ -508,7 +509,7 @@ export async function getCompanyStatuses() {
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json',
-				...authHeaders
+				...getAuthHeaders()
 			},
 			credentials: 'include',
 			body: JSON.stringify({ query })
