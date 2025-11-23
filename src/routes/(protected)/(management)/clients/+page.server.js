@@ -13,37 +13,34 @@ import {
 import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
 /**
- * GraphQL query for clients with pagination
+ * GraphQL query for clients
  */
 const CLIENTS_QUERY = `
-	query GetClients($first: Int!, $page: Int!) {
-		clientsForAdmin(first: $first, page: $page) {
-			data {
+	{
+		clients {
+			id
+			name
+			birthday
+			ban
+			status_id
+			phones {
 				id
-				name
-				region
-				email
-				ban
-				created_at
-				updated_at
-				phones {
-					value
-				}
-				projects {
-					agent {
-						id
-						name
-						email
-					}
+				value
+				is_primary
+			}
+			projects {
+				id
+				value
+				contract_number
+				status_id
+				agent {
+					id
+					name
+					email
 				}
 			}
-			paginatorInfo {
-				currentPage
-				lastPage
-				total
-				perPage
-				hasMorePages
-			}
+			created_at
+			updated_at
 		}
 	}
 `;
@@ -57,17 +54,10 @@ async function loadClientsData(token, fetch) {
 	try {
 		console.log('📊 Clients SSR: Loading clients data');
 
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000);
-		});
-
 		// Fetch clients using GraphQL with JWT token
-		const data = await Promise.race([
-			makeServerGraphQLRequest(token, CLIENTS_QUERY, { first: 1000, page: 1 }, fetch),
-			timeoutPromise
-		]);
+		const data = await makeServerGraphQLRequest(token, CLIENTS_QUERY, {}, fetch);
 
-		const rawClients = data.clientsForAdmin?.data || [];
+		const rawClients = data.clients || [];
 
 		// Add sequential numbers and normalize
 		const clients = addSequentialNumbers(rawClients).map((client) => {
@@ -89,11 +79,11 @@ async function loadClientsData(token, fetch) {
 		});
 
 		const stats = calculateStats(clients);
-		const pagination = data.clientsForAdmin?.paginatorInfo || {
+		const pagination = {
 			currentPage: 1,
 			lastPage: 1,
 			total: clients.length,
-			perPage: 1000,
+			perPage: clients.length,
 			hasMorePages: false
 		};
 
