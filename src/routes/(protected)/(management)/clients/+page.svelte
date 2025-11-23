@@ -11,11 +11,14 @@
 		retryOperation,
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
-	import { onMount } from 'svelte';
 	import { refreshClients, updateClient } from '$lib/api/clients.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
 
 	let { data } = $props();
+
+	// Initialize local state from server data (SSR)
+	let localUsers = $state(data.clientsData?.clients || []);
+	let loadError = $state(data.clientsData?.error || null);
 
 	let searchTerm = $state('');
 
@@ -30,41 +33,7 @@
 	let errorBoundaryError = $state(null);
 	let isRefreshing = $state(false);
 
-	// Local users state for updates (will be initialized from streamed data)
-	let localUsers = $state([]);
-
 	let updateCounter = $state(0);
-
-	// Check for server-side load errors (will be set from streamed data)
-	let loadError = $state(null);
-
-	// Derived state that transforms streamed data without mutation
-	function getProcessedClients(clientsData) {
-		if (!clientsData || !clientsData.clients) {
-			return [];
-		}
-
-		// Normalize clients data and extract agent info from first project
-		return clientsData.clients
-			.map((client) => {
-				// Get agent from first project (if exists)
-				const firstProject = client.projects?.[0];
-				const agent = firstProject?.agent;
-
-				return {
-					...client,
-					status: client.ban ? 'banned' : 'active',
-					agent: agent
-						? {
-								id: agent.id,
-								name: agent.name,
-								email: agent.email
-							}
-						: null
-				};
-			})
-			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-	}
 
 	let filteredClients = $derived.by(() => {
 		if (!searchTerm.trim()) {
@@ -141,7 +110,7 @@
 		}
 	}
 
-	async function refreshData(isInitialLoad = false) {
+	async function refreshData() {
 		isRefreshing = true;
 		try {
 			const clients = await refreshClients();
@@ -166,14 +135,9 @@
 				})
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
-			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
-			}
+			addSuccessToast('Данные успешно обновлены');
 		} catch (error) {
-			handleApiError(
-				error,
-				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
-			);
+			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
 			isRefreshing = false;
 		}
@@ -191,15 +155,8 @@
 		await refreshData();
 	}
 
-	onMount(() => {
-		if (loadError) {
-			addErrorToast(loadError.message, { duration: 0 });
-		}
-
-		if (!localUsers.length && !loadError) {
-			refreshData(true);
-		}
-	});
+	// Note: Initial data is now loaded server-side via +page.server.js
+	// No need for onMount data loading - data is available immediately from server
 </script>
 
 <ProtectedRoute>
@@ -213,28 +170,7 @@
 			fallbackMessage="An error occurred while loading the clients page. This might be due to a network issue or server problem."
 			showDetails={true}
 		>
-			<!-- Streamed Clients Data with SSR -->
-			{#await data.clientsData}
-				<!-- Loading state: Show skeleton -->
-				<TableSkeleton columns={6} />
-			{:then clientsData}
-				<!-- Success state: Show data -->
-				{@const processedClients = getProcessedClients(clientsData)}
-
-				<!-- Show skeleton during initial data refresh when no data is available -->
-				{#if isRefreshing && localUsers.length === 0}
-					<TableSkeleton columns={6} />
-				{:else}
-
-				<!-- Update local state only once when data arrives -->
-				{#if localUsers.length === 0 && processedClients.length > 0}
-					{((localUsers = processedClients), '')}
-				{/if}
-
-				<!-- Set load error if present -->
-				{#if clientsData.error && !loadError}
-					{((loadError = clientsData), '')}
-				{/if}
+			<!-- Server-side rendered data - no loading state needed -->
 
 				<a
 					href="#main-content"
@@ -437,16 +373,6 @@
 						</div>
 					</div>
 				</div>
-				{/if}
-			{:catch error}
-				<!-- Critical error state -->
-				<div class="flex min-h-screen items-center justify-center">
-					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
-						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки клиентов</h3>
-						<p class="text-red-300">Не удалось загрузить клиентов. Попробуйте обновить страницу.</p>
-					</div>
-				</div>
-			{/await}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

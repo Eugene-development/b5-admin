@@ -173,14 +173,17 @@ export async function login(email, password, remember = false) {
 					? result.token
 					: result.token?.access_token || result.token || null;
 
-			// Store token and user data
+			// Store user data in localStorage for quick access
+			// Note: Token is now stored in httpOnly cookie by backend (not in localStorage)
+			// We keep localStorage token storage for backward compatibility during migration
 			if (result.token) {
-				// setAuthToken now handles both string and object tokens
 				setAuthToken(result.token);
 			}
 			if (normalizedUser) {
 				setUserData(normalizedUser);
 			}
+
+			console.log('✅ Login successful - Token stored in httpOnly cookie by backend');
 
 			return true;
 		} else {

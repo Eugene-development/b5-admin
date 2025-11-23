@@ -1,0 +1,161 @@
+/**
+ * Server-side load function for agents page with SSR
+ * Data is rendered on the server using JWT from httpOnly cookie
+ */
+
+import {
+	makeServerGraphQLRequest,
+	createFallbackData,
+	categorizeError,
+	getUserFriendlyErrorMessage,
+	calculateStats
+} from '$lib/api/server.js';
+
+/**
+ * GraphQL query for users
+ */
+const USERS_QUERY = `
+	{
+		users {
+			id
+			region
+			name
+			email
+			email_verified_at
+			created_at
+			updated_at
+			status_id
+			userStatus {
+				id
+				value
+				slug
+				color
+				icon
+			}
+		}
+	}
+`;
+
+/**
+ * Load agents data asynchronously
+ */
+async function loadAgentsData(token, fetch) {
+	const startTime = Date.now();
+
+	try {
+		console.log('📊 Agents SSR: Loading users data');
+
+		// Fetch users using GraphQL with JWT token
+		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch);
+		const allUsers = data.users || [];
+
+		// Filter only agents
+		const agents = allUsers
+			.filter((user) => user.userStatus?.slug === 'agents')
+			.map((user) => ({
+				...user,
+				status: 'active' // Status will be determined by ban/unban mutations on client
+			}))
+			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+		// Calculate stats - ban status is managed via mutations, not stored in schema
+		const stats = {
+			total: agents.length,
+			active: agents.length,
+			banned: 0
+		};
+		const loadTime = Date.now() - startTime;
+
+		console.log(`✅ Agents SSR: Loaded ${agents.length} agents in ${loadTime}ms`);
+
+		return {
+			agents,
+			stats,
+			error: null,
+			errorType: null,
+			canRetry: false,
+			isLoading: false,
+			loadTime
+		};
+	} catch (apiError) {
+		const errorType = categorizeError(apiError);
+		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
+		const loadTime = Date.now() - startTime;
+
+		console.error('❌ Agents SSR: Failed to load agents:', {
+			error: apiError.message,
+			type: errorType,
+			stack: apiError.stack,
+			loadTime
+		});
+
+		return {
+			...createFallbackData(),
+			error: userMessage,
+			errorType,
+			canRetry: errorType !== 'auth',
+			originalError: apiError.message,
+			loadTime
+		};
+	}
+}
+
+/** @type {import('./$types').PageServerLoad} */
+export async function load({ locals, fetch }) {
+	try {
+		console.log('📊 Agents SSR: Server-side load started');
+
+		// Check authentication from event.locals (set by hooks.server.js)
+		if (!locals.isAuthenticated || !locals.user || !locals.token) {
+			console.log('⚠️ Agents SSR: User not authenticated, returning empty data');
+			// Return empty data - client will handle loading or redirect
+			return {
+				agentsData: createFallbackData({
+					needsClientLoad: true // Flag for client to handle auth
+				})
+			};
+		}
+
+		// Check if user has permission to access agents page
+		// User type can be in Russian ('Админ') or English slug ('admin')
+		const userStatusSlug = locals.user.status?.slug || locals.user.type?.toLowerCase();
+		const isAdmin = userStatusSlug === 'admin' || userStatusSlug === 'админ' || locals.user.type === 'Админ';
+
+		if (!isAdmin) {
+			console.log('⚠️ Agents SSR: User does not have admin permissions', {
+				userStatusSlug,
+				userType: locals.user.type
+			});
+			return {
+				agentsData: createFallbackData({
+					error: 'У вас нет прав доступа к этой странице',
+					errorType: 'auth',
+					canRetry: false
+				})
+			};
+		}
+
+		console.log('👤 Agents SSR: Loading data for user:', locals.user.email);
+
+		// Load agents data
+		const agentsData = await loadAgentsData(locals.token, fetch);
+
+		return {
+			agentsData
+		};
+	} catch (err) {
+		console.error('❌ Agents SSR: Server load error:', {
+			error: err.message,
+			stack: err.stack
+		});
+
+		// Return fallback data on error
+		return {
+			agentsData: createFallbackData({
+				error: 'Внутренняя ошибка при загрузке данных агентов',
+				errorType: 'unknown',
+				canRetry: true
+			})
+		};
+	}
+}

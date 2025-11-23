@@ -18,7 +18,6 @@
 		retryOperation,
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
-	import { onMount } from 'svelte';
 	import {
 		banUser,
 		unbanUser,
@@ -28,6 +27,20 @@
 		createUser
 	} from '$lib/api/agents.js';
 	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+
+	// Get server-side data
+	let { data } = $props();
+
+	// Debug: Log server data
+	console.log('🔍 Agents page - Server data:', data);
+	console.log('🔍 Agents page - agentsData:', data.agentsData);
+	console.log('🔍 Agents page - agents array:', data.agentsData?.agents);
+	console.log('🔍 Agents page - agents length:', data.agentsData?.agents?.length);
+
+	// Initialize local state from server data
+	let localUsers = $state(data.agentsData?.agents || []);
+	let loadError = $state(data.agentsData?.error || null);
+	let isInitialLoading = $state(false); // No initial loading - data comes from server
 
 	// Search state management
 	let searchTerm = $state('');
@@ -56,18 +69,11 @@
 	let hasError = $state(false);
 	let errorBoundaryError = $state(null);
 
-	// Loading state for data refresh and initial load
+	// Loading state for data refresh
 	let isRefreshing = $state(false);
-	let isInitialLoading = $state(true);
-
-	// Local users state for updates
-	let localUsers = $state([]);
 
 	// Force update counter for reactivity
 	let updateCounter = $state(0);
-
-	// Check for load errors
-	let loadError = $state(null);
 
 	// Computed filteredUsers reactive statement
 	let filteredUsers = $derived.by(() => {
@@ -311,12 +317,9 @@
 		localUsers = localUsers.filter((user) => user.id !== userId);
 	}
 
-	// Refresh data from server
-	async function refreshData(isInitialLoad = false) {
+	// Refresh data from server (client-side refresh for manual updates)
+	async function refreshData() {
 		isRefreshing = true;
-		if (isInitialLoad) {
-			isInitialLoading = true;
-		}
 		try {
 			const users = await refreshUsers();
 			// Filter only agents and normalize status
@@ -332,21 +335,12 @@
 				}))
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
-			// Only show success message for manual refresh, not initial load
-			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
-			}
+			addSuccessToast('Данные успешно обновлены');
 		} catch (error) {
 			loadError = error;
-			handleApiError(
-				error,
-				isInitialLoad ? 'Не удалось загрузить данные' : 'Не удалось обновить данные'
-			);
+			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
 			isRefreshing = false;
-			if (isInitialLoad) {
-				isInitialLoading = false;
-			}
 		}
 	}
 
@@ -364,11 +358,8 @@
 		await refreshData();
 	}
 
-	// Load data on mount - client-side only
-	onMount(() => {
-		// Always load data on mount since we're using client-side rendering
-		refreshData(true);
-	});
+	// Note: Initial data is now loaded server-side via +page.server.js
+	// No need for onMount data loading - data is available immediately from server
 
 	// Debug function to manually set user status (for testing)
 	function debugSetUserStatus(userId, status) {

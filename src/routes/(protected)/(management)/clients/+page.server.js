@@ -1,153 +1,95 @@
 /**
- * Server-side load function with SSR for clients page with streaming
- * Data is rendered on the server for SEO and better performance
- * Uses streaming to show loading state while data is being fetched
+ * Server-side load function for clients page with SSR
+ * Data is rendered on the server using JWT from httpOnly cookie
  */
 
-import { getClientsWithPagination } from '$lib/api/clients.js';
+import {
+	makeServerGraphQLRequest,
+	createFallbackData,
+	categorizeError,
+	getUserFriendlyErrorMessage,
+	calculateStats
+} from '$lib/api/server.js';
 import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
 
-const ERROR_TYPES = {
-	NETWORK: 'network',
-	API: 'api',
-	AUTH: 'auth',
-	TIMEOUT: 'timeout',
-	VALIDATION: 'validation',
-	UNKNOWN: 'unknown'
-};
-
-function categorizeError(error) {
-	const message = error.message?.toLowerCase() || '';
-
-	if (message.includes('network') || message.includes('fetch')) {
-		return ERROR_TYPES.NETWORK;
-	}
-	if (message.includes('timeout') || message.includes('aborted')) {
-		return ERROR_TYPES.TIMEOUT;
-	}
-	if (message.includes('unauthorized') || message.includes('forbidden')) {
-		return ERROR_TYPES.AUTH;
-	}
-	if (message.includes('validation') || message.includes('invalid')) {
-		return ERROR_TYPES.VALIDATION;
-	}
-	if (message.includes('graphql') || message.includes('api')) {
-		return ERROR_TYPES.API;
-	}
-
-	return ERROR_TYPES.UNKNOWN;
-}
-
-function getUserFriendlyErrorMessage(errorType, originalMessage) {
-	switch (errorType) {
-		case ERROR_TYPES.NETWORK:
-			return 'Проблема с подключением к серверу. Проверьте интернет-соединение.';
-		case ERROR_TYPES.TIMEOUT:
-			return 'Превышено время ожидания ответа от сервера. Попробуйте еще раз.';
-		case ERROR_TYPES.AUTH:
-			return 'Ошибка авторизации. Пожалуйста, войдите в систему заново.';
-		case ERROR_TYPES.API:
-			return 'Ошибка при получении данных с сервера. Попробуйте обновить страницу.';
-		case ERROR_TYPES.VALIDATION:
-			return 'Получены некорректные данные с сервера. Обратитесь к администратору.';
-		default:
-			return `Произошла неожиданная ошибка: ${originalMessage}`;
-	}
-}
-
-function createClientsFallbackData() {
-	return {
-		clients: [],
-		stats: {
-			total: 0,
-			active: 0,
-			banned: 0
-		},
-		pagination: {
-			currentPage: 1,
-			lastPage: 1,
-			total: 0,
-			perPage: 1000,
-			hasMorePages: false
-		},
-		error: null,
-		errorType: null,
-		canRetry: false,
-		isLoading: false
-	};
-}
-
-function validateClientsData(clientsResult) {
-	if (!clientsResult || typeof clientsResult !== 'object') {
-		return false;
-	}
-
-	if (!Array.isArray(clientsResult.data)) {
-		return false;
-	}
-
-	const paginatorInfo = clientsResult.paginatorInfo;
-	if (paginatorInfo && typeof paginatorInfo !== 'object') {
-		return false;
-	}
-
-	return true;
-}
-
-function calculateClientStats(clients) {
-	if (!Array.isArray(clients)) {
-		return {
-			total: 0,
-			active: 0,
-			banned: 0
-		};
-	}
-
-	const stats = {
-		total: clients.length,
-		active: 0,
-		banned: 0
-	};
-
-	for (const client of clients) {
-		if (client?.ban) {
-			stats.banned++;
-		} else {
-			stats.active++;
+/**
+ * GraphQL query for clients with pagination
+ */
+const CLIENTS_QUERY = `
+	query GetClients($first: Int!, $page: Int!) {
+		clientsForAdmin(first: $first, page: $page) {
+			data {
+				id
+				name
+				region
+				email
+				ban
+				created_at
+				updated_at
+				phones {
+					value
+				}
+				projects {
+					agent {
+						id
+						name
+						email
+					}
+				}
+			}
+			paginatorInfo {
+				currentPage
+				lastPage
+				total
+				perPage
+				hasMorePages
+			}
 		}
 	}
-
-	return stats;
-}
+`;
 
 /**
- * Load clients data asynchronously for streaming
+ * Load clients data asynchronously
  */
-async function loadClientsData(fetch) {
+async function loadClientsData(token, fetch) {
 	const startTime = Date.now();
 
 	try {
+		console.log('📊 Clients SSR: Loading clients data');
+
 		const timeoutPromise = new Promise((_, reject) => {
 			setTimeout(() => reject(new Error('Request timeout')), 30000);
 		});
 
-		const clientsResult = await Promise.race([
-			getClientsWithPagination(1000, 1, fetch),
+		// Fetch clients using GraphQL with JWT token
+		const data = await Promise.race([
+			makeServerGraphQLRequest(token, CLIENTS_QUERY, { first: 1000, page: 1 }, fetch),
 			timeoutPromise
 		]);
 
-		if (!validateClientsData(clientsResult)) {
-			throw new Error('Invalid data format received from API');
-		}
+		const rawClients = data.clientsForAdmin?.data || [];
 
-		const rawClients = clientsResult.data || [];
+		// Add sequential numbers and normalize
+		const clients = addSequentialNumbers(rawClients).map((client) => {
+			// Get agent from first project (if exists)
+			const firstProject = client.projects?.[0];
+			const agent = firstProject?.agent;
 
-		// Add sequential numbers based on created_at date
-		const clients = addSequentialNumbers(rawClients);
+			return {
+				...client,
+				status: client.ban ? 'banned' : 'active',
+				agent: agent
+					? {
+							id: agent.id,
+							name: agent.name,
+							email: agent.email
+						}
+					: null
+			};
+		});
 
-		const stats = calculateClientStats(clients);
-
-		const pagination = clientsResult.paginatorInfo || {
+		const stats = calculateStats(clients);
+		const pagination = data.clientsForAdmin?.paginatorInfo || {
 			currentPage: 1,
 			lastPage: 1,
 			total: clients.length,
@@ -157,8 +99,10 @@ async function loadClientsData(fetch) {
 
 		const loadTime = Date.now() - startTime;
 
+		console.log(`✅ Clients SSR: Loaded ${clients.length} clients in ${loadTime}ms`);
+
 		return {
-			clients: clients,
+			clients,
 			stats,
 			pagination,
 			error: null,
@@ -170,32 +114,87 @@ async function loadClientsData(fetch) {
 	} catch (apiError) {
 		const errorType = categorizeError(apiError);
 		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
+		const loadTime = Date.now() - startTime;
 
-		console.error('Failed to load clients data:', {
+		console.error('❌ Clients SSR: Failed to load clients:', {
 			error: apiError.message,
 			type: errorType,
 			stack: apiError.stack,
-			loadTime: Date.now() - startTime
+			loadTime
 		});
 
-		const fallbackData = createClientsFallbackData();
 		return {
-			...fallbackData,
+			...createFallbackData(),
 			error: userMessage,
 			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH,
+			canRetry: errorType !== 'auth',
 			originalError: apiError.message,
-			loadTime: Date.now() - startTime
+			loadTime
 		};
 	}
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch }) {
-	// JWT tokens are stored in localStorage and not available on server
-	// Return empty data immediately and let client load data via onMount
-	// This prevents 401 errors during SSR
-	return {
-		clientsData: Promise.resolve(createClientsFallbackData())
-	};
+export async function load({ locals, fetch }) {
+	try {
+		console.log('📊 Clients SSR: Server-side load started');
+
+		// Check authentication from event.locals (set by hooks.server.js)
+		if (!locals.isAuthenticated || !locals.user || !locals.token) {
+			console.log('⚠️ Clients SSR: User not authenticated, returning empty data');
+			return {
+				clientsData: createFallbackData({
+					needsClientLoad: true
+				})
+			};
+		}
+
+		// Check if user has permission to access clients page (admin or managers)
+		// User type can be in Russian ('Админ', 'Менеджер') or English slug ('admin', 'managers')
+		const userStatusSlug = locals.user.status?.slug || locals.user.type?.toLowerCase();
+		const userType = locals.user.type;
+		const hasAccess =
+			userStatusSlug === 'admin' ||
+			userStatusSlug === 'админ' ||
+			userType === 'Админ' ||
+			userStatusSlug === 'managers' ||
+			userStatusSlug === 'менеджер' ||
+			userType === 'Менеджер';
+
+		if (!hasAccess) {
+			console.log('⚠️ Clients SSR: User does not have required permissions', {
+				userStatusSlug,
+				userType
+			});
+			return {
+				clientsData: createFallbackData({
+					error: 'У вас нет прав доступа к этой странице',
+					errorType: 'auth',
+					canRetry: false
+				})
+			};
+		}
+
+		console.log('👤 Clients SSR: Loading data for user:', locals.user.email);
+
+		// Load clients data
+		const clientsData = await loadClientsData(locals.token, fetch);
+
+		return {
+			clientsData
+		};
+	} catch (err) {
+		console.error('❌ Clients SSR: Server load error:', {
+			error: err.message,
+			stack: err.stack
+		});
+
+		return {
+			clientsData: createFallbackData({
+				error: 'Внутренняя ошибка при загрузке данных клиентов',
+				errorType: 'unknown',
+				canRetry: true
+			})
+		};
+	}
 }

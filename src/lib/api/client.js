@@ -100,22 +100,22 @@ export async function apiRequest(endpoint, options = {}, requireAuth = false) {
 	};
 
 	// Add auth headers (JWT Bearer token) if required and available
+	// Note: For server-side requests, token will be in httpOnly cookie
+	// For client-side requests, we still check localStorage as fallback
 	if (requireAuth) {
 		const authHeaders = getAuthHeaders();
-		if (authHeaders) {
+		if (authHeaders && Object.keys(authHeaders).length > 0) {
 			Object.assign(headers, authHeaders);
-		} else {
-			clearTimeout(timeoutId);
-			throw new ApiError('Authentication required', 401);
 		}
+		// Don't throw error if no token - httpOnly cookie might be present
 	}
 
-	// Prepare fetch options (no credentials needed for JWT)
+	// Prepare fetch options with credentials to include httpOnly cookies
 	const fetchOptions = {
 		...options,
 		headers,
-		signal: controller.signal
-		// credentials: 'include' removed - not needed for JWT
+		signal: controller.signal,
+		credentials: 'include' // Required for httpOnly cookies
 	};
 
 	try {
