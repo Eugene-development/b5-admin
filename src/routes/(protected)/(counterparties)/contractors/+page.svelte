@@ -380,53 +380,78 @@
 				{#if isRefreshing && localContractors.length === 0}
 					<TableSkeleton columns={7} />
 				{:else}
-
-				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-8 sm:px-6 lg:px-8">
-						<div class="mx-auto max-w-7xl">
-							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with Refresh and Add Buttons -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
-									<div class="flex items-center justify-between">
-										<div>
-											<h1
-												id="page-title"
-												class="text-3xl font-semibold text-gray-900 dark:text-white"
-											>
-												Подрядчики
-											</h1>
-										</div>
-									</div>
-									<div class="flex items-center space-x-3">
-										<!-- Refresh Button -->
-										<button
-											type="button"
-											onclick={refreshData}
-											disabled={isRefreshing}
-											class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-										>
-											{#if isRefreshing}
-												<svg
-													class="mr-2 h-4 w-4 animate-spin"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-8 sm:px-6 lg:px-8">
+							<div class="mx-auto max-w-7xl">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with Refresh and Add Buttons -->
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between"
+									>
+										<div class="flex items-center justify-between">
+											<div>
+												<h1
+													id="page-title"
+													class="text-3xl font-semibold text-gray-900 dark:text-white"
 												>
-													<circle
-														class="opacity-25"
-														cx="12"
-														cy="12"
-														r="10"
+													Подрядчики
+												</h1>
+											</div>
+										</div>
+										<div class="flex items-center space-x-3">
+											<!-- Refresh Button -->
+											<button
+												type="button"
+												onclick={refreshData}
+												disabled={isRefreshing}
+												class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+											>
+												{#if isRefreshing}
+													<svg
+														class="mr-2 h-4 w-4 animate-spin"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+													>
+														<circle
+															class="opacity-25"
+															cx="12"
+															cy="12"
+															r="10"
+															stroke="currentColor"
+															stroke-width="4"
+														></circle>
+														<path
+															class="opacity-75"
+															fill="currentColor"
+															d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+														></path>
+													</svg>
+												{:else}
+													<svg
+														class="mr-2 h-4 w-4"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
 														stroke="currentColor"
-														stroke-width="4"
-													></circle>
-													<path
-														class="opacity-75"
-														fill="currentColor"
-														d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-													></path>
-												</svg>
-											{:else}
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+														></path>
+													</svg>
+												{/if}
+												Обновить
+											</button>
+											<!-- Add Button -->
+											<button
+												type="button"
+												onclick={handleAddCompany}
+												disabled={isActionLoading}
+												class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+											>
 												<svg
 													class="mr-2 h-4 w-4"
 													xmlns="http://www.w3.org/2000/svg"
@@ -438,121 +463,97 @@
 														stroke-linecap="round"
 														stroke-linejoin="round"
 														stroke-width="2"
-														d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-													></path>
-												</svg>
-											{/if}
-											Обновить
-										</button>
-										<!-- Add Button -->
-										<button
-											type="button"
-											onclick={handleAddCompany}
-											disabled={isActionLoading}
-											class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
-										>
-											<svg
-												class="mr-2 h-4 w-4"
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 4v16m8-8H4"
-												/>
-											</svg>
-											Добавить подрядчика
-										</button>
-									</div>
-								</div>
-
-								<!-- Separator -->
-								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
-
-								<!-- Search and Filters -->
-								<div
-									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-								>
-									<div class="flex flex-1 items-center space-x-4">
-										<!-- Search Input -->
-										<div class="relative max-w-md flex-1">
-											<div
-												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-											>
-												<svg
-													class="h-5 w-5 text-gray-400"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													aria-hidden="true"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+														d="M12 4v16m8-8H4"
 													/>
 												</svg>
-											</div>
-											<input
-												id="contractor-search"
-												type="text"
-												bind:value={searchTerm}
-												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по названию, ИНН, региону..."
-												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-											/>
+												Добавить
+											</button>
 										</div>
 									</div>
-								</div>
 
-								<!-- Results summary -->
-								{#if searchTerm.trim()}
-									<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-										{#if filteredContractors.length === 0}
-											Подрядчики не найдены по запросу "{searchTerm}"
-										{:else}
-											Найдено {filteredContractors.length} подрядчик{filteredContractors.length ===
-											1
-												? ''
-												: filteredContractors.length < 5
-													? 'а'
-													: 'ов'} по запросу "{searchTerm}"
-										{/if}
+									<!-- Separator -->
+									<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+									<!-- Search and Filters -->
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
+										<div class="flex flex-1 items-center space-x-4">
+											<!-- Search Input -->
+											<div class="relative max-w-md flex-1">
+												<div
+													class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+												>
+													<svg
+														class="h-5 w-5 text-gray-400"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="none"
+														viewBox="0 0 24 24"
+														stroke="currentColor"
+														aria-hidden="true"
+													>
+														<path
+															stroke-linecap="round"
+															stroke-linejoin="round"
+															stroke-width="2"
+															d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+														/>
+													</svg>
+												</div>
+												<input
+													id="contractor-search"
+													type="text"
+													bind:value={searchTerm}
+													oninput={() => handleSearch(searchTerm)}
+													placeholder="Поиск по названию, ИНН, региону..."
+													class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
+												/>
+											</div>
+										</div>
 									</div>
-								{/if}
 
-								<!-- Company Table -->
-								<div class="mt-8">
-									<CompanyTable
-										companies={paginatedContractors}
-										isLoading={isActionLoading}
-										onBanCompany={handleBanContractor}
-										onDeleteCompany={handleDeleteContractor}
-										onViewCompany={handleViewContractor}
-										onEditCompany={handleEditCompany}
-										{updateCounter}
-										{searchTerm}
-										hasSearched={searchTerm.trim().length > 0}
+									<!-- Results summary -->
+									{#if searchTerm.trim()}
+										<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+											{#if filteredContractors.length === 0}
+												Подрядчики не найдены по запросу "{searchTerm}"
+											{:else}
+												Найдено {filteredContractors.length} подрядчик{filteredContractors.length ===
+												1
+													? ''
+													: filteredContractors.length < 5
+														? 'а'
+														: 'ов'} по запросу "{searchTerm}"
+											{/if}
+										</div>
+									{/if}
+
+									<!-- Company Table -->
+									<div class="mt-8">
+										<CompanyTable
+											companies={paginatedContractors}
+											isLoading={isActionLoading}
+											onBanCompany={handleBanContractor}
+											onDeleteCompany={handleDeleteContractor}
+											onViewCompany={handleViewContractor}
+											onEditCompany={handleEditCompany}
+											{updateCounter}
+											{searchTerm}
+											hasSearched={searchTerm.trim().length > 0}
+										/>
+									</div>
+
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredContractors.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? localContractors.length : null}
 									/>
-								</div>
-
-								<!-- Pagination -->
-								<Pagination
-									bind:currentPage
-									totalItems={filteredContractors.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? localContractors.length : null}
-								/>
-							</main>
+								</main>
+							</div>
 						</div>
 					</div>
-				</div>
 				{/if}
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">
