@@ -1,214 +1,161 @@
 /**
- * Server-side load function with SSR for managers page with streaming
- * Data is rendered on the server for SEO and better performance
- * Uses streaming to show loading state while data is being fetched
+ * Server-side load function for managers page with httpOnly cookie authentication
+ * Data is rendered on the server using JWT token from httpOnly cookies
  */
 
-import { getUsersWithPagination } from '$lib/api/agents.js';
-import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
-
-const ERROR_TYPES = {
-	NETWORK: 'network',
-	API: 'api',
-	AUTH: 'auth',
-	TIMEOUT: 'timeout',
-	VALIDATION: 'validation',
-	UNKNOWN: 'unknown'
-};
-
-function categorizeError(error) {
-	const message = error.message?.toLowerCase() || '';
-
-	if (message.includes('network') || message.includes('fetch')) {
-		return ERROR_TYPES.NETWORK;
-	}
-	if (message.includes('timeout') || message.includes('aborted')) {
-		return ERROR_TYPES.TIMEOUT;
-	}
-	if (message.includes('unauthorized') || message.includes('forbidden')) {
-		return ERROR_TYPES.AUTH;
-	}
-	if (message.includes('validation') || message.includes('invalid')) {
-		return ERROR_TYPES.VALIDATION;
-	}
-	if (message.includes('graphql') || message.includes('api')) {
-		return ERROR_TYPES.API;
-	}
-
-	return ERROR_TYPES.UNKNOWN;
-}
-
-function getUserFriendlyErrorMessage(errorType, originalMessage) {
-	switch (errorType) {
-		case ERROR_TYPES.NETWORK:
-			return 'Проблема с подключением к серверу. Проверьте интернет-соединение.';
-		case ERROR_TYPES.TIMEOUT:
-			return 'Превышено время ожидания ответа от сервера. Попробуйте еще раз.';
-		case ERROR_TYPES.AUTH:
-			return 'Ошибка авторизации. Пожалуйста, войдите в систему заново.';
-		case ERROR_TYPES.API:
-			return 'Ошибка при получении данных с сервера. Попробуйте обновить страницу.';
-		case ERROR_TYPES.VALIDATION:
-			return 'Получены некорректные данные с сервера. Обратитесь к администратору.';
-		default:
-			return `Произошла неожиданная ошибка: ${originalMessage}`;
-	}
-}
-
-function createManagersFallbackData() {
-	return {
-		agents: [],
-		stats: {
-			total: 0,
-			active: 0,
-			banned: 0,
-			verified: 0,
-			unverified: 0
-		},
-		pagination: {
-			currentPage: 1,
-			lastPage: 1,
-			total: 0,
-			perPage: 1000,
-			hasMorePages: false
-		},
-		error: null,
-		errorType: null,
-		canRetry: false,
-		isLoading: false
-	};
-}
-
-function validateManagersData(managersResult) {
-	if (!managersResult || typeof managersResult !== 'object') {
-		return false;
-	}
-
-	if (!Array.isArray(managersResult.data)) {
-		return false;
-	}
-
-	const paginatorInfo = managersResult.paginatorInfo;
-	if (paginatorInfo && typeof paginatorInfo !== 'object') {
-		return false;
-	}
-
-	return true;
-}
-
-function calculateManagerStats(managers) {
-	if (!Array.isArray(managers)) {
-		return {
-			total: 0,
-			active: 0,
-			banned: 0,
-			verified: 0,
-			unverified: 0
-		};
-	}
-
-	const stats = {
-		total: managers.length,
-		active: 0,
-		banned: 0,
-		verified: 0,
-		unverified: 0
-	};
-
-	for (const manager of managers) {
-		const status = manager?.status?.toLowerCase() || 'active';
-		if (status === 'active') {
-			stats.active++;
-		} else if (status === 'banned') {
-			stats.banned++;
-		}
-
-		if (manager?.email_verified_at) {
-			stats.verified++;
-		} else {
-			stats.unverified++;
-		}
-	}
-
-	return stats;
-}
+import { makeServerGraphQLRequest, createFallbackData, categorizeError, getUserFriendlyErrorMessage } from '$lib/api/server.js';
 
 /**
- * Load managers data asynchronously for streaming
+ * GraphQL query to fetch all users (will filter for managers on server)
  */
-async function loadManagersData(fetch) {
+const USERS_QUERY = `
+	{
+		users {
+			id
+			region
+			name
+			email
+			email_verified_at
+			created_at
+			updated_at
+			status_id
+			userStatus {
+				id
+				value
+				slug
+				color
+				icon
+			}
+		}
+	}
+`;
+
+/**
+ * Load managers data from GraphQL API
+ */
+async function loadManagersData(token, fetch) {
 	const startTime = Date.now();
 
 	try {
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000);
-		});
+		console.log('📊 Managers SSR: Starting data load...');
 
-		const managersResult = await Promise.race([
-			getUsersWithPagination(1000, 1, fetch),
-			timeoutPromise
-		]);
+		// Make GraphQL request with JWT token from httpOnly cookie
+		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch);
+		const allUsers = data.users || [];
 
-		if (!validateManagersData(managersResult)) {
-			throw new Error('Invalid data format received from API');
-		}
+		// Filter only managers based on userStatus.slug
+		const managers = allUsers
+			.filter((user) => user.userStatus?.slug === 'managers')
+			.map((user) => ({
+				...user,
+				status: 'active' // Status will be determined by ban/unban mutations on client
+			}))
+			.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
-		const rawManagers = managersResult.data || [];
-
-		// Add sequential numbers based on created_at date
-		const managers = addSequentialNumbers(rawManagers);
-
-		const stats = calculateManagerStats(managers);
-
-		const pagination = managersResult.paginatorInfo || {
-			currentPage: 1,
-			lastPage: 1,
+		// Calculate stats
+		const stats = {
 			total: managers.length,
-			perPage: 1000,
-			hasMorePages: false
+			active: managers.length,
+			banned: 0,
+			verified: managers.filter((m) => m.email_verified_at).length,
+			unverified: managers.filter((m) => !m.email_verified_at).length
 		};
 
 		const loadTime = Date.now() - startTime;
 
+		console.log(`✅ Managers SSR: Loaded ${managers.length} managers in ${loadTime}ms`);
+
 		return {
-			agents: managers,
+			agents: managers, // Keep as 'agents' for compatibility with existing page component
 			stats,
-			pagination,
+			pagination: {
+				currentPage: 1,
+				lastPage: 1,
+				total: managers.length,
+				perPage: 1000,
+				hasMorePages: false
+			},
 			error: null,
 			errorType: null,
 			canRetry: false,
-			isLoading: false,
-			loadTime
+			isLoading: false
 		};
-	} catch (apiError) {
-		const errorType = categorizeError(apiError);
-		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
+	} catch (error) {
+		const errorType = categorizeError(error);
+		const userMessage = getUserFriendlyErrorMessage(errorType, error.message);
 
-		console.error('Failed to load managers data:', {
-			error: apiError.message,
+		console.error('❌ Managers SSR: Failed to load data:', {
+			error: error.message,
 			type: errorType,
-			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
 
-		const fallbackData = createManagersFallbackData();
-		return {
-			...fallbackData,
+		return createFallbackData({
 			error: userMessage,
 			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH,
-			originalError: apiError.message,
-			loadTime: Date.now() - startTime
-		};
+			canRetry: errorType !== 'auth'
+		});
 	}
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch }) {
-	// JWT tokens are stored in localStorage and not available on server
-	// Return empty data immediately and let client load data via onMount
-	// This prevents 401 errors during SSR
-	return {
-		usersData: Promise.resolve(createManagersFallbackData())
-	};
+export async function load({ locals, fetch }) {
+	try {
+		console.log('🚀 Managers SSR: Starting server-side load', {
+			hasLocals: !!locals,
+			hasUser: !!locals?.user,
+			hasToken: !!locals?.token
+		});
+
+		// Check if user is authenticated via httpOnly cookie
+		if (!locals?.user || !locals?.token) {
+			console.log('⚠️ Managers SSR: No authentication token found in httpOnly cookie');
+			return {
+				usersData: createFallbackData({
+					needsClientLoad: true // Flag for client to handle auth
+				})
+			};
+		}
+
+		// Check if user has permission to access managers page
+		// User type can be in Russian ('Админ') or English slug ('admin')
+		const userStatusSlug = locals.user.status?.slug || locals.user.type?.toLowerCase();
+		const isAdmin = userStatusSlug === 'admin' || userStatusSlug === 'админ' || locals.user.type === 'Админ';
+
+		if (!isAdmin) {
+			console.log('⚠️ Managers SSR: User does not have admin permissions', {
+				userStatusSlug,
+				userType: locals.user.type
+			});
+			return {
+				usersData: createFallbackData({
+					error: 'У вас нет прав доступа к этой странице',
+					errorType: 'auth',
+					canRetry: false
+				})
+			};
+		}
+
+		console.log('👤 Managers SSR: Loading data for user:', locals.user.email);
+
+		// Load managers data
+		const managersData = await loadManagersData(locals.token, fetch);
+
+		return {
+			usersData: managersData
+		};
+	} catch (err) {
+		console.error('❌ Managers SSR: Server load error:', {
+			error: err.message,
+			stack: err.stack
+		});
+
+		return {
+			usersData: createFallbackData({
+				error: 'Внутренняя ошибка при загрузке данных менеджеров',
+				errorType: 'unknown',
+				canRetry: true
+			})
+		};
+	}
 }
