@@ -1,130 +1,65 @@
 /**
- * Server-side load function with SSR for technical specifications page with streaming
- * Data is rendered on the server for SEO and better performance
+ * Server-side load function for technical specifications page with httpOnly cookie authentication
  */
 
-import { createTechnicalSpecificationsApiWithFetch } from '$lib/api/technicalSpecifications.js';
-import { addSequentialNumbers } from '$lib/utils/sequentialNumber.js';
+import { makeServerGraphQLRequest, categorizeError, getUserFriendlyErrorMessage } from '$lib/api/server.js';
 
-/**
- * Error types for better error categorization
- */
-const ERROR_TYPES = {
-	NETWORK: 'network',
-	API: 'api',
-	AUTH: 'auth',
-	TIMEOUT: 'timeout',
-	VALIDATION: 'validation',
-	UNKNOWN: 'unknown'
-};
-
-/**
- * Categorize error based on error message and properties
- */
-function categorizeError(err) {
-	const message = err.message?.toLowerCase() || '';
-
-	if (message.includes('network') || message.includes('fetch')) {
-		return ERROR_TYPES.NETWORK;
-	}
-	if (message.includes('timeout') || message.includes('aborted')) {
-		return ERROR_TYPES.TIMEOUT;
-	}
-	if (message.includes('unauthorized') || message.includes('forbidden')) {
-		return ERROR_TYPES.AUTH;
-	}
-	if (message.includes('validation') || message.includes('invalid')) {
-		return ERROR_TYPES.VALIDATION;
-	}
-	if (message.includes('graphql') || message.includes('api')) {
-		return ERROR_TYPES.API;
-	}
-
-	return ERROR_TYPES.UNKNOWN;
-}
-
-/**
- * Get user-friendly error message based on error type
- */
-function getUserFriendlyErrorMessage(errorType, originalMessage) {
-	switch (errorType) {
-		case ERROR_TYPES.NETWORK:
-			return 'Проблема с подключением к серверу. Проверьте интернет-соединение.';
-		case ERROR_TYPES.TIMEOUT:
-			return 'Превышено время ожидания ответа от сервера. Попробуйте еще раз.';
-		case ERROR_TYPES.AUTH:
-			return 'Ошибка авторизации. Пожалуйста, войдите в систему заново.';
-		case ERROR_TYPES.API:
-			return 'Ошибка при получении данных с сервера. Попробуйте обновить страницу.';
-		case ERROR_TYPES.VALIDATION:
-			return 'Получены некорректные данные с сервера. Обратитесь к администратору.';
-		default:
-			return `Произошла неожиданная ошибка: ${originalMessage}`;
-	}
-}
-
-/**
- * Load technical specifications data asynchronously for streaming
- */
-async function loadTzData(fetch, cookies) {
-	try {
-		// Add timeout to prevent hanging requests
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000);
-		});
-
-		// Load TZ data with timeout
-		const api = createTechnicalSpecificationsApiWithFetch(fetch, cookies);
-		const rawTzList = await Promise.race([api.getTechnicalSpecifications(), timeoutPromise]);
-
-		// Validate data structure
-		if (!Array.isArray(rawTzList)) {
-			throw new Error('Invalid data format received from API');
+const TZ_QUERY = `
+	query GetTechnicalSpecifications($first: Int!, $page: Int) {
+		technicalSpecifications(first: $first, page: $page) {
+			data {
+				id
+				project_id
+				project {
+					id
+					value
+					region
+					contract_name
+					agent {
+						id
+						name
+						email
+					}
+				}
+				description
+				comment
+				is_active
+				requires_approval
+				is_approved
+				created_at
+				updated_at
+			}
+			paginatorInfo {
+				count
+				currentPage
+				firstItem
+				hasMorePages
+				lastItem
+				lastPage
+				perPage
+				total
+			}
 		}
+	}
+`;
 
-		// Add sequential numbers based on created_at date
-		const tzList = addSequentialNumbers(rawTzList);
-
-		return {
-			tzList,
-			error: null,
-			errorType: null,
-			canRetry: false,
-			isLoading: false
-		};
-	} catch (apiError) {
-		const errorType = categorizeError(apiError);
-		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
-
-		console.error('Failed to load technical specifications:', {
-			error: apiError.message,
-			type: errorType,
-			stack: apiError.stack
-		});
-
-		// Return error state
-		return {
-			tzList: [],
-			error: userMessage,
-			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH,
-			isLoading: false
-		};
+async function loadTzData(token, fetch) {
+	try {
+		console.log('📊 TZ SSR: Starting data load...');
+		const data = await makeServerGraphQLRequest(token, TZ_QUERY, { first: 1000, page: 1 }, fetch);
+		const tzList = data.technicalSpecifications?.data || [];
+		console.log(`✅ TZ SSR: Loaded ${tzList.length} items`);
+		return { tzList, error: null };
+	} catch (error) {
+		console.error('❌ TZ SSR: Failed:', error.message);
+		return { tzList: [], error: { message: getUserFriendlyErrorMessage(categorizeError(error), error.message), canRetry: true } };
 	}
 }
 
-/** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch, cookies }) {
-	// JWT tokens are stored in localStorage and not available on server
-	// Return empty data immediately and let client load data via onMount
-	// This prevents 401 errors during SSR
-	return {
-		tzData: Promise.resolve({
-			tzList: [],
-			error: null,
-			errorType: null,
-			canRetry: false,
-			isLoading: false
-		})
-	};
+export async function load({ locals, fetch }) {
+	if (!locals?.user || !locals?.token) {
+		return { tzData: { tzList: [], needsClientLoad: true } };
+	}
+	const tzData = await loadTzData(locals.token, fetch);
+	return { tzData };
 }

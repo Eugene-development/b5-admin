@@ -2,6 +2,11 @@
  * Domain-based access control utilities for client-side UI
  * Provides reactive domain detection and access control for UI elements
  * Using Svelte 5 runes for reactivity
+ * 
+ * Allowed domains:
+ * - admin.bonus.band - full access
+ * - rubonus.pro - full access
+ * - localhost - full access (development)
  */
 
 import { browser } from '$app/environment';
@@ -12,10 +17,9 @@ import { browser } from '$app/environment';
 export const domainState = $state({
 	hostname: '',
 	isAdminDomain: false,
-	isRegularDomain: false,
-	isRubonusDomain: false,
-	isDRubonusDomain: false,
+	isRubonusProDomain: false,
 	isLocalhost: false,
+	isAllowedDomain: false,
 	initialized: false
 });
 
@@ -33,33 +37,32 @@ export function initializeDomainDetection() {
 
 	domainState.hostname = hostname;
 	domainState.isAdminDomain = hostname === 'admin.bonus.band';
-	domainState.isRegularDomain = hostname === 'bonus.band';
-	domainState.isRubonusDomain = hostname === 'rubonus.info';
-	domainState.isDRubonusDomain = hostname === 'd.rubonus.info';
+	domainState.isRubonusProDomain = hostname === 'rubonus.pro';
 	domainState.isLocalhost = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
+	domainState.isAllowedDomain = domainState.isAdminDomain || domainState.isRubonusProDomain || domainState.isLocalhost;
 	domainState.initialized = true;
 
 	console.log('🌐 Domain detection initialized:', {
 		hostname,
 		isAdminDomain: domainState.isAdminDomain,
-		isRegularDomain: domainState.isRegularDomain,
-		isRubonusDomain: domainState.isRubonusDomain,
-		isDRubonusDomain: domainState.isDRubonusDomain,
-		isLocalhost: domainState.isLocalhost
+		isRubonusProDomain: domainState.isRubonusProDomain,
+		isLocalhost: domainState.isLocalhost,
+		isAllowedDomain: domainState.isAllowedDomain
 	});
 }
 
 /**
- * Check if current domain has access to admin-only features
- * @returns {boolean} True if current domain can access admin features
+ * Check if current domain is allowed to access the application
+ * @returns {boolean} True if current domain is allowed
  */
-export function hasAdminAccess() {
+export function isAllowedDomain() {
 	if (!domainState.initialized) {
 		// Fallback check if state not initialized
 		if (browser) {
 			const hostname = window.location.hostname;
 			return (
 				hostname === 'admin.bonus.band' ||
+				hostname === 'rubonus.pro' ||
 				hostname.startsWith('localhost') ||
 				hostname.startsWith('127.0.0.1')
 			);
@@ -67,85 +70,59 @@ export function hasAdminAccess() {
 		return false;
 	}
 
-	return domainState.isAdminDomain || domainState.isLocalhost;
+	return domainState.isAllowedDomain;
+}
+
+/**
+ * Check if current domain has access to admin-only features
+ * Currently all allowed domains have full access
+ * @returns {boolean} True if current domain can access admin features
+ */
+export function hasAdminAccess() {
+	return isAllowedDomain();
 }
 
 /**
  * Check if current domain has access to order page
- * Only admin.bonus.band and bonus.band domains have access
+ * Currently all allowed domains have full access
  * @returns {boolean} True if current domain can access order page
  */
 export function hasOrderAccess() {
-	if (!domainState.initialized) {
-		// Fallback check if state not initialized
-		if (browser) {
-			const hostname = window.location.hostname;
-			return (
-				hostname === 'admin.bonus.band' ||
-				hostname === 'bonus.band' ||
-				hostname.startsWith('localhost') ||
-				hostname.startsWith('127.0.0.1')
-			);
-		}
-		return false;
-	}
-
-	return domainState.isAdminDomain || domainState.isRegularDomain || domainState.isLocalhost;
+	return isAllowedDomain();
 }
 
 /**
+ * Full access pages list - all allowed domains have access to all pages
+ */
+const FULL_ACCESS_PAGES = [
+	'/agents',
+	'/curators',
+	'/managers',
+	'/designers',
+	'/contractors',
+	'/suppliers',
+	'/delivery',
+	'/services',
+	'/clients',
+	'/projects',
+	'/finance',
+	'/tz',
+	'/bz',
+	'/actions',
+	'/documentation',
+	'/order',
+	'/complaints'
+];
+
+/**
  * Get domain-specific page configurations
+ * Currently all allowed domains have full access to all pages
  */
 export function getDomainPageConfig() {
 	return {
-		'rubonus.info': ['/actions', '/tz', '/projects', '/finance', '/documentation'],
-		'bonus.band': [
-			'/projects',
-			'/actions',
-			'/contractors',
-			'/suppliers',
-			'/delivery',
-			'/services',
-			'/tz',
-			'/finance',
-			'/documentation',
-			'/order'
-		],
-		'd.rubonus.info': ['/suppliers'],
-		'admin.bonus.band': [
-			'/agents',
-			'/curators',
-			'/managers',
-			'/designers',
-			'/contractors',
-			'/suppliers',
-			'/delivery',
-			'/services',
-			'/clients',
-			'/projects',
-			'/finance',
-			'/tz',
-			'/actions',
-			'/documentation',
-			'/order'
-		],
-		localhost: [
-			'/agents',
-			'/curators',
-			'/managers',
-			'/designers',
-			'/contractors',
-			'/suppliers',
-			'/delivery',
-			'/services',
-			'/clients',
-			'/projects',
-			'/finance',
-			'/tz',
-			'/actions',
-			'/documentation',
-			'/order'
-		] // For development
+		'admin.bonus.band': FULL_ACCESS_PAGES,
+		'rubonus.pro': FULL_ACCESS_PAGES,
+		localhost: FULL_ACCESS_PAGES
 	};
 }
 
@@ -183,22 +160,18 @@ export function shouldShowNavItem(path) {
 export function getNavigationConfig() {
 	const hostname = domainState.hostname;
 	const pageConfig = getDomainPageConfig();
-	const allowedPages = pageConfig[hostname] || [];
+	const allowedPages = pageConfig[hostname] || pageConfig['localhost'] || [];
 
 	return {
 		currentDomain: hostname,
 		allowedPages,
 		domainType: domainState.isAdminDomain
-			? 'admin'
-			: domainState.isRegularDomain
-				? 'bonus.band'
-				: domainState.isRubonusDomain
-					? 'rubonus.info'
-					: domainState.isDRubonusDomain
-						? 'd.rubonus.info'
-						: domainState.isLocalhost
-							? 'localhost'
-							: 'unknown'
+			? 'admin.bonus.band'
+			: domainState.isRubonusProDomain
+				? 'rubonus.pro'
+				: domainState.isLocalhost
+					? 'localhost'
+					: 'unknown'
 	};
 }
 

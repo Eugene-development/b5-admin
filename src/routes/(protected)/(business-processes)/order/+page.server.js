@@ -1,155 +1,79 @@
 /**
- * Server-side load function with SSR for orders page with streaming
- * Data is rendered on the server for SEO and better performance
+ * Server-side load function for order page with httpOnly cookie authentication
  */
 
-import { error } from '@sveltejs/kit';
-import { getOrders, getCompaniesForDropdown, getProjectsForDropdown } from '$lib/api/orders.js';
+import { makeServerGraphQLRequest, categorizeError, getUserFriendlyErrorMessage } from '$lib/api/server.js';
 
-/**
- * Error types for better error categorization
- */
-const ERROR_TYPES = {
-	NETWORK: 'network',
-	API: 'api',
-	AUTH: 'auth',
-	TIMEOUT: 'timeout',
-	VALIDATION: 'validation',
-	UNKNOWN: 'unknown'
-};
+const ORDERS_QUERY = `
+	query GetOrders($first: Int!, $page: Int) {
+		orders(first: $first, page: $page) {
+			data {
+				id
+				value
+				company_id
+				project_id
+				order_number
+				delivery_date
+				actual_delivery_date
+				is_active
+				is_urgent
+				created_at
+				updated_at
+				company {
+					id
+					name
+					legal_name
+				}
+				project {
+					id
+					value
+					contract_name
+				}
+				positions {
+					id
+					value
+					article
+					price
+					count
+					total_price
+					supplier
+					expected_delivery_date
+					actual_delivery_date
+					is_active
+					is_urgent
+				}
+			}
+			paginatorInfo {
+				count
+				currentPage
+				firstItem
+				hasMorePages
+				lastItem
+				lastPage
+				perPage
+				total
+			}
+		}
+	}
+`;
 
-/**
- * Categorize error based on error message and properties
- */
-function categorizeError(err) {
-	const message = err.message?.toLowerCase() || '';
-
-	if (message.includes('network') || message.includes('fetch')) {
-		return ERROR_TYPES.NETWORK;
-	}
-	if (message.includes('timeout') || message.includes('aborted')) {
-		return ERROR_TYPES.TIMEOUT;
-	}
-	if (message.includes('unauthorized') || message.includes('forbidden')) {
-		return ERROR_TYPES.AUTH;
-	}
-	if (message.includes('validation') || message.includes('invalid')) {
-		return ERROR_TYPES.VALIDATION;
-	}
-	if (message.includes('graphql') || message.includes('api')) {
-		return ERROR_TYPES.API;
-	}
-
-	return ERROR_TYPES.UNKNOWN;
-}
-
-/**
- * Get user-friendly error message based on error type
- */
-function getUserFriendlyErrorMessage(errorType, originalMessage) {
-	switch (errorType) {
-		case ERROR_TYPES.NETWORK:
-			return 'Проблема с подключением к серверу. Проверьте интернет-соединение.';
-		case ERROR_TYPES.TIMEOUT:
-			return 'Превышено время ожидания ответа от сервера. Попробуйте еще раз.';
-		case ERROR_TYPES.AUTH:
-			return 'Ошибка авторизации. Пожалуйста, войдите в систему заново.';
-		case ERROR_TYPES.API:
-			return 'Ошибка при получении данных с сервера. Попробуйте обновить страницу.';
-		case ERROR_TYPES.VALIDATION:
-			return 'Получены некорректные данные с сервера. Обратитесь к администратору.';
-		default:
-			return `Произошла неожиданная ошибка: ${originalMessage}`;
-	}
-}
-
-/**
- * Load orders data asynchronously for streaming
- */
-async function loadOrdersData(fetch) {
+async function loadOrdersData(token, fetch) {
 	try {
-		// Add timeout to prevent hanging requests
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000);
-		});
-
-		// Load orders data, companies, and projects in parallel with timeout
-		const [rawOrders, companies, projects] = await Promise.race([
-			Promise.all([
-				getOrders(1000, 1, fetch).catch((err) => {
-					console.error('Error loading orders:', err);
-					return [];
-				}),
-				getCompaniesForDropdown(fetch).catch((err) => {
-					console.error('Error loading companies:', err);
-					return [];
-				}),
-				getProjectsForDropdown(fetch).catch((err) => {
-					console.error('Error loading projects:', err);
-					return [];
-				})
-			]),
-			timeoutPromise
-		]);
-
-		// Sort orders by created_at in descending order (newest first)
-		const sortedOrders = [...(Array.isArray(rawOrders) ? rawOrders : [])].sort((a, b) => {
-			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
-			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
-			return dateB - dateA;
-		});
-
-		// Add sequential numbers to orders (1, 2, 3, ...)
-		const orders = sortedOrders.map((order, index) => ({
-			...order,
-			sequentialNumber: index + 1
-		}));
-
-		return {
-			orders,
-			companies: Array.isArray(companies) ? companies : [],
-			projects: Array.isArray(projects) ? projects : [],
-			error: null,
-			errorType: null,
-			canRetry: false,
-			isLoading: false
-		};
-	} catch (apiError) {
-		const errorType = categorizeError(apiError);
-		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
-
-		console.error('Failed to load orders data:', {
-			error: apiError.message,
-			type: errorType,
-			stack: apiError.stack
-		});
-
-		// Return error state
-		return {
-			orders: [],
-			companies: [],
-			projects: [],
-			error: userMessage,
-			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH,
-			isLoading: false
-		};
+		console.log('📊 Orders SSR: Starting data load...');
+		const data = await makeServerGraphQLRequest(token, ORDERS_QUERY, { first: 1000, page: 1 }, fetch);
+		const orders = data.orders?.data || [];
+		console.log(`✅ Orders SSR: Loaded ${orders.length} orders`);
+		return { orders, companies: [], projects: [], error: null };
+	} catch (error) {
+		console.error('❌ Orders SSR: Failed:', error.message);
+		return { orders: [], companies: [], projects: [], error: { message: getUserFriendlyErrorMessage(categorizeError(error), error.message), canRetry: true } };
 	}
 }
 
-export async function load({ fetch }) {
-	// JWT tokens are stored in localStorage and not available on server
-	// Return empty data immediately and let client load data via onMount
-	// This prevents 401 errors during SSR
-	return {
-		ordersData: Promise.resolve({
-			orders: [],
-			companies: [],
-			projects: [],
-			error: null,
-			errorType: null,
-			canRetry: false,
-			isLoading: false
-		})
-	};
+export async function load({ locals, fetch }) {
+	if (!locals?.user || !locals?.token) {
+		return { ordersData: { orders: [], companies: [], projects: [], needsClientLoad: true } };
+	}
+	const ordersData = await loadOrdersData(locals.token, fetch);
+	return { ordersData };
 }

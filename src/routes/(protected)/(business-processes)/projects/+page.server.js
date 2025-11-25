@@ -1,265 +1,255 @@
 /**
- * Server-side load function for projects page with SSR
- * Data is rendered on the server for SEO and better performance
- * Uses streaming to show loading state while data is being fetched
- * Requirements: Server-side data loading, error handling, authentication state management
+ * Server-side load function for projects page with httpOnly cookie authentication
+ * Data is rendered on the server using JWT token from httpOnly cookies
  */
 
-import { getProjectsWithPagination } from '$lib/api/projects.js';
+import { makeServerGraphQLRequest, createFallbackData, categorizeError, getUserFriendlyErrorMessage } from '$lib/api/server.js';
 
 /**
- * Error types for better error categorization
+ * GraphQL query to fetch all projects
  */
-const ERROR_TYPES = {
-	NETWORK: 'network',
-	API: 'api',
-	AUTH: 'auth',
-	TIMEOUT: 'timeout',
-	VALIDATION: 'validation',
-	UNKNOWN: 'unknown'
-};
-
-/**
- * Categorize error based on error message and properties
- * @param {Error} error - The error to categorize
- * @returns {string} Error type
- */
-function categorizeError(error) {
-	const message = error.message?.toLowerCase() || '';
-
-	if (message.includes('network') || message.includes('fetch')) {
-		return ERROR_TYPES.NETWORK;
-	}
-	if (message.includes('timeout') || message.includes('aborted')) {
-		return ERROR_TYPES.TIMEOUT;
-	}
-	if (message.includes('unauthorized') || message.includes('forbidden')) {
-		return ERROR_TYPES.AUTH;
-	}
-	if (message.includes('validation') || message.includes('invalid')) {
-		return ERROR_TYPES.VALIDATION;
-	}
-	if (message.includes('graphql') || message.includes('api')) {
-		return ERROR_TYPES.API;
-	}
-
-	return ERROR_TYPES.UNKNOWN;
-}
-
-/**
- * Get user-friendly error message based on error type
- * @param {string} errorType - Error type
- * @param {string} originalMessage - Original error message
- * @returns {string} User-friendly error message
- */
-function getUserFriendlyErrorMessage(errorType, originalMessage) {
-	switch (errorType) {
-		case ERROR_TYPES.NETWORK:
-			return 'Проблема с подключением к серверу. Проверьте интернет-соединение.';
-		case ERROR_TYPES.TIMEOUT:
-			return 'Превышено время ожидания ответа от сервера. Попробуйте еще раз.';
-		case ERROR_TYPES.AUTH:
-			return 'Ошибка авторизации. Пожалуйста, войдите в систему заново.';
-		case ERROR_TYPES.API:
-			return 'Ошибка при получении данных с сервера. Попробуйте обновить страницу.';
-		case ERROR_TYPES.VALIDATION:
-			return 'Получены некорректные данные с сервера. Обратитесь к администратору.';
-		default:
-			return `Произошла неожиданная ошибка: ${originalMessage}`;
-	}
-}
-
-/**
- * Create fallback data structure for projects page
- * @returns {Object} Fallback data structure
- */
-function createProjectsFallbackData() {
-	return {
-		projects: [],
-		stats: {
-			total: 0,
-			active: 0,
-			inactive: 0,
-			totalContractAmount: 0,
-			averageContractAmount: 0
-		},
-		pagination: {
-			currentPage: 1,
-			lastPage: 1,
-			total: 0,
-			perPage: 50,
-			hasMorePages: false
-		},
-		error: null,
-		errorType: null,
-		canRetry: false,
-		isLoading: false
-	};
-}
-
-/**
- * Validate projects data structure
- * @param {any} projectsResult - Projects result from API
- * @returns {boolean} Whether data is valid
- */
-function validateProjectsData(projectsResult) {
-	if (!projectsResult || typeof projectsResult !== 'object') {
-		return false;
-	}
-
-	if (!Array.isArray(projectsResult.data)) {
-		return false;
-	}
-
-	// Validate pagination info structure
-	const paginatorInfo = projectsResult.paginatorInfo;
-	if (paginatorInfo && typeof paginatorInfo !== 'object') {
-		return false;
-	}
-
-	return true;
-}
-
-/**
- * Safely calculate project statistics
- * @param {Array} projects - Array of projects
- * @returns {Object} Statistics object
- */
-function calculateProjectStats(projects) {
-	if (!Array.isArray(projects)) {
-		return {
-			total: 0,
-			active: 0,
-			inactive: 0,
-			totalContractAmount: 0,
-			averageContractAmount: 0
-		};
-	}
-
-	const stats = {
-		total: projects.length,
-		active: 0,
-		inactive: 0,
-		totalContractAmount: 0,
-		averageContractAmount: 0
-	};
-
-	for (const project of projects) {
-		// Safely check project properties
-		if (project?.is_active === true) {
-			stats.active++;
-		} else {
-			stats.inactive++;
-		}
-
-		// Safely add contract amount
-		const contractAmount = Number(project?.contract_amount) || 0;
-		if (contractAmount > 0) {
-			stats.totalContractAmount += contractAmount;
+const PROJECTS_QUERY = `
+	query GetProjects($first: Int!, $page: Int) {
+		projects(first: $first, page: $page) {
+			data {
+				id
+				value
+				user_id
+				client_id
+				status_id
+				agent {
+					id
+					name
+					email
+					region
+					status
+					phones {
+						id
+						value
+						is_primary
+					}
+				}
+				client {
+					id
+					name
+					birthday
+					ban
+				}
+				status {
+					id
+					value
+					slug
+					description
+					color
+					icon
+					is_active
+				}
+				users {
+					id
+					name
+					email
+				}
+				contracts {
+					id
+					contract_number
+					contract_date
+					planned_completion_date
+					actual_completion_date
+					agent_percentage
+					curator_percentage
+					is_active
+					company {
+						id
+						name
+						legal_name
+					}
+				}
+				region
+				description
+				is_active
+				contract_name
+				contract_number
+				contract_date
+				contract_amount
+				agent_percentage
+				planned_completion_date
+				created_at
+				updated_at
+			}
+			paginatorInfo {
+				count
+				currentPage
+				firstItem
+				hasMorePages
+				lastItem
+				lastPage
+				perPage
+				total
+			}
 		}
 	}
-
-	// Calculate average contract amount
-	if (stats.total > 0) {
-		stats.averageContractAmount = stats.totalContractAmount / stats.total;
-	}
-
-	return stats;
-}
+`;
 
 /**
- * Load projects data asynchronously for streaming
+ * Load projects data from GraphQL API
  */
-async function loadProjectsData(fetch) {
+async function loadProjectsData(token, fetch) {
 	const startTime = Date.now();
 
 	try {
-		// Add timeout to prevent hanging requests
-		const timeoutPromise = new Promise((_, reject) => {
-			setTimeout(() => reject(new Error('Request timeout')), 30000); // 30 seconds
-		});
+		console.log('📊 Projects SSR: Starting data load...');
 
-		// Load projects data - use SvelteKit fetch for proper SSR support
-		// Load only first page (50 items) for initial render to avoid timeout
-		const projectsResult = await Promise.race([
-			getProjectsWithPagination(50, 1, fetch), // Pass SvelteKit fetch function
-			timeoutPromise
-		]);
+		// Make GraphQL request with JWT token from httpOnly cookie
+		const data = await makeServerGraphQLRequest(
+			token,
+			PROJECTS_QUERY,
+			{ first: 1000, page: 1 },
+			fetch
+		);
 
-		// Validate data structure
-		if (!validateProjectsData(projectsResult)) {
-			throw new Error('Invalid data format received from API');
-		}
+		const rawProjects = data.projects?.data || [];
+		const paginatorInfo = data.projects?.paginatorInfo || {
+			count: rawProjects.length,
+			currentPage: 1,
+			firstItem: 1,
+			hasMorePages: false,
+			lastItem: rawProjects.length,
+			lastPage: 1,
+			perPage: 1000,
+			total: rawProjects.length
+		};
 
-		const rawProjects = projectsResult.data || [];
-
-		// Sort projects by created_at in descending order (newest first)
+		// Sort projects by created_at descending (newest first)
 		const sortedProjects = [...rawProjects].sort((a, b) => {
 			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
 			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
 			return dateB - dateA;
 		});
 
-		// Add sequential numbers to projects (1, 2, 3, ...)
+		// Add sequential numbers
 		const projects = sortedProjects.map((project, index) => ({
 			...project,
 			sequentialNumber: index + 1
 		}));
 
-		// Calculate statistics with error handling
-		const stats = calculateProjectStats(projects);
-
-		// Ensure pagination info is valid
-		const pagination = projectsResult.paginatorInfo || {
-			currentPage: 1,
-			lastPage: 1,
+		// Calculate stats
+		const stats = {
 			total: projects.length,
-			perPage: 50,
-			hasMorePages: false
+			active: projects.filter((p) => p.is_active === true).length,
+			inactive: projects.filter((p) => p.is_active !== true).length,
+			totalContractAmount: projects.reduce((sum, p) => sum + (Number(p.contract_amount) || 0), 0),
+			averageContractAmount: 0
 		};
 
+		if (stats.total > 0) {
+			stats.averageContractAmount = stats.totalContractAmount / stats.total;
+		}
+
 		const loadTime = Date.now() - startTime;
+
+		console.log(`✅ Projects SSR: Loaded ${projects.length} projects in ${loadTime}ms`);
 
 		return {
 			projects,
 			stats,
-			pagination,
-			error: null,
-			errorType: null,
-			canRetry: false,
-			isLoading: false,
-			loadTime
+			pagination: paginatorInfo,
+			error: null
 		};
-	} catch (apiError) {
-		const errorType = categorizeError(apiError);
-		const userMessage = getUserFriendlyErrorMessage(errorType, apiError.message);
+	} catch (error) {
+		const errorType = categorizeError(error);
+		const userMessage = getUserFriendlyErrorMessage(errorType, error.message);
 
-		console.error('Failed to load projects data:', {
-			error: apiError.message,
+		console.error('❌ Projects SSR: Failed to load data:', {
+			error: error.message,
 			type: errorType,
-			stack: apiError.stack,
 			loadTime: Date.now() - startTime
 		});
 
-		// Return error state with detailed information for graceful error handling
-		const fallbackData = createProjectsFallbackData();
 		return {
-			...fallbackData,
-			error: userMessage,
-			errorType,
-			canRetry: errorType !== ERROR_TYPES.AUTH, // Don't allow retry for auth errors
-			originalError: apiError.message, // For debugging
-			loadTime: Date.now() - startTime
+			projects: [],
+			stats: { total: 0, active: 0, inactive: 0, totalContractAmount: 0, averageContractAmount: 0 },
+			pagination: {
+				count: 0,
+				currentPage: 1,
+				firstItem: 0,
+				hasMorePages: false,
+				lastItem: 0,
+				lastPage: 1,
+				perPage: 1000,
+				total: 0
+			},
+			error: {
+				message: userMessage,
+				canRetry: errorType !== 'auth'
+			}
 		};
 	}
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ fetch }) {
-	// JWT tokens are stored in localStorage and not available on server
-	// Return empty data immediately and let client load data via onMount
-	// This prevents 401 errors during SSR
-	return {
-		projectsData: Promise.resolve(createProjectsFallbackData())
-	};
+export async function load({ locals, fetch }) {
+	try {
+		console.log('🚀 Projects SSR: Starting server-side load', {
+			hasLocals: !!locals,
+			hasUser: !!locals?.user,
+			hasToken: !!locals?.token
+		});
+
+		// Check if user is authenticated via httpOnly cookie
+		if (!locals?.user || !locals?.token) {
+			console.log('⚠️ Projects SSR: No authentication token found in httpOnly cookie');
+			return {
+				projectsData: {
+					projects: [],
+					stats: { total: 0, active: 0, inactive: 0, totalContractAmount: 0, averageContractAmount: 0 },
+					pagination: {
+						count: 0,
+						currentPage: 1,
+						firstItem: 0,
+						hasMorePages: false,
+						lastItem: 0,
+						lastPage: 1,
+						perPage: 1000,
+						total: 0
+					},
+					needsClientLoad: true
+				}
+			};
+		}
+
+		console.log('👤 Projects SSR: Loading data for user:', locals.user.email);
+
+		// Load projects data
+		const projectsData = await loadProjectsData(locals.token, fetch);
+
+		return {
+			projectsData
+		};
+	} catch (err) {
+		console.error('❌ Projects SSR: Server load error:', {
+			error: err.message,
+			stack: err.stack
+		});
+
+		return {
+			projectsData: {
+				projects: [],
+				stats: { total: 0, active: 0, inactive: 0, totalContractAmount: 0, averageContractAmount: 0 },
+				pagination: {
+					count: 0,
+					currentPage: 1,
+					firstItem: 0,
+					hasMorePages: false,
+					lastItem: 0,
+					lastPage: 1,
+					perPage: 1000,
+					total: 0
+				},
+				error: {
+					message: 'Внутренняя ошибка при загрузке данных проектов',
+					canRetry: true
+				}
+			}
+		};
+	}
 }
