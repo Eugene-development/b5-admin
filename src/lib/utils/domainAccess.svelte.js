@@ -1,15 +1,17 @@
 /**
- * Domain-based access control utilities for client-side UI
- * Provides reactive domain detection and access control for UI elements
+ * Status-based access control utilities for client-side UI
+ * Provides reactive domain detection and status-based access control for UI elements
  * Using Svelte 5 runes for reactivity
- * 
+ *
  * Allowed domains:
- * - admin.bonus.band - full access
- * - rubonus.pro - full access
- * - localhost - full access (development)
+ * - admin.bonus.band - full access for admin users
+ * - rubonus.pro - full access for admin users
+ * - localhost - full access for admin users (development)
  */
 
 import { browser } from '$app/environment';
+import { getCurrentUserData } from '../state/auth.svelte.js';
+import { hasRouteAccess, getAllowedRoutes, USER_STATUSES } from '../auth/status-permissions.js';
 
 /**
  * Reactive domain state
@@ -39,7 +41,8 @@ export function initializeDomainDetection() {
 	domainState.isAdminDomain = hostname === 'admin.bonus.band';
 	domainState.isRubonusProDomain = hostname === 'rubonus.pro';
 	domainState.isLocalhost = hostname.startsWith('localhost') || hostname.startsWith('127.0.0.1');
-	domainState.isAllowedDomain = domainState.isAdminDomain || domainState.isRubonusProDomain || domainState.isLocalhost;
+	domainState.isAllowedDomain =
+		domainState.isAdminDomain || domainState.isRubonusProDomain || domainState.isLocalhost;
 	domainState.initialized = true;
 
 	console.log('🌐 Domain detection initialized:', {
@@ -74,97 +77,62 @@ export function isAllowedDomain() {
 }
 
 /**
- * Check if current domain has access to admin-only features
- * Currently all allowed domains have full access
- * @returns {boolean} True if current domain can access admin features
+ * Get current user's status slug
+ * @returns {string|null} User status slug or null if not authenticated
+ */
+function getUserStatusSlug() {
+	const user = getCurrentUserData();
+	return user?.status?.slug || null;
+}
+
+/**
+ * Check if current user has access to admin-only features
+ * Based on user status, not domain
+ * @returns {boolean} True if user has admin status
  */
 export function hasAdminAccess() {
-	return isAllowedDomain();
+	const statusSlug = getUserStatusSlug();
+	return statusSlug === USER_STATUSES.ADMIN;
 }
 
 /**
- * Check if current domain has access to order page
- * Currently all allowed domains have full access
- * @returns {boolean} True if current domain can access order page
+ * Check if current user has access to order page
+ * Based on user status permissions
+ * @returns {boolean} True if user can access order page
  */
 export function hasOrderAccess() {
-	return isAllowedDomain();
+	const statusSlug = getUserStatusSlug();
+	if (!statusSlug) return false;
+	return hasRouteAccess(statusSlug, '/order');
 }
 
 /**
- * Full access pages list - all allowed domains have access to all pages
- */
-const FULL_ACCESS_PAGES = [
-	'/agents',
-	'/curators',
-	'/managers',
-	'/designers',
-	'/contractors',
-	'/suppliers',
-	'/delivery',
-	'/services',
-	'/clients',
-	'/projects',
-	'/finance',
-	'/tz',
-	'/bz',
-	'/actions',
-	'/documentation',
-	'/order',
-	'/complaints'
-];
-
-/**
- * Get domain-specific page configurations
- * Currently all allowed domains have full access to all pages
- */
-export function getDomainPageConfig() {
-	return {
-		'admin.bonus.band': FULL_ACCESS_PAGES,
-		'rubonus.pro': FULL_ACCESS_PAGES,
-		localhost: FULL_ACCESS_PAGES
-	};
-}
-
-/**
- * Check if a specific navigation item should be visible for current domain
+ * Check if a specific navigation item should be visible based on user status
  * @param {string} path - The navigation path to check
  * @returns {boolean} True if the navigation item should be visible
  */
 export function shouldShowNavItem(path) {
-	// Note: Domain detection should be initialized in root layout before this is called
-	// We don't initialize here to avoid state mutation in $derived contexts
-	const hostname = domainState.hostname;
-	const pageConfig = getDomainPageConfig();
+	const statusSlug = getUserStatusSlug();
+	if (!statusSlug) return false;
 
-	// Common pages for all domains
-	const commonPages = ['/dashboard', '/profile', '/settings'];
-	if (commonPages.some((commonPath) => path.startsWith(commonPath))) {
-		return true;
-	}
-
-	// Check localhost for development
-	if (domainState.isLocalhost) {
-		return pageConfig['localhost']?.some((allowedPath) => path.startsWith(allowedPath)) || false;
-	}
-
-	// Check specific domain pages
-	const allowedPages = pageConfig[hostname] || [];
-	return allowedPages.some((allowedPath) => path.startsWith(allowedPath));
+	// Check if user has access to this route based on their status
+	return hasRouteAccess(statusSlug, path);
 }
 
 /**
- * Get domain-specific navigation configuration
+ * Get user status-based navigation configuration
  * @returns {Object} Navigation configuration object
  */
 export function getNavigationConfig() {
-	const hostname = domainState.hostname;
-	const pageConfig = getDomainPageConfig();
-	const allowedPages = pageConfig[hostname] || pageConfig['localhost'] || [];
+	const statusSlug = getUserStatusSlug();
+	const allowedRoutes = statusSlug ? getAllowedRoutes(statusSlug) : [];
+	const user = getCurrentUserData();
 
 	return {
-		currentDomain: hostname,
-		allowedPages,
+		currentDomain: domainState.hostname,
+		userStatus: statusSlug,
+		userName: user?.name || 'Guest',
+		allowedRoutes,
 		domainType: domainState.isAdminDomain
 			? 'admin.bonus.band'
 			: domainState.isRubonusProDomain
@@ -177,11 +145,36 @@ export function getNavigationConfig() {
 
 /**
  * Get current navigation visibility state (non-reactive)
- * Returns the current value for navigation visibility
+ * Returns the current value for navigation visibility based on user status
  * @returns {Object} Navigation visibility configuration
  */
 export function getNavigationVisibility() {
 	const config = getNavigationConfig();
+	const statusSlug = getUserStatusSlug();
+
+	// If no user status, hide all navigation items
+	if (!statusSlug) {
+		return {
+			showAgents: false,
+			showCurators: false,
+			showManagers: false,
+			showDesigners: false,
+			showContractors: false,
+			showSuppliers: false,
+			showDelivery: false,
+			showServices: false,
+			showClients: false,
+			showProjects: false,
+			showFinance: false,
+			showActions: false,
+			showTz: false,
+			showBz: false,
+			showDocumentation: false,
+			showOrder: false,
+			hasAdminAccess: false,
+			config
+		};
+	}
 
 	return {
 		// Main navigation sections
@@ -206,19 +199,25 @@ export function getNavigationVisibility() {
 		showDocumentation: shouldShowNavItem('/documentation'),
 		showOrder: hasOrderAccess(),
 
-		// Legacy admin access and config
+		// Admin access and config
 		hasAdminAccess: hasAdminAccess(),
 		config
 	};
 }
 
 /**
- * Debug function to log current domain state
- * Useful for troubleshooting domain access issues
+ * Debug function to log current domain and user status state
+ * Useful for troubleshooting access control issues
  */
 export function debugDomainState() {
-	console.log('🔍 Domain State Debug:', {
-		...domainState,
+	const user = getCurrentUserData();
+	console.log('🔍 Access Control Debug:', {
+		domain: domainState,
+		user: {
+			name: user?.name,
+			email: user?.email,
+			status: user?.status
+		},
 		hasAdminAccess: hasAdminAccess(),
 		navigationVisibility: getNavigationVisibility()
 	});
