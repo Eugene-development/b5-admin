@@ -41,17 +41,16 @@ npm run format           # Форматирование кода (prettier)
 
 ### Domain-Based Access Control
 
-**Ключевая особенность**: Разные страницы доступны на разных доменах (см. `src/hooks.server.js`):
+**Ключевая особенность**: Доступ к приложению ограничен определёнными доменами (см. `src/lib/utils/domainAccess.svelte.js`):
 
-- **rubonus.info**: /actions, /tz, /projects, /finance, /documentation
-- **bonus.band**: /projects, /actions, /contractors, /suppliers, /services, /tz, /bz, /finance, /documentation
-- **d.rubonus.info**: /bz, /suppliers
-- **admin.bonus.band**: полный доступ ко всем страницам (agents, curators, contractors, suppliers, services, clients, projects, finance, tz, bz, actions, documentation)
-- **localhost**: полный доступ для разработки
+**Разрешённые домены (полный доступ ко всем страницам):**
+- **admin.bonus.band** - основной production домен
+- **rubonus.pro** - альтернативный production домен
+- **localhost** - для разработки
 
-Общие страницы доступны со всех доменов: /dashboard, /profile, /settings, /login, /register, /email-verify, /health, /
+Общие страницы доступны со всех разрешённых доменов: /dashboard, /profile, /settings, /login, /register, /email-verify, /health, /
 
-При попытке доступа к странице с неразрешенного домена возвращается 403 Forbidden.
+При попытке доступа с неразрешённого домена функционал будет ограничен.
 
 ### Routing Structure
 

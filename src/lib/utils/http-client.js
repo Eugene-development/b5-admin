@@ -5,7 +5,30 @@
 
 import { browser } from '$app/environment';
 import { API_BASE_URL, AUTH_API_URL } from '$lib/config/api.js';
+import { getAuthApiUrl, getApiUrl, getCurrentHostname, getDomainConfig } from '$lib/config/domain.js';
 import { setToken as authSetToken } from '$lib/auth/auth.svelte.js';
+
+/**
+ * Get dynamic Auth API URL based on current domain
+ * @returns {string} Auth API URL
+ */
+function getDynamicAuthApiUrl() {
+	if (browser) {
+		return getAuthApiUrl();
+	}
+	return AUTH_API_URL;
+}
+
+/**
+ * Get dynamic Data API URL based on current domain
+ * @returns {string} Data API URL
+ */
+function getDynamicApiUrl() {
+	if (browser) {
+		return getApiUrl();
+	}
+	return API_BASE_URL;
+}
 
 /**
  * Get JWT token from localStorage
@@ -21,7 +44,10 @@ function getStoredToken() {
  */
 export class HttpClient {
 	constructor(options = {}) {
-		this.baseURL = options.baseURL || AUTH_API_URL;
+		// Use dynamic URL resolution if no explicit baseURL provided
+		this._baseURL = options.baseURL || null;
+		this._useAuthApi = options.useAuthApi !== false; // Default to auth API
+		this._useDynamicUrl = options.useDynamicUrl !== false; // Enable dynamic URL by default
 		this.fetch = options.fetch || globalThis.fetch;
 		this.defaultHeaders = {
 			Accept: 'application/json',
@@ -33,6 +59,20 @@ export class HttpClient {
 		this.setToken = options.setToken || this.defaultSetToken;
 		this.isRefreshing = false;
 		this.refreshPromise = null;
+	}
+
+	/**
+	 * Get base URL - uses dynamic resolution if enabled
+	 * @returns {string} Base URL for API requests
+	 */
+	get baseURL() {
+		if (this._baseURL) {
+			return this._baseURL;
+		}
+		if (this._useDynamicUrl) {
+			return this._useAuthApi ? getDynamicAuthApiUrl() : getDynamicApiUrl();
+		}
+		return this._useAuthApi ? AUTH_API_URL : API_BASE_URL;
 	}
 
 	/**
@@ -64,14 +104,16 @@ export class HttpClient {
 				const token = this.getToken();
 				if (!token) return null;
 
-				// Call the refresh endpoint
-				const response = await this.fetch(`${AUTH_API_URL}/api/refresh`, {
+				// Call the refresh endpoint using dynamic URL
+				const authUrl = getDynamicAuthApiUrl();
+				const response = await this.fetch(`${authUrl}/api/refresh`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
 						Accept: 'application/json',
 						Authorization: `Bearer ${token}`
-					}
+					},
+					credentials: 'include' // Required for httpOnly cookies
 				});
 
 				if (!response.ok) {
@@ -306,7 +348,7 @@ export class HttpClient {
 	 * @returns {Promise<Object>} GraphQL response
 	 */
 	async graphql(query, variables = {}, options = {}) {
-		const graphqlEndpoint = `${API_BASE_URL}/graphql`;
+		const graphqlEndpoint = `${getDynamicApiUrl()}/graphql`;
 
 		return this.requestJson(graphqlEndpoint, {
 			method: 'POST',
@@ -325,19 +367,20 @@ export class HttpClient {
 
 /**
  * Default HTTP client instance for authentication requests
- * Uses AUTH_API_URL for login, register, logout, etc.
+ * Uses dynamic AUTH_API_URL based on current domain
  */
 export const httpClient = new HttpClient({
-	setToken: authSetToken
+	setToken: authSetToken,
+	useAuthApi: true
 });
 
 /**
  * GraphQL client instance for data requests
- * Uses API_BASE_URL for GraphQL queries
+ * Uses dynamic API_BASE_URL based on current domain
  */
 export const graphqlClient = new HttpClient({
-	baseURL: API_BASE_URL,
-	setToken: authSetToken
+	setToken: authSetToken,
+	useAuthApi: false
 });
 
 /**
@@ -353,11 +396,16 @@ export function createHttpClient(options = {}) {
  * Create HTTP clients with SvelteKit fetch function
  * Use this in load functions to avoid the fetch warning
  * @param {typeof fetch} fetch - SvelteKit fetch function
+ * @param {Request} [request] - Optional request for server-side domain detection
  * @returns {Object} HTTP clients configured with SvelteKit fetch
  */
-export function createApiClients(fetch) {
-	const authClient = new HttpClient({ fetch, baseURL: AUTH_API_URL });
-	const dataClient = new HttpClient({ fetch, baseURL: API_BASE_URL });
+export function createApiClients(fetch, request = null) {
+	// For server-side, we need to pass the request to get the correct domain
+	const authUrl = request ? getAuthApiUrl(request) : getDynamicAuthApiUrl();
+	const apiUrl = request ? getApiUrl(request) : getDynamicApiUrl();
+
+	const authClient = new HttpClient({ fetch, baseURL: authUrl, useDynamicUrl: false });
+	const dataClient = new HttpClient({ fetch, baseURL: apiUrl, useDynamicUrl: false });
 
 	return {
 		authClient,

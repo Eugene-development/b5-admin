@@ -4,10 +4,28 @@
  */
 
 import { AUTH_API_URL } from '../config/api.js';
+import { getAuthApiUrl } from '../config/domain.js';
+
+/**
+ * Get dynamic base URL for auth API
+ * Uses domain-based detection on client, falls back to env variable
+ * @returns {string} Auth API base URL
+ */
+function getBaseUrl() {
+	// On client-side, use dynamic domain detection
+	if (typeof window !== 'undefined') {
+		return getAuthApiUrl();
+	}
+	// On server-side without request context, use env variable
+	return AUTH_API_URL;
+}
 
 // API Configuration
 export const API_CONFIG = {
-	baseUrl: AUTH_API_URL,
+	// Use getter for dynamic baseUrl resolution
+	get baseUrl() {
+		return getBaseUrl();
+	},
 	timeout: 10000, // 10 seconds
 	endpoints: {
 		// Authentication endpoints

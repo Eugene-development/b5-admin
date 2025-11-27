@@ -3,7 +3,7 @@
  * Checks authentication status on every page load using Laravel Sanctum cookies
  */
 
-import { AUTH_API_URL } from '$lib/config/api.js';
+import { getAuthApiUrl } from '$lib/config/domain.js';
 
 /**
  * Load function that runs on the server for every page request
@@ -11,6 +11,9 @@ import { AUTH_API_URL } from '$lib/config/api.js';
  */
 export async function load({ fetch, cookies, request }) {
 	try {
+		// Get dynamic AUTH API URL based on request domain
+		const authApiUrl = getAuthApiUrl(request);
+
 		// Get session cookie from request
 		const sessionCookie = cookies.get('b5_auth_2_session');
 		const xsrfToken = cookies.get('XSRF-TOKEN');
@@ -35,7 +38,7 @@ export async function load({ fetch, cookies, request }) {
 		const cookieHeader = cookiesToSend.join('; ');
 
 		// Try to get current user data from API using session cookie
-		const response = await fetch(`${AUTH_API_URL}/api/user`, {
+		const response = await fetch(`${authApiUrl}/api/user`, {
 			method: 'GET',
 			headers: {
 				Accept: 'application/json',

@@ -26,14 +26,16 @@
 					<p><strong>Current Domain:</strong> {domainState.hostname}</p>
 					<p>
 						<strong>Access Level:</strong>
-						{#if domainState.isAdminDomain}
-							<span class="font-semibold text-green-600">Admin Domain ✅</span>
-						{:else if domainState.isLocalhost}
-							<span class="font-semibold text-yellow-600">Development (localhost) ⚠️</span>
-						{:else if domainState.isRegularDomain}
-							<span class="font-semibold text-red-600">Regular Domain ❌</span>
+						{#if domainState.isAllowedDomain}
+							{#if domainState.isAdminDomain}
+								<span class="font-semibold text-green-600">admin.bonus.band ✅</span>
+							{:else if domainState.isRubonusProDomain}
+								<span class="font-semibold text-green-600">rubonus.pro ✅</span>
+							{:else if domainState.isLocalhost}
+								<span class="font-semibold text-yellow-600">Development (localhost) ⚠️</span>
+							{/if}
 						{:else}
-							<span class="text-gray-600">Unknown Domain</span>
+							<span class="font-semibold text-red-600">Неразрешённый домен ❌</span>
 						{/if}
 					</p>
 
