@@ -8,11 +8,11 @@
  */
 export const USER_STATUSES = {
 	NOT_DEFINED: 'not-defined',
-	CLIENTS: 'clients',
-	AGENTS: 'agents',
-	DESIGNERS: 'designers',
-	MANAGERS: 'managers',
-	CURATORS: 'curators',
+	CLIENT: 'client',
+	AGENT: 'agent',
+	DESIGNER: 'designer',
+	MANAGER: 'manager',
+	CURATOR: 'curator',
 	ADMIN: 'admin'
 };
 
@@ -45,7 +45,7 @@ export const ROUTES = {
 	// Business routes
 	PROJECTS: '/projects',
 	ACTIONS: '/actions',
-	ORDERS: '/orders',
+	ORDER: '/order',
 	COMPLAINTS: '/complaints',
 	CONTRACTS: '/contracts',
 
@@ -91,34 +91,25 @@ export const STATUS_PERMISSIONS = {
 		canAccessReports: true
 	},
 
-	[USER_STATUSES.CURATORS]: {
+	[USER_STATUSES.CURATOR]: {
 		name: 'Куратор',
-		description: 'Управление проектами, подрядчиками и поставщиками',
-		routes: [
-			ROUTES.PROJECTS,
-			ROUTES.CONTRACTORS,
-			ROUTES.SUPPLIERS,
-			ROUTES.SERVICES,
-			ROUTES.ACTIONS,
-			ROUTES.ORDERS,
-			ROUTES.TZ,
-			ROUTES.BZ,
-			ROUTES.DOCUMENTATION
-		],
+		description: 'Полный доступ ко всем страницам, кроме Агентов и Доставки',
+		routes: '*', // Full access
+		excludeRoutes: [ROUTES.AGENTS, ROUTES.DELIVERY], // Except these routes
 		canManageProjects: true,
 		canManageCompanies: false,
 		canManageFinances: false,
 		canAccessReports: true
 	},
 
-	[USER_STATUSES.MANAGERS]: {
+	[USER_STATUSES.MANAGER]: {
 		name: 'Менеджер',
 		description: 'Управление проектами и клиентами',
 		routes: [
 			ROUTES.PROJECTS,
 			ROUTES.CLIENTS,
 			ROUTES.ACTIONS,
-			ROUTES.ORDERS,
+			ROUTES.ORDER,
 			ROUTES.TZ,
 			ROUTES.DOCUMENTATION
 		],
@@ -128,7 +119,7 @@ export const STATUS_PERMISSIONS = {
 		canAccessReports: false
 	},
 
-	[USER_STATUSES.AGENTS]: {
+	[USER_STATUSES.AGENT]: {
 		name: 'Агент',
 		description: 'Просмотр проектов и создание заявок',
 		routes: [ROUTES.PROJECTS, ROUTES.ACTIONS, ROUTES.DOCUMENTATION],
@@ -138,7 +129,7 @@ export const STATUS_PERMISSIONS = {
 		canAccessReports: false
 	},
 
-	[USER_STATUSES.DESIGNERS]: {
+	[USER_STATUSES.DESIGNER]: {
 		name: 'Дизайнер',
 		description: 'Работа с проектами и техническими заданиями',
 		routes: [ROUTES.PROJECTS, ROUTES.TZ, ROUTES.ACTIONS],
@@ -148,10 +139,10 @@ export const STATUS_PERMISSIONS = {
 		canAccessReports: false
 	},
 
-	[USER_STATUSES.CLIENTS]: {
+	[USER_STATUSES.CLIENT]: {
 		name: 'Клиент',
 		description: 'Просмотр собственных проектов и заказов',
-		routes: [ROUTES.PROJECTS, ROUTES.ORDERS, ROUTES.ACTIONS],
+		routes: [ROUTES.PROJECTS, ROUTES.ORDER, ROUTES.ACTIONS],
 		canManageProjects: false,
 		canManageCompanies: false,
 		canManageFinances: false,
@@ -176,13 +167,21 @@ export const STATUS_PERMISSIONS = {
  * @returns {boolean} True if user has access to the route
  */
 export function hasRouteAccess(userStatusSlug, route) {
+	// Debug logging for curator
+	const isDebug = userStatusSlug === 'curator';
+	if (isDebug) {
+		console.log('🔍 hasRouteAccess Debug:', { userStatusSlug, route });
+	}
+
 	// Public routes are accessible to everyone
 	if (PUBLIC_ROUTES.includes(route)) {
+		if (isDebug) console.log('✅ Public route - access granted');
 		return true;
 	}
 
 	// Common routes are accessible to all authenticated users
 	if (COMMON_ROUTES.includes(route)) {
+		if (isDebug) console.log('✅ Common route - access granted');
 		return true;
 	}
 
@@ -191,16 +190,48 @@ export function hasRouteAccess(userStatusSlug, route) {
 
 	if (!permissions) {
 		// Unknown status - deny access
+		if (isDebug) console.log('❌ Unknown status - access denied');
 		return false;
 	}
 
-	// Admin has full access
+	if (isDebug) {
+		console.log('📋 Permissions:', {
+			routes: permissions.routes,
+			excludeRoutes: permissions.excludeRoutes
+		});
+	}
+
+	// Check for full access with exclusions
 	if (permissions.routes === '*') {
+		// If there are excluded routes, check if current route is excluded
+		if (permissions.excludeRoutes && Array.isArray(permissions.excludeRoutes)) {
+			// Check if route is in excluded routes
+			const isExcluded = permissions.excludeRoutes.includes(route);
+			if (isDebug) {
+				console.log('🔍 Checking exclusions:', {
+					route,
+					excludeRoutes: permissions.excludeRoutes,
+					isExcluded,
+					result: !isExcluded
+				});
+			}
+			return !isExcluded;
+		}
+		// Full access without exclusions
+		if (isDebug) console.log('✅ Full access without exclusions');
 		return true;
 	}
 
 	// Check if route is in user's allowed routes
-	return permissions.routes.includes(route);
+	const hasAccess = permissions.routes.includes(route);
+	if (isDebug) {
+		console.log('🔍 Checking allowed routes:', {
+			route,
+			allowedRoutes: permissions.routes,
+			hasAccess
+		});
+	}
+	return hasAccess;
 }
 
 /**
@@ -215,9 +246,17 @@ export function getAllowedRoutes(userStatusSlug) {
 		return [...PUBLIC_ROUTES, ...COMMON_ROUTES];
 	}
 
-	// Admin gets all routes
+	// Full access (possibly with exclusions)
 	if (permissions.routes === '*') {
-		return Object.values(ROUTES);
+		const allRoutes = Object.values(ROUTES);
+
+		// If there are excluded routes, filter them out
+		if (permissions.excludeRoutes && Array.isArray(permissions.excludeRoutes)) {
+			return allRoutes.filter((route) => !permissions.excludeRoutes.includes(route));
+		}
+
+		// Full access without exclusions
+		return allRoutes;
 	}
 
 	// Return common routes + status-specific routes

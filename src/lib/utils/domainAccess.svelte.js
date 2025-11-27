@@ -82,7 +82,21 @@ export function isAllowedDomain() {
  */
 function getUserStatusSlug() {
 	const user = getCurrentUserData();
-	return user?.status?.slug || null;
+	const statusSlug = user?.status?.slug || null;
+
+	// Debug logging
+	if (user && statusSlug === 'curator') {
+		console.log('🔍 getUserStatusSlug Debug:', {
+			user: {
+				name: user.name,
+				email: user.email,
+				status: user.status
+			},
+			statusSlug
+		});
+	}
+
+	return statusSlug;
 }
 
 /**
