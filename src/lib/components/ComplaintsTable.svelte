@@ -157,7 +157,7 @@
 					</th>
 				</tr>
 			</thead>
-			<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+			<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 				{#if complaints.length === 0}
 					<tr>
 						<td colspan="9" class="px-3 py-12 text-center">
