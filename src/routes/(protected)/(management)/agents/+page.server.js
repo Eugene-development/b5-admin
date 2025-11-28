@@ -51,7 +51,7 @@ async function loadAgentsData(token, fetch) {
 
 		// Filter only agents
 		const agents = allUsers
-			.filter((user) => user.userStatus?.slug === 'agents')
+			.filter((user) => user.userStatus?.slug === 'agent')
 			.map((user) => ({
 				...user,
 				status: 'active' // Status will be determined by ban/unban mutations on client
@@ -106,31 +106,16 @@ export async function load({ locals, fetch }) {
 		console.log('📊 Agents SSR: Server-side load started');
 
 		// Check authentication from event.locals (set by hooks.server.js)
+		// Note: SSR data loading is optional - client will handle auth redirect via auth-guard
+		// Access control happens in auth-guard.svelte.js on the client side
 		if (!locals.isAuthenticated || !locals.user || !locals.token) {
-			console.log('⚠️ Agents SSR: User not authenticated, returning empty data');
+			console.log(
+				'⚠️ Agents SSR: User not authenticated on server, returning empty data for client-side loading'
+			);
 			// Return empty data - client will handle loading or redirect
 			return {
 				agentsData: createFallbackData({
 					needsClientLoad: true // Flag for client to handle auth
-				})
-			};
-		}
-
-		// Check if user has permission to access agents page
-		// User type can be in Russian ('Админ') or English slug ('admin')
-		const userStatusSlug = locals.user.status?.slug || locals.user.type?.toLowerCase();
-		const isAdmin = userStatusSlug === 'admin' || userStatusSlug === 'админ' || locals.user.type === 'Админ';
-
-		if (!isAdmin) {
-			console.log('⚠️ Agents SSR: User does not have admin permissions', {
-				userStatusSlug,
-				userType: locals.user.type
-			});
-			return {
-				agentsData: createFallbackData({
-					error: 'У вас нет прав доступа к этой странице',
-					errorType: 'auth',
-					canRetry: false
 				})
 			};
 		}

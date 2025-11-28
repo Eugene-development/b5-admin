@@ -76,9 +76,9 @@
 			return [];
 		}
 
-		// Filter only curators (users with status slug 'curators') and normalize
+		// Filter only curators (users with status slug 'curator') and normalize
 		return usersData.agents
-			.filter((user) => user.userStatus?.slug === 'curators')
+			.filter((user) => user.userStatus?.slug === 'curator')
 			.map((user) => ({
 				...user,
 				// Keep old status field for backward compatibility (derived from ban field)
@@ -339,7 +339,7 @@
 			const users = await refreshUsers();
 			// Filter only curators and normalize status
 			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'curators')
+				.filter((user) => user.userStatus?.slug === 'curator')
 				.map((user) => ({
 					...user,
 					// Keep old status field for backward compatibility (derived from ban field)
@@ -710,7 +710,7 @@
 <!-- User Add Modal -->
 <UserAddModal
 	isOpen={showAddModal}
-	statusSlug="curators"
+	statusSlug="curator"
 	onSave={handleCreateUser}
 	onCancel={handleCancelAddUser}
 	isLoading={isActionLoading}

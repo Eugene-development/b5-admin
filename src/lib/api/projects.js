@@ -1,6 +1,7 @@
 import { gql, request } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { browser } from '$app/environment';
 
 // GraphQL queries and mutations
 const PROJECTS_QUERY = gql`
@@ -153,6 +154,36 @@ const HAS_NEW_PROJECTS_QUERY = gql`
 	}
 `;
 
+/**
+ * Get JWT token from localStorage (client-side only)
+ * @returns {string|null} JWT token or null
+ */
+function getStoredToken() {
+	if (!browser) return null;
+	return localStorage.getItem('b5_auth_token');
+}
+
+/**
+ * Attempt to refresh the JWT token
+ * @returns {Promise<string|null>} New token or null if refresh failed
+ */
+async function refreshToken() {
+	if (!browser) return null;
+
+	try {
+		const token = getStoredToken();
+		if (!token) return null;
+
+		// Import auth functions dynamically to avoid circular dependencies
+		const { refreshToken: authRefreshToken } = await import('$lib/auth/auth.svelte.js');
+		const newToken = await authRefreshToken();
+		return newToken;
+	} catch (error) {
+		console.error('Token refresh failed in projects.js:', error);
+		return null;
+	}
+}
+
 // Helper function to make GraphQL requests with proper error handling, authentication, and retry logic
 // Supports both client-side and server-side fetch
 async function makeGraphQLRequest(
@@ -161,9 +192,12 @@ async function makeGraphQLRequest(
 	operationName = 'GraphQL operation',
 	retries = 3,
 	customFetch = null,
-	cookies = null
+	cookies = null,
+	options = {}
 ) {
+	const { silent = false } = options; // Silent mode for background requests
 	let lastError;
+	let isRetryAfterRefresh = false;
 
 	for (let attempt = 1; attempt <= retries; attempt++) {
 		try {
@@ -180,6 +214,14 @@ async function makeGraphQLRequest(
 				Accept: 'application/json'
 			};
 
+			// Add JWT token for client-side requests
+			if (!customFetch && browser) {
+				const token = getStoredToken();
+				if (token) {
+					headers['Authorization'] = `Bearer ${token}`;
+				}
+			}
+
 			// Make the request using fetch directly to support server-side
 			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
 				method: 'POST',
@@ -193,6 +235,26 @@ async function makeGraphQLRequest(
 			});
 
 			clearTimeout(timeoutId);
+
+			// Handle 401 Unauthorized - try to refresh token
+			if (response.status === 401 && !customFetch && browser && !isRetryAfterRefresh) {
+				console.log('🔄 Got 401, attempting to refresh token...');
+				const newToken = await refreshToken();
+
+				if (newToken) {
+					console.log('✅ Token refreshed, retrying request...');
+					isRetryAfterRefresh = true;
+					// Retry the request with the new token (don't count as a regular retry)
+					continue;
+				} else {
+					console.log('❌ Token refresh failed');
+					// Token refresh failed, handle authentication error
+					if (!silent) {
+						handleAuthError(new Error('Unauthorized'), operationName);
+					}
+					throw new Error('Authentication failed');
+				}
+			}
 
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -208,15 +270,19 @@ async function makeGraphQLRequest(
 			return result.data;
 		} catch (err) {
 			lastError = err;
-			console.error(`❌ GraphQL Error in ${operationName} (attempt ${attempt}/${retries}):`, {
-				error: err.message,
-				type: err.constructor.name,
-				stack: err.stack,
-				cause: err.cause
-			});
 
-			// Handle authentication errors (only for client-side)
-			if (!customFetch && handleAuthError(err, '/projects')) {
+			// Only log errors if not in silent mode
+			if (!silent) {
+				console.error(`❌ GraphQL Error in ${operationName} (attempt ${attempt}/${retries}):`, {
+					error: err.message,
+					type: err.constructor.name,
+					stack: err.stack,
+					cause: err.cause
+				});
+			}
+
+			// Handle authentication errors (only for client-side and non-silent mode)
+			if (!customFetch && !silent && handleAuthError(err, operationName)) {
 				throw err;
 			}
 
@@ -227,6 +293,10 @@ async function makeGraphQLRequest(
 
 			// If this is the last attempt, throw the error
 			if (attempt === retries) {
+				// Only show error handling for non-silent requests
+				if (!silent && !customFetch) {
+					handleAuthError(err, operationName);
+				}
 				throw err;
 			}
 
@@ -393,9 +463,13 @@ export async function getProjectsWithPagination(
  * Queries backend which returns a boolean indicating if there are projects with status_id "01K7HRKTSQV1894Y3JD9WV5KZX" (Новый проект)
  * @param {Function} customFetch - Custom fetch function for server-side requests
  * @param {Object} cookies - Cookies object for server-side requests
+ * @param {Object} options - Additional options
+ * @param {boolean} options.silent - If true, don't show toast notifications on errors (for background checks)
  * @returns {Promise<boolean>} True if there are new projects, false otherwise
  */
-export async function hasNewProjects(customFetch = null, cookies = null) {
+export async function hasNewProjects(customFetch = null, cookies = null, options = {}) {
+	const { silent = false } = options;
+
 	try {
 		const result = await makeGraphQLRequest(
 			HAS_NEW_PROJECTS_QUERY,
@@ -403,13 +477,17 @@ export async function hasNewProjects(customFetch = null, cookies = null) {
 			'hasNewProjects',
 			2, // Reduced retries for simple check
 			customFetch,
-			cookies
+			cookies,
+			{ silent } // Pass silent mode to makeGraphQLRequest
 		);
 
 		// Backend returns a boolean directly
 		return result.hasNewProjects === true;
 	} catch (err) {
-		console.error('Check new projects failed:', err);
+		// Only log errors if not in silent mode
+		if (!silent) {
+			console.error('Check new projects failed:', err);
+		}
 		// Return false on error to prevent UI breaking
 		return false;
 	}
@@ -432,6 +510,6 @@ export function createProjectsApiWithFetch(fetch, cookies) {
 		getAllProjects: (first, page) => getAllProjects(first, page, fetch, cookies),
 		getProjectsWithPagination: (first, page) =>
 			getProjectsWithPagination(first, page, fetch, cookies),
-		hasNewProjects: () => hasNewProjects(fetch, cookies)
+		hasNewProjects: (options) => hasNewProjects(fetch, cookies, options)
 	};
 }

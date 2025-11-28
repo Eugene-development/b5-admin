@@ -3,7 +3,12 @@
  * Data is rendered on the server using JWT token from httpOnly cookies
  */
 
-import { makeServerGraphQLRequest, createFallbackData, categorizeError, getUserFriendlyErrorMessage } from '$lib/api/server.js';
+import {
+	makeServerGraphQLRequest,
+	createFallbackData,
+	categorizeError,
+	getUserFriendlyErrorMessage
+} from '$lib/api/server.js';
 
 /**
  * GraphQL query to fetch all users (will filter for managers on server)
@@ -45,7 +50,7 @@ async function loadManagersData(token, fetch) {
 
 		// Filter only managers based on userStatus.slug
 		const managers = allUsers
-			.filter((user) => user.userStatus?.slug === 'managers')
+			.filter((user) => user.userStatus?.slug === 'manager')
 			.map((user) => ({
 				...user,
 				status: 'active' // Status will be determined by ban/unban mutations on client
@@ -108,30 +113,13 @@ export async function load({ locals, fetch }) {
 		});
 
 		// Check if user is authenticated via httpOnly cookie
+		// Note: SSR data loading is optional - client will handle auth redirect via auth-guard
+		// Access control happens in auth-guard.svelte.js on the client side
 		if (!locals?.user || !locals?.token) {
 			console.log('⚠️ Managers SSR: No authentication token found in httpOnly cookie');
 			return {
 				usersData: createFallbackData({
 					needsClientLoad: true // Flag for client to handle auth
-				})
-			};
-		}
-
-		// Check if user has permission to access managers page
-		// User type can be in Russian ('Админ') or English slug ('admin')
-		const userStatusSlug = locals.user.status?.slug || locals.user.type?.toLowerCase();
-		const isAdmin = userStatusSlug === 'admin' || userStatusSlug === 'админ' || locals.user.type === 'Админ';
-
-		if (!isAdmin) {
-			console.log('⚠️ Managers SSR: User does not have admin permissions', {
-				userStatusSlug,
-				userType: locals.user.type
-			});
-			return {
-				usersData: createFallbackData({
-					error: 'У вас нет прав доступа к этой странице',
-					errorType: 'auth',
-					canRetry: false
 				})
 			};
 		}

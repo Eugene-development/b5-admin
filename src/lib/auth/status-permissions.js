@@ -121,8 +121,8 @@ export const STATUS_PERMISSIONS = {
 
 	[USER_STATUSES.AGENT]: {
 		name: 'Агент',
-		description: 'Просмотр проектов и создание заявок',
-		routes: [ROUTES.PROJECTS, ROUTES.ACTIONS, ROUTES.DOCUMENTATION],
+		description: 'Нет доступа к административной панели',
+		routes: [], // No access to any routes
 		canManageProjects: false,
 		canManageCompanies: false,
 		canManageFinances: false,
@@ -141,8 +141,8 @@ export const STATUS_PERMISSIONS = {
 
 	[USER_STATUSES.CLIENT]: {
 		name: 'Клиент',
-		description: 'Просмотр собственных проектов и заказов',
-		routes: [ROUTES.PROJECTS, ROUTES.ORDER, ROUTES.ACTIONS],
+		description: 'Нет доступа к административной панели',
+		routes: [], // No access to any routes
 		canManageProjects: false,
 		canManageCompanies: false,
 		canManageFinances: false,
@@ -179,7 +179,13 @@ export function hasRouteAccess(userStatusSlug, route) {
 		return true;
 	}
 
-	// Common routes are accessible to all authenticated users
+	// Agents and Clients have NO access to any protected routes (including dashboard)
+	if (userStatusSlug === USER_STATUSES.AGENT || userStatusSlug === USER_STATUSES.CLIENT) {
+		console.log('🚫 Agent/Client status - access denied to all protected routes');
+		return false;
+	}
+
+	// Common routes are accessible to all authenticated users (except agents and clients)
 	if (COMMON_ROUTES.includes(route)) {
 		if (isDebug) console.log('✅ Common route - access granted');
 		return true;
@@ -244,6 +250,11 @@ export function getAllowedRoutes(userStatusSlug) {
 
 	if (!permissions) {
 		return [...PUBLIC_ROUTES, ...COMMON_ROUTES];
+	}
+
+	// Agents and Clients have NO access to any protected routes
+	if (userStatusSlug === USER_STATUSES.AGENT || userStatusSlug === USER_STATUSES.CLIENT) {
+		return [...PUBLIC_ROUTES]; // Only public routes (login, register, etc.)
 	}
 
 	// Full access (possibly with exclusions)

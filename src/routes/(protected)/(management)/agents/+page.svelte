@@ -324,7 +324,7 @@
 			const users = await refreshUsers();
 			// Filter only agents and normalize status
 			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'agents')
+				.filter((user) => user.userStatus?.slug === 'agent')
 				.map((user) => ({
 					...user,
 					// Keep old status field for backward compatibility (derived from ban field)
@@ -653,7 +653,7 @@
 <!-- User Add Modal -->
 <UserAddModal
 	isOpen={showAddModal}
-	statusSlug="agents"
+	statusSlug="agent"
 	onSave={handleCreateUser}
 	onCancel={handleCancelAddUser}
 	isLoading={isActionLoading}

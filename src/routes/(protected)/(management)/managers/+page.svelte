@@ -76,9 +76,9 @@
 			return [];
 		}
 
-		// Filter only managers (users with status slug 'managers') and normalize
+		// Filter only managers (users with status slug 'manager') and normalize
 		return usersData.agents
-			.filter((user) => user.userStatus?.slug === 'managers')
+			.filter((user) => user.userStatus?.slug === 'manager')
 			.map((user) => ({
 				...user,
 				status: user.ban ? 'banned' : 'active',
@@ -329,7 +329,7 @@
 			const users = await refreshUsers();
 			// Filter only managers
 			localUsers = users
-				.filter((user) => user.userStatus?.slug === 'managers')
+				.filter((user) => user.userStatus?.slug === 'manager')
 				.map((user) => ({
 					...user,
 					status: user.ban ? 'banned' : 'active',
@@ -691,7 +691,7 @@
 <!-- User Add Modal -->
 <UserAddModal
 	isOpen={showAddModal}
-	statusSlug="managers"
+	statusSlug="manager"
 	onSave={handleCreateUser}
 	onCancel={handleCancelAddUser}
 	isLoading={isActionLoading}
