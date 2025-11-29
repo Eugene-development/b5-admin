@@ -238,7 +238,7 @@
 								</div>
 							{/if}
 
-							{#if tz.updated_at}
+							{#if tz.updated_at && tz.updated_at !== tz.created_at}
 								<div>
 									<dt
 										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"

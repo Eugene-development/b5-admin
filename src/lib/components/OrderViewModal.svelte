@@ -77,8 +77,8 @@
 			<div
 				class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
 			>
-				<h3 class="text-lg leading-6 font-semibold text-gray-900 dark:text-white" id="modal-title">
-					Просмотр заказа
+				<h3 class="text-lg leading-6 font-semibold text-amber-600 dark:text-amber-400" id="modal-title">
+					№ {order.order_number || 'Не указан'}
 				</h3>
 				<button
 					type="button"
@@ -109,11 +109,6 @@
 						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
 							Заказ: {order.value || order.deal || 'Не указан'}
 						</p> -->
-						{#if order.order_number}
-							<p class="mt-1 text-sm font-semibold text-orange-600 dark:text-orange-400">
-								№ {order.order_number}
-							</p>
-						{/if}
 					</div>
 					<div class="ml-4 flex flex-shrink-0 gap-2">
 						{#if order.is_urgent}
@@ -264,7 +259,7 @@
 							</div>
 						{/if}
 
-						{#if order.updated_at}
+						{#if order.updated_at && order.updated_at !== order.created_at}
 							<div>
 								<dt
 									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"

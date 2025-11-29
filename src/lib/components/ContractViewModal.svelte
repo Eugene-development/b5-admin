@@ -285,6 +285,7 @@
 									{formatDateTime(contract.created_at)}
 								</dd>
 							</div>
+						{#if contract.updated_at && contract.updated_at !== contract.created_at}
 							<div>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
 									Дата обновления
@@ -293,6 +294,7 @@
 									{formatDateTime(contract.updated_at)}
 								</dd>
 							</div>
+						{/if}
 						</dl>
 					</div>
 				</div>

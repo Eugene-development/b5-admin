@@ -288,7 +288,7 @@
 										</div>
 									{/if}
 
-									{#if company.updated_at}
+									{#if company.updated_at && company.updated_at !== company.created_at}
 										<div>
 											<dt
 												class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"

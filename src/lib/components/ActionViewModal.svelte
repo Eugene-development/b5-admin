@@ -206,7 +206,7 @@
 								</div>
 							{/if}
 
-							{#if action.updated_at}
+							{#if action.updated_at && action.updated_at !== action.created_at}
 								<div>
 									<dt
 										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"

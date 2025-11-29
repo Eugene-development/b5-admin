@@ -592,6 +592,7 @@
 									</dd>
 								</div>
 
+						{#if project.updated_at && project.updated_at !== project.created_at}
 								<div>
 									<dt
 										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
@@ -602,6 +603,7 @@
 										{formatDateTime(project.updated_at)}
 									</dd>
 								</div>
+						{/if}
 
 								{#if acceptedByCurrentUser || (project.users && project.users.length > 0)}
 									<div>

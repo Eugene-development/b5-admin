@@ -217,7 +217,7 @@
 							</div>
 						{/if}
 
-						<!-- {#if service.updated_at}
+						<!-- {#if service.updated_at && service.updated_at !== service.created_at}
 						<div>
 							<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата обновления</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
