@@ -249,9 +249,6 @@
 					>
 						Редактировать пользователя
 					</h3>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Обновите информацию о пользователе "{user.name || user.email}"
-					</p>
 				</div>
 
 				<!-- Form -->
@@ -343,9 +340,6 @@
 								</option>
 							{/each}
 						</select>
-						{#if isLoadingStatuses}
-							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Загрузка статусов...</p>
-						{/if}
 					</div>
 
 					<!-- Action buttons -->
