@@ -7,7 +7,7 @@
 	// Form state
 	let name = $state('');
 	let email = $state('');
-	let region = $state('');
+	let companyName = $state('');
 	let phone = $state('');
 	let password = $state('');
 	let passwordConfirmation = $state('');
@@ -58,12 +58,12 @@
 	}
 
 	/**
-	 * Validate region field (optional)
+	 * Validate company name field (required)
 	 */
-	function validateRegion(region) {
-		if (!region) return null; // Region is optional
-		if (region.length < 2) return 'Название региона должно содержать минимум 2 символа';
-		if (region.length > 255) return 'Название региона слишком длинное';
+	function validateCompanyName(companyName) {
+		if (!companyName) return 'Название компании обязательно';
+		if (companyName.length < 2) return 'Название компании должно содержать минимум 2 символа';
+		if (companyName.length > 255) return 'Название компании слишком длинное';
 		return null;
 	}
 
@@ -86,8 +86,8 @@
 		if (nameError) errors.name = [nameError];
 		const emailError = validateEmail(email);
 		if (emailError) errors.email = [emailError];
-		const regionError = validateRegion(region);
-		if (regionError) errors.region = [regionError];
+		const companyNameError = validateCompanyName(companyName);
+		if (companyNameError) errors.company_name = [companyNameError];
 		const phoneError = validatePhone(phone);
 		if (phoneError) errors.phone = [phoneError];
 		const passwordError = validatePassword(password);
@@ -107,19 +107,16 @@
 		clientErrors = {};
 		if (!validateForm()) return;
 		try {
-			// Подготавливаем данные формы, правильно обрабатывая пустые поля
+			// Подготавливаем данные формы
 			const formData = {
 				name,
 				email,
+				company_name: companyName,
 				password,
 				password_confirmation: passwordConfirmation
 			};
 
 			// Добавляем необязательные поля только если они заполнены
-			if (region && region.trim() !== '') {
-				formData.region = region.trim();
-			}
-
 			if (phone && phone.trim() !== '') {
 				formData.phone = phone.trim();
 			}
@@ -162,7 +159,7 @@
 		if (
 			(field === 'name' ||
 				field === 'email' ||
-				field === 'region' ||
+				field === 'company_name' ||
 				field === 'phone' ||
 				field === 'password' ||
 				field === 'password_confirmation') &&
@@ -324,7 +321,7 @@
 										class:border-red-300={getFieldError('name')}
 										class:focus:ring-red-500={getFieldError('name')}
 										class:focus:border-red-500={getFieldError('name')}
-										placeholder="Введите ваше полное имя"
+										placeholder="Ваше имя"
 									/>
 								</div>
 								<!-- Field-specific errors -->
@@ -387,13 +384,13 @@
 
 						<!-- Правый столбец -->
 						<div class="space-y-4 md:space-y-5 lg:space-y-6">
-							<!-- Region поле -->
-							<div class="hidden space-y-1 lg:block">
+							<!-- Company поле -->
+							<div class="space-y-1">
 								<label
-									for="region"
+									for="company_name"
 									class="block text-sm font-semibold text-gray-700 dark:text-gray-300"
 								>
-									Регион (необязательно)
+									Компания
 								</label>
 								<div class="group relative">
 									<div
@@ -409,35 +406,30 @@
 												stroke-linecap="round"
 												stroke-linejoin="round"
 												stroke-width="2"
-												d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-											/>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+												d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
 											/>
 										</svg>
 									</div>
 									<input
-										id="region"
-										name="region"
+										id="company_name"
+										name="company_name"
 										type="text"
-										autocomplete="address-level1"
-										bind:value={region}
-										oninput={() => handleInputChange('region')}
+										autocomplete="organization"
+										required
+										bind:value={companyName}
+										oninput={() => handleInputChange('company_name')}
 										disabled={isLoading()}
 										class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 py-2.5 pr-4 pl-12 text-gray-900 placeholder-gray-500 backdrop-blur-sm transition-all duration-300 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/20 focus:outline-none md:py-2.75 lg:py-3 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-white dark:placeholder-gray-400"
-										class:border-red-300={getFieldError('region')}
-										class:focus:ring-red-500={getFieldError('region')}
-										class:focus:border-red-500={getFieldError('region')}
-										placeholder="Московская область"
+										class:border-red-300={getFieldError('company_name')}
+										class:focus:ring-red-500={getFieldError('company_name')}
+										class:focus:border-red-500={getFieldError('company_name')}
+										placeholder="Ваша компания"
 									/>
 								</div>
 								<!-- Field-specific errors -->
-								{#if getFieldError('region')}
+								{#if getFieldError('company_name')}
 									<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{getFieldError('region')}
+										{getFieldError('company_name')}
 									</p>
 								{/if}
 							</div>
