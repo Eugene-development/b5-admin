@@ -1,4 +1,5 @@
 import { handleApiError } from '$lib/utils/toastStore.js';
+import { getAuthHeaders } from './config.js';
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
 
@@ -25,6 +26,7 @@ export async function createAction(actionData) {
 	`;
 
 	try {
+		const authHeaders = getAuthHeaders();
 		const response = await fetch(API_URL, {
 			method: 'POST',
 			headers: {
@@ -89,6 +91,7 @@ export async function updateAction(actionData) {
 	`;
 
 	try {
+		const authHeaders = getAuthHeaders();
 		const response = await fetch(API_URL, {
 			method: 'POST',
 			headers: {
@@ -146,6 +149,7 @@ export async function deleteAction(actionId) {
 	`;
 
 	try {
+		const authHeaders = getAuthHeaders();
 		const response = await fetch(API_URL, {
 			method: 'POST',
 			headers: {
@@ -213,6 +217,7 @@ export async function refreshActions(fetchFn = fetch) {
 	`;
 
 	try {
+		const authHeaders = getAuthHeaders();
 		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
@@ -267,6 +272,7 @@ export async function getCompaniesForActions(fetchFn = fetch) {
 	`;
 
 	try {
+		const authHeaders = getAuthHeaders();
 		const response = await fetchFn(API_URL, {
 			method: 'POST',
 			headers: {
