@@ -398,21 +398,23 @@
 						<TableSkeleton columns={6} />
 					{:else}
 
-					<div class="space-y-6">
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-8 sm:px-6 lg:px-8">
+							<div class="mx-auto max-w-7xl">
+								<main id="main-content" aria-labelledby="page-title">
 						<!-- Page Header -->
-						<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
+						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex items-center justify-between">
 								<div>
 									<h1
-										class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+										id="page-title"
+										class="text-3xl font-semibold text-gray-900 dark:text-white"
 									>
 										Техзадания
 									</h1>
-									<p class="mt-1 hidden text-sm text-gray-500 sm:block dark:text-gray-400">
-										Управление техническими заданиями и спецификациями
-									</p>
 								</div>
-								<div class="flex items-center space-x-3">
+							</div>
+							<div class="flex items-center space-x-3">
 									<!-- Refresh Button -->
 									<button
 										type="button"
@@ -463,10 +465,10 @@
 										type="button"
 										onclick={handleOpenCreateModal}
 										disabled={isLoading}
-										class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+										class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
 									>
 										<svg
-											class="mr-1.5 -ml-0.5 h-5 w-5"
+											class="mr-2 h-4 w-4"
 											xmlns="http://www.w3.org/2000/svg"
 											fill="none"
 											viewBox="0 0 24 24"
@@ -480,11 +482,14 @@
 												d="M12 4v16m8-8H4"
 											/>
 										</svg>
-										Создать
+										Добавить
 									</button>
 								</div>
 							</div>
 						</div>
+
+						<!-- Separator -->
+						<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 						<!-- Search and Filters -->
 						<div
@@ -520,21 +525,7 @@
 									/>
 								</div>
 							</div>
-
-							<!-- Total TZ count -->
-							<div class="text-sm text-gray-700 dark:text-gray-300">
-								{#if searchTerm.trim()}
-									<span
-										>Найдено: <strong>{filteredTzList.length}</strong> из
-										<strong>{tzList.length}</strong></span
-									>
-								{:else}
-									<span>Всего элементов: <strong>{tzList.length}</strong></span>
-								{/if}
-							</div>
 						</div>
-
-						<!-- Separator -->
 
 						<!-- Results summary -->
 						{#if searchTerm.trim()}
@@ -552,7 +543,7 @@
 						{/if}
 
 						<!-- Table -->
-						<div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl dark:bg-gray-800">
+						<div class="mt-8">
 							<TzTable
 								tzList={paginatedTzList}
 								{isLoading}
@@ -574,6 +565,9 @@
 							{itemsPerPage}
 							filteredFrom={searchTerm.trim() ? tzList.length : null}
 						/>
+						</main>
+							</div>
+						</div>
 					</div>
 					{/if}
 				{/if}

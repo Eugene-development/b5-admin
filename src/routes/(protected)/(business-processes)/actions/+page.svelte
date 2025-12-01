@@ -329,11 +329,12 @@
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 						<div class="px-4 py-8 sm:px-6 lg:px-8">
 							<div class="mx-auto max-w-7xl">
+								<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with Refresh Button -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
 									<div class="flex items-center justify-between">
 										<div>
-											<h1 class="text-3xl font-semibold text-gray-900 dark:text-white">Акции</h1>
+											<h1 id="page-title" class="text-3xl font-semibold text-gray-900 dark:text-white">Акции</h1>
 										</div>
 									</div>
 									<div class="flex items-center space-x-3">
@@ -405,7 +406,7 @@
 													d="M12 4v16m8-8H4"
 												/>
 											</svg>
-											Добавить акцию
+											Добавить
 										</button>
 									</div>
 								</div>
@@ -496,6 +497,7 @@
 									{itemsPerPage}
 									filteredFrom={searchTerm.trim() ? allActions.length : null}
 								/>
+								</main>
 							</div>
 						</div>
 					</div>
