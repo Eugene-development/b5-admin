@@ -35,6 +35,14 @@ cd b5-db-2
 php artisan migrate
 ```
 
+После применения миграций необходимо очистить кэш GraphQL:
+
+```bash
+cd b5-api-2
+php artisan lighthouse:clear-cache
+php artisan cache:clear
+```
+
 ## Статусы
 
 ### Статусы пользователей (user_statuses)

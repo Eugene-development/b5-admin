@@ -57,6 +57,8 @@ export { default as AgentDisplay } from './components/AgentDisplay.svelte';
 export { default as ProtectedRoute } from './components/ProtectedRoute.svelte';
 export { default as TzCreateModal } from './components/TzCreateModal.svelte';
 export { default as Sparkles } from './components/ui/Sparkles/Sparkles.svelte';
+// TablePageLayout temporarily removed from exports to debug counterparties error
+// export { default as TablePageLayout } from './components/TablePageLayout.svelte';
 
 // Export utilities
 export * from './utils/index.js';
