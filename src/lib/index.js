@@ -46,6 +46,7 @@ export { default as StatusBadge } from './components/StatusBadge.svelte';
 export { default as LoadingSpinner } from './components/LoadingSpinner.svelte';
 export { default as LoadingOverlay } from './components/LoadingOverlay.svelte';
 export { default as RefreshButton } from './components/RefreshButton.svelte';
+export { default as AddButton } from './components/AddButton.svelte';
 export { default as Toast } from './components/Toast.svelte';
 export { default as ToastContainer } from './components/ToastContainer.svelte';
 export { default as ErrorBoundary } from './components/ErrorBoundary.svelte';

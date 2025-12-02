@@ -7,7 +7,7 @@
 	import FileUploadModal from '$lib/components/FileUploadModal.svelte';
 	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
 	import Pagination from '$lib/components/Pagination.svelte';
-	import { ErrorBoundary, RefreshButton } from '$lib';
+	import { ErrorBoundary, RefreshButton, AddButton } from '$lib';
 	import TablePageLayout from '$lib/components/TablePageLayout.svelte';
 	import {
 		toasts,
@@ -401,29 +401,7 @@
 						<TablePageLayout title="Техзадания">
 							{#snippet headerActions()}
 								<!-- Create TZ Button -->
-								<button
-									type="button"
-									onclick={handleOpenCreateModal}
-									disabled={isLoading}
-									class="inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
-								>
-									<svg
-										class="mr-2 h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 4v16m8-8H4"
-										/>
-									</svg>
-									Добавить
-								</button>
+								<AddButton onclick={handleOpenCreateModal} disabled={isLoading} />
 
 								<!-- Refresh Button -->
 								<RefreshButton {isRefreshing} onclick={loadServices} />
