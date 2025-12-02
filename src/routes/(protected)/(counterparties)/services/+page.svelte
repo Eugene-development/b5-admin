@@ -400,6 +400,31 @@
 										</div>
 									</div>
 									<div class="flex items-center space-x-3">
+										<!-- Add Button -->
+										<button
+											type="button"
+											onclick={handleAddCompany}
+											disabled={isActionLoading}
+											class="inline-flex items-center rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
+										>
+											<svg
+												class="mr-2 h-4 w-4"
+												xmlns="http://www.w3.org/2000/svg"
+												fill="none"
+												viewBox="0 0 24 24"
+												stroke="currentColor"
+											>
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M12 4v16m8-8H4"
+												/>
+											</svg>
+											Добавить
+										</button>
+
+										<!-- Refresh Button -->
 										<button
 											type="button"
 											onclick={refreshData}
@@ -444,28 +469,6 @@
 												</svg>
 											{/if}
 											Обновить
-										</button>
-										<button
-											type="button"
-											onclick={handleAddCompany}
-											disabled={isActionLoading}
-											class="inline-flex items-center rounded-md bg-cyan-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
-										>
-											<svg
-												class="mr-2 h-4 w-4"
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M12 4v16m8-8H4"
-												/>
-											</svg>
-											Добавить
 										</button>
 									</div>
 								</div>
