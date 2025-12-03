@@ -1,14 +1,14 @@
 <script>
-	import OrderTable from '$lib/components/OrderTable.svelte';
-	import OrderAddModal from '$lib/components/OrderAddModal.svelte';
-	import OrderEditModal from '$lib/components/OrderEditModal.svelte';
-	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import OrderTable from '$lib/components/business-processes/order/OrderTable.svelte';
+	import OrderAddModal from '$lib/components/business-processes/order/OrderAddModal.svelte';
+	import OrderEditModal from '$lib/components/business-processes/order/OrderEditModal.svelte';
+	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
 	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton } from '$lib';
-	import TablePageLayout from '$lib/components/TablePageLayout.svelte';
+	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -17,7 +17,7 @@
 		clearAllToasts,
 		retryOperation
 	} from '$lib/utils/toastStore.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { invalidateAll, goto } from '$app/navigation';
 	import { createOrder, deleteOrder, refreshOrders, updateOrder } from '$lib/api/orders.js';
 
@@ -539,8 +539,8 @@
 												bind:value={searchTerm}
 												oninput={handleSearch}
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-												placeholder="Поиск закупок... (Ctrl+K)"
-												aria-label="Поиск закупок"
+												placeholder="Поиск по таблице..."
+												aria-label="Поиск по таблице"
 											/>
 											{#if searchTerm}
 												<button

@@ -1,6 +1,6 @@
 <script>
-	import { formatDate } from '../utils/formatters.js';
-	import { getDateUrgencyClasses, getRelativeTime } from '../utils/dateUtils.js';
+	import { formatDate } from '../../utils/formatters.js';
+	import { getDateUrgencyClasses, getRelativeTime } from '../../utils/dateUtils.js';
 
 	let { date = null, showRelative = false, className = '' } = $props();
 

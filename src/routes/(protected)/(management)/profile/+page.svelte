@@ -21,9 +21,9 @@
 	import { getUserData } from '$lib/api/config.js';
 	import { addSuccessToast, addErrorToast } from '$lib/utils/toastStore.js';
 	import { formatPhone } from '$lib/utils/formatters.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
-	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
-	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
+	import LoadingSpinner from '$lib/components/common/LoadingSpinner.svelte';
+	import ConfirmationModal from '$lib/components/common/ConfirmationModal.svelte';
 
 	// Component state
 	let showSuccessMessage = $state(false);

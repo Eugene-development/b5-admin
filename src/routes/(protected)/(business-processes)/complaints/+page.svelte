@@ -1,10 +1,10 @@
 <script>
-	import ComplaintsTable from '$lib/components/ComplaintsTable.svelte';
-	import ComplaintAddModal from '$lib/components/ComplaintAddModal.svelte';
-	import ComplaintEditModal from '$lib/components/ComplaintEditModal.svelte';
-	import ComplaintViewModal from '$lib/components/ComplaintViewModal.svelte';
+	import ComplaintsTable from '$lib/components/business-processes/complaints/ComplaintsTable.svelte';
+	import ComplaintAddModal from '$lib/components/business-processes/complaints/ComplaintAddModal.svelte';
+	import ComplaintEditModal from '$lib/components/business-processes/complaints/ComplaintEditModal.svelte';
+	import ComplaintViewModal from '$lib/components/business-processes/complaints/ComplaintViewModal.svelte';
 	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton } from '$lib';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		addSuccessToast,
 		addErrorToast,
@@ -18,7 +18,7 @@
 		deleteComplaint,
 		refreshComplaints
 	} from '$lib/api/complaints.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { onMount } from 'svelte';
 
 	// Search state management
@@ -452,7 +452,7 @@
 												type="text"
 												bind:value={searchTerm}
 												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по названию, описанию, контракту..."
+												placeholder="Поиск по таблице..."
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 											/>
 										</div>

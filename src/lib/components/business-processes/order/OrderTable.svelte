@@ -1,5 +1,5 @@
 <script>
-	import EmptyState from './EmptyState.svelte';
+	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import OrderViewModal from './OrderViewModal.svelte';
 
 	let {

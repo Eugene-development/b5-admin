@@ -2,7 +2,7 @@
 	import { domainState } from '$lib/utils/domainAccess.svelte.js';
 	import { authState } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
-	import Header from '$lib/components/Header.svelte';
+	import Header from '$lib/components/layout/Header.svelte';
 	import Sparkles from '$lib/components/ui/Sparkles/Sparkles.svelte';
 	import { onMount } from 'svelte';
 

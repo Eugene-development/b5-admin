@@ -1,7 +1,6 @@
 <script>
-	import StatusBadge from './StatusBadge.svelte';
-	import ActionButtons from './ActionButtons.svelte';
-	import EmptyState from './EmptyState.svelte';
+	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
+	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {

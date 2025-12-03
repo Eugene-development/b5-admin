@@ -1,7 +1,7 @@
 <script>
-	import StatusBadge from './StatusBadge.svelte';
-	import ActionButtons from './ActionButtons.svelte';
-	import EmptyState from './EmptyState.svelte';
+	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
+	import ActionButtons from '$lib/components/business-processes/actions/ActionButtons.svelte';
+	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 
 	let {

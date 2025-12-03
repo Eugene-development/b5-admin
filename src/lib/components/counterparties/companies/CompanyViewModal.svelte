@@ -1,5 +1,5 @@
 <script>
-	import StatusBadge from './StatusBadge.svelte';
+	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let { isOpen = false, company = null, onClose } = $props();

@@ -2,7 +2,7 @@
 	import { register, authState, clearError, isLoading } from '$lib/state/auth.svelte.js';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
+	import ErrorDisplay from '$lib/components/common/ErrorDisplay.svelte';
 
 	// Form state
 	let name = $state('');

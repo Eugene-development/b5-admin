@@ -17,7 +17,7 @@
 	import { ToastContainer, LoadingOverlay } from '$lib';
 	import { goto } from '$app/navigation';
 	import { page, navigating } from '$app/stores';
-	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
+	import ConfirmationModal from '$lib/components/common/ConfirmationModal.svelte';
 	import { newProjectsState } from '$lib/state/newProjectsCount.svelte.js';
 	import { onMount } from 'svelte';
 

@@ -11,7 +11,7 @@
 		RefreshButton,
 		AddButton
 	} from '$lib';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -29,7 +29,7 @@
 		updateUser,
 		createUser
 	} from '$lib/api/agents.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 
 	let { data } = $props();
 
@@ -506,7 +506,7 @@
 												type="text"
 												bind:value={searchTerm}
 												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по имени, email или региону..."
+												placeholder="Поиск по таблице..."
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 											/>
 										</div>

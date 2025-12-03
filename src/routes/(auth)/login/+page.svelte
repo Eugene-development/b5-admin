@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
-	import ErrorDisplay from '$lib/components/ErrorDisplay.svelte';
+	import ErrorDisplay from '$lib/components/common/ErrorDisplay.svelte';
 
 	// Form state
 	let email = $state('');

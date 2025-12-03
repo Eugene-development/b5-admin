@@ -1,9 +1,8 @@
 <script>
-	import CompanyTable from '$lib/components/CompanyTable.svelte';
-	import CompanyAddModal from '$lib/components/CompanyAddModal.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import CompanyTable from '$lib/components/counterparties/companies/CompanyTable.svelte';
+	import CompanyAddModal from '$lib/components/counterparties/companies/CompanyAddModal.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
-		SearchBar,
 		ConfirmationModal,
 		ErrorBoundary,
 		TableSkeleton,
@@ -20,7 +19,7 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import {
 		createCompany,
 		createCompanyPhone,
@@ -413,12 +412,41 @@
 								<!-- Separator -->
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
-								<div class="w-full sm:max-w-md">
-									<SearchBar
-										placeholder="Поиск сервисов"
-										onSearch={handleSearch}
-										value={searchTerm}
-									/>
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+								>
+									<div class="flex flex-1 items-center space-x-4">
+										<!-- Search Input -->
+										<div class="relative max-w-md flex-1" role="search" aria-label="Service search">
+											<div
+												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+											>
+												<svg
+													class="h-5 w-5 text-gray-400"
+													xmlns="http://www.w3.org/2000/svg"
+													fill="none"
+													viewBox="0 0 24 24"
+													stroke="currentColor"
+													aria-hidden="true"
+												>
+													<path
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="2"
+														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+													/>
+												</svg>
+											</div>
+											<input
+												id="service-search"
+												type="text"
+												bind:value={searchTerm}
+												oninput={() => handleSearch(searchTerm)}
+												placeholder="Поиск по таблице..."
+												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
+											/>
+										</div>
+									</div>
 								</div>
 
 								{#if searchTerm.trim()}

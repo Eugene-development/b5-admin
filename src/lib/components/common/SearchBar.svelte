@@ -1,5 +1,5 @@
 <script>
-	let { placeholder = 'Search agents...', onSearch, value = '' } = $props();
+	let { placeholder = 'Поиск по таблице...', onSearch, value = '' } = $props();
 
 	let searchInput;
 	let debounceTimer;
@@ -31,15 +31,15 @@
 		onSearch?.('');
 		searchInput?.focus();
 		// Announce that search was cleared
-		announceToScreenReader('Search cleared. Showing all agents.');
+		announceToScreenReader('Поиск очищен. Показаны все записи.');
 	}
 
 	// Announce search results to screen readers
 	function announceSearchResults(searchTerm) {
 		if (searchTerm.trim()) {
-			announceToScreenReader(`Searching for "${searchTerm}". Results will update automatically.`);
+			announceToScreenReader(`Поиск по запросу "${searchTerm}". Результаты обновляются автоматически.`);
 		} else {
-			announceToScreenReader('Showing all agents.');
+			announceToScreenReader('Показаны все записи.');
 		}
 	}
 
@@ -94,7 +94,7 @@
 		oninput={handleInput}
 		onkeydown={handleKeydown}
 		class="block w-full rounded-md border-0 bg-white py-2.5 pr-12 pl-10 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 transition-all duration-200 ease-in-out ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500"
-		aria-label="Search agents by name, email, or region"
+		aria-label="Поиск по таблице"
 		aria-describedby="{descriptionId} {statusId}"
 		role="searchbox"
 		autocomplete="off"
@@ -123,7 +123,7 @@
 
 <!-- Screen reader descriptions and status -->
 <div id={descriptionId} class="sr-only">
-	Search for agents by their name, email address, or region. Use Escape key to clear search.
+	Поиск по таблице. Используйте клавишу Escape для очистки поиска.
 </div>
 <div id={statusId} class="sr-only" aria-live="polite" aria-atomic="true">
 	<!-- Dynamic search status announcements -->

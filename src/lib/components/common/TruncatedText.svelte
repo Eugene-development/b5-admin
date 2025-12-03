@@ -1,5 +1,5 @@
 <script>
-	import { truncateText, isTruncated } from '../utils/formatters.js';
+	import { truncateText, isTruncated } from '../../utils/formatters.js';
 
 	let {
 		text = '',

@@ -1,5 +1,5 @@
 <script>
-	import StatusBadge from './StatusBadge.svelte';
+	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 
 	let { isOpen = false, contract = null, onClose } = $props();
 

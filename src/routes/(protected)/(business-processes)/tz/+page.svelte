@@ -1,14 +1,14 @@
 <script>
-	import TzTable from '$lib/components/TzTable.svelte';
-	import TzViewModal from '$lib/components/TzViewModal.svelte';
-	import TzCreateModal from '$lib/components/TzCreateModal.svelte';
-	import TzEditModal from '$lib/components/TzEditModal.svelte';
-	import ConfirmationModal from '$lib/components/ConfirmationModal.svelte';
-	import FileUploadModal from '$lib/components/FileUploadModal.svelte';
-	import TableSkeleton from '$lib/components/TableSkeleton.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import TzTable from '$lib/components/business-processes/tz/TzTable.svelte';
+	import TzViewModal from '$lib/components/business-processes/tz/TzViewModal.svelte';
+	import TzCreateModal from '$lib/components/business-processes/tz/TzCreateModal.svelte';
+	import TzEditModal from '$lib/components/business-processes/tz/TzEditModal.svelte';
+	import ConfirmationModal from '$lib/components/common/ConfirmationModal.svelte';
+	import FileUploadModal from '$lib/components/modals/FileUploadModal.svelte';
+	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { ErrorBoundary, RefreshButton, AddButton } from '$lib';
-	import TablePageLayout from '$lib/components/TablePageLayout.svelte';
+	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -19,7 +19,7 @@
 		retryOperation
 	} from '$lib/utils/toastStore.js';
 	import { onMount } from 'svelte';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { invalidateAll, goto } from '$app/navigation';
 	import {
 		refreshTechnicalSpecifications,
@@ -434,7 +434,7 @@
 											bind:value={searchTerm}
 											oninput={handleSearch}
 											class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-											placeholder="Поиск техзаданий..."
+											placeholder="Поиск по таблице..."
 										/>
 									</div>
 								</div>

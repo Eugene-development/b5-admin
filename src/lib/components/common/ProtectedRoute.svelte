@@ -22,8 +22,8 @@
 		isAuthenticated,
 		isEmailVerified,
 		isLoading
-	} from '../state/auth.svelte.js';
-	import { hasAuthToken, getUserData } from '../api/config.js';
+	} from '../../state/auth.svelte.js';
+	import { hasAuthToken, getUserData } from '../../api/config.js';
 	import LoadingSpinner from './LoadingSpinner.svelte';
 
 	// Props

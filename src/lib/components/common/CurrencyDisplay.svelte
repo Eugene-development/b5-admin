@@ -1,5 +1,5 @@
 <script>
-	import { formatCurrency, formatAgentRate } from '../utils/formatters.js';
+	import { formatCurrency, formatAgentRate } from '../../utils/formatters.js';
 
 	let {
 		amount = null,

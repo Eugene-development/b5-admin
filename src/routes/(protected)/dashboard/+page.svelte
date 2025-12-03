@@ -1,5 +1,5 @@
 <script>
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { getNavigationVisibility } from '$lib/utils/domainAccess.svelte.js';
 
 	// Get navigation visibility reactively

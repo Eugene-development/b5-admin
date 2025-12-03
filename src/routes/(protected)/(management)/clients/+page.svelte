@@ -1,8 +1,8 @@
 <script>
-	import ClientsTable from '$lib/components/ClientsTable.svelte';
+	import ClientsTable from '$lib/components/management/clients/ClientsTable.svelte';
 	import { ErrorBoundary, TableSkeleton, UserViewModal, RefreshButton } from '$lib';
-	import EditClientModal from '$lib/components/EditClientModal.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import EditClientModal from '$lib/components/management/clients/EditClientModal.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -12,7 +12,7 @@
 		clearAllToasts
 	} from '$lib/utils/toastStore.js';
 	import { refreshClients, updateClient } from '$lib/api/clients.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 
 	let { data } = $props();
 
@@ -277,7 +277,7 @@
 												type="text"
 												bind:value={searchTerm}
 												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по имени или телефону..."
+												placeholder="Поиск по таблице..."
 												class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 											/>
 										</div>

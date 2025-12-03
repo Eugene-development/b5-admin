@@ -1,13 +1,13 @@
 <script>
 	import { goto, invalidate } from '$app/navigation';
-	import ActionTable from '$lib/components/ActionTable.svelte';
-	import ActionViewModal from '$lib/components/ActionViewModal.svelte';
-	import ActionAddModal from '$lib/components/ActionAddModal.svelte';
-	import ActionEditModal from '$lib/components/ActionEditModal.svelte';
-	import ActionsTableSkeleton from '$lib/components/ActionsTableSkeleton.svelte';
-	import Pagination from '$lib/components/Pagination.svelte';
+	import ActionTable from '$lib/components/business-processes/actions/ActionTable.svelte';
+	import ActionViewModal from '$lib/components/business-processes/actions/ActionViewModal.svelte';
+	import ActionAddModal from '$lib/components/business-processes/actions/ActionAddModal.svelte';
+	import ActionEditModal from '$lib/components/business-processes/actions/ActionEditModal.svelte';
+	import ActionsTableSkeleton from '$lib/components/business-processes/actions/ActionsTableSkeleton.svelte';
+	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton } from '$lib';
-	import TablePageLayout from '$lib/components/TablePageLayout.svelte';
+	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
 		addSuccessToast,
@@ -17,7 +17,7 @@
 		retryOperation
 	} from '$lib/utils/toastStore.js';
 	import { createAction, updateAction, deleteAction } from '$lib/api/actions.js';
-	import ProtectedRoute from '$lib/components/ProtectedRoute.svelte';
+	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 
 	/** @type {import('./$types').PageData} */
 	let { data } = $props();
@@ -362,7 +362,7 @@
 										type="text"
 										bind:value={searchTerm}
 										oninput={() => handleSearch(searchTerm)}
-										placeholder="Поиск по компании, акции или региону..."
+										placeholder="Поиск по таблице..."
 										class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 text-gray-900 ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 									/>
 								</div>

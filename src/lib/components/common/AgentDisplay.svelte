@@ -1,5 +1,5 @@
 <script>
-	import { formatAgentDisplay } from '../utils/formatters.js';
+	import { formatAgentDisplay } from '../../utils/formatters.js';
 
 	let { agent = null, showId = false, clickable = false, className = '' } = $props();
 

@@ -13,7 +13,7 @@
 		hasErrors,
 		clearErrorFields,
 		mergeErrors
-	} from '../utils/errorHandler.svelte.js';
+	} from '../../utils/errorHandler.svelte.js';
 	import ErrorDisplay from './ErrorDisplay.svelte';
 
 	// Example error states

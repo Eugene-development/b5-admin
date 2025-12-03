@@ -7,7 +7,7 @@
 		clearErrorFields
 	} from '$lib/auth/auth.svelte.js';
 	import { goto } from '$app/navigation';
-	import ErrorDisplay from './ErrorDisplay.svelte';
+	import ErrorDisplay from '$lib/components/common/ErrorDisplay.svelte';
 
 	// Form state
 	let email = $state('');

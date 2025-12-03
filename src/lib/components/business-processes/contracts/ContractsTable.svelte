@@ -1,6 +1,6 @@
 <script>
 	import ContractActionButtons from './ContractActionButtons.svelte';
-	import EmptyState from './EmptyState.svelte';
+	import EmptyState from '$lib/components/common/EmptyState.svelte';
 
 	let {
 		contracts = [],

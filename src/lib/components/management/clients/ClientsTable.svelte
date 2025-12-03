@@ -1,6 +1,6 @@
 <script>
-	import StatusBadge from './StatusBadge.svelte';
-	import EmptyState from './EmptyState.svelte';
+	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
+	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 	import { authState } from '$lib/state/auth.svelte.js';
 
