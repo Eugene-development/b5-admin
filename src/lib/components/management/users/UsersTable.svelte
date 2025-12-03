@@ -353,14 +353,6 @@
 					<!-- User Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<div class="mb-1 flex items-center gap-2">
-								<span
-									class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
-									aria-label="Номер по порядку {user.sequentialNumber || index + 1}"
-								>
-									№ {user.sequentialNumber || index + 1}
-								</span>
-							</div>
 							<h3
 								id="user-{user.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
@@ -374,6 +366,14 @@
 								<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
 								<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 							</div>
+						</div>
+						<div class="ml-2 flex-shrink-0">
+							<span
+								class="inline-flex items-center rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400"
+								aria-label="Номер по порядку {user.sequentialNumber || index + 1}"
+							>
+								№ {user.sequentialNumber || index + 1}
+							</span>
 						</div>
 					</div>
 
