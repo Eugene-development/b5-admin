@@ -113,7 +113,7 @@
 
 			<!-- Modal panel -->
 			<div
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-2xl dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:max-w-2xl dark:bg-gray-800"
 			>
 				<form onsubmit={handleSubmit}>
 					<!-- Header -->

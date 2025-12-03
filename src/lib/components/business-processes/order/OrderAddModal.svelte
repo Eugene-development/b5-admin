@@ -179,7 +179,7 @@
 
 			<div
 				bind:this={modalElement}
-				class="relative mx-4 transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:mx-0 sm:my-8 sm:w-full sm:max-w-4xl sm:p-6 dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
