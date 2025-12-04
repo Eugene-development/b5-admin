@@ -367,7 +367,7 @@
 					</div>
 
 					<!-- TZ Details -->
-					<dl class="mb-4 space-y-3">
+					<dl class="mb-4 grid grid-cols-1 gap-3">
 						<div>
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"

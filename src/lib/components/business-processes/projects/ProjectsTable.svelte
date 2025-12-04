@@ -492,8 +492,8 @@
 					</div>
 
 					<!-- Project Details Grid -->
-					<dl id="project-{project.id}-details" class="mb-4 grid grid-cols-1 gap-3">
-						<div>
+					<dl id="project-{project.id}-details" class="mb-4 grid grid-cols-2 gap-3">
+						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
@@ -501,6 +501,16 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{project.value || ' - '}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Имя клиента
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{project.client?.name || ' - '}
 							</dd>
 						</div>
 					</dl>

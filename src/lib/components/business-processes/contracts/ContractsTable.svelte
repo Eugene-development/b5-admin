@@ -190,63 +190,194 @@
 </div>
 
 <!-- Mobile Card View -->
-<div class="block space-y-4 md:hidden">
+<div class="md:hidden">
 	{#if contracts.length === 0}
-		<EmptyState
-			title={hasSearched ? 'Контракты не найдены' : 'Нет контрактов'}
-			description={hasSearched
-				? `По запросу "${searchTerm}" контракты не найдены. Попробуйте изменить критерии поиска.`
-				: 'Начните с добавления первого контракта.'}
-		/>
+		<div class="px-4 py-6">
+			<EmptyState
+				title={hasSearched ? 'Контракты не найдены' : 'Нет контрактов'}
+				description={hasSearched
+					? `По запросу "${searchTerm}" контракты не найдены. Попробуйте изменить критерии поиска.`
+					: 'Начните с добавления первого контракта.'}
+			/>
+		</div>
 	{:else}
-		{#each contracts as contract, index (contract?.id || index + '-' + updateCounter)}
-			<div
-				class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
-				role="article"
-				aria-label="Контракт {contract.contract_number || index + 1}"
-			>
-				<!-- Header -->
-				<div class="mb-3">
-					<div class="text-sm font-medium text-gray-500 dark:text-gray-400">
-						Контракт #{index + 1}
+		<div class="space-y-4" role="list" aria-label="Список контрактов">
+			{#each contracts as contract, index (contract?.id || index + '-' + updateCounter)}
+				<div
+					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+					role="listitem"
+				>
+					<!-- Contract Header -->
+					<div class="mb-3 flex items-start justify-between">
+						<div class="min-w-0 flex-1">
+							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
+								{contract.contract_number || 'Без номера'}
+							</h3>
+							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
+								{contract.company?.name || 'Компания не указана'}
+							</p>
+						</div>
+						<div class="ml-3 flex-shrink-0">
+							<span
+								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+							>
+								№ {index + 1}
+							</span>
+						</div>
 					</div>
-					<div class="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100">
-						{contract.contract_number || 'Без номера'}
-					</div>
-				</div>
 
-				<!-- Details -->
-				<div class="space-y-2 text-sm">
-					<div>
-						<span class="font-medium text-gray-500 dark:text-gray-400">Проект:</span>
-						<span class="ml-2 text-gray-900 dark:text-gray-100">
-							{contract.project?.value || 'Не указан'}
-						</span>
-					</div>
-					<div>
-						<span class="font-medium text-gray-500 dark:text-gray-400">Компания:</span>
-						<span class="ml-2 text-gray-900 dark:text-gray-100">
-							{contract.company?.name || 'Не указана'}
-						</span>
-					</div>
-					<div>
-						<span class="font-medium text-gray-500 dark:text-gray-400">Дата:</span>
-						<span class="ml-2 text-gray-900 dark:text-gray-100">
-							{formatDate(contract.contract_date)}
-						</span>
-					</div>
-				</div>
+					<!-- Contract Details Grid -->
+					<dl class="mb-4 grid grid-cols-2 gap-3">
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Проект
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{contract.project?.value || 'Не указан'}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Дата
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{formatDate(contract.contract_date)}
+							</dd>
+						</div>
+						{#if contract.project?.region}
+							<div class="col-span-2">
+								<dt
+									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								>
+									Регион
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{contract.project.region}
+								</dd>
+							</div>
+						{/if}
+						{#if contract.company?.inn}
+							<div class="col-span-2">
+								<dt
+									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								>
+									ИНН
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{contract.company.inn}
+								</dd>
+							</div>
+						{/if}
+					</dl>
 
-				<!-- Actions -->
-				<div class="mt-4 flex justify-end">
-					<ContractActionButtons
-						onView={() => onViewContract(contract)}
-						onEdit={() => onEditContract(contract)}
-						onDelete={() => onDeleteContract(contract)}
-						{isLoading}
-					/>
+					<!-- Actions -->
+					<div
+						class="flex items-center justify-end space-x-2 border-t border-gray-200 pt-3 dark:border-gray-600"
+					>
+						<button
+							type="button"
+							onclick={() => onViewContract(contract)}
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+							aria-label="Просмотреть контракт"
+						>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+								/>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+								/>
+							</svg>
+						</button>
+						<button
+							type="button"
+							onclick={() => onEditContract(contract)}
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+							aria-label="Редактировать контракт"
+						>
+							<svg
+								class="h-5 w-5"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+								aria-hidden="true"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+								/>
+							</svg>
+						</button>
+						<button
+							type="button"
+							onclick={() => onDeleteContract(contract)}
+							disabled={isLoading}
+							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+							aria-label="Удалить контракт"
+						>
+							{#if isLoading}
+								<svg
+									class="mr-2 h-4 w-4 animate-spin"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
+								</svg>
+							{:else}
+								<svg
+									class="h-5 w-5"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+									/>
+								</svg>
+							{/if}
+						</button>
+					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
+		</div>
 	{/if}
 </div>
