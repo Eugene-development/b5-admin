@@ -434,16 +434,6 @@
 
 					<!-- Agent Details Grid -->
 					<dl id="agent-{agent.id}-details" class="mb-4 grid grid-cols-2 gap-3">
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Регион
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{agent.region || 'Не указан'}
-							</dd>
-						</div>
 						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -465,6 +455,16 @@
 								{:else}
 									<span class="text-sm text-gray-400">Не указан</span>
 								{/if}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Регион
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{agent.region || 'Не указан'}
 							</dd>
 						</div>
 					</dl>

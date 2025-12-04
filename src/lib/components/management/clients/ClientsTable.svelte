@@ -344,7 +344,7 @@
 
 					<!-- Client Details Grid -->
 					<dl id="client-{user.id}-details" class="mb-4 grid grid-cols-2 gap-3">
-						<div>
+						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
@@ -354,7 +354,7 @@
 								{user.agent?.name || 'Не указан'}
 							</dd>
 						</div>
-						<div>
+						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>

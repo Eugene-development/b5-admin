@@ -93,16 +93,16 @@
 				<th
 					scope="col"
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 200px; width: 200px;"
+					style="min-width: 150px; width: 150px;"
 				>
-					Почта
+					Телефон
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 150px; width: 150px;"
+					style="min-width: 200px; width: 200px;"
 				>
-					Телефон
+					Почта
 				</th>
 				<th
 					scope="col"
@@ -177,16 +177,16 @@
 							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={service.email || 'Не указана'}>
-								{service.email || 'Не указана'}
+							<div class="pr-4" title={formatPhone(service.phone)}>
+								{formatPhone(service.phone)}
 							</div>
 						</td>
 						<td
 							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={formatPhone(service.phone)}>
-								{formatPhone(service.phone)}
+							<div class="pr-4" title={service.email || 'Не указана'}>
+								{service.email || 'Не указана'}
 							</div>
 						</td>
 						<td
@@ -416,17 +416,7 @@ bile Card View -->
 
 					<!-- Service Details Grid -->
 					<dl class="mb-4 grid grid-cols-2 gap-3">
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Почта
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{service.email || 'Не указана'}
-							</dd>
-						</div>
-						<div>
+						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
@@ -434,6 +424,16 @@ bile Card View -->
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{formatPhone(service.phone)}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Почта
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{service.email || 'Не указана'}
 							</dd>
 						</div>
 						<div>
