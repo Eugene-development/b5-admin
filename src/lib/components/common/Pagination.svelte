@@ -24,6 +24,12 @@
 		if (page >= 1 && page <= totalPages) {
 			currentPage = page;
 			onPageChange(page);
+			
+			// Плавный скролл к началу страницы
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
 		}
 	}
 
