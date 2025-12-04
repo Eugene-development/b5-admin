@@ -95,7 +95,7 @@
 						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
-						Информация
+						{user.name || 'Информация'}
 					</h3>
 					<button
 						type="button"
@@ -138,19 +138,6 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Основная информация</h5>
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Имя
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{user.name || 'Не указано'}
-								</dd>
-							</div>
-
 							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
