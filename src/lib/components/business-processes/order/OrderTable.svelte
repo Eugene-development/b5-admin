@@ -21,10 +21,13 @@
 
 	// Sorted orders derived from orders and sort state
 	let sortedOrders = $derived.by(() => {
-		if (!sortColumn || orders.length === 0) {
+		// Return original array reference when no sorting is active
+		// This prevents unnecessary re-renders and flickering
+		if (!sortColumn) {
 			return orders;
 		}
 
+		// Only create a new sorted array when sorting is explicitly requested
 		const sorted = [...orders];
 
 		sorted.sort((a, b) => {

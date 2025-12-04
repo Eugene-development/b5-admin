@@ -262,7 +262,7 @@
 										type="button"
 										onclick={() => onViewComplaint(complaint)}
 										disabled={isLoading}
-										class="text-indigo-600 hover:text-indigo-900 disabled:cursor-not-allowed disabled:opacity-50 dark:text-indigo-400 dark:hover:text-indigo-300"
+										class="text-gray-400 hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-500 dark:hover:text-gray-300"
 										aria-label="Просмотреть жалобу {complaint.subject}"
 									>
 										<svg
