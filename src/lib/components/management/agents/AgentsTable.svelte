@@ -444,16 +444,6 @@
 								{agent.region || 'Не указан'}
 							</dd>
 						</div>
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Дата регистрации
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(agent.created_at)}
-							</dd>
-						</div>
 						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -616,12 +606,6 @@
 								scope="col"
 								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
-								Дата регистрации
-							</th>
-							<th
-								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-							>
 								Статус пользователя
 							</th>
 							<th
@@ -638,7 +622,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="8" class="px-4 py-3 text-center">
+								<td colspan="7" class="px-4 py-3 text-center">
 									<div class="flex justify-center">
 										<div class="hidden h-6 w-6"></div>
 									</div>
@@ -646,7 +630,7 @@
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="8" class="px-4 py-3">
+								<td colspan="7" class="px-4 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -667,9 +651,6 @@
 									</td>
 									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.region || 'Не указан'}
-									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
-										{formatDate(agent.created_at)}
 									</td>
 									<td class="px-4 py-3 text-sm whitespace-nowrap">
 										{#if agent.userStatus}

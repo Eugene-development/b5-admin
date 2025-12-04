@@ -387,16 +387,6 @@
 								{user.region || 'Не указан'}
 							</dd>
 						</div>
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Регистрация
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(user.created_at)}
-							</dd>
-						</div>
 					</dl>
 
 					<!-- Status Badges -->
