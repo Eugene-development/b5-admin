@@ -922,28 +922,29 @@
 			<div aria-hidden="true" class="h-6 w-px bg-gray-200 lg:hidden dark:bg-gray-950"></div>
 
 			<div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
+				<!-- Временно скрыта поисковая строка "Нейро"
 				<form action="#" method="GET" class="grid flex-1 grid-cols-1 pl-8">
 					<input
 						name="search"
-						placeholder="Поиск"
+						placeholder="Нейро"
 						aria-label="Search"
 						class="col-start-1 row-start-1 block size-full border-none bg-white pl-8 text-base text-gray-900 outline-none placeholder:text-gray-400 focus:border-none focus:ring-0 focus:ring-offset-0 focus:outline-none sm:text-sm/6 dark:bg-gray-950 dark:text-white dark:placeholder:text-gray-500"
 						style="outline: none !important; box-shadow: none !important;"
 					/>
 					<svg
-						viewBox="0 0 20 20"
-						fill="currentColor"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
 						data-slot="icon"
 						aria-hidden="true"
 						class="pointer-events-none col-start-1 row-start-1 size-5 self-center text-gray-400"
 					>
-						<path
-							d="M9 3.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11ZM2 9a7 7 0 1 1 12.452 4.391l3.328 3.329a.75.75 0 1 1-1.06 1.06l-3.329-3.328A7 7 0 0 1 2 9Z"
-							clip-rule="evenodd"
-							fill-rule="evenodd"
-						/>
+						<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/>
 					</svg>
 				</form>
+				-->
+				<div class="flex flex-1"></div>
 				<div class="flex items-center gap-x-4 lg:gap-x-6">
 					<button
 						type="button"

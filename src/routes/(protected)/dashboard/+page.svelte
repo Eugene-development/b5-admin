@@ -11,7 +11,7 @@
 		<div class="space-y-8">
 			<div>
 				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-					Доступные вашему аккаунту модуля
+					Модули для работы
 				</h1>
 				<!-- <p class="my-4 text-gray-600 dark:text-gray-400">
 					Ниже представлены доступные вашему аккаунту модуля системы.

@@ -359,11 +359,9 @@
 							>
 								{user.name || 'Not specified'}
 							</h3>
-							<p class="truncate text-sm text-gray-500 dark:text-gray-400">
-								{user.email}
-							</p>
-							<div class="mt-1 flex items-center gap-2">
-								<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Email:</span>
+							<div class="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+								<span class="truncate">{user.email}</span>
+								<span>/</span>
 								<StatusBadge status={getEmailVerificationStatus(user.email_verified_at)} />
 							</div>
 						</div>
