@@ -405,12 +405,14 @@ bile Card View -->
 							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								{service.service_name || 'Не указано'}
 							</h3>
-							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
-								№ {service.sequentialNumber || index + 1}
-							</p>
 						</div>
-						<div class="ml-3 flex-shrink-0">
+						<div class="ml-3 flex-shrink-0 flex items-center gap-2">
 							<StatusBadge status={getServiceStatus(service)} />
+							<span
+								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+							>
+								№ {service.sequentialNumber || index + 1}
+							</span>
 						</div>
 					</div>
 
