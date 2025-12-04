@@ -21,10 +21,10 @@
 
 	// Format date helper function
 	function formatDate(dateString) {
-		if (!dateString) return 'Not specified';
-		return new Date(dateString).toLocaleDateString('en-US', {
+		if (!dateString) return 'Не указана';
+		return new Date(dateString).toLocaleDateString('ru-RU', {
 			year: 'numeric',
-			month: 'short',
+			month: 'long',
 			day: 'numeric'
 		});
 	}

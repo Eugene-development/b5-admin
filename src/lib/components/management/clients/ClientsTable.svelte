@@ -23,7 +23,7 @@
 		if (!dateString) return 'Не указана';
 		return new Date(dateString).toLocaleDateString('ru-RU', {
 			year: 'numeric',
-			month: 'short',
+			month: 'long',
 			day: 'numeric'
 		});
 	}
