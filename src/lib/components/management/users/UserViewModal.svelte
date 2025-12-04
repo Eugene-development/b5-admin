@@ -16,6 +16,18 @@
 		});
 	}
 
+	// Check if updated_at is different from created_at
+	function shouldShowUpdatedDate(user) {
+		if (!user?.updated_at || !user?.created_at) return false;
+		
+		// Compare dates (ignoring milliseconds)
+		const createdDate = new Date(user.created_at).getTime();
+		const updatedDate = new Date(user.updated_at).getTime();
+		
+		// Show only if dates are different (with 1 second tolerance)
+		return Math.abs(updatedDate - createdDate) > 1000;
+	}
+
 	// Get user status for StatusBadge
 	function getUserStatus(user) {
 		return user?.status === 'banned' || user?.status === 'inactive' || user?.status === 'suspended'
@@ -240,10 +252,6 @@
 
 						<!-- Account Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">
-								Информация об аккаунте
-							</h5>
-
 							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -255,7 +263,7 @@
 								</dd>
 							</div>
 
-							{#if user.updated_at}
+							{#if shouldShowUpdatedDate(user)}
 								<div>
 									<dt
 										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
