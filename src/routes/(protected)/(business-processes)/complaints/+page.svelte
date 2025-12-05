@@ -68,6 +68,13 @@
 		// Filter out any undefined or null complaints first
 		let filtered = localComplaints.filter((complaint) => complaint != null);
 
+		// Sort by created_at in descending order (newest first)
+		filtered = filtered.sort((a, b) => {
+			const dateA = new Date(a.created_at || 0);
+			const dateB = new Date(b.created_at || 0);
+			return dateB - dateA; // Descending order
+		});
+
 		// Apply search filter
 		if (searchTerm.trim()) {
 			const term = searchTerm.toLowerCase().trim();

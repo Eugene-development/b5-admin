@@ -61,7 +61,15 @@ async function loadOrdersData(token, fetch) {
 	try {
 		console.log('📊 Orders SSR: Starting data load...');
 		const data = await makeServerGraphQLRequest(token, ORDERS_QUERY, { first: 1000, page: 1 }, fetch);
-		const orders = data.orders?.data || [];
+		const rawOrders = data.orders?.data || [];
+		
+		// Sort by created_at descending (newest first)
+		const orders = [...rawOrders].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+		
 		console.log(`✅ Orders SSR: Loaded ${orders.length} orders`);
 		return { orders, companies: [], projects: [], error: null };
 	} catch (error) {

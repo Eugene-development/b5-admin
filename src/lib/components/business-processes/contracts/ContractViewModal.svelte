@@ -129,30 +129,13 @@
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
-				aria-labelledby="modal-title"
 				tabindex="-1"
 			>
-				<!-- Modal Header -->
-				<div class="mb-6 flex items-start justify-between">
-					<div class="flex-1">
-						<h3
-							class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-							id="modal-title"
-						>
-							Детали контракта
-						</h3>
-						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-							{contract.contract_number || 'Без номера'}
-						</p>
-					</div>
-					<StatusBadge status={getContractStatus(contract)} />
-				</div>
-
 				<!-- Content -->
 				<div class="space-y-6">
 					<!-- Basic Information -->
 					<div>
-						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">
 							Основная информация
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -173,7 +156,7 @@
 
 					<!-- Related Entities -->
 					<div>
-						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">
 							Связанные сущности
 						</h4>
 						<dl class="space-y-4">
@@ -185,7 +168,7 @@
 									</div>
 									{#if contract.project?.region}
 										<div class="text-sm text-gray-500 dark:text-gray-400">
-											Регион: {contract.project.region}
+											Адрес: {contract.project.region}
 										</div>
 									{/if}
 									{#if contract.project?.description}
@@ -223,10 +206,10 @@
 
 					<!-- Dates -->
 					<div>
-						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Даты</h4>
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">Даты</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата договора</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{formatDate(contract.contract_date)}
 								</dd>
@@ -254,7 +237,7 @@
 
 					<!-- Financial Terms -->
 					<div>
-						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">
 							Финансовые условия
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -277,7 +260,7 @@
 
 					<!-- Metadata -->
 					<div>
-						<h4 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Метаданные</h4>
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">Метаданные</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Дата создания</dt>

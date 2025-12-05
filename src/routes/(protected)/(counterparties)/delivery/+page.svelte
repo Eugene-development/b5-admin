@@ -503,7 +503,7 @@
 								<!-- Results summary -->
 								{#if searchTerm.trim()}
 									<div
-										class="py-2 text-sm text-gray-600 dark:text-gray-400"
+										class="mt-4 text-sm text-gray-600 dark:text-gray-400"
 										role="status"
 										aria-live="polite"
 										aria-atomic="true"
@@ -523,17 +523,20 @@
 									</div>
 								{/if}
 
-								<CompanyTable
-									companies={paginatedDeliveryCompanies}
-									isLoading={isActionLoading}
-									onBanCompany={handleBanDeliveryCompany}
-									onDeleteCompany={handleDeleteDeliveryCompany}
-									onViewCompany={handleViewDeliveryCompany}
-									onEditCompany={handleEditCompany}
-									{updateCounter}
-									{searchTerm}
-									hasSearched={searchTerm.trim().length > 0}
-								/>
+								<!-- Company Table -->
+								<div class="mt-8">
+									<CompanyTable
+										companies={paginatedDeliveryCompanies}
+										isLoading={isActionLoading}
+										onBanCompany={handleBanDeliveryCompany}
+										onDeleteCompany={handleDeleteDeliveryCompany}
+										onViewCompany={handleViewDeliveryCompany}
+										onEditCompany={handleEditCompany}
+										{updateCounter}
+										{searchTerm}
+										hasSearched={searchTerm.trim().length > 0}
+									/>
+								</div>
 
 								<!-- Pagination -->
 								<Pagination

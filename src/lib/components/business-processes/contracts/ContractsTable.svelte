@@ -109,7 +109,7 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
-					Дата
+					Дата Договора
 				</th>
 				<th
 					scope="col"
@@ -165,11 +165,6 @@
 							<div class="font-medium text-gray-900 dark:text-gray-100">
 								{contract.company?.name || 'Не указана'}
 							</div>
-							{#if contract.company?.inn}
-								<div class="text-xs text-gray-500 dark:text-gray-400">
-									ИНН: {contract.company.inn}
-								</div>
-							{/if}
 						</td>
 						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(contract.contract_date)}
@@ -242,7 +237,7 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Дата
+								Дата Договора
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{formatDate(contract.contract_date)}

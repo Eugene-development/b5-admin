@@ -47,7 +47,15 @@ async function loadTzData(token, fetch) {
 	try {
 		console.log('📊 TZ SSR: Starting data load...');
 		const data = await makeServerGraphQLRequest(token, TZ_QUERY, { first: 1000, page: 1 }, fetch);
-		const tzList = data.technicalSpecifications?.data || [];
+		const rawTzList = data.technicalSpecifications?.data || [];
+		
+		// Sort by created_at descending (newest first)
+		const tzList = [...rawTzList].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+		
 		console.log(`✅ TZ SSR: Loaded ${tzList.length} items`);
 		return { tzList, error: null };
 	} catch (error) {

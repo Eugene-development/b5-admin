@@ -67,7 +67,15 @@ async function loadComplaintsData(token, fetch) {
 	try {
 		console.log('📊 Complaints SSR: Starting data load...');
 		const data = await makeServerGraphQLRequest(token, COMPLAINTS_QUERY, { first: 1000, page: 1 }, fetch);
-		const complaints = data.complaints?.data || [];
+		const rawComplaints = data.complaints?.data || [];
+		
+		// Sort by created_at descending (newest first)
+		const complaints = [...rawComplaints].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+		
 		console.log(`✅ Complaints SSR: Loaded ${complaints.length} complaints`);
 		return { complaints, contracts: [], orders: [], error: null };
 	} catch (error) {

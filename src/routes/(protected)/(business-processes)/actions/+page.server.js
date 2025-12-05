@@ -79,8 +79,15 @@ async function loadActionsData(token, fetch) {
 		// Filter only active and not banned companies
 		const companies = allCompanies.filter((company) => company.is_active && !company.ban);
 
+		// Sort actions by created_at descending (newest first)
+		const sortedActions = [...rawActions].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+
 		// Transform actions data to match table format
-		const actions = rawActions.map((action) => ({
+		const actions = sortedActions.map((action) => ({
 			id: action.id,
 			company_name: action.company?.name || 'Не указано',
 			action_name: action.name,
