@@ -165,12 +165,14 @@
 	});
 
 	// Load TZ data
-	async function loadServices() {
+	async function loadServices(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
 			const refreshedData = await refreshTechnicalSpecifications();
 			tzList = refreshedData || [];
-			addSuccessToast('Данные успешно обновлены');
+			if (!isInitialLoad) {
+				addSuccessToast('Данные успешно обновлены');
+			}
 			updateCounter++;
 		} catch (error) {
 			handleApiError(error, 'Не удалось обновить данные');
@@ -337,7 +339,7 @@
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
 		if (tzList.length === 0) {
-			loadServices();
+			loadServices(true);
 		}
 	});
 </script>
