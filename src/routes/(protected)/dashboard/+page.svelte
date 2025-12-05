@@ -488,9 +488,9 @@
 									class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
 								>
 									<span class="absolute inset-0" aria-hidden="true"></span>
-									Контракты
+									Договора
 								</h3>
-								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление контрактами</p>
+								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление договорами</p>
 							</div>
 						</a>
 

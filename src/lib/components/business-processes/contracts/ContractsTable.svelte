@@ -39,8 +39,8 @@
 		const message =
 			contracts.length === 0
 				? hasSearched
-					? `Контракты не найдены по запросу "${searchTerm}"`
-					: 'Нет доступных контрактов'
+					? `Договора не найдены по запросу "${searchTerm}"`
+					: 'Нет доступных договоров'
 				: `${contracts.length} контракт${contracts.length === 1 ? '' : contracts.length < 5 ? 'а' : 'ов'} ${hasSearched ? `найдено по запросу "${searchTerm}"` : 'отображено'}`;
 
 		const announcement = document.getElementById(`${tableId}-announcements`);
@@ -91,7 +91,7 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
-					Контракт
+					Договор
 				</th>
 				<th
 					scope="col"
@@ -124,10 +124,10 @@
 				<tr>
 					<td colspan="6" class="px-4 py-12 text-center">
 						<EmptyState
-							title={hasSearched ? 'Контракты не найдены' : 'Нет контрактов'}
+							title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 							description={hasSearched
-								? `По запросу "${searchTerm}" контракты не найдены. Попробуйте изменить критерии поиска.`
-								: 'Начните с добавления первого контракта.'}
+								? `По запросу "${searchTerm}" договора не найдены. Попробуйте изменить критерии поиска.`
+								: 'Начните с добавления первого договора.'}
 						/>
 					</td>
 				</tr>
@@ -189,10 +189,10 @@
 	{#if contracts.length === 0}
 		<div class="px-4 py-6">
 			<EmptyState
-				title={hasSearched ? 'Контракты не найдены' : 'Нет контрактов'}
+				title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 				description={hasSearched
-					? `По запросу "${searchTerm}" контракты не найдены. Попробуйте изменить критерии поиска.`
-					: 'Начните с добавления первого контракта.'}
+					? `По запросу "${searchTerm}" договора не найдены. Попробуйте изменить критерии поиска.`
+					: 'Начните с добавления первого договора.'}
 			/>
 		</div>
 	{:else}

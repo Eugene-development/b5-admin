@@ -140,7 +140,7 @@
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 							<div>
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Контракт</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Договор</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{contract.contract_number || '—'}
 								</dd>

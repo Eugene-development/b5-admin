@@ -440,7 +440,7 @@
 										onclick={() => handleMobileNavigation('/contracts')}
 									>
 										<span class={getSpanIconClasses('/contracts')}>Кт</span>
-										<span class="truncate">Контракты</span>
+										<span class="truncate">Договора</span>
 									</button>
 								</li>
 								{#if navigationVisibility.showOrder}
@@ -760,7 +760,7 @@
 							<li>
 								<a href="/contracts" class={getNavClassesWithSpan('/contracts')}>
 									<span class={getSpanIconClasses('/contracts')}>Кт</span>
-									<span class="truncate">Контракты</span>
+									<span class="truncate">Договора</span>
 								</a>
 							</li>
 							{#if navigationVisibility.showOrder}

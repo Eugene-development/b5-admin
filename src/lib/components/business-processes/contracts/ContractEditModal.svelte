@@ -35,8 +35,6 @@
 			formData.company_id &&
 			formData.contract_date &&
 			formData.planned_completion_date &&
-			formData.agent_percentage !== '' &&
-			formData.curator_percentage !== '' &&
 			Object.keys(errors).length === 0
 	);
 
@@ -113,10 +111,18 @@
 				company_id: formData.company_id,
 				contract_date: formData.contract_date,
 				planned_completion_date: formData.planned_completion_date,
-				agent_percentage: parseFloat(formData.agent_percentage),
-				curator_percentage: parseFloat(formData.curator_percentage),
 				is_active: formData.is_active
 			};
+
+			// Add agent_percentage only if it has a value
+			if (formData.agent_percentage !== '' && formData.agent_percentage !== null && formData.agent_percentage !== undefined) {
+				contractData.agent_percentage = parseFloat(formData.agent_percentage);
+			}
+
+			// Add curator_percentage only if it has a value
+			if (formData.curator_percentage !== '' && formData.curator_percentage !== null && formData.curator_percentage !== undefined) {
+				contractData.curator_percentage = parseFloat(formData.curator_percentage);
+			}
 
 			if (formData.contract_number.trim()) {
 				contractData.contract_number = formData.contract_number.trim();
@@ -177,27 +183,27 @@
 				}
 				break;
 			case 'agent_percentage':
-				if (value === '' || value === null || value === undefined) {
-					newErrors.agent_percentage = 'Укажите процент агента';
-				} else {
+				if (value !== '' && value !== null && value !== undefined) {
 					const num = parseFloat(value);
 					if (isNaN(num) || num < 0 || num > 100) {
 						newErrors.agent_percentage = 'Процент должен быть от 0 до 100';
 					} else {
 						delete newErrors.agent_percentage;
 					}
+				} else {
+					delete newErrors.agent_percentage;
 				}
 				break;
 			case 'curator_percentage':
-				if (value === '' || value === null || value === undefined) {
-					newErrors.curator_percentage = 'Укажите процент куратора';
-				} else {
+				if (value !== '' && value !== null && value !== undefined) {
 					const num = parseFloat(value);
 					if (isNaN(num) || num < 0 || num > 100) {
 						newErrors.curator_percentage = 'Процент должен быть от 0 до 100';
 					} else {
 						delete newErrors.curator_percentage;
 					}
+				} else {
+					delete newErrors.curator_percentage;
 				}
 				break;
 		}
@@ -294,11 +300,8 @@
 						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
-						Редактировать контракт
+						Редактирование
 					</h3>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Обновите информацию о контракте
-					</p>
 				</div>
 
 				<!-- Form -->
@@ -370,7 +373,7 @@
 							for="contract-number"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Контракт
+							Договор
 						</label>
 						<input
 							type="text"
@@ -462,7 +465,7 @@
 								for="agent-percentage"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Процент агента (%) <span class="text-red-500">*</span>
+								Процент агента (%)
 							</label>
 							<input
 								type="number"
@@ -476,7 +479,7 @@
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								aria-describedby={errors.agent_percentage ? 'agent-percentage-error' : undefined}
 								aria-invalid={errors.agent_percentage ? 'true' : 'false'}
-								required
+								placeholder="Опционально"
 							/>
 							{#if errors.agent_percentage}
 								<p id="agent-percentage-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
@@ -490,7 +493,7 @@
 								for="curator-percentage"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
-								Процент куратора (%) <span class="text-red-500">*</span>
+								Процент куратора (%)
 							</label>
 							<input
 								type="number"
@@ -506,7 +509,7 @@
 									? 'curator-percentage-error'
 									: undefined}
 								aria-invalid={errors.curator_percentage ? 'true' : 'false'}
-								required
+								placeholder="Опционально"
 							/>
 							{#if errors.curator_percentage}
 								<p

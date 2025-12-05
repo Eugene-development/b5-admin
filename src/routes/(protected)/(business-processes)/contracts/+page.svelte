@@ -141,8 +141,8 @@
 		confirmAction = {
 			type: 'delete',
 			contract: contract,
-			title: 'Удалить контракт',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить контракт ${contract.contract_number || 'без номера'}? Это действие нельзя отменить.`,
+			title: 'Удалить договор',
+			message: `Вы уверены, что хотите НАВСЕГДА удалить договор ${contract.contract_number || 'без номера'}? Это действие нельзя отменить.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -164,7 +164,7 @@
 					if (type === 'delete') {
 						await deleteContract(contract.id);
 						removeContractFromList(contract.id);
-						addSuccessToast(`Контракт успешно удален.`);
+						addSuccessToast(`Договор успешно удален.`);
 					}
 				},
 				2,
@@ -195,7 +195,7 @@
 				async () => {
 					const newContract = await createContract(contractData);
 					localContracts = [newContract, ...localContracts];
-					addSuccessToast('Контракт успешно создан.');
+					addSuccessToast('Договор успешно создан.');
 				},
 				2,
 				1000
@@ -223,7 +223,7 @@
 				async () => {
 					const updatedContract = await updateContract(updatedContractData);
 					updateContractInList(updatedContract);
-					addSuccessToast('Контракт успешно обновлен.');
+					addSuccessToast('Договор успешно обновлен.');
 				},
 				2,
 				1000
@@ -377,7 +377,7 @@
 												id="page-title"
 												class="text-3xl font-semibold text-gray-900 dark:text-white"
 											>
-												Контракты
+												Договора
 											</h1>
 										</div>
 									</div>
@@ -492,7 +492,7 @@
 										aria-atomic="true"
 									>
 										{#if filteredContracts.length === 0}
-											Контракты не найдены по запросу "{searchTerm}"
+											Договора не найдены по запросу "{searchTerm}"
 										{:else}
 											Найдено {filteredContracts.length} контракт{filteredContracts.length === 1
 												? ''
@@ -533,9 +533,9 @@
 				<!-- Critical error state -->
 				<div class="flex min-h-screen items-center justify-center">
 					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
-						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки контрактов</h3>
+						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки договоров</h3>
 						<p class="text-red-300">
-							Не удалось загрузить контракты. Попробуйте обновить страницу.
+							Не удалось загрузить договора. Попробуйте обновить страницу.
 						</p>
 					</div>
 				</div>

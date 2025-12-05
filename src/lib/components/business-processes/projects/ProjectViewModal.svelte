@@ -372,7 +372,7 @@
 						<h4
 							class="mb-4 text-base font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
 						>
-							Контракты:
+							Договора:
 						</h4>
 						{#if project.contracts && project.contracts.length > 0}
 							<div class="space-y-3">
@@ -391,7 +391,7 @@
 											</div>
 											<div>
 												<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
-													Номер контракта:
+													Номер договора:
 												</dt>
 												<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 													{contract.contract_number || 'Не указан'}
@@ -459,7 +459,7 @@
 								{/each}
 							</div>
 						{:else}
-							<p class="text-sm text-gray-500 dark:text-gray-400">Контракты не найдены</p>
+							<p class="text-sm text-gray-500 dark:text-gray-400">Договора не найдены</p>
 						{/if}
 					</div>
 
