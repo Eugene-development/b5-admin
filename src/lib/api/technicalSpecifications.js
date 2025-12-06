@@ -82,6 +82,7 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 						name
 						email
 					}
+					download_url
 					created_at
 					updated_at
 				}
@@ -98,6 +99,7 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 						name
 						email
 					}
+					download_url
 					created_at
 					updated_at
 				}

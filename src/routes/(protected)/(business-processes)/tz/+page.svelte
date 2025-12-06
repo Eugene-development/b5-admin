@@ -181,7 +181,15 @@
 		isRefreshing = true;
 		try {
 			const refreshedData = await refreshTechnicalSpecifications();
-			tzList = refreshedData || [];
+			
+			// Sort by created_at descending (newest first) to match server-side sorting
+			const sortedData = [...(refreshedData || [])].sort((a, b) => {
+				const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+				const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+				return dateB - dateA;
+			});
+			
+			tzList = sortedData;
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
 			}

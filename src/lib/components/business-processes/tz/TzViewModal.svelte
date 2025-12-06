@@ -152,8 +152,6 @@
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Основная информация</h5>
-
 							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
@@ -221,179 +219,31 @@
 									{tz.comment || 'Нет комментария'}
 								</dd>
 							</div>
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Согласование
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if getApprovalStatus(tz).color === 'green'}
-										<span
-											class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
-										>
-											{getApprovalStatus(tz).text}
-										</span>
-									{:else if getApprovalStatus(tz).color === 'yellow'}
-										<span
-											class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-										>
-											{getApprovalStatus(tz).text}
-										</span>
-									{:else}
-										<span
-											class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-										>
-											{getApprovalStatus(tz).text}
-										</span>
-									{/if}
-								</dd>
-							</div>
 						</div>
 
-						<!-- Files and Additional Info -->
+						<!-- Approval Status -->
 						<div class="space-y-4">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Файлы и документы</h5>
-
-							<!-- Sketches -->
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Эскизы ({tz.project?.sketches?.length || 0})
-								</dt>
-								<dd class="mt-2 space-y-2">
-									{#if tz.project?.sketches && tz.project.sketches.length > 0}
-										{#each tz.project.sketches as sketch}
-											<div
-												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
-											>
-												<div class="flex items-center space-x-3">
-													<svg
-														class="h-8 w-8 text-blue-600 dark:text-blue-400"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-														/>
-													</svg>
-													<div>
-														<p class="text-sm font-medium text-gray-900 dark:text-white">
-															{sketch.file_name}
-														</p>
-														{#if sketch.file_size}
-															<p class="text-xs text-gray-500 dark:text-gray-400">
-																{(sketch.file_size / 1024 / 1024).toFixed(2)} MB
-															</p>
-														{/if}
-													</div>
-												</div>
-												<button
-													type="button"
-													onclick={() => handleFileDownload(sketch.file_url, sketch.file_name)}
-													class="inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
-												>
-													<svg
-														class="mr-1 h-3 w-3"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													Скачать
-												</button>
-											</div>
-										{/each}
-									{:else}
-										<p class="text-sm text-gray-500 dark:text-gray-400">Эскизы не прикреплены</p>
-									{/if}
-								</dd>
-							</div>
-
-							<!-- Offers -->
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Коммерческие предложения ({tz.project?.offers?.length || 0})
-								</dt>
-								<dd class="mt-2 space-y-2">
-									{#if tz.project?.offers && tz.project.offers.length > 0}
-										{#each tz.project.offers as offer}
-											<div
-												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
-											>
-												<div class="flex items-center space-x-3">
-													<svg
-														class="h-8 w-8 text-green-600 dark:text-green-400"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													<div>
-														<p class="text-sm font-medium text-gray-900 dark:text-white">
-															{offer.file_name}
-														</p>
-														<div
-															class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
-														>
-															{#if offer.file_size}
-																<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
-															{/if}
-															{#if offer.amount}
-																<span>•</span>
-																<span>{offer.amount.toLocaleString('ru-RU')} ₽</span>
-															{/if}
-														</div>
-													</div>
-												</div>
-												<button
-													type="button"
-													onclick={() => handleFileDownload(offer.file_url, offer.file_name)}
-													class="inline-flex items-center rounded-md bg-green-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-green-500"
-												>
-													<svg
-														class="mr-1 h-3 w-3"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													Скачать
-												</button>
-											</div>
-										{/each}
-									{:else}
-										<p class="text-sm text-gray-500 dark:text-gray-400">
-											Коммерческие предложения не прикреплены
-										</p>
-									{/if}
-								</dd>
+							<div class="flex items-center space-x-3">
+								<h5 class="text-sm font-medium text-gray-900 dark:text-white">Согласование:</h5>
+								{#if getApprovalStatus(tz).color === 'green'}
+									<span
+										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else if getApprovalStatus(tz).color === 'yellow'}
+									<span
+										class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else}
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{/if}
 							</div>
 						</div>
 					</div>
@@ -401,97 +251,67 @@
 					<!-- Description Section -->
 					{#if tz.description}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Техническое задание
-								</dt>
-								<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-									{tz.description}
-								</dd>
+							<div class="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
+								{tz.description}
 							</div>
 						</div>
 					{/if}
 
 					<!-- TZ Files Section -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">
-							Файлы техзадания
-						</h5>
-
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 							<!-- TZ Sketches -->
 							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
-									Эскизы ({tz.sketches?.length || 0})
+									Эскизы
 								</dt>
 								<dd class="mt-2 space-y-2">
 									{#if tz.sketches && tz.sketches.length > 0}
 										{#each tz.sketches as sketch}
 											<div
-												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
+												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
 											>
-												<div class="flex items-center space-x-3">
-													<svg
-														class="h-8 w-8 text-blue-600 dark:text-blue-400"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-														/>
-													</svg>
-													<div class="min-w-0 flex-1">
+												<div class="min-w-0">
 														<p
-															class="truncate text-sm font-medium text-gray-900 dark:text-white"
+															class="truncate text-xs font-medium text-gray-900 dark:text-white"
 															title={sketch.file_name}
 														>
 															{sketch.file_name}
 														</p>
 														<div
-															class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
+															class="mt-1 flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
 														>
 															{#if sketch.file_size}
 																<span>{(sketch.file_size / 1024 / 1024).toFixed(2)} MB</span>
 															{/if}
-															{#if sketch.uploader}
-																<span>•</span>
-																<span>{sketch.uploader.name || sketch.uploader.email}</span>
-															{/if}
 														</div>
-													</div>
+														<button
+															type="button"
+															onclick={() =>
+																handleFileDownload(
+																	sketch.download_url,
+																	sketch.file_name
+																)}
+															class="mt-2 inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
+														>
+															<svg
+																class="mr-1.5 h-3.5 w-3.5"
+																fill="none"
+																stroke="currentColor"
+																viewBox="0 0 24 24"
+															>
+																<path
+																	stroke-linecap="round"
+																	stroke-linejoin="round"
+																	stroke-width="2"
+																	d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+																/>
+															</svg>
+															Скачать
+														</button>
 												</div>
-												<button
-													type="button"
-													onclick={() =>
-														handleFileDownload(
-															`https://storage.yandexcloud.net/${sketch.file_path}`,
-															sketch.file_name
-														)}
-													class="ml-2 inline-flex flex-shrink-0 items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
-												>
-													<svg
-														class="mr-1 h-3 w-3"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													Скачать
-												</button>
 											</div>
 										{/each}
 									{:else}
@@ -505,72 +325,53 @@
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
-									Коммерческие предложения ({tz.commercialOffers?.length || 0})
+									Коммерческие предложения
 								</dt>
 								<dd class="mt-2 space-y-2">
 									{#if tz.commercialOffers && tz.commercialOffers.length > 0}
 										{#each tz.commercialOffers as offer}
 											<div
-												class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
+												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
 											>
-												<div class="flex items-center space-x-3">
-													<svg
-														class="h-8 w-8 text-purple-600 dark:text-purple-400"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													<div class="min-w-0 flex-1">
+												<div class="min-w-0">
 														<p
-															class="truncate text-sm font-medium text-gray-900 dark:text-white"
+															class="truncate text-xs font-medium text-gray-900 dark:text-white"
 															title={offer.file_name}
 														>
 															{offer.file_name}
 														</p>
 														<div
-															class="flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
+															class="mt-1 flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
 														>
 															{#if offer.file_size}
 																<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
 															{/if}
-															{#if offer.uploader}
-																<span>•</span>
-																<span>{offer.uploader.name || offer.uploader.email}</span>
-															{/if}
 														</div>
-													</div>
+														<button
+															type="button"
+															onclick={() =>
+																handleFileDownload(
+																	offer.download_url,
+																	offer.file_name
+																)}
+															class="mt-2 inline-flex items-center rounded-md bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500"
+														>
+															<svg
+																class="mr-1.5 h-3.5 w-3.5"
+																fill="none"
+																stroke="currentColor"
+																viewBox="0 0 24 24"
+															>
+																<path
+																	stroke-linecap="round"
+																	stroke-linejoin="round"
+																	stroke-width="2"
+																	d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+																/>
+															</svg>
+															Скачать
+														</button>
 												</div>
-												<button
-													type="button"
-													onclick={() =>
-														handleFileDownload(
-															`https://storage.yandexcloud.net/${offer.file_path}`,
-															offer.file_name
-														)}
-													class="ml-2 inline-flex flex-shrink-0 items-center rounded-md bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500"
-												>
-													<svg
-														class="mr-1 h-3 w-3"
-														fill="none"
-														stroke="currentColor"
-														viewBox="0 0 24 24"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-														/>
-													</svg>
-													Скачать
-												</button>
 											</div>
 										{/each}
 									{:else}

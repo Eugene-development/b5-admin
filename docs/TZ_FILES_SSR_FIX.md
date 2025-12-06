@@ -130,11 +130,37 @@ onMount(async () => {
 {/if}
 ```
 
+### 3. Добавлена сортировка при клиентском обновлении
+
+**Файл:** `b5-admin/src/routes/(protected)/(business-processes)/tz/+page.svelte`
+
+Добавлена сортировка в функцию `loadServices` для консистентности с серверной сортировкой:
+
+```javascript
+async function loadServices(isInitialLoad = false) {
+	isRefreshing = true;
+	try {
+		const refreshedData = await refreshTechnicalSpecifications();
+		
+		// Sort by created_at descending (newest first) to match server-side sorting
+		const sortedData = [...(refreshedData || [])].sort((a, b) => {
+			const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+			const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+			return dateB - dateA;
+		});
+		
+		tzList = sortedData;
+		// ...
+	}
+}
+```
+
 ## Результат
 
 ✅ Файлы отображаются сразу при загрузке страницы (SSR)  
 ✅ Данные корректно синхронизируются между сервером и клиентом  
 ✅ Обновление через кнопку "Обновить" продолжает работать  
+✅ Порядок элементов остается консистентным (новые первыми) при любом способе загрузки  
 
 ## Тестирование
 
