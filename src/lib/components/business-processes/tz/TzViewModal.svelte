@@ -286,6 +286,10 @@
 															{#if sketch.file_size}
 																<span>{(sketch.file_size / 1024 / 1024).toFixed(2)} MB</span>
 															{/if}
+															{#if sketch.uploader}
+																<span>•</span>
+																<span class="truncate">{sketch.uploader.name || sketch.uploader.email}</span>
+															{/if}
 														</div>
 														<button
 															type="button"
@@ -345,6 +349,10 @@
 														>
 															{#if offer.file_size}
 																<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
+															{/if}
+															{#if offer.uploader}
+																<span>•</span>
+																<span class="truncate">{offer.uploader.name || offer.uploader.email}</span>
 															{/if}
 														</div>
 														<button
