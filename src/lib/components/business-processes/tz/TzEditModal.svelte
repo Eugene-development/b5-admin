@@ -8,9 +8,15 @@
 		description: '',
 		comment: '',
 		is_active: true,
-		requires_approval: false,
-		is_approved: false
+		approval_status: 'none' // 'none' | 'requires_approval' | 'approved'
 	});
+
+	// Helper to convert boolean fields to approval_status
+	function getApprovalStatus(tz) {
+		if (tz.is_approved) return 'approved';
+		if (tz.requires_approval) return 'requires_approval';
+		return 'none';
+	}
 
 	let errors = $state({});
 
@@ -26,8 +32,7 @@
 				description: tz.description || '',
 				comment: tz.comment || '',
 				is_active: tz.is_active ?? true,
-				requires_approval: tz.requires_approval ?? false,
-				is_approved: tz.is_approved ?? false
+				approval_status: getApprovalStatus(tz)
 			};
 			errors = {};
 		}
@@ -60,11 +65,15 @@
 			return;
 		}
 
-		// Trim whitespace from text fields
+		// Trim whitespace from text fields and convert approval_status to boolean fields
 		const cleanedData = {
-			...formData,
+			id: formData.id,
+			project_id: formData.project_id,
 			description: formData.description.trim(),
-			comment: formData.comment.trim() || null
+			comment: formData.comment.trim() || null,
+			is_active: formData.is_active,
+			requires_approval: formData.approval_status === 'requires_approval',
+			is_approved: formData.approval_status === 'approved'
 		};
 
 		onSave(cleanedData);
@@ -212,7 +221,7 @@
 								id="description"
 								bind:value={formData.description}
 								disabled={isLoading}
-								rows="6"
+								rows="3"
 								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 								class:ring-red-500={errors.description}
 								class:focus:ring-red-500={errors.description}
@@ -244,66 +253,100 @@
 							<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Необязательное поле</p>
 						</div>
 
-						<!-- Checkboxes -->
-						<div class="space-y-4">
-							<div class="flex items-start">
-								<div class="flex h-6 items-center">
-									<input
-										id="is_active"
-										type="checkbox"
-										bind:checked={formData.is_active}
-										disabled={isLoading}
-										class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</div>
-								<div class="ml-3 text-sm leading-6">
-									<label for="is_active" class="font-medium text-gray-900 dark:text-white">
-										Активно
-									</label>
-									<p class="text-gray-500 dark:text-gray-400">
-										Техзадание будет активным и видимым
-									</p>
-								</div>
+						<!-- Active checkbox -->
+						<div class="flex items-start">
+							<div class="flex h-6 items-center">
+								<input
+									id="is_active"
+									type="checkbox"
+									bind:checked={formData.is_active}
+									disabled={isLoading}
+									class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+								/>
 							</div>
-
-							<div class="flex items-start">
-								<div class="flex h-6 items-center">
-									<input
-										id="requires_approval"
-										type="checkbox"
-										bind:checked={formData.requires_approval}
-										disabled={isLoading}
-										class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</div>
-								<div class="ml-3 text-sm leading-6">
-									<label for="requires_approval" class="font-medium text-gray-900 dark:text-white">
-										Требуется согласование
-									</label>
-									<p class="text-gray-500 dark:text-gray-400">
-										Техзадание требует одобрения перед началом работ
-									</p>
-								</div>
-							</div>
-
-							<div class="flex items-start">
-								<div class="flex h-6 items-center">
-									<input
-										id="is_approved"
-										type="checkbox"
-										bind:checked={formData.is_approved}
-										disabled={isLoading || !formData.requires_approval}
-										class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
-									/>
-								</div>
-								<div class="ml-3 text-sm leading-6">
-									<label for="is_approved" class="font-medium text-gray-900 dark:text-white">
-										Согласовано
-									</label>
-									<p class="text-gray-500 dark:text-gray-400">Техзадание уже согласовано</p>
-								</div>
+							<div class="ml-3 text-sm leading-6">
+								<label for="is_active" class="font-medium text-gray-900 dark:text-white">
+									Активно
+								</label>
+								<p class="text-gray-500 dark:text-gray-400">
+									Техзадание будет активным и видимым
+								</p>
 							</div>
 						</div>
+
+						<!-- Approval status radio buttons -->
+						<fieldset>
+							<legend class="text-sm font-medium text-gray-900 dark:text-white">
+								Статус согласования
+							</legend>
+							<div class="mt-3 space-y-3">
+								<div class="flex items-start">
+									<div class="flex h-6 items-center">
+										<input
+											id="edit_approval_none"
+											name="edit_approval_status"
+											type="radio"
+											bind:group={formData.approval_status}
+											value="none"
+											disabled={isLoading}
+											class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									</div>
+									<div class="ml-3 text-sm leading-6">
+										<label for="edit_approval_none" class="font-medium text-gray-900 dark:text-white">
+											Не требует согласования
+										</label>
+										<p class="text-gray-500 dark:text-gray-400">
+											Техзадание не требует дополнительного одобрения
+										</p>
+									</div>
+								</div>
+
+								<div class="flex items-start">
+									<div class="flex h-6 items-center">
+										<input
+											id="edit_approval_requires"
+											name="edit_approval_status"
+											type="radio"
+											bind:group={formData.approval_status}
+											value="requires_approval"
+											disabled={isLoading}
+											class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									</div>
+									<div class="ml-3 text-sm leading-6">
+										<label for="edit_approval_requires" class="font-medium text-gray-900 dark:text-white">
+											Требуется согласование
+										</label>
+										<p class="text-gray-500 dark:text-gray-400">
+											Техзадание ожидает одобрения перед началом работ
+										</p>
+									</div>
+								</div>
+
+								<div class="flex items-start">
+									<div class="flex h-6 items-center">
+										<input
+											id="edit_approval_approved"
+											name="edit_approval_status"
+											type="radio"
+											bind:group={formData.approval_status}
+											value="approved"
+											disabled={isLoading}
+											class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+										/>
+									</div>
+									<div class="ml-3 text-sm leading-6">
+										<label for="edit_approval_approved" class="font-medium text-gray-900 dark:text-white">
+											Согласовано
+										</label>
+										<p class="text-gray-500 dark:text-gray-400">
+											Техзадание уже согласовано и готово к работе
+										</p>
+									</div>
+								</div>
+							</div>
+						</fieldset>
 					</div>
 
 					<!-- Modal footer -->

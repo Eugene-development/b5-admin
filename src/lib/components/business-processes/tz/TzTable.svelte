@@ -41,6 +41,17 @@
 		return primaryPhone?.value || phones[0]?.value || null;
 	}
 
+	// Get approval status display
+	function getApprovalStatus(tz) {
+		if (tz.is_approved) {
+			return { text: 'Согласовано', color: 'green' };
+		}
+		if (tz.requires_approval) {
+			return { text: 'Требуется', color: 'yellow' };
+		}
+		return { text: 'Не требуется', color: 'gray' };
+	}
+
 	// Generate unique table ID for accessibility
 	const tableId = `tz-table-${Math.random().toString(36).substr(2, 9)}`;
 	const tableCaptionId = `${tableId}-caption`;
@@ -129,13 +140,19 @@
 				>
 					Куратор
 				</th>
-
 				<th
 					scope="col"
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Комментарий
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					Согласование
 				</th>
 				<th
 					scope="col"
@@ -149,7 +166,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if tzList.length === 0}
 				<tr>
-					<td colspan="5" class="px-4 py-8" role="cell">
+					<td colspan="6" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -178,10 +195,32 @@
 								{getCuratorName(tz)}
 							</div>
 						</td>
-
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="max-w-xs pr-4 leading-relaxed break-words">
 								{tz.comment || 'Нет комментария'}
+							</div>
+						</td>
+						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-4">
+								{#if getApprovalStatus(tz).color === 'green'}
+									<span
+										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else if getApprovalStatus(tz).color === 'yellow'}
+									<span
+										class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else}
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{/if}
 							</div>
 						</td>
 						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
@@ -388,6 +427,34 @@
 							</dt>
 							<dd class="mt-1 text-sm break-words text-gray-900 dark:text-white">
 								{tz.comment || 'Нет комментария'}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Согласование
+							</dt>
+							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+								{#if getApprovalStatus(tz).color === 'green'}
+									<span
+										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else if getApprovalStatus(tz).color === 'yellow'}
+									<span
+										class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{:else}
+									<span
+										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+									>
+										{getApprovalStatus(tz).text}
+									</span>
+								{/if}
 							</dd>
 						</div>
 						<div>
