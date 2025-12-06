@@ -228,7 +228,9 @@
 					>
 						Редактировать заказ
 					</h3>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Обновите информацию о заказе</p>
+					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+						{formData.order_number || 'Заказ без номера'}
+					</p>
 				</div>
 
 				<form onsubmit={handleSubmit} class="space-y-6">
@@ -277,26 +279,6 @@
 									{/each}
 								</select>
 							</div>
-						</div>
-
-						<div>
-							<label
-								for="order-number"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-							>
-								Номер заказа
-							</label>
-							<input
-								type="text"
-								id="order-number"
-								bind:value={formData.order_number}
-								disabled={isLoading}
-								readonly
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-							/>
-							<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-								Номер заказа нельзя изменить
-							</p>
 						</div>
 
 						<div>

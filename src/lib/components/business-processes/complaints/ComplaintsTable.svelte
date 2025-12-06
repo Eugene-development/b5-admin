@@ -121,19 +121,13 @@
 						scope="col"
 						class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell dark:text-white"
 					>
-						Контракт
+						Договор
 					</th>
 					<th
 						scope="col"
 						class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell dark:text-white"
 					>
-						Заказ
-					</th>
-					<th
-						scope="col"
-						class="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 md:table-cell dark:text-white"
-					>
-						Ответственный
+						Закупка
 					</th>
 					<th
 						scope="col"
@@ -161,7 +155,7 @@
 			<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 				{#if complaints.length === 0}
 					<tr>
-						<td colspan="9" class="px-3 py-12 text-center">
+						<td colspan="8" class="px-3 py-12 text-center">
 							<div class="flex flex-col items-center justify-center">
 								<svg
 									class="mb-4 h-12 w-12 text-gray-400"
@@ -198,11 +192,6 @@
 								<div class="font-medium" title={complaint.title}>
 									{truncateText(complaint.title, 40)}
 								</div>
-								{#if complaint.description}
-									<div class="mt-1 text-gray-500 dark:text-gray-400" title={complaint.description}>
-										{truncateText(complaint.description, 50)}
-									</div>
-								{/if}
 							</td>
 							<td
 								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400"
@@ -227,19 +216,9 @@
 									<div class="font-medium text-gray-900 dark:text-white">
 										{complaint.order.order_number || '—'}
 									</div>
-									{#if complaint.order.value}
-										<div class="text-gray-500 dark:text-gray-400">
-											{truncateText(complaint.order.value, 30)}
-										</div>
-									{/if}
 								{:else}
 									—
 								{/if}
-							</td>
-							<td
-								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 md:table-cell dark:text-gray-400"
-							>
-								{complaint.responsible_person || '—'}
 							</td>
 							<td
 								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 xl:table-cell dark:text-gray-400"
@@ -376,11 +355,6 @@
 							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
 								{truncateText(complaint.title, 40)}
 							</h3>
-							{#if complaint.description}
-								<p class="mt-1 text-sm break-words text-gray-500 dark:text-gray-400">
-									{truncateText(complaint.description, 50)}
-								</p>
-							{/if}
 						</div>
 						<div class="ml-3 flex-shrink-0">
 							<span
@@ -422,7 +396,7 @@
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
-									Контракт
+									Договор
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{complaint.contract.contract_number || '—'}
@@ -439,27 +413,10 @@
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
-									Заказ
+									Закупка
 								</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 									{complaint.order.order_number || '—'}
-									{#if complaint.order.value}
-										<span class="text-gray-500 dark:text-gray-400">
-											• {truncateText(complaint.order.value, 30)}
-										</span>
-									{/if}
-								</dd>
-							</div>
-						{/if}
-						{#if complaint.responsible_person}
-							<div class="col-span-2">
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Ответственный
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{complaint.responsible_person}
 								</dd>
 							</div>
 						{/if}

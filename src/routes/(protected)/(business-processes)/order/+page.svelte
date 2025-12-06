@@ -19,7 +19,14 @@
 	} from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { invalidateAll, goto } from '$app/navigation';
-	import { createOrder, deleteOrder, refreshOrders, updateOrder } from '$lib/api/orders.js';
+	import {
+		createOrder,
+		deleteOrder,
+		refreshOrders,
+		updateOrder,
+		getCompaniesForDropdown,
+		getProjectsForDropdown
+	} from '$lib/api/orders.js';
 
 	let { data } = $props();
 	let hasAccess = $state(false);
@@ -192,11 +199,20 @@
 		}
 	}
 
-	// Load orders
+	// Load orders, companies and projects
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			const rawOrders = await refreshOrders();
+			// Load orders, companies and projects in parallel
+			const [rawOrders, companiesData, projectsData] = await Promise.all([
+				refreshOrders(),
+				getCompaniesForDropdown(),
+				getProjectsForDropdown()
+			]);
+
+			// Update companies and projects
+			companies = companiesData;
+			projects = projectsData;
 
 			// Sort orders by created_at in descending order (newest first)
 			const sortedOrders = [...rawOrders].sort((a, b) => {
@@ -262,8 +278,9 @@
 					const newOrder = await createOrder(orderData);
 
 					// Добавляем информацию о компании и проекте для отображения
-					const company = companies.find((c) => c.id === newOrder.company_id);
-					const project = projects.find((p) => p.id === newOrder.project_id);
+					// Приводим ID к строке для корректного сравнения
+					const company = companies.find((c) => String(c.id) === String(newOrder.company_id));
+					const project = projects.find((p) => String(p.id) === String(newOrder.project_id));
 
 					const enrichedOrder = {
 						...newOrder,

@@ -148,7 +148,7 @@
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Закупка
+					Номер заказа
 				</th>
 				<th
 					scope="col"
@@ -354,7 +354,7 @@
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
-								{order.project?.contract_number || order.contract_number || 'Не указан'}
+								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
@@ -556,7 +556,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.project?.contract_number || order.contract_number || 'Не указан'}
+								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</dd>
 						</div>
 					</dl>

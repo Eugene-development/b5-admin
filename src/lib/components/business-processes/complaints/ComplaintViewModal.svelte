@@ -217,7 +217,7 @@
 						<!-- Related Order -->
 						{#if complaint.order}
 							<div>
-								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Заказ</h5>
+								<h5 class="text-sm font-medium text-gray-500 dark:text-gray-400">Закупка</h5>
 								<div class="mt-1">
 									<p class="text-sm font-medium text-gray-900 dark:text-white">
 										{complaint.order.order_number || '—'}
