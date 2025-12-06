@@ -18,6 +18,17 @@
 		return primaryPhone?.value || phones[0]?.value || null;
 	}
 
+	// Get approval status display
+	function getApprovalStatus(tz) {
+		if (tz?.is_approved) {
+			return { text: 'Согласовано', color: 'green' };
+		}
+		if (tz?.requires_approval) {
+			return { text: 'Требуется', color: 'yellow' };
+		}
+		return { text: 'Не требуется', color: 'gray' };
+	}
+
 	// Handle file download
 	function handleFileDownload(fileUrl, fileName) {
 		if (!fileUrl) return;
@@ -115,7 +126,7 @@
 						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
 						id="modal-title"
 					>
-						Техническое задание
+						{tz.value || `Техзадание #${tz.id}`}
 					</h3>
 					<button
 						type="button"
@@ -137,20 +148,6 @@
 
 				<!-- Modal content -->
 				<div class="mt-6">
-					<!-- TZ header -->
-					<div class="mb-6 flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{getCuratorName(tz)}
-							</h4>
-							{#if tz.project}
-								<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-									Проект: {tz.project.value || 'Не указан'}
-								</p>
-							{/if}
-						</div>
-					</div>
-
 					<!-- TZ details grid -->
 					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
 						<!-- Basic Information -->
@@ -225,31 +222,34 @@
 								</dd>
 							</div>
 
-							{#if tz.created_at}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Дата создания
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(tz.created_at)}
-									</dd>
-								</div>
-							{/if}
-
-							{#if tz.updated_at && tz.updated_at !== tz.created_at}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Дата обновления
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(tz.updated_at)}
-									</dd>
-								</div>
-							{/if}
+							<div>
+								<dt
+									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								>
+									Согласование
+								</dt>
+								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+									{#if getApprovalStatus(tz).color === 'green'}
+										<span
+											class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
+										>
+											{getApprovalStatus(tz).text}
+										</span>
+									{:else if getApprovalStatus(tz).color === 'yellow'}
+										<span
+											class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+										>
+											{getApprovalStatus(tz).text}
+										</span>
+									{:else}
+										<span
+											class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+										>
+											{getApprovalStatus(tz).text}
+										</span>
+									{/if}
+								</dd>
+							</div>
 						</div>
 
 						<!-- Files and Additional Info -->
@@ -401,9 +401,7 @@
 					<!-- Description Section -->
 					{#if tz.description}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">Описание проекта</h5>
-
-							<div class="mt-4">
+							<div>
 								<dt
 									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 								>
@@ -415,6 +413,37 @@
 							</div>
 						</div>
 					{/if}
+
+					<!-- Dates Section -->
+					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+						<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+							{#if tz.created_at}
+								<div>
+									<dt
+										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									>
+										Дата создания
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(tz.created_at)}
+									</dd>
+								</div>
+							{/if}
+
+							{#if tz.updated_at && tz.updated_at !== tz.created_at}
+								<div>
+									<dt
+										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									>
+										Дата обновления
+									</dt>
+									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+										{formatDate(tz.updated_at)}
+									</dd>
+								</div>
+							{/if}
+						</div>
+					</div>
 				</div>
 
 				<!-- Modal footer -->

@@ -9,6 +9,7 @@ const TZ_QUERY = `
 		technicalSpecifications(first: $first, page: $page) {
 			data {
 				id
+				value
 				project_id
 				project {
 					id
