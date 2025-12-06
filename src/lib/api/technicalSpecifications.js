@@ -8,6 +8,7 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 		technicalSpecifications(first: $first, page: $page) {
 			data {
 				id
+				value
 				project_id
 				project {
 					id
@@ -73,6 +74,7 @@ const CREATE_TECHNICAL_SPECIFICATION_MUTATION = gql`
 	mutation CreateTechnicalSpecification($input: CreateTechnicalSpecificationInput!) {
 		createTechnicalSpecification(input: $input) {
 			id
+			value
 			project_id
 			project {
 				id
@@ -105,6 +107,7 @@ const UPDATE_TECHNICAL_SPECIFICATION_MUTATION = gql`
 	mutation UpdateTechnicalSpecification($input: UpdateTechnicalSpecificationInput!) {
 		updateTechnicalSpecification(input: $input) {
 			id
+			value
 			project_id
 			project {
 				id

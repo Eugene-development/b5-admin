@@ -117,6 +117,13 @@
 				</th>
 				<th
 					scope="col"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					Номер ТЗ
+				</th>
+				<th
+					scope="col"
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
@@ -142,7 +149,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if tzList.length === 0}
 				<tr>
-					<td colspan="4" class="px-4 py-8" role="cell">
+					<td colspan="5" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -160,6 +167,11 @@
 							role="cell"
 						>
 							{tz.sequentialNumber || index + 1}
+						</td>
+						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-4 font-mono text-xs leading-relaxed whitespace-nowrap">
+								{tz.value || '—'}
+							</div>
 						</td>
 						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
@@ -351,10 +363,10 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
-								Куратор: {getCuratorName(tz)}
+								{tz.value || 'Без номера'}
 							</h3>
 							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
-								{formatPhone(getCuratorPhone(tz)) || 'Телефон не указан'}
+								Куратор: {getCuratorName(tz)}
 							</p>
 						</div>
 						<div class="ml-3 flex-shrink-0">
