@@ -53,6 +53,54 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 				is_active
 				requires_approval
 				is_approved
+				files {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
+				sketches {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
+				commercialOffers {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
 				created_at
 				updated_at
 			}
@@ -174,6 +222,37 @@ const UPLOAD_OFFER_MUTATION = gql`
 			valid_until
 			order
 			created_at
+		}
+	}
+`;
+
+const UPLOAD_TZ_FILE_MUTATION = gql`
+	mutation UploadTzFile($input: UploadTzFileInput!) {
+		uploadTzFile(input: $input) {
+			id
+			technical_specification_id
+			file_type
+			file_name
+			file_path
+			file_size
+			mime_type
+			uploaded_by
+			uploader {
+				id
+				name
+				email
+			}
+			created_at
+			updated_at
+		}
+	}
+`;
+
+const DELETE_TZ_FILE_MUTATION = gql`
+	mutation DeleteTzFile($input: DeleteTzFileInput!) {
+		deleteTzFile(input: $input) {
+			id
+			file_name
 		}
 	}
 `;
@@ -429,6 +508,65 @@ export async function uploadOfferFile(projectId, file) {
 		return result.data.uploadProjectOffer;
 	} catch (err) {
 		console.error('Upload offer file failed:', err);
+		throw err;
+	}
+}
+
+// Function to upload file to technical specification
+export async function uploadTzFile(tzId, fileType, file) {
+	try {
+		const formData = new FormData();
+		formData.append(
+			'operations',
+			JSON.stringify({
+				query: UPLOAD_TZ_FILE_MUTATION,
+				variables: { 
+					input: { 
+						technical_specification_id: tzId, 
+						file_type: fileType, 
+						file: null 
+					} 
+				}
+			})
+		);
+		formData.append('map', JSON.stringify({ 0: ['variables.input.file'] }));
+		formData.append('0', file);
+
+		const response = await fetch(GRAPHQL_ENDPOINT, {
+			method: 'POST',
+			body: formData,
+			credentials: 'include'
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors && result.errors.length > 0) {
+			throw new Error(result.errors[0].message || 'Upload failed');
+		}
+
+		return result.data.uploadTzFile;
+	} catch (err) {
+		console.error('Upload TZ file failed:', err);
+		throw err;
+	}
+}
+
+// Function to delete technical specification file
+export async function deleteTzFile(fileId) {
+	try {
+		const result = await makeGraphQLRequest(
+			DELETE_TZ_FILE_MUTATION,
+			{ input: { id: fileId } },
+			'deleteTzFile',
+			3
+		);
+		return result.deleteTzFile;
+	} catch (err) {
+		console.error('Delete TZ file failed:', err);
 		throw err;
 	}
 }

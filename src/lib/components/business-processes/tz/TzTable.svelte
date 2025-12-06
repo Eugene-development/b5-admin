@@ -157,6 +157,20 @@
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 100px; width: 100px;"
+				>
+					Эскизы
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 100px; width: 100px;"
+				>
+					КП
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px; width: 250px;"
 				>
 					Действия
@@ -166,7 +180,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if tzList.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="8" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -220,6 +234,32 @@
 									>
 										{getApprovalStatus(tz).text}
 									</span>
+								{/if}
+							</div>
+						</td>
+						<td class="px-4 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="flex items-center justify-center">
+								{#if tz.sketches && tz.sketches.length > 0}
+									<span
+										class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+									>
+										{tz.sketches.length}
+									</span>
+								{:else}
+									<span class="text-gray-400 dark:text-gray-500">—</span>
+								{/if}
+							</div>
+						</td>
+						<td class="px-4 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="flex items-center justify-center">
+								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
+									<span
+										class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+									>
+										{tz.commercialOffers.length}
+									</span>
+								{:else}
+									<span class="text-gray-400 dark:text-gray-500">—</span>
 								{/if}
 							</div>
 						</td>

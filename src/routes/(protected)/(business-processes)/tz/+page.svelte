@@ -27,7 +27,9 @@
 		createTechnicalSpecification,
 		updateTechnicalSpecification,
 		uploadSketchFile,
-		uploadOfferFile
+		uploadOfferFile,
+		uploadTzFile,
+		deleteTzFile
 	} from '$lib/api/technicalSpecifications.js';
 	import { getProjects } from '$lib/api/projects.js';
 
@@ -295,12 +297,14 @@
 		try {
 			await retryOperation(
 				async () => {
-					const projectId = uploadingTz.project_id;
+					const tzId = uploadingTz.id;
+					const fileType = uploadType === 'sketch' ? 'SKETCH' : 'COMMERCIAL_OFFER';
+					
+					await uploadTzFile(tzId, fileType, file);
+					
 					if (uploadType === 'sketch') {
-						await uploadSketchFile(projectId, file);
 						addSuccessToast('Эскиз успешно загружен');
 					} else {
-						await uploadOfferFile(projectId, file);
 						addSuccessToast('КП успешно загружено');
 					}
 
