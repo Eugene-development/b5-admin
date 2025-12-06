@@ -27,6 +27,54 @@ const TZ_QUERY = `
 				is_active
 				requires_approval
 				is_approved
+				files {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
+				sketches {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
+				commercialOffers {
+					id
+					file_type
+					file_name
+					file_path
+					file_size
+					mime_type
+					uploaded_by
+					uploader {
+						id
+						name
+						email
+					}
+					created_at
+					updated_at
+				}
 				created_at
 				updated_at
 			}

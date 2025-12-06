@@ -72,6 +72,16 @@
 		isViewModalOpen = true;
 	}
 
+	// Keep selectedTz in sync with tzList updates
+	$effect(() => {
+		if (isViewModalOpen && selectedTz) {
+			const updatedTz = tzList.find(t => t.id === selectedTz.id);
+			if (updatedTz) {
+				selectedTz = updatedTz;
+			}
+		}
+	});
+
 	function handleEditTz(tz) {
 		editingTz = tz;
 		isEditModalOpen = true;
@@ -310,6 +320,15 @@
 
 					// Reload data to get updated files
 					await loadServices();
+					
+					// Update selectedTz if view modal is open
+					if (isViewModalOpen && selectedTz && selectedTz.id === tzId) {
+						const updatedTz = tzList.find(t => t.id === tzId);
+						if (updatedTz) {
+							selectedTz = updatedTz;
+						}
+					}
+					
 					isUploadModalOpen = false;
 					uploadingTz = null;
 					uploadType = null;
@@ -337,13 +356,26 @@
 		goto(window.location.pathname, { invalidateAll: true });
 	}
 
-	// Load projects on mount
-	onMount(() => {
+	// Load projects and initialize data on mount
+	onMount(async () => {
 		loadProjects();
 
-		// Load data if we have empty initial data (server-side data loading was disabled)
-		if (tzList.length === 0) {
-			loadServices(true);
+		// Initialize from server data if available
+		try {
+			const tzData = await data.tzData;
+			if (tzData && tzData.tzList && tzData.tzList.length > 0) {
+				tzList = tzData.tzList;
+				console.log('📊 TZ: Initialized from server data:', tzList.length, 'items');
+			} else if (tzList.length === 0) {
+				// Fallback: load data if server data is empty
+				await loadServices(true);
+			}
+		} catch (error) {
+			console.error('Failed to load server data:', error);
+			// Fallback: load data on error
+			if (tzList.length === 0) {
+				await loadServices(true);
+			}
 		}
 	});
 </script>
@@ -395,11 +427,6 @@
 						</div>
 					</div>
 				{:else}
-					<!-- Initialize local tzList from loaded data -->
-					{#if !tzList.length && tzData.tzList.length}
-						{((tzList = tzData.tzList), '')}
-					{/if}
-
 					<!-- Show skeleton during initial data refresh when no data is available -->
 					{#if isRefreshing && tzList.length === 0}
 						<TableSkeleton columns={6} />

@@ -515,6 +515,14 @@ export async function uploadOfferFile(projectId, file) {
 // Function to upload file to technical specification
 export async function uploadTzFile(tzId, fileType, file) {
 	try {
+		console.log('🔧 Uploading TZ file:', {
+			tzId,
+			fileType,
+			fileName: file.name,
+			fileSize: file.size,
+			mimeType: file.type
+		});
+
 		const formData = new FormData();
 		formData.append(
 			'operations',
@@ -539,18 +547,22 @@ export async function uploadTzFile(tzId, fileType, file) {
 		});
 
 		if (!response.ok) {
+			const errorText = await response.text();
+			console.error('❌ HTTP Error:', response.status, errorText);
 			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 		}
 
 		const result = await response.json();
 
 		if (result.errors && result.errors.length > 0) {
+			console.error('❌ GraphQL Error:', result.errors);
 			throw new Error(result.errors[0].message || 'Upload failed');
 		}
 
+		console.log('✅ Upload successful:', result.data.uploadTzFile);
 		return result.data.uploadTzFile;
 	} catch (err) {
-		console.error('Upload TZ file failed:', err);
+		console.error('❌ Upload TZ file failed:', err);
 		throw err;
 	}
 }
