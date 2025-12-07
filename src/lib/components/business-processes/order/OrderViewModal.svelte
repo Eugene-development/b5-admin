@@ -274,6 +274,54 @@
 					</div>
 				</div>
 
+				<!-- Bonus Information -->
+				{#if order.order_amount !== undefined || order.agent_bonus !== undefined || order.curator_bonus !== undefined}
+					<div class="mt-6 rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
+						<h5 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+							Бонусы агента и куратора
+						</h5>
+						<div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+							<div>
+								<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">Сумма закупки</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{order.order_amount 
+										? new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(order.order_amount)
+										: 'Не указана'}
+								</dd>
+							</div>
+							<div>
+								<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">% агента</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{order.agent_percentage ?? 5}%
+								</dd>
+							</div>
+							<div>
+								<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">% куратора</dt>
+								<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+									{order.curator_percentage ?? 5}%
+								</dd>
+							</div>
+							<div>
+								<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус агента</dt>
+								<dd class="mt-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+									{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(order.agent_bonus || 0)}
+								</dd>
+							</div>
+							<div>
+								<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус куратора</dt>
+								<dd class="mt-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+									{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(order.curator_bonus || 0)}
+								</dd>
+							</div>
+						</div>
+						{#if !order.is_active}
+							<p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+								⚠️ Заказ неактивен — бонусы не начисляются
+							</p>
+						{/if}
+					</div>
+				{/if}
+
 				<!-- Positions if available -->
 				{#if order.positions && order.positions.length > 0}
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">

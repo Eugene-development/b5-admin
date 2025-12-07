@@ -19,6 +19,9 @@
 		value: '',
 		company_id: '',
 		project_id: '',
+		order_amount: '',
+		agent_percentage: '5',
+		curator_percentage: '5',
 		is_active: false,
 		is_urgent: false
 	});
@@ -50,6 +53,9 @@
 				value: '',
 				company_id: '',
 				project_id: '',
+				order_amount: '',
+				agent_percentage: '5',
+				curator_percentage: '5',
 				is_active: false,
 				is_urgent: false
 			};
@@ -111,6 +117,9 @@
 				value: formData.value.trim() || 'Не указан',
 				company_id: formData.company_id,
 				project_id: formData.project_id,
+				order_amount: formData.order_amount ? parseFloat(formData.order_amount) : null,
+				agent_percentage: parseFloat(formData.agent_percentage) || 5,
+				curator_percentage: parseFloat(formData.curator_percentage) || 5,
 				is_active: formData.is_active,
 				is_urgent: formData.is_urgent,
 				positions: positions.map((p) => ({
@@ -262,6 +271,63 @@
 								placeholder="Не указан"
 								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							/>
+						</div>
+
+						<!-- Bonus Fields -->
+						<div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
+							<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+								Бонусы агента и куратора
+							</h4>
+							<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								<div>
+									<label for="order-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Сумма закупки (₽)
+									</label>
+									<input
+										type="number"
+										id="order-amount"
+										bind:value={formData.order_amount}
+										disabled={isLoading}
+										min="0"
+										step="0.01"
+										placeholder="Не указана"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label for="agent-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Процент агента (%)
+									</label>
+									<input
+										type="number"
+										id="agent-percentage"
+										bind:value={formData.agent_percentage}
+										disabled={isLoading}
+										min="0"
+										max="100"
+										step="0.01"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label for="curator-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Процент куратора (%)
+									</label>
+									<input
+										type="number"
+										id="curator-percentage"
+										bind:value={formData.curator_percentage}
+										disabled={isLoading}
+										min="0"
+										max="100"
+										step="0.01"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+							</div>
+							<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+								Бонусы будут рассчитаны автоматически при активации заказа
+							</p>
 						</div>
 
 						<div class="flex items-center space-x-6">

@@ -277,6 +277,36 @@
 						</dl>
 					</div>
 
+					<!-- Calculated Bonuses -->
+					<div>
+						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+							Рассчитанные бонусы
+						</h4>
+						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+							<div>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Бонус агента</dt>
+								<dd class="mt-1 text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+									{formatCurrency(contract.agent_bonus || 0)}
+								</dd>
+							</div>
+							<div>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Бонус куратора</dt>
+								<dd class="mt-1 text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+									{formatCurrency(contract.curator_bonus || 0)}
+								</dd>
+							</div>
+						</dl>
+						{#if !contract.is_active}
+							<p class="mt-3 text-sm text-amber-600 dark:text-amber-400">
+								⚠️ Договор неактивен — бонусы не начисляются
+							</p>
+						{:else if !contract.contract_amount}
+							<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+								ℹ️ Укажите сумму контракта для расчёта бонусов
+							</p>
+						{/if}
+					</div>
+
 					<!-- Metadata -->
 					<div>
 						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">Метаданные</h4>

@@ -24,6 +24,11 @@
 		order_number: '',
 		delivery_date: '',
 		actual_delivery_date: '',
+		order_amount: '',
+		agent_percentage: '5',
+		curator_percentage: '5',
+		agent_bonus: 0,
+		curator_bonus: 0,
 		is_active: true,
 		is_urgent: false
 	});
@@ -60,6 +65,11 @@
 				order_number: order.order_number || '',
 				delivery_date: order.delivery_date || '',
 				actual_delivery_date: order.actual_delivery_date || '',
+				order_amount: order.order_amount || '',
+				agent_percentage: order.agent_percentage ?? '5',
+				curator_percentage: order.curator_percentage ?? '5',
+				agent_bonus: order.agent_bonus || 0,
+				curator_bonus: order.curator_bonus || 0,
 				is_active: order.is_active ?? true,
 				is_urgent: order.is_urgent ?? false
 			};
@@ -147,6 +157,9 @@
 				order_number: formData.order_number.trim(),
 				delivery_date: formData.delivery_date || null,
 				actual_delivery_date: formData.actual_delivery_date || null,
+				order_amount: formData.order_amount ? parseFloat(formData.order_amount) : null,
+				agent_percentage: parseFloat(formData.agent_percentage) || 5,
+				curator_percentage: parseFloat(formData.curator_percentage) || 5,
 				is_active: formData.is_active,
 				is_urgent: formData.is_urgent,
 				positions: positions.map((p) => ({
@@ -330,6 +343,79 @@
 									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 								/>
 							</div>
+						</div>
+
+						<!-- Bonus Fields -->
+						<div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
+							<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+								Бонусы агента и куратора
+							</h4>
+							<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+								<div>
+									<label for="order-amount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Сумма закупки (₽)
+									</label>
+									<input
+										type="number"
+										id="order-amount"
+										bind:value={formData.order_amount}
+										disabled={isLoading}
+										min="0"
+										step="0.01"
+										placeholder="Не указана"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label for="agent-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Процент агента (%)
+									</label>
+									<input
+										type="number"
+										id="agent-percentage"
+										bind:value={formData.agent_percentage}
+										disabled={isLoading}
+										min="0"
+										max="100"
+										step="0.01"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label for="curator-percentage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+										Процент куратора (%)
+									</label>
+									<input
+										type="number"
+										id="curator-percentage"
+										bind:value={formData.curator_percentage}
+										disabled={isLoading}
+										min="0"
+										max="100"
+										step="0.01"
+										class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									/>
+								</div>
+							</div>
+							{#if formData.agent_bonus > 0 || formData.curator_bonus > 0}
+								<div class="mt-3 grid grid-cols-2 gap-4 border-t border-indigo-200 pt-3 dark:border-indigo-700">
+									<div>
+										<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус агента:</span>
+										<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(formData.agent_bonus)}
+										</span>
+									</div>
+									<div>
+										<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус куратора:</span>
+										<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(formData.curator_bonus)}
+										</span>
+									</div>
+								</div>
+							{/if}
+							<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+								Бонусы пересчитываются автоматически при сохранении
+							</p>
 						</div>
 
 						<div class="flex items-center space-x-6">

@@ -29,6 +29,8 @@ const CONTRACTS_QUERY = gql`
 				contract_amount
 				agent_percentage
 				curator_percentage
+				agent_bonus
+				curator_bonus
 				is_active
 				created_at
 				updated_at
@@ -73,6 +75,8 @@ const CREATE_CONTRACT_MUTATION = gql`
 			contract_amount
 			agent_percentage
 			curator_percentage
+			agent_bonus
+			curator_bonus
 			is_active
 			created_at
 			updated_at
@@ -106,6 +110,8 @@ const UPDATE_CONTRACT_MUTATION = gql`
 			contract_amount
 			agent_percentage
 			curator_percentage
+			agent_bonus
+			curator_bonus
 			is_active
 			created_at
 			updated_at

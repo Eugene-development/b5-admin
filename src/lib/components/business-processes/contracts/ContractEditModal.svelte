@@ -569,6 +569,38 @@
 						</div>
 					</div>
 
+					<!-- Calculated Bonuses (read-only) -->
+					{#if contract.agent_bonus !== undefined || contract.curator_bonus !== undefined}
+						<div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
+							<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+								Рассчитанные бонусы
+							</h4>
+							<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<div>
+									<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+										Бонус агента
+									</dt>
+									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+										{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 2 }).format(contract.agent_bonus || 0)}
+									</dd>
+								</div>
+								<div>
+									<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
+										Бонус куратора
+									</dt>
+									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
+										{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 2 }).format(contract.curator_bonus || 0)}
+									</dd>
+								</div>
+							</div>
+							{#if !formData.is_active}
+								<p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+									⚠️ Договор неактивен — бонусы не начисляются
+								</p>
+							{/if}
+						</div>
+					{/if}
+
 					<!-- Active Checkbox -->
 					<div class="flex items-center">
 						<input
