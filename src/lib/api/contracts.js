@@ -26,6 +26,7 @@ const CONTRACTS_QUERY = gql`
 				contract_date
 				planned_completion_date
 				actual_completion_date
+				contract_amount
 				agent_percentage
 				curator_percentage
 				is_active
@@ -69,6 +70,7 @@ const CREATE_CONTRACT_MUTATION = gql`
 			contract_date
 			planned_completion_date
 			actual_completion_date
+			contract_amount
 			agent_percentage
 			curator_percentage
 			is_active
@@ -101,6 +103,7 @@ const UPDATE_CONTRACT_MUTATION = gql`
 			contract_date
 			planned_completion_date
 			actual_completion_date
+			contract_amount
 			agent_percentage
 			curator_percentage
 			is_active

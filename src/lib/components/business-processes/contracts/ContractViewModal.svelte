@@ -34,6 +34,17 @@
 		return `${parseFloat(value).toFixed(2)}%`;
 	}
 
+	// Format currency
+	function formatCurrency(amount) {
+		if (amount === null || amount === undefined) return '—';
+		return new Intl.NumberFormat('ru-RU', {
+			style: 'currency',
+			currency: 'RUB',
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 0
+		}).format(amount);
+	}
+
 	// Get contract status
 	function getContractStatus(contract) {
 		return contract?.is_active ? 'active' : 'inactive';
@@ -241,6 +252,14 @@
 							Финансовые условия
 						</h4>
 						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+							<div class="sm:col-span-2">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Сумма контракта
+								</dt>
+								<dd class="mt-1 text-lg font-semibold text-gray-900 dark:text-gray-100">
+									{formatCurrency(contract.contract_amount)}
+								</dd>
+							</div>
 							<div>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Процент агента</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">

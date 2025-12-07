@@ -23,6 +23,7 @@
 		contract_date: '',
 		planned_completion_date: '',
 		actual_completion_date: '',
+		contract_amount: '',
 		agent_percentage: '',
 		curator_percentage: '',
 		is_active: true
@@ -72,6 +73,7 @@
 				actual_completion_date: contract.actual_completion_date
 					? contract.actual_completion_date.split('T')[0]
 					: '',
+				contract_amount: contract.contract_amount || '',
 				agent_percentage: contract.agent_percentage || '',
 				curator_percentage: contract.curator_percentage || '',
 				is_active: contract.is_active ?? true
@@ -113,6 +115,11 @@
 				planned_completion_date: formData.planned_completion_date,
 				is_active: formData.is_active
 			};
+
+			// Add contract_amount only if it has a value
+			if (formData.contract_amount !== '' && formData.contract_amount !== null && formData.contract_amount !== undefined) {
+				contractData.contract_amount = parseFloat(formData.contract_amount);
+			}
 
 			// Add agent_percentage only if it has a value
 			if (formData.agent_percentage !== '' && formData.agent_percentage !== null && formData.agent_percentage !== undefined) {
@@ -180,6 +187,18 @@
 						'Дата завершения не может быть раньше даты заключения';
 				} else {
 					delete newErrors.planned_completion_date;
+				}
+				break;
+			case 'contract_amount':
+				if (value !== '' && value !== null && value !== undefined) {
+					const num = parseFloat(value);
+					if (isNaN(num) || num < 0) {
+						newErrors.contract_amount = 'Сумма должна быть положительным числом';
+					} else {
+						delete newErrors.contract_amount;
+					}
+				} else {
+					delete newErrors.contract_amount;
 				}
 				break;
 			case 'agent_percentage':
@@ -456,6 +475,34 @@
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							placeholder="Опционально"
 						/>
+					</div>
+
+					<!-- Contract Amount -->
+					<div>
+						<label
+							for="contract-amount"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
+							Сумма контракта (₽)
+						</label>
+						<input
+							type="number"
+							id="contract-amount"
+							min="0"
+							step="0.01"
+							value={formData.contract_amount}
+							oninput={(e) => handleInputChange('contract_amount', e.target.value)}
+							disabled={isLoading}
+							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+							aria-describedby={errors.contract_amount ? 'contract-amount-error' : undefined}
+							aria-invalid={errors.contract_amount ? 'true' : 'false'}
+							placeholder="Опционально"
+						/>
+						{#if errors.contract_amount}
+							<p id="contract-amount-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								{errors.contract_amount}
+							</p>
+						{/if}
 					</div>
 
 					<!-- Percentages -->
