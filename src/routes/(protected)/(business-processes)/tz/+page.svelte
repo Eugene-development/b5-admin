@@ -583,7 +583,7 @@
 <!-- File Upload Modal -->
 <FileUploadModal
 	isOpen={isUploadModalOpen}
-	title={uploadType === 'sketch' ? 'Загрузить эскиз' : 'Загрузить КП'}
+		title={uploadType === 'sketch' ? 'Загрузить ТЗ' : 'Загрузить КП'}
 	onUpload={handleFileUpload}
 	onCancel={handleCloseUploadModal}
 	{isLoading}
