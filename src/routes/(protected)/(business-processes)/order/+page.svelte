@@ -27,6 +27,7 @@
 		getCompaniesForDropdown,
 		getProjectsForDropdown
 	} from '$lib/api/orders.js';
+	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 
 	let { data } = $props();
 	let hasAccess = $state(false);
@@ -56,6 +57,9 @@
 	// Data for companies and projects
 	let companies = $state([]);
 	let projects = $state([]);
+
+	// Partner payment statuses
+	let partnerPaymentStatuses = $state([]);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -203,16 +207,18 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			// Load orders, companies and projects in parallel
-			const [rawOrders, companiesData, projectsData] = await Promise.all([
+			// Load orders, companies, projects and statuses in parallel
+			const [rawOrders, companiesData, projectsData, statusesData] = await Promise.all([
 				refreshOrders(),
 				getCompaniesForDropdown(),
-				getProjectsForDropdown()
+				getProjectsForDropdown(),
+				getPartnerPaymentStatuses()
 			]);
 
-			// Update companies and projects
+			// Update companies, projects and statuses
 			companies = companiesData;
 			projects = projectsData;
+			partnerPaymentStatuses = statusesData;
 
 			// Sort orders by created_at in descending order (newest first)
 			const sortedOrders = [...rawOrders].sort((a, b) => {
@@ -409,6 +415,20 @@
 		showEditModal = false;
 		editingOrder = null;
 		isActionLoading = false;
+	}
+
+	// Handle partner payment status change
+	function handlePartnerPaymentStatusChange(orderId, result) {
+		orders = orders.map((order) =>
+			order.id === orderId
+				? {
+						...order,
+						partner_payment_status_id: result.partner_payment_status_id,
+						partnerPaymentStatus: result.partnerPaymentStatus
+					}
+				: order
+		);
+		updateCounter++;
 	}
 </script>
 
@@ -608,8 +628,10 @@
 									{searchTerm}
 									{hasSearched}
 									{updateCounter}
+									{partnerPaymentStatuses}
 									onDeleteOrder={handleDeleteOrder}
 									onEditOrder={handleEditOrder}
+									onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
 								/>
 
 								<Pagination

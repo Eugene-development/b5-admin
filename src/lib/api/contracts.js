@@ -32,6 +32,12 @@ const CONTRACTS_QUERY = gql`
 				agent_bonus
 				curator_bonus
 				is_active
+				partner_payment_status_id
+				partnerPaymentStatus {
+					id
+					code
+					name
+				}
 				created_at
 				updated_at
 			}
@@ -123,6 +129,20 @@ const DELETE_CONTRACT_MUTATION = gql`
 	mutation DeleteContract($id: ID!) {
 		deleteContract(id: $id) {
 			id
+		}
+	}
+`;
+
+const UPDATE_PARTNER_PAYMENT_STATUS_MUTATION = gql`
+	mutation UpdateContractPartnerPaymentStatus($contract_id: ID!, $status_code: String!) {
+		updateContractPartnerPaymentStatus(contract_id: $contract_id, status_code: $status_code) {
+			id
+			partner_payment_status_id
+			partnerPaymentStatus {
+				id
+				code
+				name
+			}
 		}
 	}
 `;

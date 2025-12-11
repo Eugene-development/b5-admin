@@ -25,6 +25,7 @@
 		deleteContract,
 		refreshContracts
 	} from '$lib/api/contracts.js';
+	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 
 	let { data } = $props();
@@ -67,6 +68,9 @@
 
 	// Check for server-side load errors
 	let loadError = $state(null);
+
+	// Partner payment statuses
+	let partnerPaymentStatuses = $state([]);
 
 	// Computed filteredContracts reactive statement
 	let filteredContracts = $derived.by(() => {
@@ -268,8 +272,12 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			const contracts = await refreshContracts();
+			const [contracts, statuses] = await Promise.all([
+				refreshContracts(),
+				getPartnerPaymentStatuses()
+			]);
 			localContracts = contracts;
+			partnerPaymentStatuses = statuses;
 			loadError = null;
 
 			if (!isInitialLoad) {
@@ -283,6 +291,20 @@
 		} finally {
 			isRefreshing = false;
 		}
+	}
+
+	// Handle partner payment status change
+	function handlePartnerPaymentStatusChange(contractId, result) {
+		localContracts = localContracts.map((contract) =>
+			contract.id === contractId
+				? {
+						...contract,
+						partner_payment_status_id: result.partner_payment_status_id,
+						partnerPaymentStatus: result.partnerPaymentStatus
+					}
+				: contract
+		);
+		updateCounter++;
 	}
 
 	// Handle error boundary errors
@@ -511,6 +533,8 @@
 										onEditContract={handleEditContract}
 										onDeleteContract={handleDeleteContract}
 										onViewContract={handleViewContract}
+										onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
+										{partnerPaymentStatuses}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}
@@ -584,5 +608,10 @@
 		isOpen={showViewModal}
 		contract={viewingContract}
 		onClose={handleCancelViewContract}
+		{partnerPaymentStatuses}
+		onPartnerPaymentStatusChange={(result) => {
+			handlePartnerPaymentStatusChange(viewingContract.id, result);
+			viewingContract = { ...viewingContract, ...result };
+		}}
 	/>
 {/if}

@@ -1,7 +1,14 @@
 <script>
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
+	import PartnerPaymentStatusBadge from './PartnerPaymentStatusBadge.svelte';
 
-	let { isOpen = false, contract = null, onClose } = $props();
+	let {
+		isOpen = false,
+		contract = null,
+		onClose,
+		partnerPaymentStatuses = [],
+		onPartnerPaymentStatusChange = null
+	} = $props();
 
 	let modalElement = $state();
 	let previousActiveElement;
@@ -149,7 +156,7 @@
 						<h4 class="mb-3 text-sm font-medium text-indigo-600 dark:text-indigo-400">
 							Основная информация
 						</h4>
-						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+						<dl class="grid grid-cols-1 gap-4 sm:grid-cols-3">
 							<div>
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Договор</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
@@ -160,6 +167,16 @@
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Статус</dt>
 								<dd class="mt-1 text-sm text-gray-900 dark:text-gray-100">
 									{contract.is_active ? 'Активен' : 'Неактивен'}
+								</dd>
+							</div>
+							<div>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Оплата партнёром</dt>
+								<dd class="mt-1">
+									<PartnerPaymentStatusBadge
+										{contract}
+										{partnerPaymentStatuses}
+										onStatusChange={onPartnerPaymentStatusChange}
+									/>
 								</dd>
 							</div>
 						</dl>

@@ -127,6 +127,12 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 					curator_bonus
 					is_active
 					is_urgent
+					partner_payment_status_id
+					partnerPaymentStatus {
+						id
+						code
+						name
+					}
 					created_at
 					updated_at
 					company {

@@ -500,6 +500,81 @@
 						{/if}
 					</div>
 
+					<!-- Agent Bonuses Section -->
+					{#if project.contracts?.some(c => c.agentBonus) || project.orders?.some(o => o.agentBonus)}
+						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
+							<h4
+								class="mb-4 text-base font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+							>
+								Бонусы агента:
+							</h4>
+							<div class="space-y-3">
+								{#each project.contracts || [] as contract}
+									{#if contract.agentBonus}
+										<div
+											class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
+										>
+											<div class="flex items-center justify-between">
+												<div>
+													<div class="text-sm font-medium text-gray-900 dark:text-white">
+														Договор: {contract.contract_number || 'Без номера'}
+													</div>
+													<div class="text-xs text-gray-500 dark:text-gray-400">
+														Сумма договора: {formatCurrency(contract.contract_amount)}
+													</div>
+												</div>
+												<div class="text-right">
+													<div class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+														{formatCurrency(contract.agentBonus.commission_amount)}
+													</div>
+													<span
+														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+														{contract.agentBonus.status?.code === 'paid' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+														 contract.agentBonus.status?.code === 'available_for_payment' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+														 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'}"
+													>
+														{contract.agentBonus.status?.name || 'Начислено'}
+													</span>
+												</div>
+											</div>
+										</div>
+									{/if}
+								{/each}
+								{#each project.orders || [] as order}
+									{#if order.agentBonus}
+										<div
+											class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
+										>
+											<div class="flex items-center justify-between">
+												<div>
+													<div class="text-sm font-medium text-gray-900 dark:text-white">
+														Закупка: {order.order_number || 'Без номера'}
+													</div>
+													<div class="text-xs text-gray-500 dark:text-gray-400">
+														Сумма закупки: {formatCurrency(order.order_amount)}
+													</div>
+												</div>
+												<div class="text-right">
+													<div class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
+														{formatCurrency(order.agentBonus.commission_amount)}
+													</div>
+													<span
+														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
+														{order.agentBonus.status?.code === 'paid' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+														 order.agentBonus.status?.code === 'available_for_payment' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+														 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'}"
+													>
+														{order.agentBonus.status?.name || 'Начислено'}
+													</span>
+												</div>
+											</div>
+										</div>
+									{/if}
+								{/each}
+							</div>
+						</div>
+					{/if}
+
 					<!-- Agent and System Information -->
 					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
 						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">

@@ -49,6 +49,7 @@ const PROJECTS_QUERY = gql`
 					id
 					contract_number
 					contract_date
+					contract_amount
 					planned_completion_date
 					actual_completion_date
 					agent_percentage
@@ -58,6 +59,30 @@ const PROJECTS_QUERY = gql`
 						id
 						name
 						legal_name
+					}
+					agentBonus {
+						id
+						commission_amount
+						status {
+							id
+							code
+							name
+						}
+					}
+				}
+				orders {
+					id
+					order_number
+					order_amount
+					is_active
+					agentBonus {
+						id
+						commission_amount
+						status {
+							id
+							code
+							name
+						}
 					}
 				}
 				region
