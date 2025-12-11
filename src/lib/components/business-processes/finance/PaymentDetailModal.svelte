@@ -51,7 +51,6 @@
 			onClose && onClose();
 		}
 	}
-</script>
 
 	// Focus management
 	$effect(() => {

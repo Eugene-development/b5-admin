@@ -62,7 +62,6 @@
 		const start = (currentPage - 1) * itemsPerPage;
 		return filteredPayments.slice(start, start + itemsPerPage);
 	});
-</script>
 
 	// Load data
 	async function refreshData(isInitialLoad = false) {
