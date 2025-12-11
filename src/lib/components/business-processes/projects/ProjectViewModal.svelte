@@ -501,7 +501,7 @@
 					</div>
 
 					<!-- Agent Bonuses Section -->
-					{#if project.contracts?.some(c => c.agentBonus) || project.orders?.some(o => o.agentBonus)}
+					{#if project.contracts?.some(c => c.agent_bonus > 0) || project.orders?.some(o => o.agent_bonus > 0)}
 						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
 							<h4
 								class="mb-4 text-base font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
@@ -510,7 +510,7 @@
 							</h4>
 							<div class="space-y-3">
 								{#each project.contracts || [] as contract}
-									{#if contract.agentBonus}
+									{#if contract.agent_bonus > 0}
 										<div
 											class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
 										>
@@ -525,15 +525,12 @@
 												</div>
 												<div class="text-right">
 													<div class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-														{formatCurrency(contract.agentBonus.commission_amount)}
+														{formatCurrency(contract.agent_bonus)}
 													</div>
 													<span
-														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-														{contract.agentBonus.status?.code === 'paid' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
-														 contract.agentBonus.status?.code === 'available_for_payment' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-														 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'}"
+														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
 													>
-														{contract.agentBonus.status?.name || 'Начислено'}
+														Начислено
 													</span>
 												</div>
 											</div>
@@ -541,7 +538,7 @@
 									{/if}
 								{/each}
 								{#each project.orders || [] as order}
-									{#if order.agentBonus}
+									{#if order.agent_bonus > 0}
 										<div
 											class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-600 dark:bg-gray-700/50"
 										>
@@ -556,15 +553,12 @@
 												</div>
 												<div class="text-right">
 													<div class="text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-														{formatCurrency(order.agentBonus.commission_amount)}
+														{formatCurrency(order.agent_bonus)}
 													</div>
 													<span
-														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium
-														{order.agentBonus.status?.code === 'paid' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
-														 order.agentBonus.status?.code === 'available_for_payment' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-														 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'}"
+														class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
 													>
-														{order.agentBonus.status?.name || 'Начислено'}
+														Начислено
 													</span>
 												</div>
 											</div>

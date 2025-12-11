@@ -54,36 +54,22 @@ const PROJECTS_QUERY = gql`
 					actual_completion_date
 					agent_percentage
 					curator_percentage
+					agent_bonus
+					curator_bonus
 					is_active
 					company {
 						id
 						name
 						legal_name
 					}
-					agentBonus {
-						id
-						commission_amount
-						status {
-							id
-							code
-							name
-						}
-					}
 				}
 				orders {
 					id
 					order_number
 					order_amount
+					agent_bonus
+					curator_bonus
 					is_active
-					agentBonus {
-						id
-						commission_amount
-						status {
-							id
-							code
-							name
-						}
-					}
 				}
 				region
 				description

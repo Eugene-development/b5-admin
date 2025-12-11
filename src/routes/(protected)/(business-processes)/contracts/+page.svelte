@@ -332,9 +332,18 @@
 	}
 
 	// Handle initial load
-	onMount(() => {
+	onMount(async () => {
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
+		}
+
+		// Always load statuses
+		if (partnerPaymentStatuses.length === 0) {
+			try {
+				partnerPaymentStatuses = await getPartnerPaymentStatuses();
+			} catch (error) {
+				console.error('Failed to load partner payment statuses:', error);
+			}
 		}
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
