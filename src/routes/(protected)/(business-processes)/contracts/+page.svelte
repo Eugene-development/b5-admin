@@ -295,16 +295,8 @@
 
 	// Handle partner payment status change
 	function handlePartnerPaymentStatusChange(contractId, result) {
-		localContracts = localContracts.map((contract) =>
-			contract.id === contractId
-				? {
-						...contract,
-						partner_payment_status_id: result.partner_payment_status_id,
-						partnerPaymentStatus: result.partnerPaymentStatus
-					}
-				: contract
-		);
-		updateCounter++;
+		// Simply trigger a refresh to get updated data from server
+		refreshData();
 	}
 
 	// Handle error boundary errors

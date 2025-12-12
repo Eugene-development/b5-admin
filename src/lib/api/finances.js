@@ -170,12 +170,6 @@ const UPDATE_CONTRACT_PARTNER_PAYMENT_STATUS_MUTATION = gql`
 	mutation UpdateContractPartnerPaymentStatus($contract_id: ID!, $status_code: String!) {
 		updateContractPartnerPaymentStatus(contract_id: $contract_id, status_code: $status_code) {
 			id
-			partner_payment_status_id
-			partnerPaymentStatus {
-				id
-				code
-				name
-			}
 		}
 	}
 `;
@@ -184,12 +178,6 @@ const UPDATE_ORDER_PARTNER_PAYMENT_STATUS_MUTATION = gql`
 	mutation UpdateOrderPartnerPaymentStatus($order_id: ID!, $status_code: String!) {
 		updateOrderPartnerPaymentStatus(order_id: $order_id, status_code: $status_code) {
 			id
-			partner_payment_status_id
-			partnerPaymentStatus {
-				id
-				code
-				name
-			}
 		}
 	}
 `;
