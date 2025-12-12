@@ -151,7 +151,7 @@
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Номер заказа
+					НОМЕР ЗАКАЗА
 				</th>
 				<th
 					scope="col"
@@ -163,7 +163,7 @@
 						onclick={() => handleSort('supplier')}
 						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
-						<span>Поставщик</span>
+						<span>ПОСТАВЩИК</span>
 						{#if sortColumn === 'supplier'}
 							<svg
 								class="h-4 w-4"
@@ -201,7 +201,7 @@
 						onclick={() => handleSort('urgency')}
 						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
-						<span>Срочность</span>
+						<span>СРОЧНОСТЬ</span>
 						{#if sortColumn === 'urgency'}
 							<svg
 								class="h-4 w-4"
@@ -239,7 +239,7 @@
 						onclick={() => handleSort('status')}
 						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
-						<span>Статус</span>
+						<span>СТАТУС</span>
 						{#if sortColumn === 'status'}
 							<svg
 								class="h-4 w-4"
@@ -272,21 +272,21 @@
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Проект
+					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
-					Оплата
+					ОПЛАТА
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
-					Действия
+					ДЕЙСТВИЯ
 				</th>
 			</tr>
 		</thead>
@@ -307,23 +307,23 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-4 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
 							{order.sequentialNumber || index + 1}
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
 								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4">
@@ -343,7 +343,7 @@
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-4">
@@ -362,19 +362,19 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<PartnerPaymentStatusBadge
 								{order}
 								{partnerPaymentStatuses}
 								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(order.id, result)}
 							/>
 						</td>
-						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button

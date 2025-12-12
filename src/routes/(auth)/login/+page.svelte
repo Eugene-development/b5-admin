@@ -201,7 +201,7 @@
 						</div>
 					</div>
 
-					<h1 class="mb-1 text-3xl font-bold text-white lg:mb-2 lg:text-3xl">Вход в систему</h1>
+					<h1 class="mb-1 text-4xl font-bold text-white lg:mb-2 lg:text-3xl">Вход в систему</h1>
 					<!-- <p class="text-lg text-white/90">Вход в систему управления</p> -->
 				</div>
 			</div>

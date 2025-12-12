@@ -46,7 +46,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 8;
 
 	// Modal state
 	let isViewModalOpen = $state(false);

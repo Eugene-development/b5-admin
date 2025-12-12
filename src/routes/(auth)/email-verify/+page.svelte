@@ -200,7 +200,7 @@
 						</div>
 					</div>
 
-					<h1 class="mb-1 text-3xl font-bold text-white lg:mb-2 lg:text-3xl">
+					<h1 class="mb-1 text-4xl font-bold text-white lg:mb-2 lg:text-3xl">
 						Подтверждение Email
 					</h1>
 				</div>

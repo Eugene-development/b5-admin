@@ -185,16 +185,16 @@
 				{:else}
 					{#each complaints as complaint, index (complaint.id + updateCounter)}
 						<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-							<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+							<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 								{index + 1}
 							</td>
-							<td class="px-3 py-4 text-sm text-gray-900 dark:text-white">
+							<td class="px-3 py-5 text-sm text-gray-900 dark:text-white">
 								<div class="font-medium" title={complaint.title}>
 									{truncateText(complaint.title, 40)}
 								</div>
 							</td>
 							<td
-								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400"
+								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400"
 							>
 								{#if complaint.contract}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -210,7 +210,7 @@
 								{/if}
 							</td>
 							<td
-								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 lg:table-cell dark:text-gray-400"
+								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 lg:table-cell dark:text-gray-400"
 							>
 								{#if complaint.order}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -221,21 +221,21 @@
 								{/if}
 							</td>
 							<td
-								class="hidden px-3 py-4 text-sm whitespace-nowrap text-gray-500 xl:table-cell dark:text-gray-400"
+								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 xl:table-cell dark:text-gray-400"
 							>
 								{formatDate(complaint.planned_resolution_date)}
 							</td>
-							<td class="px-3 py-4 text-sm whitespace-nowrap">
+							<td class="px-3 py-5 text-sm whitespace-nowrap">
 								<span class={getPriorityBadgeClasses(complaint.priority)}>
 									{getPriorityLabel(complaint.priority)}
 								</span>
 							</td>
-							<td class="px-3 py-4 text-sm whitespace-nowrap">
+							<td class="px-3 py-5 text-sm whitespace-nowrap">
 								<span class={getStatusBadgeClasses(complaint.status)}>
 									{getStatusLabel(complaint.status)}
 								</span>
 							</td>
-							<td class="px-3 py-4 text-right text-sm font-medium whitespace-nowrap">
+							<td class="px-3 py-5 text-right text-sm font-medium whitespace-nowrap">
 								<div class="flex items-center justify-end gap-2">
 									<button
 										type="button"

@@ -34,7 +34,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 8;
 
 	// Modal state
 	let selectedAction = $state(null);
@@ -289,7 +289,7 @@
 				{#if actionsData.error}
 					<!-- Error state -->
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-						<div class="px-4 py-8 sm:px-6 lg:px-8">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
 							<div class="mx-auto max-w-7xl">
 								<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
 									<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки акций</h3>
@@ -309,7 +309,7 @@
 				{:else if !actionsData.actions || actionsData.actions.length === 0}
 					<!-- Empty state -->
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-						<div class="px-4 py-8 sm:px-6 lg:px-8">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
 							<div class="mx-auto max-w-7xl">
 								<div class="rounded-lg bg-gray-800 p-12 text-center">
 									<div class="text-6xl">📋</div>

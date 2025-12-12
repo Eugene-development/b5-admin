@@ -204,45 +204,45 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{agent.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{agent.name || 'Not specified'}
 						</td>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
 							{agent.email}
 						</td>
-						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-verified">
+						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-verified">
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{agent.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
 						</td>
 						<td
-							class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-user-status"
 						>
@@ -261,7 +261,7 @@
 								<span class="text-gray-400">Не указан</span>
 							{/if}
 						</td>
-						<td class="px-4 py-3 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
@@ -269,7 +269,7 @@
 							{/if}
 						</td>
 						<td
-							class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
+							class="relative py-5 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
 							role="cell"
 							headers="col-actions"
 						>

@@ -13,14 +13,14 @@
 </script>
 
 <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-	<div class="px-4 py-8 sm:px-6 lg:px-8">
+	<div class="px-4 py-7 sm:px-6 lg:px-7">
 		<div class="mx-auto max-w-7xl">
 			<main id="main-content" aria-labelledby="page-title">
 				<!-- Page Header -->
 				<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
 					<div class="flex items-center justify-between">
 						<div>
-							<h1 id="page-title" class="text-3xl font-semibold text-gray-900 dark:text-white">
+							<h1 id="page-title" class="text-4xl font-semibold text-gray-900 dark:text-white">
 								{title}
 							</h1>
 						</div>

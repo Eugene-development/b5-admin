@@ -3,7 +3,7 @@
   Displays placeholder content while data is being fetched
 -->
 <div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-	<div class="px-4 py-8 sm:px-6 lg:px-8">
+	<div class="px-4 py-7 sm:px-6 lg:px-7">
 		<div class="mx-auto max-w-7xl">
 			<!-- Header Skeleton -->
 			<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">

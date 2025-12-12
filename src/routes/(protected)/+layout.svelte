@@ -621,7 +621,7 @@
 	<div
 		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-950"
 	>
-		<div class="flex h-20 shrink-0 items-center">
+		<div class="flex h-20 shrink-0 items-center border-b border-gray-200 pb-5  dark:border-white/10">
 			<span
 				class="bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-2xl font-bold text-transparent"
 			>

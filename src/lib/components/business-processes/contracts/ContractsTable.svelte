@@ -171,13 +171,13 @@
 							}
 						}}
 					>
-						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{index + 1}
 						</td>
-						<td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-5 text-sm text-gray-900 dark:text-gray-100">
 							{contract.contract_number || '—'}
 						</td>
-						<td class="px-6 py-4 text-sm">
+						<td class="px-6 py-5 text-sm">
 							<div class="font-medium text-gray-900 dark:text-gray-100">
 								{contract.project?.value || 'Не указан'}
 							</div>
@@ -187,25 +187,25 @@
 								</div>
 							{/if}
 						</td>
-						<td class="px-6 py-4 text-sm">
+						<td class="px-6 py-5 text-sm">
 							<div class="font-medium text-gray-900 dark:text-gray-100">
 								{contract.company?.name || 'Не указана'}
 							</div>
 						</td>
-						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(contract.contract_date)}
 						</td>
-						<td class="px-6 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(contract.contract_amount)}
 						</td>
-						<td class="px-6 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
 							<PartnerPaymentStatusBadge
 								{contract}
 								{partnerPaymentStatuses}
 								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(contract.id, result)}
 							/>
 						</td>
-						<td class="px-6 py-4 text-right text-sm whitespace-nowrap">
+						<td class="px-6 py-5 text-right text-sm whitespace-nowrap">
 							<ContractActionButtons
 								onView={() => onViewContract(contract)}
 								onEdit={() => onEditContract(contract)}

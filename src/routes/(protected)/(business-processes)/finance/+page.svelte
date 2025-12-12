@@ -35,7 +35,7 @@
 
 	// Pagination
 	let currentPage = $state(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 8;
 
 	// Modals
 	let showCreateModal = $state(false);
@@ -159,13 +159,13 @@
 				<TableSkeleton columns={7} />
 			{:else}
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-8 sm:px-6 lg:px-8">
+					<div class="px-4 py-7 sm:px-6 lg:px-7">
 						<div class="mx-auto max-w-7xl">
 							<main>
 								<!-- Header -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
 									<div>
-										<h1 class="text-3xl font-semibold text-gray-900 dark:text-white">
+										<h1 class="text-4xl font-semibold text-gray-900 dark:text-white">
 											Выплаты агентам
 										</h1>
 										<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">

@@ -246,7 +246,7 @@
 						</div>
 					</div>
 
-					<h1 class="md:text-3.5xl mb-1 text-3xl font-bold text-white lg:mb-2 lg:text-4xl">
+					<h1 class="md:text-3.5xl mb-1 text-4xl font-bold text-white lg:mb-2 lg:text-4xl">
 						Регистрация
 					</h1>
 					<!-- <p class="text-lg text-white/90">Создание нового аккаунта</p> -->

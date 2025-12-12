@@ -39,7 +39,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 10;
+	const itemsPerPage = 8;
 
 	// Action state management
 	let isActionLoading = $state(false);
@@ -429,7 +429,7 @@
 				{:else}
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-8 sm:px-6 lg:px-8">
+					<div class="px-4 py-7 sm:px-6 lg:px-7">
 						<div class="mx-auto max-w-7xl">
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with Refresh Button -->
@@ -440,7 +440,7 @@
 										<div>
 											<h1
 												id="page-title"
-												class="text-3xl font-semibold text-gray-900 dark:text-white"
+												class="text-4xl font-semibold text-gray-900 dark:text-white"
 											>
 												Службы доставки
 											</h1>

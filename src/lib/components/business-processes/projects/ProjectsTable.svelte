@@ -332,28 +332,28 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-6 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{project.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="hidden px-6 py-4 text-sm whitespace-nowrap text-gray-900 lg:table-cell dark:text-white"
+							class="hidden px-6 py-5 text-sm whitespace-nowrap text-gray-900 lg:table-cell dark:text-white"
 							role="cell"
 							headers="col-contract"
 						>
 							{project.value || ' - '}
 						</td>
 						<td
-							class="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-6 py-5 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{project.client?.name || ' - '}
 						</td>
 						<td
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 							title={project.region || ''}
@@ -361,14 +361,14 @@
 							{truncateText(project.region)}
 						</td>
 						<td
-							class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-status"
 						>
 							<StatusBadge status={project.status} />
 						</td>
 
-						<td class="px-6 py-4 text-center whitespace-nowrap" role="cell" headers="col-accept">
+						<td class="px-6 py-5 text-center whitespace-nowrap" role="cell" headers="col-accept">
 							<!-- TODO: Temporarily disabled - will be fixed later -->
 							<!-- {#if canAcceptProject(project)}
 								<button
@@ -640,16 +640,16 @@
 						{:else}
 							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{project.sequentialNumber || index + 1}
 									</td>
 									<td
-										class="px-4 py-3 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-5 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{project.client?.name || ' - '}
 									</td>
 									<td
-										class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 										title={project.region || ''}
 									>
 										{truncateText(project.region)}
