@@ -501,6 +501,23 @@
 							</ul>
 						</li>
 					{/if}
+					<!-- Separator -->
+					<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
+					<li>
+						<div class="text-xs/6 font-semibold text-gray-400">Финансы</div>
+						<ul role="list" class="-mx-2 mt-2 space-y-1">
+							<li>
+								<button
+									type="button"
+									class={getNavClassesWithSpan('/finances')}
+									onclick={() => handleMobileNavigation('/finances')}
+								>
+									<span class={getSpanIconClasses('/finances')}>Фн</span>
+									<span class="truncate">Выплаты</span>
+								</button>
+							</li>
+						</ul>
+					</li>
 					<li class="mt-auto">
 						{#if isAuthenticated()}
 							<!-- User info section for mobile -->
@@ -805,6 +822,19 @@
 						</ul>
 					</li>
 				{/if}
+				<!-- Separator -->
+				<li class="border-t border-gray-200 dark:border-white/10"></li>
+				<li>
+					<div class="text-xs/6 font-semibold text-gray-400">Финансы</div>
+					<ul role="list" class="mt-2 space-y-1">
+						<li>
+							<a href="/finances" class={getNavClassesWithSpan('/finances')}>
+								<span class={getSpanIconClasses('/finances')}>Фн</span>
+								<span class="truncate">Выплаты</span>
+							</a>
+						</li>
+					</ul>
+				</li>
 				<li class="mt-auto">
 					{#if isAuthenticated()}
 						<!-- User info section for desktop -->
