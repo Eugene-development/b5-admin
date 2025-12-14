@@ -345,7 +345,7 @@
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto max-w-7xl">
+						<div class="mx-auto ">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with Refresh and Add Buttons -->

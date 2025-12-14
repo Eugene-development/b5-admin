@@ -290,7 +290,7 @@
 					<!-- Error state -->
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 						<div class="px-4 py-7 sm:px-6 lg:px-7">
-							<div class="mx-auto max-w-7xl">
+							<div class="mx-auto">
 								<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
 									<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки акций</h3>
 									<p class="mb-4 text-red-300">{actionsData.error}</p>
@@ -310,7 +310,7 @@
 					<!-- Empty state -->
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 						<div class="px-4 py-7 sm:px-6 lg:px-7">
-							<div class="mx-auto max-w-7xl">
+							<div class="mx-auto">
 								<div class="rounded-lg bg-gray-800 p-12 text-center">
 									<div class="text-6xl">📋</div>
 									<h3 class="mt-4 text-xl font-semibold text-white">В системе пока нет акций</h3>
@@ -417,7 +417,7 @@
 				<!-- Critical error state -->
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-8 sm:px-6 lg:px-8">
-						<div class="mx-auto max-w-7xl">
+						<div class="mx-auto">
 							<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
 								<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки акций</h3>
 								<p class="text-red-300">

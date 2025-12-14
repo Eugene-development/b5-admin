@@ -1,17 +1,28 @@
 <script>
 	import BonusPaymentStatusBadge from './BonusPaymentStatusBadge.svelte';
+	import PartnerPaymentStatusBadge from '$lib/components/business-processes/contracts/PartnerPaymentStatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 
 	let {
 		bonuses = [],
 		bonusStatuses = [],
+		partnerPaymentStatuses = [],
 		isLoading = false,
 		onStatusChange = null,
+		onPartnerPaymentStatusChange = null,
 		sourceType = 'all',
 		searchTerm = '',
 		sortField = 'accrued_at',
 		sortDirection = 'desc'
 	} = $props();
+
+	// Get source entity (contract or order) for partner payment status
+	function getSourceEntity(bonus) {
+		if (bonus.source_type === 'contract') {
+			return bonus.contract;
+		}
+		return bonus.order;
+	}
 
 	function formatDate(dateString) {
 		if (!dateString) return '—';
@@ -25,8 +36,6 @@
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
 		return new Intl.NumberFormat('ru-RU', {
-			style: 'currency',
-			currency: 'RUB',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		}).format(amount);
@@ -66,10 +75,10 @@
 					Агент
 				</th>
 				<th scope="col" class="px-4 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Сумма источника
-				</th>
-				<th scope="col" class="px-4 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Бонус
+				</th>
+				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+					Оплата
 				</th>
 				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Начислено
@@ -116,11 +125,19 @@
 								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent.email}</div>
 							{/if}
 						</td>
-						<td class="px-4 py-4 text-right text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatCurrency(getSourceAmount(bonus))}
-						</td>
 						<td class="px-4 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(bonus.commission_amount)}
+						</td>
+						<td class="px-4 py-4 text-center text-sm whitespace-nowrap">
+							{#if getSourceEntity(bonus)}
+								<PartnerPaymentStatusBadge
+									contract={getSourceEntity(bonus)}
+									{partnerPaymentStatuses}
+									onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
+								/>
+							{:else}
+								<span class="text-gray-400">—</span>
+							{/if}
 						</td>
 						<td class="px-4 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(bonus.accrued_at)}

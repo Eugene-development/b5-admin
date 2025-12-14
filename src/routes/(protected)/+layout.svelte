@@ -633,7 +633,7 @@
 {/if}
 
 <!-- Static sidebar for desktop -->
-<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-950">
+<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col dark:bg-gray-950">
 	<!-- Sidebar component, swap this element with another sidebar if you like -->
 	<div
 		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-950"
@@ -920,7 +920,7 @@
 	</div>
 </div>
 
-<div class="h-screen bg-gray-950 lg:pl-72">
+<div class="h-screen bg-gray-950 lg:pl-64">
 	<div class="sticky top-0 z-20 lg:mx-auto lg:max-w-full">
 		<div
 			class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"

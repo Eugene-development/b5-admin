@@ -277,13 +277,6 @@
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					ОПЛАТА
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					ДЕЙСТВИЯ
@@ -293,7 +286,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-8" role="cell">
+					<td colspan="7" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -366,13 +359,6 @@
 							<div class="pr-4 leading-relaxed break-words">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
-						</td>
-						<td class="px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
-							<PartnerPaymentStatusBadge
-								{order}
-								{partnerPaymentStatuses}
-								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(order.id, result)}
-							/>
 						</td>
 						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">

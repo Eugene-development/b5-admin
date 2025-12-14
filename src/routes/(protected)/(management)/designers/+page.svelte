@@ -403,7 +403,7 @@
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto max-w-7xl">
+						<div class="mx-auto ">
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with Refresh Button -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">

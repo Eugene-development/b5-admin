@@ -8,7 +8,10 @@
 	import {
 		getAdminBonuses,
 		getAdminBonusStats,
-		getBonusStatuses
+		getBonusStatuses,
+		getPartnerPaymentStatuses,
+		updateContractPartnerPaymentStatus,
+		updateOrderPartnerPaymentStatus
 	} from '$lib/api/finances.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 
@@ -26,6 +29,7 @@
 		orders_count: 0
 	});
 	let bonusStatuses = $state([]);
+	let partnerPaymentStatuses = $state([]);
 
 	// Loading state
 	let isLoading = $state(true);
@@ -126,14 +130,16 @@
 	async function loadData(showToast = false) {
 		isRefreshing = true;
 		try {
-			const [bonusesData, statsData, statusesData] = await Promise.all([
+			const [bonusesData, statsData, statusesData, partnerStatusesData] = await Promise.all([
 				getAdminBonuses(),
 				getAdminBonusStats(),
-				bonusStatuses.length === 0 ? getBonusStatuses() : Promise.resolve(bonusStatuses)
+				bonusStatuses.length === 0 ? getBonusStatuses() : Promise.resolve(bonusStatuses),
+				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses)
 			]);
 			bonuses = bonusesData;
 			stats = statsData;
 			if (statusesData !== bonusStatuses) bonusStatuses = statusesData;
+			if (partnerStatusesData !== partnerPaymentStatuses) partnerPaymentStatuses = partnerStatusesData;
 			if (showToast) addSuccessToast('Данные обновлены');
 		} catch (error) {
 			handleApiError(error, 'Не удалось загрузить данные');
@@ -143,12 +149,18 @@
 		}
 	}
 
-	// Handle status change
+	// Handle bonus status change
 	function handleStatusChange(bonusId, result) {
 		bonuses = bonuses.map(b => 
 			b.id === bonusId ? { ...b, status: result.status, paid_at: result.paid_at } : b
 		);
 		loadData(); // Refresh stats
+	}
+
+	// Handle partner payment status change
+	function handlePartnerPaymentStatusChange(bonus, result) {
+		// Refresh data to get updated statuses
+		loadData();
 	}
 
 	// Toggle sort
@@ -170,7 +182,7 @@
 	{#snippet children()}
 		<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 			<div class="px-4 py-7 sm:px-6 lg:px-7">
-				<div class="mx-auto max-w-7xl">
+				<div class="mx-auto">
 					<main id="main-content" aria-labelledby="page-title">
 						<!-- Header -->
 						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
@@ -277,7 +289,6 @@
 
 							<!-- Sort -->
 							<div class="flex items-center gap-2">
-								<span class="text-sm text-gray-500 dark:text-gray-400">Сортировка:</span>
 								<select
 									bind:value={sortField}
 									class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
@@ -320,8 +331,10 @@
 							<FinancesBonusTable
 								bonuses={paginatedBonuses}
 								{bonusStatuses}
+								{partnerPaymentStatuses}
 								isLoading={isRefreshing}
 								onStatusChange={handleStatusChange}
+								onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
 								sourceType={activeTab === 'contracts' ? 'contract' : activeTab === 'orders' ? 'order' : 'all'}
 								{searchTerm}
 							/>

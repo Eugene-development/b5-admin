@@ -38,11 +38,21 @@ const ADMIN_BONUSES_QUERY = gql`
 				id
 				contract_number
 				contract_amount
+				partnerPaymentStatus {
+					id
+					code
+					name
+				}
 			}
 			order {
 				id
 				order_number
 				order_amount
+				partnerPaymentStatus {
+					id
+					code
+					name
+				}
 			}
 			agent {
 				id

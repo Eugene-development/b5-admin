@@ -124,6 +124,12 @@
 				</th>
 				<th
 					scope="col"
+					class="px-6 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+				>
+					Сумма
+				</th>
+				<th
+					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
 					Дата Договора
@@ -136,18 +142,6 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-				>
-					Сумма
-				</th>
-				<th
-					scope="col"
-					class="px-6 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-				>
-					Оплата
-				</th>
-				<th
-					scope="col"
 					class="px-6 py-3 text-right text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
 					Действия
@@ -157,7 +151,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if contracts.length === 0}
 				<tr>
-					<td colspan="9" class="px-4 py-12 text-center">
+					<td colspan="8" class="px-4 py-12 text-center">
 						<EmptyState
 							title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 							description={hasSearched
@@ -201,6 +195,9 @@
 								{contract.company?.name || 'Не указана'}
 							</div>
 						</td>
+						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+							{formatCurrency(contract.contract_amount)}
+						</td>
 						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(contract.contract_date)}
 						</td>
@@ -209,16 +206,6 @@
 								{contract}
 								{contractStatuses}
 								onStatusChange={(result) => onContractStatusChange && onContractStatusChange(contract.id, result)}
-							/>
-						</td>
-						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatCurrency(contract.contract_amount)}
-						</td>
-						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
-							<PartnerPaymentStatusBadge
-								{contract}
-								{partnerPaymentStatuses}
-								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(contract.id, result)}
 							/>
 						</td>
 						<td class="px-6 py-5 text-right text-sm whitespace-nowrap">
