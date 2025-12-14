@@ -1,6 +1,7 @@
 <script>
 	import ContractActionButtons from './ContractActionButtons.svelte';
 	import PartnerPaymentStatusBadge from './PartnerPaymentStatusBadge.svelte';
+	import ContractStatusBadge from './ContractStatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 
 	let {
@@ -10,7 +11,9 @@
 		onDeleteContract,
 		onViewContract,
 		onPartnerPaymentStatusChange = null,
+		onContractStatusChange = null,
 		partnerPaymentStatuses = [],
+		contractStatuses = [],
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -127,6 +130,12 @@
 				</th>
 				<th
 					scope="col"
+					class="px-6 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+				>
+					Статус
+				</th>
+				<th
+					scope="col"
 					class="px-6 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 				>
 					Сумма
@@ -148,7 +157,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if contracts.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-12 text-center">
+					<td colspan="9" class="px-4 py-12 text-center">
 						<EmptyState
 							title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 							description={hasSearched
@@ -194,6 +203,13 @@
 						</td>
 						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(contract.contract_date)}
+						</td>
+						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
+							<ContractStatusBadge
+								{contract}
+								{contractStatuses}
+								onStatusChange={(result) => onContractStatusChange && onContractStatusChange(contract.id, result)}
+							/>
 						</td>
 						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(contract.contract_amount)}
@@ -279,7 +295,21 @@
 								{formatDate(contract.contract_date)}
 							</dd>
 						</div>
-						<div class="col-span-2">
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Статус
+							</dt>
+							<dd class="mt-1 text-sm">
+								<ContractStatusBadge
+									{contract}
+									{contractStatuses}
+									onStatusChange={(result) => onContractStatusChange && onContractStatusChange(contract.id, result)}
+								/>
+							</dd>
+						</div>
+						<div>
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>

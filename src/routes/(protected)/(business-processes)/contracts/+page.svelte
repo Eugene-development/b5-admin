@@ -23,7 +23,8 @@
 		createContract,
 		updateContract,
 		deleteContract,
-		refreshContracts
+		refreshContracts,
+		getContractStatuses
 	} from '$lib/api/contracts.js';
 	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
@@ -71,6 +72,9 @@
 
 	// Partner payment statuses
 	let partnerPaymentStatuses = $state([]);
+
+	// Contract statuses
+	let contractStatuses = $state([]);
 
 	// Computed filteredContracts reactive statement
 	let filteredContracts = $derived.by(() => {
@@ -272,12 +276,14 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			const [contracts, statuses] = await Promise.all([
+			const [contracts, paymentStatuses, statuses] = await Promise.all([
 				refreshContracts(),
-				getPartnerPaymentStatuses()
+				getPartnerPaymentStatuses(),
+				getContractStatuses()
 			]);
 			localContracts = contracts;
-			partnerPaymentStatuses = statuses;
+			partnerPaymentStatuses = paymentStatuses;
+			contractStatuses = statuses;
 			loadError = null;
 
 			if (!isInitialLoad) {
@@ -297,6 +303,17 @@
 	function handlePartnerPaymentStatusChange(contractId, result) {
 		// Simply trigger a refresh to get updated data from server
 		refreshData();
+	}
+
+	// Handle contract status change
+	function handleContractStatusChange(contractId, result) {
+		// Update local state with new status
+		localContracts = localContracts.map((contract) =>
+			contract && contract.id === contractId
+				? { ...contract, status: result.status, status_id: result.status_id }
+				: contract
+		);
+		updateCounter++;
 	}
 
 	// Handle error boundary errors
@@ -330,12 +347,15 @@
 		}
 
 		// Always load statuses
-		if (partnerPaymentStatuses.length === 0) {
-			try {
-				partnerPaymentStatuses = await getPartnerPaymentStatuses();
-			} catch (error) {
-				console.error('Failed to load partner payment statuses:', error);
-			}
+		try {
+			const [paymentStatuses, statuses] = await Promise.all([
+				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses),
+				contractStatuses.length === 0 ? getContractStatuses() : Promise.resolve(contractStatuses)
+			]);
+			partnerPaymentStatuses = paymentStatuses;
+			contractStatuses = statuses;
+		} catch (error) {
+			console.error('Failed to load statuses:', error);
 		}
 
 		// Load data if we have empty initial data (server-side data loading was disabled)
@@ -535,7 +555,9 @@
 										onDeleteContract={handleDeleteContract}
 										onViewContract={handleViewContract}
 										onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
+										onContractStatusChange={handleContractStatusChange}
 										{partnerPaymentStatuses}
+										{contractStatuses}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}

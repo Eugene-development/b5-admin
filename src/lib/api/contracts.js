@@ -9,6 +9,7 @@ const CONTRACTS_QUERY = gql`
 				id
 				project_id
 				company_id
+				status_id
 				project {
 					id
 					value
@@ -21,6 +22,12 @@ const CONTRACTS_QUERY = gql`
 					legal_name
 					inn
 					region
+				}
+				status {
+					id
+					value
+					slug
+					color
 				}
 				contract_number
 				contract_date
@@ -55,6 +62,7 @@ const CREATE_CONTRACT_MUTATION = gql`
 			id
 			project_id
 			company_id
+			status_id
 			project {
 				id
 				value
@@ -67,6 +75,12 @@ const CREATE_CONTRACT_MUTATION = gql`
 				legal_name
 				inn
 				region
+			}
+			status {
+				id
+				value
+				slug
+				color
 			}
 			contract_number
 			contract_date
@@ -90,6 +104,7 @@ const UPDATE_CONTRACT_MUTATION = gql`
 			id
 			project_id
 			company_id
+			status_id
 			project {
 				id
 				value
@@ -102,6 +117,12 @@ const UPDATE_CONTRACT_MUTATION = gql`
 				legal_name
 				inn
 				region
+			}
+			status {
+				id
+				value
+				slug
+				color
 			}
 			contract_number
 			contract_date
@@ -131,6 +152,34 @@ const UPDATE_PARTNER_PAYMENT_STATUS_MUTATION = gql`
 	mutation UpdateContractPartnerPaymentStatus($contract_id: ID!, $status_code: String!) {
 		updateContractPartnerPaymentStatus(contract_id: $contract_id, status_code: $status_code) {
 			id
+		}
+	}
+`;
+
+const CONTRACT_STATUSES_QUERY = gql`
+	query GetContractStatuses {
+		contractStatuses {
+			id
+			value
+			slug
+			color
+			sort_order
+			is_default
+		}
+	}
+`;
+
+const UPDATE_CONTRACT_STATUS_MUTATION = gql`
+	mutation UpdateContractStatus($contract_id: ID!, $status_slug: String!) {
+		updateContractStatus(contract_id: $contract_id, status_slug: $status_slug) {
+			id
+			status_id
+			status {
+				id
+				value
+				slug
+				color
+			}
 		}
 	}
 `;
@@ -332,6 +381,40 @@ export async function refreshContracts(first = 1000, page = 1, customFetch = nul
 	}
 }
 
+// Function to get contract statuses
+export async function getContractStatuses(customFetch = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			CONTRACT_STATUSES_QUERY,
+			{},
+			'getContractStatuses',
+			3,
+			customFetch
+		);
+		return result.contractStatuses || [];
+	} catch (err) {
+		console.error('Get contract statuses failed:', err);
+		throw err;
+	}
+}
+
+// Function to update contract status
+export async function updateContractStatus(contractId, statusSlug, customFetch = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			UPDATE_CONTRACT_STATUS_MUTATION,
+			{ contract_id: contractId, status_slug: statusSlug },
+			'updateContractStatus',
+			3,
+			customFetch
+		);
+		return result.updateContractStatus;
+	} catch (err) {
+		console.error('Update contract status failed:', err);
+		throw err;
+	}
+}
+
 /**
  * Factory function to create API client with server-side fetch support
  * @param {Function} fetch - SvelteKit fetch function
@@ -344,6 +427,8 @@ export function createContractsApiWithFetch(fetch, cookies) {
 		createContract: (contractData) => createContract(contractData, fetch, cookies),
 		updateContract: (contractData) => updateContract(contractData, fetch, cookies),
 		deleteContract: (contractId) => deleteContract(contractId, fetch, cookies),
-		refreshContracts: (first, page) => refreshContracts(first, page, fetch, cookies)
+		refreshContracts: (first, page) => refreshContracts(first, page, fetch, cookies),
+		getContractStatuses: () => getContractStatuses(fetch),
+		updateContractStatus: (contractId, statusSlug) => updateContractStatus(contractId, statusSlug, fetch)
 	};
 }

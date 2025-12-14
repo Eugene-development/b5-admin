@@ -11,6 +11,7 @@ const CONTRACTS_QUERY = `
 				id
 				project_id
 				company_id
+				status_id
 				project {
 					id
 					value
@@ -23,6 +24,12 @@ const CONTRACTS_QUERY = `
 					legal_name
 					inn
 					region
+				}
+				status {
+					id
+					value
+					slug
+					color
 				}
 				contract_number
 				contract_date
