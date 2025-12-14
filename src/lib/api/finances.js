@@ -15,6 +15,71 @@ const PARTNER_PAYMENT_STATUSES_QUERY = gql`
 	}
 `;
 
+const ADMIN_BONUSES_QUERY = gql`
+	query GetAdminBonuses($filters: AgentBonusFilters) {
+		adminBonuses(filters: $filters) {
+			id
+			agent_id
+			contract_id
+			order_id
+			commission_amount
+			accrued_at
+			available_at
+			paid_at
+			source_type
+			source_amount
+			project_name
+			status {
+				id
+				code
+				name
+			}
+			contract {
+				id
+				contract_number
+				contract_amount
+			}
+			order {
+				id
+				order_number
+				order_amount
+			}
+			agent {
+				id
+				name
+				email
+			}
+		}
+	}
+`;
+
+const ADMIN_BONUS_STATS_QUERY = gql`
+	query GetAdminBonusStats($filters: AgentBonusFilters) {
+		adminBonusStats(filters: $filters) {
+			total_accrued
+			total_available
+			total_paid
+			total_pending
+			contracts_count
+			orders_count
+		}
+	}
+`;
+
+const UPDATE_BONUS_STATUS_MUTATION = gql`
+	mutation UpdateBonusStatus($bonus_id: ID!, $status_code: String!) {
+		updateBonusStatus(bonus_id: $bonus_id, status_code: $status_code) {
+			id
+			status {
+				id
+				code
+				name
+			}
+			paid_at
+		}
+	}
+`;
+
 const PAYMENT_STATUSES_QUERY = gql`
 	query GetPaymentStatuses {
 		paymentStatuses {
@@ -435,6 +500,67 @@ export async function updateOrderPartnerPaymentStatus(orderId, statusCode, custo
 	}
 }
 
+export async function getAdminBonuses(filters = null, customFetch = null) {
+	try {
+		const variables = {};
+		if (filters) variables.filters = filters;
+
+		const result = await makeGraphQLRequest(
+			ADMIN_BONUSES_QUERY,
+			variables,
+			'getAdminBonuses',
+			3,
+			customFetch
+		);
+		return result.adminBonuses || [];
+	} catch (err) {
+		handleApiError(err, 'Не удалось загрузить бонусы');
+		throw err;
+	}
+}
+
+export async function getAdminBonusStats(filters = null, customFetch = null) {
+	try {
+		const variables = {};
+		if (filters) variables.filters = filters;
+
+		const result = await makeGraphQLRequest(
+			ADMIN_BONUS_STATS_QUERY,
+			variables,
+			'getAdminBonusStats',
+			3,
+			customFetch
+		);
+		return result.adminBonusStats || {
+			total_accrued: 0,
+			total_available: 0,
+			total_paid: 0,
+			total_pending: 0,
+			contracts_count: 0,
+			orders_count: 0
+		};
+	} catch (err) {
+		handleApiError(err, 'Не удалось загрузить статистику');
+		throw err;
+	}
+}
+
+export async function updateBonusStatus(bonusId, statusCode, customFetch = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			UPDATE_BONUS_STATUS_MUTATION,
+			{ bonus_id: bonusId, status_code: statusCode },
+			'updateBonusStatus',
+			3,
+			customFetch
+		);
+		return result.updateBonusStatus;
+	} catch (err) {
+		handleApiError(err, 'Не удалось обновить статус бонуса');
+		throw err;
+	}
+}
+
 // Factory function for server-side fetch support
 export function createFinancesApiWithFetch(fetch, cookies) {
 	return {
@@ -450,6 +576,9 @@ export function createFinancesApiWithFetch(fetch, cookies) {
 		updateContractPartnerPaymentStatus: (contractId, statusCode) =>
 			updateContractPartnerPaymentStatus(contractId, statusCode, fetch),
 		updateOrderPartnerPaymentStatus: (orderId, statusCode) =>
-			updateOrderPartnerPaymentStatus(orderId, statusCode, fetch)
+			updateOrderPartnerPaymentStatus(orderId, statusCode, fetch),
+		getAdminBonuses: (filters) => getAdminBonuses(filters, fetch),
+		getAdminBonusStats: (filters) => getAdminBonusStats(filters, fetch),
+		updateBonusStatus: (bonusId, statusCode) => updateBonusStatus(bonusId, statusCode, fetch)
 	};
 }

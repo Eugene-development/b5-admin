@@ -51,6 +51,9 @@ export { default as OrderAddModal } from './components/business-processes/order/
 
 export { default as TzCreateModal } from './components/business-processes/tz/TzCreateModal.svelte';
 
+export { default as FinancesBonusTable } from './components/business-processes/finances/FinancesBonusTable.svelte';
+export { default as BonusPaymentStatusBadge } from './components/business-processes/finances/BonusPaymentStatusBadge.svelte';
+
 // Common components
 export { default as SearchBar } from './components/common/SearchBar.svelte';
 export { default as ConfirmationModal } from './components/common/ConfirmationModal.svelte';
@@ -97,3 +100,6 @@ export * from './api/complaints.js';
 
 // Export authentication state store
 export * from './state/auth.svelte.js';
+
+// Export finances API
+export * from './api/finances.js';
