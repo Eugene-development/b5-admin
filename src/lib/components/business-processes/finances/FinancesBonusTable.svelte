@@ -78,7 +78,7 @@
 					Бонус
 				</th>
 				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Оплата
+					Статус
 				</th>
 				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Начислено
@@ -90,7 +90,7 @@
 					Выплачено
 				</th>
 				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Статус
+					Оплата
 				</th>
 			</tr>
 		</thead>
@@ -129,15 +129,11 @@
 							{formatCurrency(bonus.commission_amount)}
 						</td>
 						<td class="px-4 py-4 text-center text-sm whitespace-nowrap">
-							{#if getSourceEntity(bonus)}
-								<PartnerPaymentStatusBadge
-									contract={getSourceEntity(bonus)}
-									{partnerPaymentStatuses}
-									onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
-								/>
-							{:else}
-								<span class="text-gray-400">—</span>
-							{/if}
+							<BonusPaymentStatusBadge
+								{bonus}
+								{bonusStatuses}
+								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
+							/>
 						</td>
 						<td class="px-4 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(bonus.accrued_at)}
@@ -149,11 +145,15 @@
 							{formatDate(bonus.paid_at)}
 						</td>
 						<td class="px-4 py-4 text-center text-sm whitespace-nowrap">
-							<BonusPaymentStatusBadge
-								{bonus}
-								{bonusStatuses}
-								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
-							/>
+							{#if getSourceEntity(bonus)}
+								<PartnerPaymentStatusBadge
+									contract={getSourceEntity(bonus)}
+									{partnerPaymentStatuses}
+									onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
+								/>
+							{:else}
+								<span class="text-gray-400">—</span>
+							{/if}
 						</td>
 					</tr>
 				{/each}

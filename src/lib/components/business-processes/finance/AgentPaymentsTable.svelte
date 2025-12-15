@@ -66,11 +66,11 @@
 				<th scope="col" class="px-6 py-3 text-right text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					Сумма
 				</th>
-				<th scope="col" class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-					Способ
-				</th>
 				<th scope="col" class="px-6 py-3 text-center text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					Статус
+				</th>
+				<th scope="col" class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+					Способ
 				</th>
 				<th scope="col" class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					Номер документа
@@ -105,13 +105,13 @@
 						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(payment.total_amount)}
 						</td>
-						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{getMethodName(payment.method)}
-						</td>
 						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
 							<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {getStatusColor(payment.status?.code)}">
 								{payment.status?.name || '—'}
 							</span>
+						</td>
+						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+							{getMethodName(payment.method)}
 						</td>
 						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{payment.reference_number || '—'}

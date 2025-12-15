@@ -184,11 +184,6 @@
 							<div class="font-medium text-gray-900 dark:text-gray-100">
 								{contract.project?.value || 'Не указан'}
 							</div>
-							{#if contract.project?.region}
-								<div class="text-xs text-gray-500 dark:text-gray-400">
-									{contract.project.region}
-								</div>
-							{/if}
 						</td>
 						<td class="px-6 py-5 text-sm">
 							<div class="font-medium text-gray-900 dark:text-gray-100">

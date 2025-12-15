@@ -19,7 +19,7 @@
 	let selectedOrder = $state(null);
 
 	// Sorting state
-	let sortColumn = $state(null); // 'supplier', 'urgency', 'status', null
+	let sortColumn = $state(null); // 'supplier', 'urgency_status', null
 	let sortDirection = $state('asc'); // 'asc' or 'desc'
 
 	// Sorted orders derived from orders and sort state
@@ -43,16 +43,20 @@
 					compareResult = aSupplier.localeCompare(bSupplier, 'ru');
 					break;
 				}
-				case 'urgency': {
+				case 'urgency_status': {
+					// Сортировка по срочности (приоритет 1), затем по активности (приоритет 2)
 					const aUrgent = a.is_urgent || a.urgency === 'high' ? 1 : 0;
 					const bUrgent = b.is_urgent || b.urgency === 'high' ? 1 : 0;
-					compareResult = bUrgent - aUrgent; // Срочные сначала при asc
-					break;
-				}
-				case 'status': {
 					const aActive = a.is_active ? 1 : 0;
 					const bActive = b.is_active ? 1 : 0;
-					compareResult = bActive - aActive; // Активные сначала при asc
+					
+					// Сначала сравниваем по срочности
+					compareResult = bUrgent - aUrgent;
+					
+					// Если срочность одинаковая, сравниваем по активности
+					if (compareResult === 0) {
+						compareResult = bActive - aActive;
+					}
 					break;
 				}
 			}
@@ -151,7 +155,14 @@
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					НОМЕР ЗАКАЗА
+					НОМЕР
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
@@ -194,99 +205,54 @@
 				<th
 					scope="col"
 					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 120px; width: 120px;"
-				>
-					<button
-						type="button"
-						onclick={() => handleSort('urgency')}
-						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
-					>
-						<span>СРОЧНОСТЬ</span>
-						{#if sortColumn === 'urgency'}
-							<svg
-								class="h-4 w-4"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								{#if sortDirection === 'asc'}
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 15l7-7 7 7"
-									/>
-								{:else}
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M19 9l-7 7-7-7"
-									/>
-								{/if}
-							</svg>
-						{/if}
-					</button>
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 100px; width: 100px;"
-				>
-					<button
-						type="button"
-						onclick={() => handleSort('status')}
-						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
-					>
-						<span>СТАТУС</span>
-						{#if sortColumn === 'status'}
-							<svg
-								class="h-4 w-4"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								{#if sortDirection === 'asc'}
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M5 15l7-7 7 7"
-									/>
-								{:else}
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M19 9l-7 7-7-7"
-									/>
-								{/if}
-							</svg>
-						{/if}
-					</button>
-				</th>
-				<th
-					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					ПРОЕКТ
+					<button
+						type="button"
+						onclick={() => handleSort('urgency_status')}
+						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
+					>
+						<span>СРОЧНОСТЬ / СТАТУС</span>
+						{#if sortColumn === 'urgency_status'}
+							<svg
+								class="h-4 w-4"
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke="currentColor"
+							>
+								{#if sortDirection === 'asc'}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 15l7-7 7 7"
+									/>
+								{:else}
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M19 9l-7 7-7-7"
+									/>
+								{/if}
+							</svg>
+						{/if}
+					</button>
 				</th>
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
-					ДЕЙСТВИЯ
+					<span class="sr-only">Действия</span>
 				</th>
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="7" class="px-4 py-8" role="cell">
+					<td colspan="6" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -312,6 +278,11 @@
 						</td>
 						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-4 leading-relaxed break-words">
+								{order.project?.value || order.project?.contract_number || 'Не указан'}
+							</div>
+						</td>
+						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-4 leading-relaxed break-words">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
@@ -319,7 +290,7 @@
 							class="px-4 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4">
+							<div class="flex items-center gap-1 pr-4">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
 										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
@@ -333,13 +304,7 @@
 										Обычный
 									</span>
 								{/if}
-							</div>
-						</td>
-						<td
-							class="px-4 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
-							role="cell"
-						>
-							<div class="pr-4">
+								<span class="text-gray-400">/</span>
 								{#if order.is_active}
 									<span
 										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
@@ -353,11 +318,6 @@
 										Неактивен
 									</span>
 								{/if}
-							</div>
-						</td>
-						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
-								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
