@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request';
-import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 import { handleApiError } from '$lib/utils/toastStore.js';
 
 // GraphQL queries and mutations
@@ -280,7 +280,8 @@ async function makeGraphQLRequest(
 				Accept: 'application/json'
 			};
 
-			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
+			const graphqlEndpoint = getGraphQLEndpoint();
+			const response = await fetchFunction(graphqlEndpoint, {
 				method: 'POST',
 				headers,
 				body: JSON.stringify({ query, variables }),

@@ -1,6 +1,6 @@
 import { gql, GraphQLClient } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
-import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 
 // GraphQL queries and mutations
 const USERS_QUERY = gql`
@@ -91,8 +91,11 @@ async function makeGraphQLRequest(
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
+		// Get dynamic GraphQL endpoint
+		const graphqlEndpoint = getGraphQLEndpoint();
+		
 		// Debug logging
-		console.log(`🌐 [${operationName}] GraphQL endpoint:`, GRAPHQL_ENDPOINT);
+		console.log(`🌐 [${operationName}] GraphQL endpoint:`, graphqlEndpoint);
 
 		const headers = {
 			'Content-Type': 'application/json',
@@ -100,7 +103,7 @@ async function makeGraphQLRequest(
 		};
 
 		// Create GraphQL client with headers (graphql-request v7 way)
-		const client = new GraphQLClient(GRAPHQL_ENDPOINT, {
+		const client = new GraphQLClient(graphqlEndpoint, {
 			headers: headers
 		});
 

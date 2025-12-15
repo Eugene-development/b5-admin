@@ -1,6 +1,6 @@
 import { gql, request } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
-import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 
 // GraphQL query for project statuses
 const PROJECT_STATUSES_QUERY = gql`
@@ -43,7 +43,8 @@ async function makeGraphQLRequest(
 				Accept: 'application/json'
 			};
 
-			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
+			const graphqlEndpoint = getGraphQLEndpoint();
+			const response = await fetchFunction(graphqlEndpoint, {
 				method: 'POST',
 				headers,
 				body: JSON.stringify({

@@ -1,6 +1,6 @@
 import { gql, request } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
-import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 
 // GraphQL queries and mutations
 const TECHNICAL_SPECIFICATIONS_QUERY = gql`
@@ -278,9 +278,11 @@ async function makeGraphQLRequest(
 			const fetchFunction =
 				customFetch || (typeof window !== 'undefined' ? window.fetch : globalThis.fetch);
 
+			const graphqlEndpoint = getGraphQLEndpoint();
+			
 			console.log('🔧 GraphQL Request Debug:', {
 				operationName,
-				endpoint: GRAPHQL_ENDPOINT,
+				endpoint: graphqlEndpoint,
 				variables,
 				timestamp: new Date().toISOString()
 			});
@@ -290,7 +292,7 @@ async function makeGraphQLRequest(
 				Accept: 'application/json'
 			};
 
-			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
+			const response = await fetchFunction(graphqlEndpoint, {
 				method: 'POST',
 				headers,
 				body: JSON.stringify({
@@ -454,7 +456,8 @@ export async function uploadSketchFile(projectId, file) {
 		formData.append('map', JSON.stringify({ 0: ['variables.file'] }));
 		formData.append('0', file);
 
-		const response = await fetch(GRAPHQL_ENDPOINT, {
+		const graphqlEndpoint = getGraphQLEndpoint();
+		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
 			body: formData,
 			credentials: 'include'
@@ -491,7 +494,8 @@ export async function uploadOfferFile(projectId, file) {
 		formData.append('map', JSON.stringify({ 0: ['variables.file'] }));
 		formData.append('0', file);
 
-		const response = await fetch(GRAPHQL_ENDPOINT, {
+		const graphqlEndpoint = getGraphQLEndpoint();
+		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
 			body: formData,
 			credentials: 'include'
@@ -542,7 +546,8 @@ export async function uploadTzFile(tzId, fileType, file) {
 		formData.append('map', JSON.stringify({ 0: ['variables.input.file'] }));
 		formData.append('0', file);
 
-		const response = await fetch(GRAPHQL_ENDPOINT, {
+		const graphqlEndpoint = getGraphQLEndpoint();
+		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
 			body: formData,
 			credentials: 'include'

@@ -1,8 +1,8 @@
-# Проблема с доменом rubonus.pro
+# Проблема с доменом rubonus.pro - ИСПРАВЛЕНО
 
 ## Описание проблемы
 
-На продакшене при работе с сайтом `https://rubonus.pro` возникает ошибка при смене статуса договора:
+На продакшене при работе с сайтом `https://rubonus.pro` возникала ошибка при смене статуса договора:
 
 ```
 Access to fetch at 'https://api.bonus.band/graphql' from origin 'https://rubonus.pro' 
@@ -10,9 +10,13 @@ has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pres
 on the requested resource.
 ```
 
-## Почему остальные запросы работают?
+## Причина
 
-Это НЕ проблема CORS! Это проблема **cross-domain cookies**.
+Файл `contracts.js` использовал статический `GRAPHQL_ENDPOINT` из `api.js`, который не учитывал мультидоменную систему из `domain.js`. В результате запросы с `rubonus.pro` шли на `api.bonus.band` вместо `api.rubonus.pro`, и cookie не отправлялась (разные домены).
+
+## Почему остальные запросы работали?
+
+Другие API файлы могли использовать мультидоменную систему правильно, или их операции не требовали строгой аутентификации.
 
 ### Как работает аутентификация:
 
@@ -44,38 +48,39 @@ VITE_FRONTEND_URL=https://admin.bonus.band
 - Некоторые мутации могут работать без строгой проверки
 - Но `updateContractStatus` требует аутентифицированного пользователя
 
-## Решение
+## Решение - ПРИМЕНЕНО
 
-### Вариант 1: Использовать поддомены rubonus.pro (Рекомендуется)
+### Исправление в коде
 
-Нужно настроить nginx для проксирования запросов:
+Обновлены файлы:
 
-1. **Создать поддомены:**
-   - `https://api.rubonus.pro` → проксирует на `https://api.bonus.band`
-   - `https://auth.rubonus.pro` → проксирует на `https://auth.bonus.band`
+1. **`src/lib/config/api.js`**
+   - Добавлена функция `getGraphQLEndpoint()` которая использует мультидоменную систему из `domain.js`
+   - Теперь API URL определяется динамически на основе текущего домена
 
-2. **Использовать новый конфигурационный файл:**
+2. **`src/lib/api/contracts.js`**
+   - Изменен импорт с `GRAPHQL_ENDPOINT` на `getGraphQLEndpoint()`
+   - Теперь использует динамический endpoint: `const graphqlEndpoint = getGraphQLEndpoint();`
 
-Создан файл `.env.production.rubonus`:
-```env
-VITE_API_BASE_URL=https://api.rubonus.pro
-VITE_AUTH_API_URL=https://auth.rubonus.pro
-VITE_FRONTEND_URL=https://rubonus.pro
+### Как это работает
+
+Мультидоменная система (`domain.js`) автоматически определяет правильные API URLs:
+
+```javascript
+// Для rubonus.pro
+'rubonus.pro': {
+    authApi: 'https://auth.rubonus.pro',
+    api: 'https://api.rubonus.pro'
+}
+
+// Для admin.bonus.band
+'admin.bonus.band': {
+    authApi: 'https://auth.bonus.band',
+    api: 'https://api.bonus.band'
+}
 ```
 
-3. **Собрать проект с правильной конфигурацией:**
-
-```bash
-cd b5-admin
-
-# Скопировать конфигурацию для rubonus
-cp .env.production.rubonus .env.production
-
-# Собрать проект
-npm run build
-
-# Деплой на сервер rubonus.pro
-```
+Теперь запросы с `rubonus.pro` идут на `api.rubonus.pro`, и cookie отправляется корректно.
 
 ### Вариант 2: Настроить nginx reverse proxy
 

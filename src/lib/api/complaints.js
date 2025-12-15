@@ -1,5 +1,5 @@
 import { gql } from 'graphql-request';
-import { GRAPHQL_ENDPOINT } from '$lib/config/api.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 
 // GraphQL queries and mutations
 const COMPLAINTS_QUERY = gql`
@@ -190,7 +190,8 @@ async function makeGraphQLRequest(
 			};
 
 			// Make the request using fetch directly to support server-side
-			const response = await fetchFunction(GRAPHQL_ENDPOINT, {
+			const graphqlEndpoint = getGraphQLEndpoint();
+			const response = await fetchFunction(graphqlEndpoint, {
 				method: 'POST',
 				headers,
 				body: JSON.stringify({
