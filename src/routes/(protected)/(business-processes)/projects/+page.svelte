@@ -331,6 +331,18 @@
 		updateCounter++;
 	}
 
+	// Handle inline status change from table
+	async function handleStatusChange(updatedProject) {
+		try {
+			// Update local state immediately
+			updateProjectInList(updatedProject);
+			// Refresh new projects count in sidebar (in case status changed)
+			await newProjectsState.refresh();
+		} catch (error) {
+			console.error('Failed to handle status change:', error);
+		}
+	}
+
 	// Refresh data from server
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
@@ -656,11 +668,13 @@
 								<div class="mt-8">
 									<ProjectsTable
 										projects={paginatedProjects}
+										{projectStatuses}
 										isLoading={isActionLoading}
 										onEditProject={handleEditProject}
 										onDeleteProject={handleDeleteProject}
 										onViewProject={handleViewProject}
 										onAcceptProject={handleAcceptProject}
+										onStatusChange={handleStatusChange}
 										{updateCounter}
 										{searchTerm}
 										hasSearched={searchTerm.trim().length > 0}

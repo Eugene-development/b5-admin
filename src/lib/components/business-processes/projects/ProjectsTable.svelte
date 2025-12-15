@@ -1,15 +1,18 @@
 <script>
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
+	import ProjectStatusBadge from './ProjectStatusBadge.svelte';
 	import ActionButtons from '$lib/components/business-processes/actions/ActionButtons.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 
 	let {
 		projects = [],
+		projectStatuses = [],
 		isLoading = false,
 		onEditProject,
 		onDeleteProject,
 		onViewProject,
 		onAcceptProject,
+		onStatusChange,
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false,
@@ -365,7 +368,11 @@
 							role="cell"
 							headers="col-status"
 						>
-							<StatusBadge status={project.status} />
+							<ProjectStatusBadge
+								{project}
+								{projectStatuses}
+								onStatusChange={(updatedProject) => onStatusChange && onStatusChange(updatedProject)}
+							/>
 						</td>
 
 						<td class="px-6 py-5 text-center whitespace-nowrap" role="cell" headers="col-accept">
@@ -487,7 +494,11 @@
 							>
 								№ {project.sequentialNumber || index + 1}
 							</span>
-							<StatusBadge status={project.status} />
+							<ProjectStatusBadge
+								{project}
+								{projectStatuses}
+								onStatusChange={(updatedProject) => onStatusChange && onStatusChange(updatedProject)}
+							/>
 						</div>
 					</div>
 

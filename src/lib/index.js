@@ -44,6 +44,7 @@ export { default as ActionAddModal } from './components/business-processes/actio
 export { default as ActionButtons } from './components/business-processes/actions/ActionButtons.svelte';
 
 export { default as ProjectsTable } from './components/business-processes/projects/ProjectsTable.svelte';
+export { default as ProjectStatusBadge } from './components/business-processes/projects/ProjectStatusBadge.svelte';
 export { default as ProjectEditModal } from './components/business-processes/projects/ProjectEditModal.svelte';
 export { default as ProjectViewModal } from './components/business-processes/projects/ProjectViewModal.svelte';
 
