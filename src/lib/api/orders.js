@@ -128,10 +128,18 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 					is_active
 					is_urgent
 					partner_payment_status_id
+					status_id
 					partnerPaymentStatus {
 						id
 						code
 						name
+					}
+					status {
+						id
+						slug
+						value
+						color
+						sort_order
 					}
 					created_at
 					updated_at
@@ -603,6 +611,110 @@ export async function createOrderPosition(positionData) {
 }
 
 /**
+ * Get all order statuses
+ * @returns {Promise<Array>} List of order statuses
+ */
+export async function getOrderStatuses(fetchFn = fetch) {
+	const query = `
+		query GetOrderStatuses {
+			orderStatuses {
+				id
+				slug
+				value
+				color
+				sort_order
+			}
+		}
+	`;
+
+	try {
+		const response = await fetchFn(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({ query })
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to fetch order statuses');
+		}
+
+		return result.data.orderStatuses || [];
+	} catch (error) {
+		handleApiError(error, 'Не удалось загрузить статусы заказов');
+		throw error;
+	}
+}
+
+/**
+ * Update order status
+ * @param {string} orderId - Order ID
+ * @param {string} statusSlug - New status slug
+ * @returns {Promise<Object>} Updated order with new status
+ */
+export async function updateOrderStatus(orderId, statusSlug) {
+	const mutation = `
+		mutation UpdateOrderStatus($orderId: ID!, $statusSlug: String!) {
+			updateOrderStatus(order_id: $orderId, status_slug: $statusSlug) {
+				id
+				status_id
+				status {
+					id
+					slug
+					value
+					color
+					sort_order
+				}
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(API_URL, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					orderId,
+					statusSlug
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update order status');
+		}
+
+		return result.data.updateOrderStatus;
+	} catch (error) {
+		handleApiError(error, 'Не удалось обновить статус заказа');
+		throw error;
+	}
+}
+
+/**
  * Factory function to create API client with server-side fetch support
  * @param {Function} fetch - SvelteKit fetch function
  * @param {Object} cookies - SvelteKit cookies object
@@ -617,6 +729,7 @@ export function createOrdersApiWithFetch(fetch, cookies) {
 		refreshOrders: () => refreshOrders(),
 		createOrderPosition: (positionData) => createOrderPosition(positionData),
 		updateOrderPosition: (positionData) => updateOrderPosition(positionData),
-		deleteOrderPosition: (positionId) => deleteOrderPosition(positionId)
+		deleteOrderPosition: (positionId) => deleteOrderPosition(positionId),
+		getOrderStatuses: () => getOrderStatuses(fetch)
 	};
 }

@@ -2,6 +2,7 @@
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import OrderViewModal from './OrderViewModal.svelte';
 	import PartnerPaymentStatusBadge from './PartnerPaymentStatusBadge.svelte';
+	import OrderStatusBadge from './OrderStatusBadge.svelte';
 
 	let {
 		orders = [],
@@ -9,7 +10,9 @@
 		onDeleteOrder,
 		onEditOrder,
 		onPartnerPaymentStatusChange = null,
+		onOrderStatusChange = null,
 		partnerPaymentStatuses = [],
+		orderStatuses = [],
 		updateCounter = 0,
 		searchTerm = '',
 		hasSearched = false
@@ -243,6 +246,13 @@
 				<th
 					scope="col"
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					СТАТУС
+				</th>
+				<th
+					scope="col"
+					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -252,7 +262,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="7" class="px-4 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -319,6 +329,17 @@
 									</span>
 								{/if}
 							</div>
+						</td>
+						<td class="px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
+							<OrderStatusBadge
+								{order}
+								{orderStatuses}
+								onStatusChange={(result) => {
+									if (onOrderStatusChange) {
+										onOrderStatusChange(order.id, result);
+									}
+								}}
+							/>
 						</td>
 						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
@@ -494,7 +515,7 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Статус
+								Активность
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{#if order.is_active}
@@ -520,6 +541,24 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
+							</dd>
+						</div>
+						<div class="col-span-2">
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Статус
+							</dt>
+							<dd class="mt-1 text-sm">
+								<OrderStatusBadge
+									{order}
+									{orderStatuses}
+									onStatusChange={(result) => {
+										if (onOrderStatusChange) {
+											onOrderStatusChange(order.id, result);
+										}
+									}}
+								/>
 							</dd>
 						</div>
 					</dl>

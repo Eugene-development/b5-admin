@@ -25,7 +25,8 @@
 		refreshOrders,
 		updateOrder,
 		getCompaniesForDropdown,
-		getProjectsForDropdown
+		getProjectsForDropdown,
+		getOrderStatuses
 	} from '$lib/api/orders.js';
 	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 
@@ -60,6 +61,9 @@
 
 	// Partner payment statuses
 	let partnerPaymentStatuses = $state([]);
+
+	// Order statuses
+	let orderStatuses = $state([]);
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -208,17 +212,19 @@
 		isRefreshing = true;
 		try {
 			// Load orders, companies, projects and statuses in parallel
-			const [rawOrders, companiesData, projectsData, statusesData] = await Promise.all([
+			const [rawOrders, companiesData, projectsData, paymentStatusesData, orderStatusesData] = await Promise.all([
 				refreshOrders(),
 				getCompaniesForDropdown(),
 				getProjectsForDropdown(),
-				getPartnerPaymentStatuses()
+				getPartnerPaymentStatuses(),
+				getOrderStatuses()
 			]);
 
 			// Update companies, projects and statuses
 			companies = companiesData;
 			projects = projectsData;
-			partnerPaymentStatuses = statusesData;
+			partnerPaymentStatuses = paymentStatusesData;
+			orderStatuses = orderStatusesData;
 
 			// Sort orders by created_at in descending order (newest first)
 			const sortedOrders = [...rawOrders].sort((a, b) => {
@@ -430,6 +436,17 @@
 		);
 		updateCounter++;
 	}
+
+	// Handle order status change
+	function handleOrderStatusChange(orderId, result) {
+		// Update local state with new status
+		orders = orders.map((order) =>
+			order.id === orderId
+				? { ...order, status: result.status, status_id: result.status_id }
+				: order
+		);
+		updateCounter++;
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -629,9 +646,11 @@
 									{hasSearched}
 									{updateCounter}
 									{partnerPaymentStatuses}
+									{orderStatuses}
 									onDeleteOrder={handleDeleteOrder}
 									onEditOrder={handleEditOrder}
 									onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
+									onOrderStatusChange={handleOrderStatusChange}
 								/>
 
 								<Pagination
