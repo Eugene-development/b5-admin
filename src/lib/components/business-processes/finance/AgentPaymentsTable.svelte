@@ -76,7 +76,7 @@
 					Номер документа
 				</th>
 				<th scope="col" class="px-6 py-3 text-right text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-					Действия
+					<span class="sr-only">Действия</span>
 				</th>
 			</tr>
 		</thead>

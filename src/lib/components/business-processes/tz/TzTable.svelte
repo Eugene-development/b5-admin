@@ -173,7 +173,7 @@
 					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px; width: 250px;"
 				>
-					Действия
+					<span class="sr-only">Действия</span>
 				</th>
 			</tr>
 		</thead>
