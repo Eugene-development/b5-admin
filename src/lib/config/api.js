@@ -1,10 +1,11 @@
 /**
  * API Configuration
- * Uses multi-domain system from domain.js with fallback to environment variables
+ * Uses multi-domain system from domain.js on client-side
+ * Uses environment variables on server-side (SSR)
  */
 
 import { browser } from '$app/environment';
-import { getApiUrl, getAuthApiUrl, getCurrentHostname } from './domain.js';
+import { getApiUrl, getAuthApiUrl } from './domain.js';
 
 // Default configuration for development (fallback)
 const DEFAULT_CONFIG = {
@@ -14,37 +15,17 @@ const DEFAULT_CONFIG = {
 };
 
 /**
- * Get API configuration
- * Priority order:
- * 1. Multi-domain system (domain.js) - based on current hostname
- * 2. Compile-time environment variables (VITE_*) - fallback
- * 3. Development defaults
+ * Get static API configuration from environment variables
+ * Used for SSR and as fallback
  */
-function getApiConfig() {
-	// Try multi-domain system first (works on both client and server)
-	try {
-		const apiUrl = getApiUrl();
-		const authApiUrl = getAuthApiUrl();
-		
-		if (apiUrl && authApiUrl) {
-			return {
-				API_BASE_URL: apiUrl,
-				AUTH_API_URL: authApiUrl,
-				FRONTEND_URL: browser ? window.location.origin : ''
-			};
-		}
-	} catch (error) {
-		console.warn('Multi-domain system failed, falling back to env variables:', error);
-	}
-
-	// Fallback to compile-time Vite environment variables
+function getStaticConfig() {
+	// Try compile-time Vite environment variables
 	const viteConfig = {
 		API_BASE_URL: import.meta.env.VITE_API_BASE_URL,
 		AUTH_API_URL: import.meta.env.VITE_AUTH_API_URL,
 		FRONTEND_URL: import.meta.env.VITE_FRONTEND_URL
 	};
 
-	// Check if all required Vite environment variables are available
 	if (viteConfig.API_BASE_URL && viteConfig.AUTH_API_URL && viteConfig.FRONTEND_URL) {
 		return viteConfig;
 	}
@@ -53,41 +34,54 @@ function getApiConfig() {
 	return DEFAULT_CONFIG;
 }
 
-export const config = getApiConfig();
-export const { API_BASE_URL, AUTH_API_URL, FRONTEND_URL } = config;
+// Static config for SSR and fallback
+const staticConfig = getStaticConfig();
+
+export const config = staticConfig;
+export const { API_BASE_URL, AUTH_API_URL, FRONTEND_URL } = staticConfig;
 
 /**
  * Get GraphQL endpoint dynamically based on current domain
- * This ensures the correct API URL is used for multi-domain setups
+ * On client-side: uses multi-domain system from domain.js
+ * On server-side: uses static config from environment variables
  */
 export function getGraphQLEndpoint() {
-	try {
-		const apiUrl = getApiUrl();
-		if (apiUrl) {
-			return `${apiUrl}/graphql`;
+	// Only use multi-domain system on client-side
+	if (browser) {
+		try {
+			const apiUrl = getApiUrl();
+			if (apiUrl) {
+				return `${apiUrl}/graphql`;
+			}
+		} catch (error) {
+			console.warn('Multi-domain system failed:', error);
 		}
-	} catch (error) {
-		// Fallback to static config
 	}
+	// Server-side or fallback: use static config
 	return `${API_BASE_URL}/graphql`;
 }
 
 /**
  * Get Auth endpoint dynamically based on current domain
+ * On client-side: uses multi-domain system from domain.js
+ * On server-side: uses static config from environment variables
  */
 export function getAuthEndpoint() {
-	try {
-		const authApiUrl = getAuthApiUrl();
-		if (authApiUrl) {
-			return `${authApiUrl}/api`;
+	// Only use multi-domain system on client-side
+	if (browser) {
+		try {
+			const authApiUrl = getAuthApiUrl();
+			if (authApiUrl) {
+				return `${authApiUrl}/api`;
+			}
+		} catch (error) {
+			console.warn('Multi-domain system failed:', error);
 		}
-	} catch (error) {
-		// Fallback to static config
 	}
+	// Server-side or fallback: use static config
 	return `${AUTH_API_URL}/api`;
 }
 
 // Legacy exports for backward compatibility
-// These use static config from env variables as fallback
-export const GRAPHQL_ENDPOINT = getGraphQLEndpoint();
-export const AUTH_ENDPOINT = getAuthEndpoint();
+export const GRAPHQL_ENDPOINT = `${API_BASE_URL}/graphql`;
+export const AUTH_ENDPOINT = `${AUTH_API_URL}/api`;
