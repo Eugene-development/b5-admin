@@ -1,5 +1,15 @@
 import { gql } from 'graphql-request';
 import { getGraphQLEndpoint } from '$lib/config/api.js';
+import { browser } from '$app/environment';
+
+/**
+ * Get JWT token from localStorage (client-side only)
+ * @returns {string|null} JWT token or null
+ */
+function getStoredToken() {
+	if (!browser) return null;
+	return localStorage.getItem('b5_auth_token');
+}
 
 // GraphQL queries and mutations
 const CONTRACTS_QUERY = gql`
@@ -209,6 +219,14 @@ async function makeGraphQLRequest(
 				'Content-Type': 'application/json',
 				Accept: 'application/json'
 			};
+
+			// Add JWT token for client-side requests
+			if (!customFetch && browser) {
+				const token = getStoredToken();
+				if (token) {
+					headers['Authorization'] = `Bearer ${token}`;
+				}
+			}
 
 			// Make the request using fetch directly to support server-side
 			const graphqlEndpoint = getGraphQLEndpoint();
