@@ -83,7 +83,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if payments.length === 0}
 				<tr>
-					<td colspan="7" class="px-4 py-12 text-center">
+					<td colspan="7" class="px-3 py-12 text-center">
 						<EmptyState
 							title={hasSearched ? 'Выплаты не найдены' : 'Нет выплат'}
 							description={hasSearched
@@ -164,7 +164,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if payments.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				title={hasSearched ? 'Выплаты не найдены' : 'Нет выплат'}
 				description={hasSearched

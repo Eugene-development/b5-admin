@@ -105,7 +105,7 @@
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -114,7 +114,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -123,7 +123,7 @@
 					id="col-email"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Почта
@@ -133,7 +133,7 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регион
@@ -142,7 +142,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регистрация
@@ -151,7 +151,7 @@
 					id="col-ban"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Состояние
@@ -164,7 +164,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan="7" class="px-4 py-3" role="cell">
+					<td colspan="7" class="px-3 py-3" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -178,21 +178,21 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Not specified'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
@@ -201,20 +201,20 @@
 						</td>
 
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-ban">
+						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-ban">
 							<button
 								type="button"
 								onclick={() => onBanUser(user)}
@@ -335,7 +335,7 @@
 <!-- Mobile Card View (visible on mobile only) -->
 <div class="md:hidden">
 	{#if users.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}
@@ -502,31 +502,31 @@
 						<tr>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Почта
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Регион
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</th>
@@ -538,7 +538,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="6" class="px-4 py-3 text-center">
+								<td colspan="6" class="px-3 py-3 text-center">
 									<div class="flex justify-center">
 										<div class="hidden h-6 w-6"></div>
 									</div>
@@ -546,7 +546,7 @@
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="6" class="px-4 py-3">
+								<td colspan="6" class="px-3 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -556,19 +556,19 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Not specified'}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.email}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap">
+									<td class="px-3 py-5 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 												<StatusBadge status="banned" />

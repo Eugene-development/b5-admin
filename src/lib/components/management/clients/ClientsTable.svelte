@@ -92,7 +92,7 @@
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -101,7 +101,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -110,7 +110,7 @@
 					id="col-agent"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Агент
@@ -119,7 +119,7 @@
 					id="col-phone"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Телефон
@@ -128,7 +128,7 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регион
@@ -137,7 +137,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регистрация
@@ -146,7 +146,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Состояние
@@ -161,7 +161,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if users.length === 0}
 				<tr>
-					<td colspan={showActions ? '7' : '6'} class="px-4 py-4" role="cell">
+					<td colspan={showActions ? '7' : '6'} class="px-3 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -175,28 +175,28 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Не указано'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-agent"
 						>
 							{user.agent?.name || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-phone"
 						>
@@ -207,20 +207,20 @@
 							{/if}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							<StatusBadge status={getClientStatus(user)} />
 						</td>
 						{#if showActions}
@@ -299,7 +299,7 @@
 <!-- Mobile Card View (visible on mobile only) -->
 <div class="md:hidden">
 	{#if users.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}
@@ -450,37 +450,37 @@
 						<tr>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Агент
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Телефон
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Регион
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</th>
@@ -494,7 +494,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if users.length === 0}
 							<tr>
-								<td colspan={showActions ? '7' : '6'} class="px-4 py-4">
+								<td colspan={showActions ? '7' : '6'} class="px-3 py-4">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -504,16 +504,16 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Не указано'}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.agent?.name || 'Не указан'}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{#if user.phones && user.phones.length > 0}
 											{formatPhone(
 												user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value
@@ -522,10 +522,10 @@
 											Не указан
 										{/if}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-5 text-sm whitespace-nowrap">
+									<td class="px-3 py-5 text-sm whitespace-nowrap">
 										<StatusBadge status={getClientStatus(user)} />
 									</td>
 									{#if showActions}

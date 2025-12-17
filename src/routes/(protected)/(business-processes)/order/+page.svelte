@@ -33,7 +33,7 @@
 	let { data } = $props();
 	let hasAccess = $state(false);
 	let orders = $state([]);
-	let isLoading = $state(false);
+	let isLoading = $state(true); // Start with true to show skeleton initially
 	let isRefreshing = $state(false);
 	let searchTerm = $state('');
 	let hasSearched = $state(false);
@@ -70,9 +70,21 @@
 	let errorBoundaryError = $state(null);
 
 	// Initialize domain detection and check access
-	onMount(() => {
+	onMount(async () => {
 		initializeDomainDetection();
 		hasAccess = hasOrderAccess();
+
+		// Always load statuses first
+		try {
+			const [paymentStatuses, statuses] = await Promise.all([
+				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses),
+				orderStatuses.length === 0 ? getOrderStatuses() : Promise.resolve(orderStatuses)
+			]);
+			partnerPaymentStatuses = paymentStatuses;
+			orderStatuses = statuses;
+		} catch (error) {
+			console.error('Failed to load statuses:', error);
+		}
 
 		// Load data if we have empty initial data
 		if (orders.length === 0) {
@@ -211,20 +223,16 @@
 	async function refreshData(isInitialLoad = false) {
 		isRefreshing = true;
 		try {
-			// Load orders, companies, projects and statuses in parallel
-			const [rawOrders, companiesData, projectsData, paymentStatusesData, orderStatusesData] = await Promise.all([
+			// Load orders, companies and projects in parallel
+			const [rawOrders, companiesData, projectsData] = await Promise.all([
 				refreshOrders(),
 				getCompaniesForDropdown(),
-				getProjectsForDropdown(),
-				getPartnerPaymentStatuses(),
-				getOrderStatuses()
+				getProjectsForDropdown()
 			]);
 
-			// Update companies, projects and statuses
+			// Update companies and projects
 			companies = companiesData;
 			projects = projectsData;
-			partnerPaymentStatuses = paymentStatusesData;
-			orderStatuses = orderStatusesData;
 
 			// Sort orders by created_at in descending order (newest first)
 			const sortedOrders = [...rawOrders].sort((a, b) => {
@@ -249,6 +257,7 @@
 			handleApiError(error, 'Не удалось обновить данные');
 		} finally {
 			isRefreshing = false;
+			isLoading = false; // Set to false after first load
 		}
 	}
 
@@ -553,8 +562,8 @@
 							{((projects = ordersData.projects), '')}
 						{/if}
 
-						<!-- Show skeleton during initial data refresh when no data is available -->
-						{#if isRefreshing && orders.length === 0}
+						<!-- Show skeleton during initial load or refresh when no data is available -->
+						{#if isLoading || (isRefreshing && orders.length === 0)}
 							<TableSkeleton columns={6} />
 						{:else}
 							<TablePageLayout title="Заказы">

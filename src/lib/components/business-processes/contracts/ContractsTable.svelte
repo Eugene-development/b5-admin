@@ -175,6 +175,7 @@
 				<th
 					scope="col"
 					class="px-6 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+					style="min-width: 180px; width: 180px;"
 					onclick={() => handleSort('status')}
 					role="button"
 					tabindex="0"
@@ -203,7 +204,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if contracts.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-12 text-center">
+					<td colspan="8" class="px-3 py-12 text-center">
 						<EmptyState
 							title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 							description={hasSearched
@@ -273,7 +274,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if contracts.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				title={hasSearched ? 'Договора не найдены' : 'Нет договоров'}
 				description={hasSearched

@@ -62,34 +62,34 @@
 	<table id={tableId} class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
-				<th scope="col" class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					№
 				</th>
-				<th scope="col" class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					{sourceType === 'contract' ? 'Договор' : sourceType === 'order' ? 'Заказ' : 'Источник'}
 				</th>
-				<th scope="col" class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					Проект
 				</th>
-				<th scope="col" class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
 					Агент
 				</th>
-				<th scope="col" class="px-4 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Бонус
 				</th>
-				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Статус
 				</th>
-				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Начислено
 				</th>
-				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Доступно
 				</th>
-				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Выплачено
 				</th>
-				<th scope="col" class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Оплата
 				</th>
 			</tr>
@@ -97,7 +97,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if bonuses.length === 0}
 				<tr>
-					<td colspan="10" class="px-4 py-12 text-center">
+					<td colspan="10" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 							description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
@@ -107,44 +107,44 @@
 			{:else}
 				{#each bonuses as bonus, index (bonus.id)}
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-						<td class="px-4 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{index + 1}
 						</td>
-						<td class="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
 							<div class="font-medium">{getSourceNumber(bonus)}</div>
 							<div class="text-xs text-gray-500 dark:text-gray-400">
 								{bonus.source_type === 'contract' ? 'Договор' : 'Заказ'}
 							</div>
 						</td>
-						<td class="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-4 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
 							<div class="font-medium">{bonus.agent?.name || '—'}</div>
 							{#if bonus.agent?.email}
 								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent.email}</div>
 							{/if}
 						</td>
-						<td class="px-4 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(bonus.commission_amount)}
 						</td>
-						<td class="px-4 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
 							<BonusPaymentStatusBadge
 								{bonus}
 								{bonusStatuses}
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
-						<td class="px-4 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(bonus.accrued_at)}
 						</td>
-						<td class="px-4 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(bonus.available_at)}
 						</td>
-						<td class="px-4 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatDate(bonus.paid_at)}
 						</td>
-						<td class="px-4 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
 							{#if getSourceEntity(bonus)}
 								<PartnerPaymentStatusBadge
 									contract={getSourceEntity(bonus)}
@@ -165,7 +165,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if bonuses.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 				description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}

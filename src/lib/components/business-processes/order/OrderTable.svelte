@@ -25,19 +25,6 @@
 	let sortColumn = $state(null); // 'supplier', 'urgency_status', null
 	let sortDirection = $state('asc'); // 'asc' or 'desc'
 
-	// Calculate max order number length for alignment
-	let maxOrderNumberLength = $derived.by(() => {
-		if (!orders || orders.length === 0) return 10; // default length in characters
-		const maxLength = Math.max(
-			...orders.map((order) => {
-				const orderNum = order.order_number || order.deal || 'Не указан';
-				return orderNum.length;
-			})
-		);
-		// Convert characters to approximate pixels (assuming ~8px per character)
-		return Math.max(maxLength * 8, 80); // minimum 80px
-	});
-
 	// Sorted orders derived from orders and sort state
 	let sortedOrders = $derived.by(() => {
 		// Return original array reference when no sorting is active
@@ -160,28 +147,35 @@
 		style="min-width: 1200px;"
 	>
 		<caption id={tableCaptionId} class="sr-only">
-			Таблица управления закупками с {orders.length} закуп{orders.length === 1 ? 'кой' : orders.length < 5 ? 'ками' : 'ками'}
+			Таблица управления закупками с {orders.length} закуп{orders.length === 1 ? 'кой' : 'ками'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
 		<thead class="bg-gray-50 dark:bg-gray-800">
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 250px;"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
 				>
-					НОМЕР / ПРОЕКТ
+					НОМЕР
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 150px;"
+				>
+					ПРОЕКТ
+				</th>
+				<th
+					scope="col"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					<button
@@ -219,7 +213,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					<button
@@ -227,7 +221,7 @@
 						onclick={() => handleSort('urgency_status')}
 						class="inline-flex items-center space-x-1 transition-colors hover:text-gray-700 dark:hover:text-gray-200"
 					>
-						<span>СРОЧНОСТЬ / СТАТУС</span>
+						<span>МЕТКИ</span>
 						{#if sortColumn === 'urgency_status'}
 							<svg
 								class="h-4 w-4"
@@ -257,8 +251,8 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
-					style="min-width: 150px;"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+					style="min-width: 180px; width: 180px;"
 				>
 					<button
 						type="button"
@@ -275,7 +269,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -285,7 +279,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="6" class="px-4 py-8" role="cell">
+					<td colspan="7" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -299,28 +293,31 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
 							{order.sequentialNumber || index + 1}
 						</td>
-						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="grid items-start gap-2 pr-4" style="grid-template-columns: {maxOrderNumberLength}px auto 1fr;">
-								<span class="text-left">{order.order_number || order.deal || 'Не указан'}</span>
-								<span class="text-gray-400 dark:text-gray-500">/</span>
-								<span class="break-words">{order.project?.value || order.project?.contract_number || 'Не указан'}</span>
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
+								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
+								{order.project?.value || order.project?.contract_number || 'Не указан'}
+							</div>
+						</td>
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="flex items-center gap-1 pr-4">
+							<div class="flex items-center gap-1 pr-3">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
 										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
@@ -350,7 +347,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<OrderStatusBadge
 								{order}
 								{orderStatuses}
@@ -361,7 +358,7 @@
 								}}
 							/>
 						</td>
-						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<!-- View Button -->
 								<button

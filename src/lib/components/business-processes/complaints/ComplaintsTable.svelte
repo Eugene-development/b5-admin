@@ -316,7 +316,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if complaints.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<div class="flex flex-col items-center justify-center">
 				<svg
 					class="mb-4 h-12 w-12 text-gray-400"

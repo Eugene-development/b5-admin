@@ -60,6 +60,7 @@
 
 	// Loading state for data refresh
 	let isRefreshing = $state(false);
+	let isLoading = $state(true); // Start with true to show skeleton initially
 
 	// Local contracts state for updates
 	let localContracts = $state([]);
@@ -296,6 +297,7 @@
 			);
 		} finally {
 			isRefreshing = false;
+			isLoading = false; // Set to false after first load
 		}
 	}
 
@@ -394,8 +396,8 @@
 					{((loadError = contractsData.error), '')}
 				{/if}
 
-				<!-- Show skeleton during initial data refresh when no data is available -->
-				{#if isRefreshing && localContracts.length === 0}
+				<!-- Show skeleton during initial load or refresh when no data is available -->
+				{#if isLoading || (isRefreshing && localContracts.length === 0)}
 					<TableSkeleton columns={10} />
 				{:else}
 

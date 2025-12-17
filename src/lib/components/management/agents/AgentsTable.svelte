@@ -105,7 +105,7 @@
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -114,7 +114,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -123,7 +123,7 @@
 					id="col-email"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Почта
@@ -132,7 +132,7 @@
 					id="col-verified"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					<!-- Подтверждена -->
@@ -141,7 +141,7 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регион
@@ -150,7 +150,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Дата регистрации
@@ -159,7 +159,7 @@
 					id="col-user-status"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус пользователя
@@ -168,7 +168,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус
@@ -181,7 +181,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if false && isLoading}
 				<tr>
-					<td colspan="10" class="px-4 py-3 text-center" role="cell">
+					<td colspan="10" class="px-3 py-3 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Loading users data">
 							<div class="hidden h-6 w-6" aria-hidden="true"></div>
 						</div>
@@ -190,7 +190,7 @@
 				</tr>
 			{:else if users.length === 0}
 				<tr>
-					<td colspan="9" class="px-4 py-3" role="cell">
+					<td colspan="9" class="px-3 py-3" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -204,45 +204,45 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{agent.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{agent.name || 'Not specified'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
 							{agent.email}
 						</td>
-						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-verified">
+						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-verified">
 							<StatusBadge status={getEmailVerificationStatus(agent.email_verified_at)} />
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{agent.region || 'Не указан'}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(agent.created_at)}
 						</td>
 						<td
-							class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-user-status"
 						>
@@ -261,7 +261,7 @@
 								<span class="text-gray-400">Не указан</span>
 							{/if}
 						</td>
-						<td class="px-4 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 								<StatusBadge status="banned" />
 							{:else}
@@ -390,7 +390,7 @@
 			<div class="hidden h-6 w-6"></div>
 		</div>
 	{:else if users.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}
@@ -580,37 +580,37 @@
 						<tr>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Почта
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Регион
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус пользователя
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</th>
@@ -622,7 +622,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if false && isLoading}
 							<tr>
-								<td colspan="7" class="px-4 py-3 text-center">
+								<td colspan="7" class="px-3 py-3 text-center">
 									<div class="flex justify-center">
 										<div class="hidden h-6 w-6"></div>
 									</div>
@@ -630,7 +630,7 @@
 							</tr>
 						{:else if users.length === 0}
 							<tr>
-								<td colspan="7" class="px-4 py-3">
+								<td colspan="7" class="px-3 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										searchTerm={hasSearched ? searchTerm : ''}
@@ -640,19 +640,19 @@
 						{:else}
 							{#each users as agent, index (agent.id + '-' + agent.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{agent.sequentialNumber || index + 1}
 									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.name || 'Not specified'}
 									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.email}
 									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{agent.region || 'Не указан'}
 									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap">
+									<td class="px-3 py-3 text-sm whitespace-nowrap">
 										{#if agent.userStatus}
 											<span
 												class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium"
@@ -668,7 +668,7 @@
 											<span class="text-gray-400">Не указан</span>
 										{/if}
 									</td>
-									<td class="px-4 py-3 text-sm whitespace-nowrap">
+									<td class="px-3 py-3 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if agent.status === 'banned' || agent.status === 'inactive' || agent.status === 'suspended'}
 												<StatusBadge status="banned" />

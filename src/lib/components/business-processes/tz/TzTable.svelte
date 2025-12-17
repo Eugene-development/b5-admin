@@ -121,56 +121,56 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Номер ТЗ
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Куратор
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Комментарий
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Согласование
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					ТЗ
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					КП
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px; width: 250px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -180,7 +180,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if tzList.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-8" role="cell">
+					<td colspan="8" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -194,28 +194,28 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{tz.sequentialNumber || index + 1}
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 font-mono text-xs leading-relaxed whitespace-nowrap">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 font-mono text-xs leading-relaxed whitespace-nowrap">
 								{tz.value || '—'}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
 								{getCuratorName(tz)}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="max-w-xs pr-4 leading-relaxed break-words">
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3">
 								{#if getApprovalStatus(tz).color === 'green'}
 									<span
 										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
@@ -237,7 +237,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-4 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.sketches && tz.sketches.length > 0}
 									<span
@@ -250,7 +250,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-4 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
 									<span
@@ -425,7 +425,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if tzList.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}

@@ -451,7 +451,7 @@
 <!-- Mobile Card View (visible on mobile only) -->
 <div class="md:hidden">
 	{#if projects.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -601,19 +601,19 @@
 						<tr>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя клиента
 							</th>
 							<th
 								scope="col"
-								class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Адрес объекта
 							</th>
@@ -626,7 +626,7 @@
 					<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 						{#if isLoading}
 							<tr>
-								<td colspan="4" class="px-4 py-3 text-center">
+								<td colspan="4" class="px-3 py-3 text-center">
 									<div class="flex justify-center">
 										<div
 											class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -636,7 +636,7 @@
 							</tr>
 						{:else if projects.length === 0}
 							<tr>
-								<td colspan="4" class="px-4 py-3">
+								<td colspan="4" class="px-3 py-3">
 									<EmptyState
 										type={hasSearched ? 'no-results' : 'no-data'}
 										title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -651,16 +651,16 @@
 						{:else}
 							{#each projects as project, index (project.id + '-' + project.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-4 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{project.sequentialNumber || index + 1}
 									</td>
 									<td
-										class="px-4 py-5 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-3 py-5 text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 									>
 										{project.client?.name || ' - '}
 									</td>
 									<td
-										class="px-4 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+										class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 										title={project.region || ''}
 									>
 										{truncateText(project.region)}

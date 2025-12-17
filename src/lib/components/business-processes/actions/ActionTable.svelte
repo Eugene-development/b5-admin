@@ -77,35 +77,35 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Компания
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Акция
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Период
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -115,7 +115,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="5" class="px-4 py-8 text-center" role="cell">
+					<td colspan="5" class="px-3 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных акций">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -127,7 +127,7 @@
 				</tr>
 			{:else if actions.length === 0}
 				<tr>
-					<td colspan="5" class="px-4 py-8" role="cell">
+					<td colspan="5" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -141,26 +141,26 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{action.sequentialNumber || index + 1}
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
 								{action.company_name || 'Не указано'}
 							</div>
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
 								{action.action_name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4">
+							<div class="pr-3">
 								{#if action.start_date && action.end_date}
 									{formatDate(action.start_date)} - {formatDate(action.end_date)}
 								{:else if action.start_date}
@@ -285,7 +285,7 @@
 <!-- Mobile Card View -->
 <div class="md:hidden">
 	{#if actions.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}

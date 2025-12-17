@@ -78,56 +78,56 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Услуга
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px; width: 150px;"
 				>
 					Телефон
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Почта
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Контактное лицо
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					Регион
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					Бан
 				</th>
 				<th
 					scope="col"
-					class="px-4 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -137,7 +137,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="8" class="px-4 py-8 text-center" role="cell">
+					<td colspan="8" class="px-3 py-8 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных сервисов">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -149,7 +149,7 @@
 				</tr>
 			{:else if services.length === 0}
 				<tr>
-					<td colspan="8" class="px-4 py-8" role="cell">
+					<td colspan="8" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -163,49 +163,49 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-4 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{service.sequentialNumber || index + 1}
 						</td>
-						<td class="px-4 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-4 leading-relaxed break-words">
+						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+							<div class="pr-3 leading-relaxed break-words">
 								{service.service_name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={formatPhone(service.phone)}>
+							<div class="pr-3" title={formatPhone(service.phone)}>
 								{formatPhone(service.phone)}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={service.email || 'Не указана'}>
+							<div class="pr-3" title={service.email || 'Не указана'}>
 								{service.email || 'Не указана'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={service.contact_person || 'Не указано'}>
+							<div class="pr-3" title={service.contact_person || 'Не указано'}>
 								{service.contact_person || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-4 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="pr-4" title={service.region || 'Не указан'}>
+							<div class="pr-3" title={service.region || 'Не указан'}>
 								{service.region || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="px-3 py-5 text-center align-top whitespace-nowrap" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanService(service)}
@@ -386,7 +386,7 @@
 bile Card View -->
 <div class="md:hidden">
 	{#if services.length === 0}
-		<div class="px-4 py-6">
+		<div class="px-3 py-6">
 			<EmptyState
 				type={hasSearched ? 'no-results' : 'no-data'}
 				searchTerm={hasSearched ? searchTerm : ''}
