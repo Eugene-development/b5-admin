@@ -170,15 +170,15 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
-				>
-					Сумма
-				</th>
-				<th
-					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
 					Дата
+				</th>
+				<th
+					scope="col"
+					class="px-6 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+				>
+					Сумма
 				</th>
 				<th
 					scope="col"
@@ -251,11 +251,11 @@
 								{contract.company?.name || 'Не указана'}
 							</div>
 						</td>
-						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatCurrency(contract.contract_amount)}
-						</td>
 						<td class="px-6 py-5 text-sm whitespace-nowrap">
 							<DateBadge date={contract.contract_date} />
+						</td>
+						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400">
+							{formatCurrency(contract.contract_amount)}
 						</td>
 						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
 							<ContractStatusBadge
@@ -358,7 +358,7 @@
 							>
 								Сумма
 							</dt>
-							<dd class="mt-1 text-base font-semibold text-gray-900 dark:text-white">
+							<dd class="mt-1 text-base font-semibold text-violet-600 dark:text-violet-400">
 								{formatCurrency(contract.contract_amount)}
 							</dd>
 						</div>

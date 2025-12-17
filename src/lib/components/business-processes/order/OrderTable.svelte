@@ -25,6 +25,27 @@
 	let sortColumn = $state(null); // 'supplier', 'urgency_status', null
 	let sortDirection = $state('asc'); // 'asc' or 'desc'
 
+	// Format currency
+	function formatCurrency(amount) {
+		if (amount === null || amount === undefined) return '—';
+		return new Intl.NumberFormat('ru-RU', {
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 0
+		}).format(amount);
+	}
+
+	// Calculate total order amount from positions
+	function calculateOrderTotal(order) {
+		// If order has positions, calculate from them
+		if (order.positions && order.positions.length > 0) {
+			return order.positions.reduce((sum, position) => {
+				return sum + (position.total_price || 0);
+			}, 0);
+		}
+		// Otherwise use order_amount field
+		return order.order_amount || 0;
+	}
+
 	// Sorted orders derived from orders and sort state
 	let sortedOrders = $derived.by(() => {
 		// Return original array reference when no sorting is active
@@ -213,6 +234,13 @@
 				</th>
 				<th
 					scope="col"
+					class="px-3 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					style="min-width: 120px;"
+				>
+					СУММА
+				</th>
+				<th
+					scope="col"
 					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
@@ -279,7 +307,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if sortedOrders.length === 0}
 				<tr>
-					<td colspan="7" class="px-3 py-8" role="cell">
+					<td colspan="8" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -313,37 +341,39 @@
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
+						<td class="px-3 py-5 text-right align-middle text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400" role="cell">
+							{formatCurrency(calculateOrderTotal(order))}
+						</td>
 						<td
 							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="flex items-center justify-center gap-1 pr-3">
+							<div class="flex items-center justify-center gap-2 pr-3">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
-										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
-									>
-										Срочный
-									</span>
+										class="inline-block h-6 w-6 rounded bg-red-500 cursor-help"
+										title="Срочный"
+										aria-label="Срочный"
+									></span>
 								{:else}
 									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-									>
-										Обычный
-									</span>
+										class="inline-block h-6 w-6 rounded bg-blue-500 cursor-help"
+										title="Обычный"
+										aria-label="Обычный"
+									></span>
 								{/if}
-								<span class="text-gray-400">/</span>
 								{#if order.is_active}
 									<span
-										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
-									>
-										Активен
-									</span>
+										class="inline-block h-6 w-6 rounded bg-green-500 cursor-help"
+										title="Активен"
+										aria-label="Активен"
+									></span>
 								{:else}
 									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-									>
-										Неактивен
-									</span>
+										class="inline-block h-6 w-6 rounded bg-gray-500 cursor-help"
+										title="Неактивен"
+										aria-label="Неактивен"
+									></span>
 								{/if}
 							</div>
 						</td>
@@ -510,43 +540,34 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Срочность
+								Метки
 							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+							<dd class="mt-1 flex items-center gap-2">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
-										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"
-									>
-										Срочный
-									</span>
+										class="inline-block h-6 w-6 rounded bg-red-500 cursor-help"
+										title="Срочный"
+										aria-label="Срочный"
+									></span>
 								{:else}
 									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-									>
-										Обычный
-									</span>
+										class="inline-block h-6 w-6 rounded bg-blue-500 cursor-help"
+										title="Обычный"
+										aria-label="Обычный"
+									></span>
 								{/if}
-							</dd>
-						</div>
-						<div>
-							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-							>
-								Активность
-							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{#if order.is_active}
 									<span
-										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
-									>
-										Активен
-									</span>
+										class="inline-block h-6 w-6 rounded bg-green-500 cursor-help"
+										title="Активен"
+										aria-label="Активен"
+									></span>
 								{:else}
 									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-									>
-										Неактивен
-									</span>
+										class="inline-block h-6 w-6 rounded bg-gray-500 cursor-help"
+										title="Неактивен"
+										aria-label="Неактивен"
+									></span>
 								{/if}
 							</dd>
 						</div>
@@ -558,6 +579,16 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Сумма
+							</dt>
+							<dd class="mt-1 text-base font-semibold text-violet-600 dark:text-violet-400">
+								{formatCurrency(calculateOrderTotal(order))}
 							</dd>
 						</div>
 						<div class="col-span-2">
