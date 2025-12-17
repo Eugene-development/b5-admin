@@ -118,12 +118,20 @@ export function requireGuest(redirectTo = '/dashboard') {
 export function createAuthLoad(options = {}) {
 	const { redirectTo = '/login', requireAuth = true, requireEmailVerification = false } = options;
 
-	return async ({ url, route }) => {
-		// Check authentication requirement with fallback to localStorage
+	return async ({ url, route, parent }) => {
+		// Wait for parent layout data (which includes server-side auth check)
+		const parentData = await parent();
+		
+		// Check authentication requirement
+		// Priority: parent data (from server) > authState > localStorage
 		let isAuth = false;
 		let userData = null;
 
-		if (authState.initialized) {
+		// First check parent data from server layout
+		if (parentData?.isAuthenticated !== undefined) {
+			isAuth = parentData.isAuthenticated;
+			userData = parentData.user;
+		} else if (authState.initialized) {
 			isAuth = authState.isAuthenticated;
 			userData = authState.user;
 		} else {
@@ -153,9 +161,14 @@ export function createAuthLoad(options = {}) {
 		}
 
 		// Check email verification requirement
-		if (requireEmailVerification && isAuth && userData && !userData.email_verified) {
+		// Note: email_verified can be boolean or email_verified_at can be a timestamp
+		const isEmailVerified = userData?.email_verified || userData?.email_verified_at;
+		if (requireEmailVerification && isAuth && userData && !isEmailVerified) {
 			// User is authenticated but email not verified
-			throw redirect(302, '/email-verify');
+			// Don't redirect if already on email-verify page
+			if (url.pathname !== '/email-verify') {
+				throw redirect(302, '/email-verify');
+			}
 		}
 
 		// Return user data for the route

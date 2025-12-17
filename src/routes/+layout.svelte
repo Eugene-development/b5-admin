@@ -7,23 +7,29 @@
 
 	let { children, data } = $props();
 
-	// Initialize authentication from localStorage first
-	if (browser && !authState.initialized) {
-		initializeAuth();
-	}
-
 	// Initialize domain detection (must be done before components that use it)
 	if (browser) {
 		initializeDomainDetection();
 	}
 
-	// Initialize authentication from server data first, then check with API
+	// Update auth state from server data first (this is synchronous and immediate)
+	// This ensures auth state is available before any child components render
 	$effect(() => {
-		// Update auth state from server data using safe function
-		if (!authState.initialized || data?.user) {
+		if (data) {
 			updateAuthStateFromServer(data);
 		}
 	});
+
+	// Then initialize from localStorage for additional data (async, background)
+	// This runs after server data is already applied
+	if (browser && !authState.initialized) {
+		// Use queueMicrotask to ensure server data is processed first
+		queueMicrotask(() => {
+			if (!authState.initialized) {
+				initializeAuth();
+			}
+		});
+	}
 </script>
 
 <svelte:head>

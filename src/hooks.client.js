@@ -29,6 +29,8 @@ export async function handleError({ error, event }) {
 
 /**
  * Handle client-side navigation with authentication checks
+ * Note: This hook is for SPA navigation only. 
+ * Full page reloads are handled by server-side +layout.server.js
  */
 export async function beforeNavigate({ from, to, cancel }) {
 	// Skip navigation checks for external URLs or same page
@@ -38,8 +40,15 @@ export async function beforeNavigate({ from, to, cancel }) {
 
 	const pathname = to.url.pathname;
 
-	// Don't interfere if already navigating to login page
-	if (pathname === '/login' || pathname.startsWith('/login')) {
+	// Don't interfere if already navigating to login page or public pages
+	const publicPages = ['/login', '/register', '/forgot-password', '/reset-password', '/'];
+	if (publicPages.some(page => pathname === page || pathname.startsWith(page + '?'))) {
+		return;
+	}
+
+	// Skip auth checks during initial page load (handled by server)
+	// Only check during SPA navigation (when 'from' exists)
+	if (!from) {
 		return;
 	}
 
