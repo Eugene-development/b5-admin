@@ -17,8 +17,20 @@ const ORDERS_QUERY = `
 				actual_delivery_date
 				is_active
 				is_urgent
+				status_id
+				partner_payment_status_id
 				created_at
 				updated_at
+				status {
+					id
+					value
+					slug
+					color
+				}
+				partnerPaymentStatus {
+					id
+					name
+				}
 				company {
 					id
 					name
