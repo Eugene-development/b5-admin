@@ -46,6 +46,9 @@
 			if (sortColumn === 'status') {
 				aVal = a.status?.value || '';
 				bVal = b.status?.value || '';
+			} else if (sortColumn === 'company') {
+				aVal = a.company?.name || '';
+				bVal = b.company?.name || '';
 			} else {
 				return 0;
 			}
@@ -147,9 +150,23 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+					onclick={() => handleSort('company')}
+					role="button"
+					tabindex="0"
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							handleSort('company');
+						}
+					}}
 				>
-					Компания
+					Фабрика
+					{#if sortColumn === 'company'}
+						<span class="ml-1">
+							{sortDirection === 'asc' ? '↑' : '↓'}
+						</span>
+					{/if}
 				</th>
 				<th
 					scope="col"

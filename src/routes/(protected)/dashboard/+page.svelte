@@ -252,10 +252,10 @@
 										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
-										Подрядчики
+										Фабрики
 									</h3>
 									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-										Управление подрядчиками
+										Управление фабриками
 									</p>
 								</div>
 							</a>

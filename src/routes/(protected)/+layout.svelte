@@ -354,8 +354,8 @@
 											class={getNavClassesWithSpan('/contractors')}
 											onclick={() => handleMobileNavigation('/contractors')}
 										>
-											<span class={getSpanIconClasses('/contractors')}>Пд</span>
-											<span class="truncate">Подрядчики</span>
+											<span class={getSpanIconClasses('/contractors')}>Фб</span>
+											<span class="truncate">Фабрики</span>
 										</button>
 									</li>
 								{/if}
@@ -715,8 +715,8 @@
 							{#if navigationVisibility.showContractors}
 								<li>
 									<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
-										<span class={getSpanIconClasses('/contractors')}>Пд</span>
-										<span class="truncate">Подрядчики</span>
+										<span class={getSpanIconClasses('/contractors')}>Ф</span>
+										<span class="truncate">Фабрики</span>
 									</a>
 								</li>
 							{/if}
