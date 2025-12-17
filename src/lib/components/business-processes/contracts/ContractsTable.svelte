@@ -3,6 +3,7 @@
 	import PartnerPaymentStatusBadge from './PartnerPaymentStatusBadge.svelte';
 	import ContractStatusBadge from './ContractStatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import DateBadge from '$lib/components/common/DateBadge.svelte';
 
 	let {
 		contracts = [],
@@ -57,15 +58,7 @@
 		return sorted;
 	});
 
-	// Format date helper function
-	function formatDate(dateString) {
-		if (!dateString) return 'Не указана';
-		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
-	}
+
 
 	// Format percentage
 	function formatPercentage(value) {
@@ -77,8 +70,6 @@
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
 		return new Intl.NumberFormat('ru-RU', {
-			style: 'currency',
-			currency: 'RUB',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		}).format(amount);
@@ -170,7 +161,7 @@
 					scope="col"
 					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 				>
-					Дата Договора
+					Дата
 				</th>
 				<th
 					scope="col"
@@ -246,8 +237,8 @@
 						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(contract.contract_amount)}
 						</td>
-						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatDate(contract.contract_date)}
+						<td class="px-6 py-5 text-sm whitespace-nowrap">
+							<DateBadge date={contract.contract_date} />
 						</td>
 						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
 							<ContractStatusBadge
@@ -324,10 +315,10 @@
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 							>
-								Дата Договора
+								Дата
 							</dt>
-							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{formatDate(contract.contract_date)}
+							<dd class="mt-1 text-sm">
+								<DateBadge date={contract.contract_date} />
 							</dd>
 						</div>
 						<div>

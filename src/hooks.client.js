@@ -38,9 +38,20 @@ export async function beforeNavigate({ from, to, cancel }) {
 
 	const pathname = to.url.pathname;
 
+	// Don't interfere if already navigating to login page
+	if (pathname === '/login' || pathname.startsWith('/login')) {
+		return;
+	}
+
 	// Check if navigation to protected route is allowed
 	if (isProtectedRoute(pathname)) {
-		const { navigationGuard } = await import('$lib/auth/auth-guard.svelte.js');
+		const { navigationGuard, isRedirecting } = await import('$lib/auth/auth-guard.svelte.js');
+		
+		// Skip if already redirecting to prevent loops
+		if (isRedirecting && isRedirecting()) {
+			return;
+		}
+		
 		const allowed = await navigationGuard(pathname, { requireAuth: true });
 
 		if (!allowed) {

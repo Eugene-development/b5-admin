@@ -233,10 +233,13 @@
 								bind:value={formData.comment}
 								disabled={isLoading}
 								rows="3"
+								maxlength="32"
 								class="mt-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
 								placeholder="Дополнительные примечания или комментарии..."
 							></textarea>
-							<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Необязательное поле</p>
+							<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+								Необязательное поле (максимум 32 символа, осталось: {32 - (formData.comment?.length || 0)})
+							</p>
 						</div>
 
 						<!-- Active checkbox -->

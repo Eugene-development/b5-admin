@@ -200,7 +200,7 @@
 							{tz.sequentialNumber || index + 1}
 						</td>
 						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 font-mono text-xs leading-relaxed whitespace-nowrap">
+							<div class="pr-3 leading-relaxed whitespace-nowrap">
 								{tz.value || '—'}
 							</div>
 						</td>

@@ -2,6 +2,7 @@
 	import BonusPaymentStatusBadge from './BonusPaymentStatusBadge.svelte';
 	import PartnerPaymentStatusBadge from '$lib/components/business-processes/contracts/PartnerPaymentStatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import DateBadge from '$lib/components/common/DateBadge.svelte';
 
 	let {
 		bonuses = [],
@@ -24,13 +25,35 @@
 		return bonus.order;
 	}
 
-	function formatDate(dateString) {
-		if (!dateString) return '—';
-		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
+
+
+	// Проверяет, нужно ли показывать дату начисления для договора
+	function shouldShowAccruedDate(bonus) {
+		// Для заказов всегда показываем дату
+		if (bonus.source_type === 'order') {
+			return true;
+		}
+		
+		// Для договоров показываем только если договор активен И статус: Заключён, Выполнен, Рекламация
+		if (bonus.source_type === 'contract') {
+			const contract = bonus.contract;
+			const isActive = contract?.is_active === true;
+			const contractStatus = contract?.status?.slug;
+			const allowedStatuses = ['signed', 'completed', 'claim'];
+			
+			return isActive && allowedStatuses.includes(contractStatus);
+		}
+		
+		return true;
+	}
+
+	// Проверяет, нужно ли показывать дату доступности
+	function shouldShowAvailableDate(bonus) {
+		const sourceEntity = getSourceEntity(bonus);
+		const partnerPaymentStatus = sourceEntity?.partnerPaymentStatus?.code;
+		
+		// Показываем дату только если статус оплаты партнера = "paid" (Оплачено)
+		return partnerPaymentStatus === 'paid';
 	}
 
 	function formatCurrency(amount) {
@@ -135,14 +158,22 @@
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatDate(bonus.accrued_at)}
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+							{#if shouldShowAccruedDate(bonus)}
+								<DateBadge date={bonus.accrued_at} fallback="—" />
+							{:else}
+								—
+							{/if}
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatDate(bonus.available_at)}
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+							{#if shouldShowAvailableDate(bonus)}
+								<DateBadge date={bonus.available_at} fallback="—" />
+							{:else}
+								—
+							{/if}
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatDate(bonus.paid_at)}
+						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+							<DateBadge date={bonus.paid_at} fallback="—" />
 						</td>
 						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
 							{#if getSourceEntity(bonus)}
@@ -200,15 +231,27 @@
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Начислено</dt>
-							<dd class="text-gray-900 dark:text-white">{formatDate(bonus.accrued_at)}</dd>
+							<dd>
+								{#if shouldShowAccruedDate(bonus)}
+									<DateBadge date={bonus.accrued_at} fallback="—" />
+								{:else}
+									<span class="text-gray-900 dark:text-white">—</span>
+								{/if}
+							</dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Доступно</dt>
-							<dd class="text-gray-900 dark:text-white">{formatDate(bonus.available_at)}</dd>
+							<dd>
+								{#if shouldShowAvailableDate(bonus)}
+									<DateBadge date={bonus.available_at} fallback="—" />
+								{:else}
+									<span class="text-gray-900 dark:text-white">—</span>
+								{/if}
+							</dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Выплачено</dt>
-							<dd class="text-gray-900 dark:text-white">{formatDate(bonus.paid_at)}</dd>
+							<dd><DateBadge date={bonus.paid_at} fallback="—" /></dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Статус</dt>

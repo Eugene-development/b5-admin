@@ -213,7 +213,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					<button
@@ -317,7 +317,7 @@
 							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="flex items-center gap-1 pr-3">
+							<div class="flex items-center justify-center gap-1 pr-3">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
 										class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-200"

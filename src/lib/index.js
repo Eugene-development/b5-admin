@@ -70,6 +70,7 @@ export { default as EmptyState } from './components/common/EmptyState.svelte';
 export { default as TableSkeleton } from './components/common/TableSkeleton.svelte';
 export { default as TruncatedText } from './components/common/TruncatedText.svelte';
 export { default as DateDisplay } from './components/common/DateDisplay.svelte';
+export { default as DateBadge } from './components/common/DateBadge.svelte';
 export { default as CurrencyDisplay } from './components/common/CurrencyDisplay.svelte';
 export { default as AgentDisplay } from './components/common/AgentDisplay.svelte';
 export { default as ProtectedRoute } from './components/common/ProtectedRoute.svelte';

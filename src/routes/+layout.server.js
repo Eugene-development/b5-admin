@@ -9,8 +9,24 @@ import { getAuthApiUrl } from '$lib/config/domain.js';
  * Load function that runs on the server for every page request
  * @type {import('./$types').LayoutServerLoad}
  */
-export async function load({ fetch, cookies, request }) {
+export async function load({ fetch, cookies, request, url }) {
 	try {
+		// Get current pathname
+		const pathname = url.pathname;
+		
+		// Public pages that don't need authentication check
+		const publicPages = ['/login', '/register', '/forgot-password', '/reset-password', '/'];
+		const isPublicPage = publicPages.some(page => pathname === page || pathname.startsWith(page + '/'));
+		
+		// Skip authentication check for public pages to prevent redirect loops
+		if (isPublicPage) {
+			console.debug('Skipping auth check for public page:', pathname);
+			return {
+				user: null,
+				isAuthenticated: false
+			};
+		}
+
 		// Get dynamic AUTH API URL based on request domain
 		const authApiUrl = getAuthApiUrl(request);
 

@@ -38,6 +38,13 @@ const ADMIN_BONUSES_QUERY = gql`
 				id
 				contract_number
 				contract_amount
+				is_active
+				status {
+					id
+					value
+					slug
+					color
+				}
 				partnerPaymentStatus {
 					id
 					code

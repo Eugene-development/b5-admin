@@ -2,6 +2,7 @@
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import ActionButtons from '$lib/components/business-processes/actions/ActionButtons.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import DateBadge from '$lib/components/common/DateBadge.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 
 	let {
@@ -19,15 +20,7 @@
 	// Check if current user is admin
 	const isAdmin = $derived(authState.user?.type === 'Админ');
 
-	// Format date helper function
-	function formatDate(dateString) {
-		if (!dateString) return 'Не указана';
-		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
-		});
-	}
+
 
 	// Get email verification status for StatusBadge
 	function getEmailVerificationStatus(emailVerifiedAt) {
@@ -208,11 +201,11 @@
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 text-sm whitespace-nowrap"
 							role="cell"
 							headers="col-registration"
 						>
-							{formatDate(user.created_at)}
+							<DateBadge date={user.created_at} fallback="Не указана" />
 						</td>
 						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-ban">
 							<button

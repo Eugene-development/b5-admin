@@ -1,5 +1,6 @@
 <script>
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import DateBadge from '$lib/components/common/DateBadge.svelte';
 
 	let {
 		payments = [],
@@ -22,15 +23,7 @@
 		}).format(amount);
 	}
 
-	// Format date
-	function formatDate(dateString) {
-		if (!dateString) return '—';
-		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric'
-		});
-	}
+
 
 	// Get status color
 	function getStatusColor(code) {
@@ -95,8 +88,8 @@
 			{:else}
 				{#each payments as payment (payment.id)}
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatDate(payment.payment_date)}
+						<td class="px-6 py-5 text-sm whitespace-nowrap">
+							<DateBadge date={payment.payment_date} fallback="—" />
 						</td>
 						<td class="px-6 py-5 text-sm text-gray-900 dark:text-gray-100">
 							<div class="font-medium">{payment.agent?.name || '—'}</div>
@@ -179,7 +172,7 @@
 					<div class="mb-3 flex items-start justify-between">
 						<div>
 							<div class="font-medium text-gray-900 dark:text-white">{payment.agent?.name || '—'}</div>
-							<div class="text-sm text-gray-500 dark:text-gray-400">{formatDate(payment.payment_date)}</div>
+							<div class="text-sm"><DateBadge date={payment.payment_date} fallback="—" /></div>
 						</div>
 						<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {getStatusColor(payment.status?.code)}">
 							{payment.status?.name || '—'}

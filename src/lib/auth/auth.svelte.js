@@ -24,6 +24,7 @@ let isRedirectingToLogin = false;
  */
 export async function safeRedirectToLogin(returnTo = null) {
 	if (isRedirectingToLogin) {
+		console.debug('Already redirecting to login, skipping...');
 		return false;
 	}
 
@@ -33,23 +34,30 @@ export async function safeRedirectToLogin(returnTo = null) {
 
 	const currentPath = window.location.pathname;
 
-	// Don't redirect if already on login page
-	if (currentPath === '/login' || currentPath.startsWith('/login')) {
+	// Don't redirect if already on login page or public pages
+	const publicPages = ['/login', '/register', '/forgot-password', '/reset-password', '/'];
+	if (publicPages.some(page => currentPath === page || currentPath.startsWith(page))) {
+		console.debug('Already on public page, skipping redirect');
 		return false;
 	}
 
 	isRedirectingToLogin = true;
+	console.debug('Redirecting to login from:', currentPath);
 
 	try {
 		const { goto } = await import('$app/navigation');
 		const redirectPath = returnTo ? `/login?returnTo=${encodeURIComponent(returnTo)}` : '/login';
-		await goto(redirectPath);
+		await goto(redirectPath, { replaceState: true });
 		return true;
+	} catch (error) {
+		console.error('Failed to redirect to login:', error);
+		isRedirectingToLogin = false;
+		return false;
 	} finally {
 		// Reset flag after a delay to allow for page transition
 		setTimeout(() => {
 			isRedirectingToLogin = false;
-		}, 1000);
+		}, 2000);
 	}
 }
 
@@ -214,9 +222,10 @@ const authHttpClient = createHttpClient({
 
 		// Set auth error only if we're not on a public page
 		const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-		const isPublicPage = ['/', '/login', '/register'].includes(currentPath);
+		const publicPages = ['/', '/login', '/register', '/forgot-password', '/reset-password'];
+		const isPublicPage = publicPages.some(page => currentPath === page || currentPath.startsWith(page));
 
-		if (!isPublicPage) {
+		if (!isPublicPage && !isRedirectingToLogin) {
 			const authError = { auth: ['Session expired. Please log in again.'] };
 			setErrors(authError);
 

@@ -10,6 +10,31 @@ import { authState, getCurrentUserData } from '../state/auth.svelte.js';
 import { hasAuthToken, getUserData } from '../api/config.js';
 import { hasRouteAccess, PUBLIC_ROUTES } from './status-permissions.js';
 
+// Flag to track if we're currently redirecting
+let isCurrentlyRedirecting = false;
+
+/**
+ * Check if currently redirecting
+ * @returns {boolean}
+ */
+export function isRedirecting() {
+	return isCurrentlyRedirecting;
+}
+
+/**
+ * Set redirecting state
+ * @param {boolean} value
+ */
+function setRedirecting(value) {
+	isCurrentlyRedirecting = value;
+	if (value) {
+		// Auto-reset after timeout to prevent stuck state
+		setTimeout(() => {
+			isCurrentlyRedirecting = false;
+		}, 2000);
+	}
+}
+
 /**
  * Initialize authentication state on app startup
  * Now returns existing auth state instead of fetching from server
@@ -221,6 +246,11 @@ export async function authMiddleware({ event, resolve }) {
 export async function navigationGuard(pathname, options = {}) {
 	const { requireAuth = false, requireGuest = false } = options;
 
+	// Skip check if already redirecting
+	if (isCurrentlyRedirecting) {
+		return true;
+	}
+
 	// Check authentication with fallback to localStorage
 	let isAuth = false;
 
@@ -235,10 +265,12 @@ export async function navigationGuard(pathname, options = {}) {
 
 	// Check authentication requirements
 	if (requireAuth && !isAuth) {
+		setRedirecting(true);
 		return false;
 	}
 
 	if (requireGuest && isAuth) {
+		setRedirecting(true);
 		return false;
 	}
 
