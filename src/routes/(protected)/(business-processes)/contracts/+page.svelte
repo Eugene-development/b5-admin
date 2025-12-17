@@ -344,6 +344,8 @@
 
 	// Handle initial load
 	onMount(async () => {
+		console.log('🚀 Contracts page onMount called');
+		
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
@@ -360,9 +362,24 @@
 			console.error('Failed to load statuses:', error);
 		}
 
-		// Load data if we have empty initial data (server-side data loading was disabled)
-		if (!localContracts.length && !loadError) {
+		// Check if we have SSR data
+		console.log('📊 Checking SSR data:', {
+			hasData: !!data.contractsData,
+			contractsCount: data.contractsData?.contracts?.length,
+			localContractsCount: localContracts.length
+		});
+
+		// If we have SSR data, use it and stop loading
+		if (data.contractsData?.contracts?.length > 0) {
+			console.log('✅ Using SSR data');
+			localContracts = data.contractsData.contracts;
+			isLoading = false;
+		} else if (!localContracts.length && !loadError) {
+			// Load data if we have empty initial data
+			console.log('⚠️ No SSR data, loading client-side');
 			refreshData(true);
+		} else {
+			isLoading = false;
 		}
 	});
 </script>
@@ -378,28 +395,23 @@
 			fallbackMessage="An error occurred while loading the contracts page."
 			showDetails={true}
 		>
-			<!-- Streamed Contracts Data with SSR -->
-			{#await data.contractsData}
-				<!-- Loading state: Show skeleton -->
+			{@const contractsData = data.contractsData}
+			{@const processedContracts = getProcessedContracts(contractsData)}
+
+			<!-- Update local state only once when data arrives -->
+			{#if localContracts.length === 0 && processedContracts.length > 0}
+				{((localContracts = processedContracts), '')}
+			{/if}
+
+			<!-- Set load error if present -->
+			{#if contractsData.error && !loadError}
+				{((loadError = contractsData.error), '')}
+			{/if}
+
+			<!-- Show skeleton during initial load or refresh when no data is available -->
+			{#if isLoading || (isRefreshing && localContracts.length === 0)}
 				<TableSkeleton columns={10} />
-			{:then contractsData}
-				<!-- Success state: Show data -->
-				{@const processedContracts = getProcessedContracts(contractsData)}
-
-				<!-- Update local state only once when data arrives -->
-				{#if localContracts.length === 0 && processedContracts.length > 0}
-					{((localContracts = processedContracts), '')}
-				{/if}
-
-				<!-- Set load error if present -->
-				{#if contractsData.error && !loadError}
-					{((loadError = contractsData.error), '')}
-				{/if}
-
-				<!-- Show skeleton during initial load or refresh when no data is available -->
-				{#if isLoading || (isRefreshing && localContracts.length === 0)}
-					<TableSkeleton columns={10} />
-				{:else}
+			{:else}
 
 				<!-- Skip link for keyboard navigation -->
 				<a
@@ -577,18 +589,7 @@
 						</div>
 					</div>
 				</div>
-				{/if}
-			{:catch error}
-				<!-- Critical error state -->
-				<div class="flex min-h-screen items-center justify-center">
-					<div class="rounded-lg border border-red-500/30 bg-red-500/20 p-8 text-center">
-						<h3 class="mb-4 text-xl font-semibold text-white">Ошибка загрузки договоров</h3>
-						<p class="text-red-300">
-							Не удалось загрузить договора. Попробуйте обновить страницу.
-						</p>
-					</div>
-				</div>
-			{/await}
+			{/if}
 		</ErrorBoundary>
 	{/snippet}
 </ProtectedRoute>

@@ -3,8 +3,8 @@
  * Passes server data to the client and initializes client-side auth state
  */
 
-// Disable SSR globally - auth tokens are stored in localStorage (browser-only)
-export const ssr = false;
+// Enable SSR - auth tokens are now stored in httpOnly cookies (server-accessible)
+export const ssr = true;
 
 /** @type {import('./$types').LayoutLoad} */
 export async function load({ data }) {

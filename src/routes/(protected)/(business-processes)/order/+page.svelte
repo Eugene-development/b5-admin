@@ -71,6 +71,7 @@
 
 	// Initialize domain detection and check access
 	onMount(async () => {
+		console.log('🚀 Order page onMount called');
 		initializeDomainDetection();
 		hasAccess = hasOrderAccess();
 
@@ -86,9 +87,26 @@
 			console.error('Failed to load statuses:', error);
 		}
 
-		// Load data if we have empty initial data
-		if (orders.length === 0) {
+		// Check if we have SSR data
+		console.log('📊 Checking SSR data:', {
+			hasData: !!data.ordersData,
+			ordersCount: data.ordersData?.orders?.length,
+			localOrdersCount: orders.length
+		});
+
+		// If we have SSR data, use it and stop loading
+		if (data.ordersData?.orders?.length > 0) {
+			console.log('✅ Using SSR data');
+			orders = data.ordersData.orders;
+			companies = data.ordersData.companies || [];
+			projects = data.ordersData.projects || [];
+			isLoading = false;
+		} else if (orders.length === 0) {
+			// Load data if we have empty initial data
+			console.log('⚠️ No SSR data, loading client-side');
 			refreshData(true); // Pass true to indicate initial load
+		} else {
+			isLoading = false;
 		}
 	});
 
@@ -493,12 +511,20 @@
 					</div>
 				</div>
 			{:else}
-				{#await data.ordersData}
-					<!-- Loading state: Show skeleton -->
-					<TableSkeleton columns={6} />
-				{:then ordersData}
-					<!-- Success state: Show data or error -->
-					{#if ordersData.error}
+				{@const ordersData = data.ordersData}
+				
+				<!-- Initialize local state from loaded data -->
+				{#if orders.length === 0 && ordersData.orders?.length > 0}
+					{((orders = ordersData.orders), '')}
+				{/if}
+				{#if companies.length === 0 && ordersData.companies?.length > 0}
+					{((companies = ordersData.companies), '')}
+				{/if}
+				{#if projects.length === 0 && ordersData.projects?.length > 0}
+					{((projects = ordersData.projects), '')}
+				{/if}
+
+				{#if ordersData.error}
 						<!-- Error state from API -->
 						<div class="flex min-h-[400px] items-center justify-center">
 							<div class="mx-auto max-w-md text-center">
@@ -523,9 +549,9 @@
 										Ошибка загрузки заказов
 									</h3>
 									<p class="mb-6 text-sm text-red-600 dark:text-red-300">
-										{ordersData.error}
+										{ordersData.error.message}
 									</p>
-									{#if ordersData.canRetry}
+									{#if ordersData.error.canRetry}
 										<button
 											onclick={handleRetry}
 											class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
@@ -550,23 +576,11 @@
 								</div>
 							</div>
 						</div>
-					{:else}
-						<!-- Initialize local state from loaded data -->
-						{#if orders.length === 0 && ordersData.orders.length > 0}
-							{((orders = ordersData.orders), '')}
-						{/if}
-						{#if companies.length === 0 && ordersData.companies.length > 0}
-							{((companies = ordersData.companies), '')}
-						{/if}
-						{#if projects.length === 0 && ordersData.projects.length > 0}
-							{((projects = ordersData.projects), '')}
-						{/if}
-
-						<!-- Show skeleton during initial load or refresh when no data is available -->
-						{#if isLoading || (isRefreshing && orders.length === 0)}
-							<TableSkeleton columns={6} />
-						{:else}
-							<TablePageLayout title="Заказы">
+				{:else if isLoading || (isRefreshing && orders.length === 0)}
+					<!-- Show skeleton during initial load or refresh when no data is available -->
+					<TableSkeleton columns={6} />
+				{:else}
+					<TablePageLayout title="Заказы">
 								{#snippet headerActions()}
 									<!-- Add Order Button -->
 									<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
@@ -668,58 +682,8 @@
 									{itemsPerPage}
 									filteredFrom={searchTerm.trim() ? orders.length : null}
 								/>
-							</TablePageLayout>
-						{/if}
-					{/if}
-				{:catch error}
-					<!-- Critical error state -->
-					<div class="flex min-h-[400px] items-center justify-center">
-						<div class="mx-auto max-w-md text-center">
-							<div class="rounded-lg border border-red-500/30 bg-red-500/10 p-8 dark:bg-red-500/20">
-								<svg
-									class="mx-auto h-12 w-12 text-red-600 dark:text-red-400"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
-									/>
-								</svg>
-								<h3 class="mt-4 mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-									Критическая ошибка
-								</h3>
-								<p class="mb-6 text-sm text-red-600 dark:text-red-300">
-									Не удалось загрузить данные заказов. Попробуйте обновить страницу.
-								</p>
-								<button
-									onclick={handleRetry}
-									class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
-								>
-									<svg
-										class="mr-2 h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-										/>
-									</svg>
-									Обновить страницу
-								</button>
-							</div>
-						</div>
-					</div>
-				{/await}
+					</TablePageLayout>
+				{/if}
 			{/if}
 		</ErrorBoundary>
 	{/snippet}

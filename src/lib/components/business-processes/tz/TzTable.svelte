@@ -131,14 +131,14 @@
 					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
-					Номер ТЗ
+					НОМЕР
 				</th>
 				<th
 					scope="col"
 					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-					style="min-width: 200px;"
+					style="min-width: 150px;"
 				>
-					Куратор
+					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
@@ -206,7 +206,7 @@
 						</td>
 						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
-								{getCuratorName(tz)}
+								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
@@ -459,6 +459,16 @@
 
 					<!-- TZ Details -->
 					<dl class="mb-4 grid grid-cols-1 gap-3">
+						<div>
+							<dt
+								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+							>
+								Проект
+							</dt>
+							<dd class="mt-1 text-sm break-words text-gray-900 dark:text-white">
+								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
+							</dd>
+						</div>
 						<div>
 							<dt
 								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"

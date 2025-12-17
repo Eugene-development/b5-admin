@@ -70,9 +70,37 @@ async function loadContractsData(token, fetch) {
 }
 
 export async function load({ locals, fetch }) {
+	console.log('🚀 Contracts SSR: load function called', {
+		hasUser: !!locals?.user,
+		hasToken: !!locals?.token
+	});
+	
 	if (!locals?.user || !locals?.token) {
-		return { contractsData: { contracts: [], needsClientLoad: true } };
+		console.log('⚠️ Contracts SSR: No auth, returning empty data');
+		return { 
+			contractsData: { 
+				contracts: [], 
+				needsClientLoad: true 
+			} 
+		};
 	}
-	const contractsData = await loadContractsData(locals.token, fetch);
-	return { contractsData };
+	
+	// Load data and return it directly (not as a promise)
+	try {
+		const contractsData = await loadContractsData(locals.token, fetch);
+		console.log('✅ Contracts SSR: Returning data', {
+			contractsCount: contractsData.contracts?.length || 0,
+			hasError: !!contractsData.error
+		});
+		
+		return { contractsData };
+	} catch (error) {
+		console.error('❌ Contracts SSR: Unexpected error:', error);
+		return {
+			contractsData: {
+				contracts: [],
+				error: { message: 'Неожиданная ошибка при загрузке данных', canRetry: true }
+			}
+		};
+	}
 }

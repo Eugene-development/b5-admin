@@ -112,9 +112,43 @@ async function loadOrdersData(token, fetch) {
 }
 
 export async function load({ locals, fetch }) {
+	console.log('🚀 Orders SSR: load function called', {
+		hasUser: !!locals?.user,
+		hasToken: !!locals?.token
+	});
+	
 	if (!locals?.user || !locals?.token) {
-		return { ordersData: { orders: [], companies: [], projects: [], needsClientLoad: true } };
+		console.log('⚠️ Orders SSR: No auth, returning empty data');
+		return { 
+			ordersData: { 
+				orders: [], 
+				companies: [], 
+				projects: [], 
+				needsClientLoad: true 
+			} 
+		};
 	}
-	const ordersData = await loadOrdersData(locals.token, fetch);
-	return { ordersData };
+	
+	// Load data and return it directly (not as a promise)
+	try {
+		const ordersData = await loadOrdersData(locals.token, fetch);
+		console.log('✅ Orders SSR: Returning data', {
+			ordersCount: ordersData.orders?.length || 0,
+			companiesCount: ordersData.companies?.length || 0,
+			projectsCount: ordersData.projects?.length || 0,
+			hasError: !!ordersData.error
+		});
+		
+		return { ordersData };
+	} catch (error) {
+		console.error('❌ Orders SSR: Unexpected error:', error);
+		return {
+			ordersData: {
+				orders: [],
+				companies: [],
+				projects: [],
+				error: { message: 'Неожиданная ошибка при загрузке данных', canRetry: true }
+			}
+		};
+	}
 }
