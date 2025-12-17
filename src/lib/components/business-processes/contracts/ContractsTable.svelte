@@ -19,6 +19,44 @@
 		hasSearched = false
 	} = $props();
 
+	// Sorting state
+	let sortColumn = $state(null);
+	let sortDirection = $state('asc'); // 'asc' or 'desc'
+
+	// Handle column sort
+	function handleSort(column) {
+		if (sortColumn === column) {
+			// Toggle direction if same column
+			sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+		} else {
+			// New column, default to ascending
+			sortColumn = column;
+			sortDirection = 'asc';
+		}
+	}
+
+	// Get sorted contracts
+	let sortedContracts = $derived.by(() => {
+		if (!sortColumn) return contracts;
+
+		const sorted = [...contracts].sort((a, b) => {
+			let aVal, bVal;
+
+			if (sortColumn === 'status') {
+				aVal = a.status?.value || '';
+				bVal = b.status?.value || '';
+			} else {
+				return 0;
+			}
+
+			// String comparison
+			const comparison = aVal.localeCompare(bVal, 'ru');
+			return sortDirection === 'asc' ? comparison : -comparison;
+		});
+
+		return sorted;
+	});
+
 	// Format date helper function
 	function formatDate(dateString) {
 		if (!dateString) return 'Не указана';
@@ -136,9 +174,23 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+					onclick={() => handleSort('status')}
+					role="button"
+					tabindex="0"
+					onkeydown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							handleSort('status');
+						}
+					}}
 				>
 					Статус
+					{#if sortColumn === 'status'}
+						<span class="ml-1">
+							{sortDirection === 'asc' ? '↑' : '↓'}
+						</span>
+					{/if}
 				</th>
 				<th
 					scope="col"
@@ -161,7 +213,7 @@
 					</td>
 				</tr>
 			{:else}
-				{#each contracts as contract, index (contract?.id || index + '-' + updateCounter)}
+				{#each sortedContracts as contract, index (contract?.id || index + '-' + updateCounter)}
 					<tr
 						class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800"
 						onclick={() => onViewContract(contract)}

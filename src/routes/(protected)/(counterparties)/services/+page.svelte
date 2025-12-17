@@ -413,7 +413,7 @@
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 								<div
-									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									class="mb-6 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 								>
 									<div class="flex flex-1 items-center space-x-4">
 										<!-- Search Input -->
@@ -450,7 +450,7 @@
 								</div>
 
 								{#if searchTerm.trim()}
-									<div class="py-2 text-sm text-gray-600 dark:text-gray-400">
+									<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
 										{#if filteredServices.length === 0}
 											<p>Сервисы не найдены</p>
 										{:else}

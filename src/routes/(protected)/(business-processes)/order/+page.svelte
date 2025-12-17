@@ -479,7 +479,7 @@
 							Доступ запрещен
 						</h3>
 						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-							Страница закупок доступна только с доменов admin.bonus.band и bonus.band
+							Страница заказов доступна только с доменов admin.bonus.band и bonus.band
 						</p>
 					</div>
 				</div>
@@ -511,7 +511,7 @@
 										/>
 									</svg>
 									<h3 class="mt-4 mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-										Ошибка загрузки закупок
+										Ошибка загрузки заказов
 									</h3>
 									<p class="mb-6 text-sm text-red-600 dark:text-red-300">
 										{ordersData.error}
@@ -557,7 +557,7 @@
 						{#if isRefreshing && orders.length === 0}
 							<TableSkeleton columns={6} />
 						{:else}
-							<TablePageLayout title="Закупка">
+							<TablePageLayout title="Заказы">
 								{#snippet headerActions()}
 									<!-- Add Order Button -->
 									<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
@@ -627,13 +627,13 @@
 									{#if searchTerm.trim()}
 										<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
 											{#if filteredOrders.length === 0}
-												Закупки не найдены по запросу "{searchTerm}"
+												Заказы не найдены по запросу "{searchTerm}"
 											{:else}
-												Найдено {filteredOrders.length} закуп{filteredOrders.length === 1
-													? 'ка'
+												Найдено {filteredOrders.length} заказ{filteredOrders.length === 1
+													? ''
 													: filteredOrders.length < 5
-														? 'ки'
-														: 'ок'} по запросу "{searchTerm}"
+														? 'а'
+														: 'ов'} по запросу "{searchTerm}"
 											{/if}
 										</div>
 									{/if}
@@ -685,7 +685,7 @@
 									Критическая ошибка
 								</h3>
 								<p class="mb-6 text-sm text-red-600 dark:text-red-300">
-									Не удалось загрузить данные закупок. Попробуйте обновить страницу.
+									Не удалось загрузить данные заказов. Попробуйте обновить страницу.
 								</p>
 								<button
 									onclick={handleRetry}
