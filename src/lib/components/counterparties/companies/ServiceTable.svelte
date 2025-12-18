@@ -74,60 +74,60 @@
 			Таблица управления сервисами с {services.length} сервис{services.length === 1 ? 'ом' : 'ами'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
-		<thead class="bg-gray-50 dark:bg-gray-800">
+		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 250px;"
 				>
 					Услуга
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px; width: 150px;"
 				>
 					Телефон
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					Почта
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 180px; width: 180px;"
 				>
 					Контактное лицо
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px; width: 120px;"
 				>
 					Регион
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					Бан
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>

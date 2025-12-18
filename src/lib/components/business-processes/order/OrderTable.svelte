@@ -171,32 +171,32 @@
 			Таблица управления закупками с {orders.length} закуп{orders.length === 1 ? 'кой' : 'ками'}
 			{hasSearched ? ` по поиску "${searchTerm}"` : ''}
 		</caption>
-		<thead class="bg-gray-50 dark:bg-gray-800">
+		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					НОМЕР
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					<button
@@ -234,14 +234,14 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 120px;"
 				>
 					СУММА
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					<button
@@ -279,7 +279,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
 					style="min-width: 180px; width: 180px;"
 				>
 					<button
@@ -297,7 +297,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-3 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>

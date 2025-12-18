@@ -188,13 +188,13 @@
 					: 'ами'}
 			{hasSearched ? ` по запросу "${searchTerm}"` : ''}
 		</caption>
-		<thead class="bg-gray-50 dark:bg-gray-800">
+		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
 				<th
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -203,7 +203,7 @@
 					id="col-contract"
 					scope="col"
 					role="columnheader"
-					class="hidden px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase lg:table-cell dark:text-gray-400"
+					class="hidden px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase lg:table-cell dark:text-gray-400"
 					aria-sort="none"
 				>
 					Проект
@@ -212,7 +212,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя клиента
@@ -221,17 +221,26 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Адрес объекта
+				</th>
+				<th
+					id="col-created"
+					scope="col"
+					role="columnheader"
+					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					aria-sort="none"
+				>
+					Дата создания
 				</th>
 
 				<th
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-left text-xs font-medium tracking-wide uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium tracking-wide uppercase dark:text-gray-400"
 					aria-sort={sortColumn === 'status'
 						? sortDirection === 'asc'
 							? 'ascending'
@@ -292,7 +301,7 @@
 					id="col-accept"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-3 text-center text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-center text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 				</th>
@@ -304,7 +313,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if isLoading}
 				<tr>
-					<td colspan="7" class="px-6 py-4 text-center" role="cell">
+					<td colspan="8" class="px-6 py-4 text-center" role="cell">
 						<div class="flex justify-center" aria-label="Загрузка данных проектов">
 							<div
 								class="h-6 w-6 animate-spin rounded-full border-b-2 border-indigo-600"
@@ -316,7 +325,7 @@
 				</tr>
 			{:else if projects.length === 0}
 				<tr>
-					<td colspan="7" class="px-6 py-4" role="cell">
+					<td colspan="8" class="px-6 py-4" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							title={hasSearched ? 'Проекты не найдены' : 'Проекты отсутствуют'}
@@ -362,6 +371,13 @@
 							title={project.region || ''}
 						>
 							{truncateText(project.region)}
+						</td>
+						<td
+							class="px-6 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							role="cell"
+							headers="col-created"
+						>
+							{formatDate(project.created_at)}
 						</td>
 						<td
 							class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
@@ -597,11 +613,11 @@
 		<div class="inline-block min-w-full align-middle">
 			<div class="ring-opacity-5 overflow-hidden rounded-lg shadow ring-1 ring-black">
 				<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-					<thead class="bg-gray-50 dark:bg-gray-800">
+					<thead class="bg-gray-100 dark:bg-gray-900">
 						<tr>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>

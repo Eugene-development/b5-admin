@@ -191,11 +191,18 @@ export function createAuthLoad(options = {}) {
 export function createGuestLoad(options = {}) {
 	const { redirectTo = '/dashboard' } = options;
 
-	return async ({ url }) => {
-		// Check authentication with fallback to localStorage
+	return async ({ url, parent }) => {
+		// Wait for parent layout data (which includes server-side auth check)
+		const parentData = await parent();
+		
+		// Check authentication - prioritize server data over client state
+		// This prevents redirect loops when session expires
 		let isAuth = false;
 
-		if (authState.initialized) {
+		// First check parent data from server layout (most reliable source)
+		if (parentData?.isAuthenticated !== undefined) {
+			isAuth = parentData.isAuthenticated;
+		} else if (authState.initialized) {
 			isAuth = authState.isAuthenticated;
 		} else {
 			// Fallback to localStorage check
@@ -264,16 +271,16 @@ export async function navigationGuard(pathname, options = {}) {
 		return true;
 	}
 
-	// Check authentication with fallback to localStorage
+	// For SPA navigation, we trust authState since it's updated from server data
+	// Only use authState if it's initialized (meaning server data was received)
 	let isAuth = false;
 
 	if (authState.initialized) {
 		isAuth = authState.isAuthenticated;
 	} else {
-		// Fallback to localStorage check
-		const hasToken = hasAuthToken();
-		const storedUser = getUserData();
-		isAuth = hasToken && storedUser;
+		// If authState not initialized, allow navigation and let load functions handle it
+		// This prevents issues during initial page load
+		return true;
 	}
 
 	// Check authentication requirements

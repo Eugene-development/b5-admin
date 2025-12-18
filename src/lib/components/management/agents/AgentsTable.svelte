@@ -99,13 +99,13 @@
 			Users management table with {users.length} user{users.length === 1 ? '' : 's'}
 			{hasSearched ? ` matching search term "${searchTerm}"` : ''}
 		</caption>
-		<thead class="bg-gray-50 dark:bg-gray-800">
+		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
 				<th
 					id="col-number"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					№
@@ -114,7 +114,7 @@
 					id="col-name"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Имя
@@ -123,7 +123,7 @@
 					id="col-email"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Почта
@@ -132,7 +132,7 @@
 					id="col-verified"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					<!-- Подтверждена -->
@@ -141,7 +141,7 @@
 					id="col-region"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Регион
@@ -150,7 +150,7 @@
 					id="col-registration"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Дата регистрации
@@ -159,7 +159,7 @@
 					id="col-user-status"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус пользователя
@@ -168,7 +168,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-3 py-3 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
 					aria-sort="none"
 				>
 					Статус
@@ -576,41 +576,41 @@
 		<div class="inline-block min-w-full align-middle">
 			<div class="ring-opacity-5 overflow-hidden rounded-lg shadow ring-1 ring-black">
 				<table class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
-					<thead class="bg-gray-50 dark:bg-gray-800">
+					<thead class="bg-gray-100 dark:bg-gray-900">
 						<tr>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								№
 							</th>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Имя
 							</th>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Почта
 							</th>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Регион
 							</th>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус пользователя
 							</th>
 							<th
 								scope="col"
-								class="px-3 py-3 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+								class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
 							>
 								Статус
 							</th>
