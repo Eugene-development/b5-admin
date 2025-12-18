@@ -56,6 +56,22 @@
 		return partnerPaymentStatus === 'paid';
 	}
 
+	// Проверяет, нужно ли показывать размер бонуса
+	function shouldShowBonusAmount(bonus) {
+		// Для заказов - показываем всегда
+		if (bonus.source_type === 'order') {
+			return true;
+		}
+		
+		// Для договоров - показываем только при статусе договора "signed" (Заключён)
+		if (bonus.source_type === 'contract') {
+			const contractStatus = bonus.contract?.status?.slug;
+			return contractStatus === 'signed';
+		}
+		
+		return false;
+	}
+
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
 		return new Intl.NumberFormat('ru-RU', {
@@ -149,7 +165,11 @@
 							{/if}
 						</td>
 						<td class="px-3 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
-							{formatCurrency(bonus.commission_amount)}
+							{#if shouldShowBonusAmount(bonus)}
+								{formatCurrency(bonus.commission_amount)}
+							{:else}
+								—
+							{/if}
 						</td>
 						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
 							<BonusPaymentStatusBadge
@@ -227,7 +247,13 @@
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус</dt>
-							<dd class="font-semibold text-gray-900 dark:text-white">{formatCurrency(bonus.commission_amount)}</dd>
+							<dd class="font-semibold text-gray-900 dark:text-white">
+								{#if shouldShowBonusAmount(bonus)}
+									{formatCurrency(bonus.commission_amount)}
+								{:else}
+									—
+								{/if}
+							</dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Начислено</dt>

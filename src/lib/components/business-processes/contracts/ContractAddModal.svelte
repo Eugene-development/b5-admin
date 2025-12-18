@@ -33,6 +33,7 @@
 			formData.company_id &&
 			formData.contract_date &&
 			formData.planned_completion_date &&
+			(formData.contract_amount !== '' && formData.contract_amount !== null && formData.contract_amount !== undefined) &&
 			Object.keys(errors).length === 0
 	);
 
@@ -111,9 +112,8 @@
 				contractData.contract_number = formData.contract_number.trim();
 			}
 
-			if (formData.contract_amount !== '' && formData.contract_amount !== null && formData.contract_amount !== undefined) {
-				contractData.contract_amount = parseFloat(formData.contract_amount);
-			}
+			// Сумма обязательна
+			contractData.contract_amount = parseFloat(formData.contract_amount) || 0;
 
 			onSave(contractData);
 		}
@@ -167,15 +167,15 @@
 				}
 				break;
 			case 'contract_amount':
-				if (value !== '' && value !== null && value !== undefined) {
+				if (value === '' || value === null || value === undefined) {
+					newErrors.contract_amount = 'Укажите сумму контракта';
+				} else {
 					const num = parseFloat(value);
 					if (isNaN(num) || num < 0) {
-						newErrors.contract_amount = 'Сумма должна быть положительным числом';
+						newErrors.contract_amount = 'Сумма должна быть неотрицательным числом';
 					} else {
 						delete newErrors.contract_amount;
 					}
-				} else {
-					delete newErrors.contract_amount;
 				}
 				break;
 		}
@@ -420,7 +420,7 @@
 							for="contract-amount"
 							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
-							Сумма контракта (₽)
+							Сумма контракта (₽) <span class="text-red-500">*</span>
 						</label>
 						<input
 							type="number"
@@ -433,7 +433,8 @@
 							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
 							aria-describedby={errors.contract_amount ? 'contract-amount-error' : undefined}
 							aria-invalid={errors.contract_amount ? 'true' : 'false'}
-							placeholder="Опционально"
+							placeholder="0"
+							required
 						/>
 						{#if errors.contract_amount}
 							<p id="contract-amount-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
