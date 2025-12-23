@@ -25,6 +25,17 @@
 		return bonus.order;
 	}
 
+	// Debug: log first bonus to see structure
+	$effect(() => {
+		if (bonuses.length > 0) {
+			console.log('First bonus structure:', bonuses[0]);
+			const entity = getSourceEntity(bonuses[0]);
+			console.log('Source entity:', entity);
+			console.log('Project:', entity?.project);
+			console.log('Users:', entity?.project?.users);
+		}
+	});
+
 
 
 	// Проверяет, нужно ли показывать дату начисления для договора
@@ -146,7 +157,8 @@
 			{:else}
 				{#each bonuses as bonus, index (bonus.id)}
 					{@const sourceEntity = getSourceEntity(bonus)}
-					{@const curator = sourceEntity?.project?.users?.[0]}
+					{@const projectUsers = sourceEntity?.project?.users || []}
+					{@const curator = projectUsers.length > 0 ? projectUsers[0] : null}
 					<!-- Agent Row -->
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 border-b-0">
 						<td class="px-3 py-2 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100" rowspan="2">
@@ -160,12 +172,9 @@
 						</td>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
 							<div class="flex items-center gap-1">
-								<span class="text-xs text-gray-500 dark:text-gray-400">А:</span>
+								<span class="text-xs font-medium text-blue-600 dark:text-blue-400">А:</span>
 								<span class="font-medium">{bonus.agent?.name || '—'}</span>
 							</div>
-							{#if bonus.agent?.email}
-								<div class="text-xs text-gray-500 dark:text-gray-400 ml-4">{bonus.agent.email}</div>
-							{/if}
 						</td>
 						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus)}
@@ -214,12 +223,9 @@
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
 							<div class="flex items-center gap-1">
-								<span class="text-xs text-gray-500 dark:text-gray-400">К:</span>
+								<span class="text-xs font-medium text-purple-600 dark:text-purple-400">К:</span>
 								<span class="font-medium">{curator?.name || '—'}</span>
 							</div>
-							{#if curator?.email}
-								<div class="text-xs text-gray-500 dark:text-gray-400 ml-4">{curator.email}</div>
-							{/if}
 						</td>
 						<td class="px-3 py-2 text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 							—

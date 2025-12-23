@@ -727,6 +727,69 @@
 										</dd>
 									</div>
 								{/if}
+
+								<!-- Куратор проекта -->
+								{#if project.curator && project.curator.length > 0}
+									<div>
+										<dt
+											class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+										>
+											Куратор:
+										</dt>
+										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
+											{#each project.curator as curator}
+												<div class="flex items-center space-x-2">
+													<span
+														class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-800 dark:bg-purple-900/20 dark:text-purple-400"
+													>
+														Куратор
+													</span>
+													<span>{curator.name || curator.email}</span>
+													{#if curator.email && curator.name}
+														<span class="text-xs text-gray-500 dark:text-gray-400"
+															>({curator.email})</span
+														>
+													{/if}
+												</div>
+											{/each}
+										</dd>
+									</div>
+								{/if}
+
+								<!-- Все участники проекта с ролями -->
+								{#if project.projectUsers && project.projectUsers.length > 0}
+									<div>
+										<dt
+											class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
+										>
+											Участники проекта:
+										</dt>
+										<dd class="mt-1 space-y-2 text-sm text-gray-900 dark:text-white">
+											{#each project.projectUsers as projectUser}
+												<div class="flex items-center space-x-2">
+													<span
+														class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium
+														{projectUser.role === 'curator' ? 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400' : ''}
+														{projectUser.role === 'agent' ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : ''}
+														{projectUser.role === 'designer' ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/20 dark:text-pink-400' : ''}
+														{projectUser.role === 'manager' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400' : ''}"
+													>
+														{projectUser.role === 'curator' ? 'Куратор' : ''}
+														{projectUser.role === 'agent' ? 'Агент' : ''}
+														{projectUser.role === 'designer' ? 'Дизайнер' : ''}
+														{projectUser.role === 'manager' ? 'Менеджер' : ''}
+													</span>
+													<span>{projectUser.user?.name || projectUser.user?.email || 'Не указан'}</span>
+													{#if projectUser.user?.email && projectUser.user?.name}
+														<span class="text-xs text-gray-500 dark:text-gray-400"
+															>({projectUser.user.email})</span
+														>
+													{/if}
+												</div>
+											{/each}
+										</dd>
+									</div>
+								{/if}
 							</div>
 						</div>
 					</div>

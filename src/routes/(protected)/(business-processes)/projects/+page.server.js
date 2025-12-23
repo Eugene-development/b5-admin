@@ -49,6 +49,21 @@ const PROJECTS_QUERY = `
 					name
 					email
 				}
+				curator {
+					id
+					name
+					email
+				}
+				projectUsers {
+					id
+					user_id
+					role
+					user {
+						id
+						name
+						email
+					}
+				}
 				contracts {
 					id
 					contract_number
