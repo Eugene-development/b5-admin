@@ -50,6 +50,15 @@ const ADMIN_BONUSES_QUERY = gql`
 					code
 					name
 				}
+				project {
+					id
+					value
+					users {
+						id
+						name
+						email
+					}
+				}
 			}
 			order {
 				id
@@ -59,6 +68,15 @@ const ADMIN_BONUSES_QUERY = gql`
 					id
 					code
 					name
+				}
+				project {
+					id
+					value
+					users {
+						id
+						name
+						email
+					}
 				}
 			}
 			agent {

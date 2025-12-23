@@ -2,7 +2,7 @@
 	import BonusPaymentStatusBadge from './BonusPaymentStatusBadge.svelte';
 	import PartnerPaymentStatusBadge from '$lib/components/business-processes/contracts/PartnerPaymentStatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
-	import DateBadge from '$lib/components/common/DateBadge.svelte';
+	import DateIndicator from '$lib/components/common/DateIndicator.svelte';
 
 	let {
 		bonuses = [],
@@ -120,13 +120,13 @@
 					Статус
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Начислено
+					Нач
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Доступно
+					Дост
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Выплачено
+					Вып
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Оплата
@@ -145,66 +145,84 @@
 				</tr>
 			{:else}
 				{#each bonuses as bonus, index (bonus.id)}
-					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-						<td class="px-3 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+					{@const sourceEntity = getSourceEntity(bonus)}
+					{@const curator = sourceEntity?.project?.users?.[0]}
+					<!-- Agent Row -->
+					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 border-b-0">
+						<td class="px-3 py-2 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100" rowspan="2">
 							{index + 1}
 						</td>
-						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							<div class="font-medium">{getSourceNumber(bonus)}</div>
-							<div class="text-xs text-gray-500 dark:text-gray-400">
-								{bonus.source_type === 'contract' ? 'Договор' : 'Заказ'}
-							</div>
 						</td>
-						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-4 text-sm text-gray-900 dark:text-gray-100">
-							<div class="font-medium">{bonus.agent?.name || '—'}</div>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+							<div class="flex items-center gap-1">
+								<span class="text-xs text-gray-500 dark:text-gray-400">А:</span>
+								<span class="font-medium">{bonus.agent?.name || '—'}</span>
+							</div>
 							{#if bonus.agent?.email}
-								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent.email}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400 ml-4">{bonus.agent.email}</div>
 							{/if}
 						</td>
-						<td class="px-3 py-4 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus)}
 								{formatCurrency(bonus.commission_amount)}
 							{:else}
 								—
 							{/if}
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							<BonusPaymentStatusBadge
 								{bonus}
 								{bonusStatuses}
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
-								<DateBadge date={bonus.accrued_at} fallback="—" />
+								<DateIndicator date={bonus.accrued_at} />
 							{:else}
-								—
+								<DateIndicator date={null} />
 							{/if}
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAvailableDate(bonus)}
-								<DateBadge date={bonus.available_at} fallback="—" />
+								<DateIndicator date={bonus.available_at} />
 							{:else}
-								—
+								<DateIndicator date={null} />
 							{/if}
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
-							<DateBadge date={bonus.paid_at} fallback="—" />
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+							<DateIndicator date={bonus.paid_at} />
 						</td>
-						<td class="px-3 py-4 text-center text-sm whitespace-nowrap">
-							{#if getSourceEntity(bonus)}
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+							{#if sourceEntity}
 								<PartnerPaymentStatusBadge
-									contract={getSourceEntity(bonus)}
+									contract={sourceEntity}
 									{partnerPaymentStatuses}
 									onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
 								/>
 							{:else}
 								<span class="text-gray-400">—</span>
 							{/if}
+						</td>
+					</tr>
+					<!-- Curator Row -->
+					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+							<div class="flex items-center gap-1">
+								<span class="text-xs text-gray-500 dark:text-gray-400">К:</span>
+								<span class="font-medium">{curator?.name || '—'}</span>
+							</div>
+							{#if curator?.email}
+								<div class="text-xs text-gray-500 dark:text-gray-400 ml-4">{curator.email}</div>
+							{/if}
+						</td>
+						<td class="px-3 py-2 text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+							—
 						</td>
 					</tr>
 				{/each}
@@ -259,9 +277,9 @@
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Начислено</dt>
 							<dd>
 								{#if shouldShowAccruedDate(bonus)}
-									<DateBadge date={bonus.accrued_at} fallback="—" />
+									<DateIndicator date={bonus.accrued_at} />
 								{:else}
-									<span class="text-gray-900 dark:text-white">—</span>
+									<DateIndicator date={null} />
 								{/if}
 							</dd>
 						</div>
@@ -269,15 +287,15 @@
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Доступно</dt>
 							<dd>
 								{#if shouldShowAvailableDate(bonus)}
-									<DateBadge date={bonus.available_at} fallback="—" />
+									<DateIndicator date={bonus.available_at} />
 								{:else}
-									<span class="text-gray-900 dark:text-white">—</span>
+									<DateIndicator date={null} />
 								{/if}
 							</dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Выплачено</dt>
-							<dd><DateBadge date={bonus.paid_at} fallback="—" /></dd>
+							<dd><DateIndicator date={bonus.paid_at} /></dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Статус</dt>
