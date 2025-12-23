@@ -53,10 +53,19 @@ const ADMIN_BONUSES_QUERY = gql`
 				project {
 					id
 					value
-					users {
+					curator {
 						id
 						name
 						email
+					}
+					projectUsers {
+						id
+						role
+						user {
+							id
+							name
+							email
+						}
 					}
 				}
 			}
@@ -72,10 +81,19 @@ const ADMIN_BONUSES_QUERY = gql`
 				project {
 					id
 					value
-					users {
+					curator {
 						id
 						name
 						email
+					}
+					projectUsers {
+						id
+						role
+						user {
+							id
+							name
+							email
+						}
 					}
 				}
 			}

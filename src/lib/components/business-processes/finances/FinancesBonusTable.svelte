@@ -32,9 +32,31 @@
 			const entity = getSourceEntity(bonuses[0]);
 			console.log('Source entity:', entity);
 			console.log('Project:', entity?.project);
-			console.log('Users:', entity?.project?.users);
+			console.log('Curator:', entity?.project?.curator);
+			console.log('ProjectUsers:', entity?.project?.projectUsers);
 		}
 	});
+
+	// Get curator from project
+	function getCurator(bonus) {
+		const sourceEntity = getSourceEntity(bonus);
+		const project = sourceEntity?.project;
+		
+		// First try to get from curator relationship
+		if (project?.curator && project.curator.length > 0) {
+			return project.curator[0];
+		}
+		
+		// Fallback: find curator in projectUsers
+		if (project?.projectUsers && project.projectUsers.length > 0) {
+			const curatorUser = project.projectUsers.find(pu => pu.role === 'curator');
+			if (curatorUser?.user) {
+				return curatorUser.user;
+			}
+		}
+		
+		return null;
+	}
 
 
 
@@ -157,8 +179,7 @@
 			{:else}
 				{#each bonuses as bonus, index (bonus.id)}
 					{@const sourceEntity = getSourceEntity(bonus)}
-					{@const projectUsers = sourceEntity?.project?.users || []}
-					{@const curator = projectUsers.length > 0 ? projectUsers[0] : null}
+					{@const curator = getCurator(bonus)}
 					<!-- Agent Row -->
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 border-b-0">
 						<td class="px-3 py-2 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100" rowspan="2">
