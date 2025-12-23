@@ -26,6 +26,20 @@ export async function createOrder(orderData) {
 				curator_bonus
 				is_active
 				is_urgent
+				partner_payment_status_id
+				status_id
+				partnerPaymentStatus {
+					id
+					code
+					name
+				}
+				status {
+					id
+					slug
+					value
+					color
+					sort_order
+				}
 				created_at
 				updated_at
 				positions {
@@ -242,6 +256,20 @@ export async function updateOrder(orderData) {
 				curator_bonus
 				is_active
 				is_urgent
+				partner_payment_status_id
+				status_id
+				partnerPaymentStatus {
+					id
+					code
+					name
+				}
+				status {
+					id
+					slug
+					value
+					color
+					sort_order
+				}
 				created_at
 				updated_at
 			}
