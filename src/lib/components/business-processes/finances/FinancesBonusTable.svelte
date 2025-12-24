@@ -60,6 +60,12 @@
 
 
 
+	// Get curator bonus from source entity
+	function getCuratorBonus(bonus) {
+		const sourceEntity = getSourceEntity(bonus);
+		return sourceEntity?.curator_bonus;
+	}
+
 	// Проверяет, нужно ли показывать дату начисления для договора
 	function shouldShowAccruedDate(bonus) {
 		// Для заказов всегда показываем дату
@@ -144,7 +150,7 @@
 					Проект
 				</th>
 				<th scope="col" class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-					Агент
+					Субъект
 				</th>
 				<th scope="col" class="px-3 py-4 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Бонус
@@ -180,8 +186,9 @@
 				{#each bonuses as bonus, index (bonus.id)}
 					{@const sourceEntity = getSourceEntity(bonus)}
 					{@const curator = getCurator(bonus)}
+					{@const curatorBonus = getCuratorBonus(bonus)}
 					<!-- Agent Row -->
-					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 border-b-0">
+					<tr class="border-b-0">
 						<td class="px-3 py-2 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100" rowspan="2">
 							{index + 1}
 						</td>
@@ -191,10 +198,10 @@
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div class="flex items-center gap-1">
-								<span class="text-xs font-medium text-blue-600 dark:text-blue-400">А:</span>
-								<span class="font-medium">{bonus.agent?.name || '—'}</span>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-900/20">
+							<div>
+								<div class="font-medium">{bonus.agent?.name || '—'}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
 							</div>
 						</td>
 						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
@@ -241,15 +248,19 @@
 						</td>
 					</tr>
 					<!-- Curator Row -->
-					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div class="flex items-center gap-1">
-								<span class="text-xs font-medium text-purple-600 dark:text-purple-400">К:</span>
-								<span class="font-medium">{curator?.name || '—'}</span>
+					<tr>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-purple-50 dark:bg-purple-900/20">
+							<div>
+								<div class="font-medium">{curator?.name || '—'}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
 							</div>
 						</td>
-						<td class="px-3 py-2 text-right text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
-							—
+						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+							{#if shouldShowBonusAmount(bonus) && curatorBonus}
+								{formatCurrency(curatorBonus)}
+							{:else}
+								—
+							{/if}
 						</td>
 					</tr>
 				{/each}
@@ -270,6 +281,8 @@
 	{:else}
 		<div class="space-y-4" role="list">
 			{#each bonuses as bonus, index (bonus.id)}
+				{@const curator = getCurator(bonus)}
+				{@const curatorBonus = getCuratorBonus(bonus)}
 				<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
@@ -291,10 +304,24 @@
 							<dd class="font-medium text-gray-900 dark:text-white">{bonus.agent?.name || '—'}</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус</dt>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус агента</dt>
 							<dd class="font-semibold text-gray-900 dark:text-white">
 								{#if shouldShowBonusAmount(bonus)}
 									{formatCurrency(bonus.commission_amount)}
+								{:else}
+									—
+								{/if}
+							</dd>
+						</div>
+						<div>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Куратор</dt>
+							<dd class="font-medium text-gray-900 dark:text-white">{curator?.name || '—'}</dd>
+						</div>
+						<div>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус куратора</dt>
+							<dd class="font-semibold text-gray-900 dark:text-white">
+								{#if shouldShowBonusAmount(bonus) && curatorBonus}
+									{formatCurrency(curatorBonus)}
 								{:else}
 									—
 								{/if}
