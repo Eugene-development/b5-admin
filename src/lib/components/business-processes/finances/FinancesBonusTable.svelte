@@ -1,6 +1,7 @@
 <script>
 	import BonusPaymentStatusBadge from './BonusPaymentStatusBadge.svelte';
 	import PartnerPaymentStatusBadge from '$lib/components/business-processes/contracts/PartnerPaymentStatusBadge.svelte';
+	import PartnerPaymentStatusIndicator from './PartnerPaymentStatusIndicator.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import DateIndicator from '$lib/components/common/DateIndicator.svelte';
 
@@ -156,9 +157,6 @@
 					Бонус
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Статус
-				</th>
-				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
 					Нач
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
@@ -168,7 +166,7 @@
 					Вып
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Оплата
+					Статус
 				</th>
 			</tr>
 		</thead>
@@ -212,13 +210,6 @@
 							{/if}
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
-							<BonusPaymentStatusBadge
-								{bonus}
-								{bonusStatuses}
-								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
-							/>
-						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
 								<DateIndicator date={bonus.accrued_at} />
 							{:else}
@@ -226,25 +217,22 @@
 							{/if}
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
-							{#if shouldShowAvailableDate(bonus)}
-								<DateIndicator date={bonus.available_at} />
-							{:else}
-								<DateIndicator date={null} />
-							{/if}
+							<PartnerPaymentStatusIndicator
+								{sourceEntity}
+								sourceType={bonus.source_type}
+								{partnerPaymentStatuses}
+								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
+							/>
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							<DateIndicator date={bonus.paid_at} />
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
-							{#if sourceEntity}
-								<PartnerPaymentStatusBadge
-									contract={sourceEntity}
-									{partnerPaymentStatuses}
-									onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
-								/>
-							{:else}
-								<span class="text-gray-400">—</span>
-							{/if}
+							<BonusPaymentStatusBadge
+								{bonus}
+								{bonusStatuses}
+								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
+							/>
 						</td>
 					</tr>
 					<!-- Curator Row -->
