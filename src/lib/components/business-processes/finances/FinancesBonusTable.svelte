@@ -192,7 +192,7 @@
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
 							{#if shouldShowBonusAmount(bonus)}
 								{formatCurrency(bonus.commission_amount)}
 							{:else}
