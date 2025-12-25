@@ -1,6 +1,5 @@
 <script>
-	import BonusPaymentStatusBadge from './BonusPaymentStatusBadge.svelte';
-	import PartnerPaymentStatusBadge from '$lib/components/business-processes/contracts/PartnerPaymentStatusBadge.svelte';
+	import BonusPaymentStatusIndicator from './BonusPaymentStatusIndicator.svelte';
 	import PartnerPaymentStatusIndicator from './PartnerPaymentStatusIndicator.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import DateIndicator from '$lib/components/common/DateIndicator.svelte';
@@ -141,39 +140,36 @@
 	<table id={tableId} class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
-				<th scope="col" class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					№
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
 					{sourceType === 'contract' ? 'Договор' : sourceType === 'order' ? 'Заказ' : 'Источник'}
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
 					Проект
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400">
-					Субъект
-				</th>
-				<th scope="col" class="px-3 py-4 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Бонус
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
+					Агент/Куратор
+				</th>
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Нач
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Дост
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Вып
-				</th>
-				<th scope="col" class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400">
-					Статус
 				</th>
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if bonuses.length === 0}
 				<tr>
-					<td colspan="10" class="px-3 py-12 text-center">
+					<td colspan="9" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 							description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
@@ -196,18 +192,18 @@
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-900/20">
-							<div>
-								<div class="font-medium">{bonus.agent?.name || '—'}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
-							</div>
-						</td>
-						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus)}
 								{formatCurrency(bonus.commission_amount)}
 							{:else}
 								—
 							{/if}
+						</td>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+							<div>
+								<div class="font-medium">{bonus.agent?.name || '—'}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
+							</div>
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
@@ -225,10 +221,7 @@
 							/>
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
-							<DateIndicator date={bonus.paid_at} />
-						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
-							<BonusPaymentStatusBadge
+							<BonusPaymentStatusIndicator
 								{bonus}
 								{bonusStatuses}
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
@@ -237,18 +230,18 @@
 					</tr>
 					<!-- Curator Row -->
 					<tr>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100 bg-purple-50 dark:bg-purple-900/20">
-							<div>
-								<div class="font-medium">{curator?.name || '—'}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
-							</div>
-						</td>
-						<td class="px-3 py-2 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus) && curatorBonus}
 								{formatCurrency(curatorBonus)}
 							{:else}
 								—
 							{/if}
+						</td>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+							<div>
+								<div class="font-medium">{curator?.name || '—'}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
+							</div>
 						</td>
 					</tr>
 				{/each}
@@ -342,7 +335,7 @@
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Статус</dt>
 							<dd>
-								<BonusPaymentStatusBadge
+								<BonusPaymentStatusIndicator
 									{bonus}
 									{bonusStatuses}
 									onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}

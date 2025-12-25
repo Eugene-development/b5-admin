@@ -1,11 +1,10 @@
 <script>
-	import { updateContractPartnerPaymentStatus, updateOrderPartnerPaymentStatus } from '$lib/api/finances.js';
+	import { updateBonusStatus } from '$lib/api/finances.js';
 	import { addSuccessToast } from '$lib/utils/toastStore.js';
 
 	let {
-		sourceEntity,
-		sourceType = 'contract',
-		partnerPaymentStatuses = [],
+		bonus,
+		bonusStatuses = [],
 		onStatusChange = null
 	} = $props();
 
@@ -14,12 +13,22 @@
 
 	// Get current status
 	let currentStatus = $derived(
-		sourceEntity?.partnerPaymentStatus || { code: 'pending', name: 'Ожидает оплаты' }
+		bonus?.status || { code: 'accrued', name: 'Начислено' }
 	);
 
-	// Get payment date
-	function getPaymentDate() {
-		return sourceEntity?.partner_payment_date || null;
+	// Get date for current status
+	function getStatusDate() {
+		if (!bonus) return null;
+		
+		switch (currentStatus.code) {
+			case 'paid':
+				return bonus.paid_at;
+			case 'available':
+				return bonus.available_at;
+			case 'accrued':
+			default:
+				return bonus.accrued_at;
+		}
 	}
 
 	// Format date for tooltip
@@ -38,33 +47,43 @@
 		switch (code) {
 			case 'paid':
 				return 'bg-green-500 dark:bg-green-600';
-			case 'pending':
+			case 'available':
+				return 'bg-blue-500 dark:bg-blue-600';
+			case 'accrued':
 			default:
 				return 'bg-yellow-500 dark:bg-yellow-600';
 		}
 	}
 
+	// Get status dot color for dropdown items
+	function getStatusDotColor(code) {
+		switch (code) {
+			case 'paid':
+				return 'bg-green-500';
+			case 'available':
+				return 'bg-blue-500';
+			case 'accrued':
+			default:
+				return 'bg-yellow-500';
+		}
+	}
+
 	// Handle status change
 	async function handleStatusChange(newStatusCode) {
-		if (isUpdating || newStatusCode === currentStatus.code || !sourceEntity) {
+		if (isUpdating || newStatusCode === currentStatus.code || !bonus) {
 			showDropdown = false;
 			return;
 		}
 
 		isUpdating = true;
 		try {
-			let result;
-			if (sourceType === 'contract') {
-				result = await updateContractPartnerPaymentStatus(sourceEntity.id, newStatusCode);
-			} else {
-				result = await updateOrderPartnerPaymentStatus(sourceEntity.id, newStatusCode);
-			}
-			addSuccessToast('Статус оплаты обновлён');
+			const result = await updateBonusStatus(bonus.id, newStatusCode);
+			addSuccessToast('Статус бонуса обновлён');
 			if (onStatusChange) {
 				onStatusChange(result);
 			}
 		} catch (error) {
-			console.error('Failed to update partner payment status:', error);
+			console.error('Failed to update bonus status:', error);
 		} finally {
 			isUpdating = false;
 			showDropdown = false;
@@ -73,7 +92,7 @@
 
 	// Close dropdown on outside click
 	function handleClickOutside(event) {
-		if (showDropdown && !event.target.closest('.payment-indicator-container')) {
+		if (showDropdown && !event.target.closest('.bonus-indicator-container')) {
 			showDropdown = false;
 		}
 	}
@@ -81,8 +100,8 @@
 
 <svelte:window onclick={handleClickOutside} />
 
-<div class="payment-indicator-container relative inline-block">
-	{#if !sourceEntity}
+<div class="bonus-indicator-container relative inline-block">
+	{#if !bonus}
 		<span class="text-gray-400">—</span>
 	{:else}
 		<!-- Clickable colored rectangle with tooltip -->
@@ -121,7 +140,7 @@
 				class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100"
 			>
 				<div class="whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs text-white shadow-lg dark:bg-gray-700">
-					{formatDate(getPaymentDate())}
+					{formatDate(getStatusDate())}
 				</div>
 				<!-- Arrow -->
 				<div class="absolute left-1/2 top-full -translate-x-1/2 transform">
@@ -136,7 +155,7 @@
 				class="absolute left-0 z-50 mt-1 w-40 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700"
 			>
 				<div class="py-1">
-					{#each partnerPaymentStatuses as status}
+					{#each bonusStatuses as status}
 						<button
 							type="button"
 							onclick={(e) => {
@@ -148,11 +167,7 @@
 								? 'bg-gray-100 dark:bg-gray-600'
 								: 'hover:bg-gray-50 dark:hover:bg-gray-600'} text-gray-700 dark:text-gray-200"
 						>
-							<span
-								class="mr-2 h-2 w-2 rounded-full {status.code === 'paid'
-									? 'bg-green-500'
-									: 'bg-yellow-500'}"
-							></span>
+							<span class="mr-2 h-2 w-2 rounded-full {getStatusDotColor(status.code)}"></span>
 							{status.name}
 							{#if status.code === currentStatus.code}
 								<svg class="ml-auto h-4 w-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">

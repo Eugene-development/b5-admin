@@ -43,6 +43,7 @@ const ADMIN_BONUSES_QUERY = gql`
 				agent_bonus
 				curator_bonus
 				is_active
+				partner_payment_date
 				status {
 					id
 					value
@@ -81,6 +82,7 @@ const ADMIN_BONUSES_QUERY = gql`
 				curator_percentage
 				agent_bonus
 				curator_bonus
+				partner_payment_date
 				partnerPaymentStatus {
 					id
 					code
