@@ -29,6 +29,20 @@
 	// State for user menu dropdown
 	let isUserMenuOpen = $state(false);
 
+	// State for collapsible sections
+	let openSections = $state({
+		management: false,
+		contractors: false,
+		businessProcesses: false,
+		information: false,
+		finances: false
+	});
+
+	// Toggle section visibility
+	function toggleSection(section) {
+		openSections[section] = !openSections[section];
+	}
+
 	// Get navigation visibility reactively
 	const navigationVisibility = $derived(getNavigationVisibility());
 
@@ -279,8 +293,27 @@
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
-							<ul role="list" class="-mx-2 mt-2 space-y-1">
+							<button
+								type="button"
+								onclick={() => toggleSection('management')}
+								class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+							>
+								<span>Менеджмент</span>
+								<svg
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									class="size-5 transition-transform duration-200"
+									class:rotate-180={openSections.management}
+								>
+									<path
+										d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+										clip-rule="evenodd"
+										fill-rule="evenodd"
+									/>
+								</svg>
+							</button>
+							{#if openSections.management}
+								<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showClients}
 									<li>
 										<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
@@ -339,14 +372,34 @@
 									</button>
 								</li>
 							</ul>
-						</li>
-					{/if}
+						{/if}
+					</li>
+				{/if}
 					{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
-							<ul role="list" class="-mx-2 mt-2 space-y-1">
+							<button
+								type="button"
+								onclick={() => toggleSection('contractors')}
+								class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+							>
+								<span>Контрагенты</span>
+								<svg
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									class="size-5 transition-transform duration-200"
+									class:rotate-180={openSections.contractors}
+								>
+									<path
+										d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+										clip-rule="evenodd"
+										fill-rule="evenodd"
+									/>
+								</svg>
+							</button>
+							{#if openSections.contractors}
+								<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showContractors}
 									<li>
 										<button
@@ -396,14 +449,34 @@
 									</li>
 								{/if}
 							</ul>
-						</li>
-					{/if}
+						{/if}
+					</li>
+				{/if}
 					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
-							<ul role="list" class="-mx-2 mt-2 space-y-1">
+							<button
+								type="button"
+								onclick={() => toggleSection('businessProcesses')}
+								class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+							>
+								<span>Бизнес-процессы</span>
+								<svg
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									class="size-5 transition-transform duration-200"
+									class:rotate-180={openSections.businessProcesses}
+								>
+									<path
+										d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+										clip-rule="evenodd"
+										fill-rule="evenodd"
+									/>
+								</svg>
+							</button>
+							{#if openSections.businessProcesses}
+								<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showProjects}
 									<li>
 										<button
@@ -466,14 +539,34 @@
 									</button>
 								</li>
 							</ul>
-						</li>
-					{/if}
+						{/if}
+					</li>
+				{/if}
 					{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 						<li>
-							<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
-							<ul role="list" class="-mx-2 mt-2 space-y-1">
+							<button
+								type="button"
+								onclick={() => toggleSection('information')}
+								class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+							>
+								<span>Информация</span>
+								<svg
+									viewBox="0 0 20 20"
+									fill="currentColor"
+									class="size-5 transition-transform duration-200"
+									class:rotate-180={openSections.information}
+								>
+									<path
+										d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+										clip-rule="evenodd"
+										fill-rule="evenodd"
+									/>
+								</svg>
+							</button>
+							{#if openSections.information}
+								<ul role="list" class="-mx-2 mt-2 space-y-1">
 								{#if navigationVisibility.showActions}
 									<li>
 										<button
@@ -499,13 +592,33 @@
 									</li>
 								{/if}
 							</ul>
-						</li>
-					{/if}
+						{/if}
+					</li>
+				{/if}
 					<!-- Separator -->
 					<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Финансы</div>
-						<ul role="list" class="-mx-2 mt-2 space-y-1">
+						<button
+							type="button"
+							onclick={() => toggleSection('finances')}
+							class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+						>
+							<span>Финансы</span>
+							<svg
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="size-5 transition-transform duration-200"
+								class:rotate-180={openSections.finances}
+							>
+								<path
+									d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+									fill-rule="evenodd"
+								/>
+							</svg>
+						</button>
+						{#if openSections.finances}
+							<ul role="list" class="-mx-2 mt-2 space-y-1">
 							<li>
 								<button
 									type="button"
@@ -517,7 +630,8 @@
 								</button>
 							</li>
 						</ul>
-					</li>
+					{/if}
+				</li>
 					<li class="mt-auto">
 						{#if isAuthenticated()}
 							<!-- User info section for mobile -->
@@ -664,8 +778,27 @@
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Менеджмент</div>
-						<ul role="list" class="mt-2 space-y-1">
+						<button
+							type="button"
+							onclick={() => toggleSection('management')}
+							class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+						>
+							<span>Менеджмент</span>
+							<svg
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="size-5 transition-transform duration-200"
+								class:rotate-180={openSections.management}
+							>
+								<path
+									d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+									fill-rule="evenodd"
+								/>
+							</svg>
+						</button>
+						{#if openSections.management}
+							<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showClients}
 								<li>
 									<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
@@ -704,14 +837,34 @@
 								</a>
 							</li>
 						</ul>
-					</li>
-				{/if}
+					{/if}
+				</li>
+			{/if}
 				{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Контрагенты</div>
-						<ul role="list" class="mt-2 space-y-1">
+						<button
+							type="button"
+							onclick={() => toggleSection('contractors')}
+							class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+						>
+							<span>Контрагенты</span>
+							<svg
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="size-5 transition-transform duration-200"
+								class:rotate-180={openSections.contractors}
+							>
+								<path
+									d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+									fill-rule="evenodd"
+								/>
+							</svg>
+						</button>
+						{#if openSections.contractors}
+							<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showContractors}
 								<li>
 									<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
@@ -745,14 +898,34 @@
 								</li>
 							{/if}
 						</ul>
-					</li>
-				{/if}
+					{/if}
+				</li>
+			{/if}
 				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Бизнес-процессы</div>
-						<ul role="list" class="mt-2 space-y-1">
+						<button
+							type="button"
+							onclick={() => toggleSection('businessProcesses')}
+							class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+						>
+							<span>Бизнес-процессы</span>
+							<svg
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="size-5 transition-transform duration-200"
+								class:rotate-180={openSections.businessProcesses}
+							>
+								<path
+									d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+									fill-rule="evenodd"
+								/>
+							</svg>
+						</button>
+						{#if openSections.businessProcesses}
+							<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showProjects}
 								<li>
 									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
@@ -795,14 +968,34 @@
 								</a>
 							</li>
 						</ul>
-					</li>
-				{/if}
+					{/if}
+				</li>
+			{/if}
 				{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
 					<li>
-						<div class="text-xs/6 font-semibold text-gray-400">Информация</div>
-						<ul role="list" class="mt-2 space-y-1">
+						<button
+							type="button"
+							onclick={() => toggleSection('information')}
+							class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+						>
+							<span>Информация</span>
+							<svg
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								class="size-5 transition-transform duration-200"
+								class:rotate-180={openSections.information}
+							>
+								<path
+									d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+									clip-rule="evenodd"
+									fill-rule="evenodd"
+								/>
+							</svg>
+						</button>
+						{#if openSections.information}
+							<ul role="list" class="mt-2 space-y-1">
 							{#if navigationVisibility.showActions}
 								<li>
 									<a href="/actions" class={getNavClassesWithSpan('/actions')}>
@@ -820,13 +1013,33 @@
 								</li>
 							{/if}
 						</ul>
-					</li>
-				{/if}
+					{/if}
+				</li>
+			{/if}
 				<!-- Separator -->
 				<li class="border-t border-gray-200 dark:border-white/10"></li>
 				<li>
-					<div class="text-xs/6 font-semibold text-gray-400">Финансы</div>
-					<ul role="list" class="mt-2 space-y-1">
+					<button
+						type="button"
+						onclick={() => toggleSection('finances')}
+						class="flex w-full items-center justify-between text-xs/6 font-semibold text-gray-400 hover:text-gray-300"
+					>
+						<span>Финансы</span>
+						<svg
+							viewBox="0 0 20 20"
+							fill="currentColor"
+							class="size-5 transition-transform duration-200"
+							class:rotate-180={openSections.finances}
+						>
+							<path
+								d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+								clip-rule="evenodd"
+								fill-rule="evenodd"
+							/>
+						</svg>
+					</button>
+					{#if openSections.finances}
+						<ul role="list" class="mt-2 space-y-1">
 						<li>
 							<a href="/finances" class={getNavClassesWithSpan('/finances')}>
 								<span class={getSpanIconClasses('/finances')}>Фн</span>
@@ -834,7 +1047,8 @@
 							</a>
 						</li>
 					</ul>
-				</li>
+				{/if}
+			</li>
 				<li class="mt-auto">
 					{#if isAuthenticated()}
 						<!-- User info section for desktop -->
