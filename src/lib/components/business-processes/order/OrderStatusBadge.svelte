@@ -11,11 +11,37 @@
 
 	let isUpdating = $state(false);
 	let showDropdown = $state(false);
+	let buttonRef = $state(null);
+	let dropdownPosition = $state({ top: 0, left: 0 });
 
 	// Get current status
 	let currentStatus = $derived(
 		order?.status || { value: 'Не указан', slug: null, color: '#6B7280' }
 	);
+
+	// Calculate dropdown position with smart positioning (above or below)
+	function updateDropdownPosition() {
+		if (buttonRef) {
+			const rect = buttonRef.getBoundingClientRect();
+			const dropdownHeight = 200; // Approximate height of dropdown
+			const viewportHeight = window.innerHeight;
+			const spaceBelow = viewportHeight - rect.bottom;
+			const spaceAbove = rect.top;
+			
+			// If not enough space below and more space above, show above
+			if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
+				dropdownPosition = {
+					top: rect.top - dropdownHeight - 4,
+					left: rect.left
+				};
+			} else {
+				dropdownPosition = {
+					top: rect.bottom + 4,
+					left: rect.left
+				};
+			}
+		}
+	}
 
 	// Handle status change
 	async function handleStatusChange(newStatusSlug) {
@@ -46,9 +72,16 @@
 			showDropdown = false;
 		}
 	}
+
+	// Close dropdown on scroll
+	function handleScroll() {
+		if (showDropdown) {
+			showDropdown = false;
+		}
+	}
 </script>
 
-<svelte:window onclick={handleClickOutside} />
+<svelte:window onclick={handleClickOutside} onscroll={handleScroll} />
 
 <div class="order-status-dropdown relative inline-block">
 	{#if readonly || orderStatuses.length === 0}
@@ -62,9 +95,11 @@
 	{:else}
 		<!-- Interactive badge with dropdown -->
 		<button
+			bind:this={buttonRef}
 			type="button"
 			onclick={(e) => {
 				e.stopPropagation();
+				updateDropdownPosition();
 				showDropdown = !showDropdown;
 			}}
 			disabled={isUpdating}
@@ -92,7 +127,8 @@
 		<!-- Dropdown menu -->
 		{#if showDropdown}
 			<div
-				class="absolute left-0 z-50 mt-1 w-44 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700"
+				class="fixed z-[9999] w-44 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700"
+				style="top: {dropdownPosition.top}px; left: {dropdownPosition.left}px;"
 			>
 				<div class="py-1">
 					{#each orderStatuses as status}
