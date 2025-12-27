@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { authState } from '$lib/state/auth.svelte.js';
 
 	let {
 		isOpen = false,
@@ -10,6 +11,8 @@
 		companies = [],
 		projects = []
 	} = $props();
+
+	const isAdmin = $derived(authState.user?.type === 'Админ');
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -53,6 +56,19 @@
 			) &&
 			Object.keys(errors).length === 0
 	);
+
+	// Reactive bonus calculations
+	let calculatedAgentBonus = $derived(() => {
+		const amount = parseFloat(formData.order_amount) || 0;
+		const percentage = parseFloat(formData.agent_percentage) || 0;
+		return Math.round(amount * percentage / 100);
+	});
+
+	let calculatedCuratorBonus = $derived(() => {
+		const amount = parseFloat(formData.order_amount) || 0;
+		const percentage = parseFloat(formData.curator_percentage) || 0;
+		return Math.round(amount * percentage / 100);
+	});
 
 	// Reset form when modal opens or order changes
 	$effect(() => {
@@ -345,7 +361,8 @@
 							</div>
 						</div>
 
-						<!-- Bonus Fields -->
+						<!-- Bonus Fields (Admin only) -->
+						{#if isAdmin}
 						<div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
 							<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
 								Бонусы агента и куратора
@@ -397,26 +414,24 @@
 									/>
 								</div>
 							</div>
-							{#if formData.agent_bonus > 0 || formData.curator_bonus > 0}
+							{#if calculatedAgentBonus() > 0 || calculatedCuratorBonus() > 0}
 								<div class="mt-3 grid grid-cols-2 gap-4 border-t border-indigo-200 pt-3 dark:border-indigo-700">
 									<div>
 										<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус агента:</span>
 										<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(formData.agent_bonus)}
+											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(calculatedAgentBonus())}
 										</span>
 									</div>
 									<div>
 										<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус куратора:</span>
 										<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB' }).format(formData.curator_bonus)}
+											{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(calculatedCuratorBonus())}
 										</span>
 									</div>
 								</div>
 							{/if}
-							<p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-								Бонусы пересчитываются автоматически при сохранении
-							</p>
 						</div>
+						{/if}
 
 						<div class="flex items-center space-x-6">
 							<label class="flex items-center">

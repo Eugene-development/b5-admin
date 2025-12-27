@@ -1,236 +1,266 @@
 <script>
 	let { action, isOpen = false, onClose } = $props();
 
+	let modalElement = $state();
+	let previousActiveElement;
+
 	// Format date helper function
 	function formatDate(dateString) {
-		if (!dateString) return 'Не указан';
+		if (!dateString) return 'Не указана';
 		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric'
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric'
 		});
 	}
 
-	// Close modal on Escape key
+	// Format datetime helper function
+	function formatDateTime(dateString) {
+		if (!dateString) return 'Не указана';
+		return new Date(dateString).toLocaleString('ru-RU', {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	}
+
+	// Handle escape key press
 	function handleKeydown(event) {
 		if (event.key === 'Escape' && isOpen) {
-			onClose();
+			handleClose();
 		}
 	}
 
-	// Close modal when clicking outside
+	// Handle backdrop click
 	function handleBackdropClick(event) {
 		if (event.target === event.currentTarget) {
+			handleClose();
+		}
+	}
+
+	// Handle close action
+	function handleClose() {
+		if (onClose) {
 			onClose();
 		}
 	}
 
-	// Handle body scroll when modal is open/closed
+	// Focus management
 	$effect(() => {
 		if (isOpen) {
-			// Prevent body scroll when modal is open
+			previousActiveElement = document.activeElement;
+			document.addEventListener('keydown', handleKeydown);
 			document.body.style.overflow = 'hidden';
 		} else {
-			// Restore body scroll when modal is closed
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
+			if (previousActiveElement) {
+				previousActiveElement.focus();
+			}
 		}
 
-		// Cleanup on component unmount
 		return () => {
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
 		};
 	});
+
+	// Trap focus within modal
+	function handleTabKey(event) {
+		if (!isOpen) return;
+
+		const focusableElements = modalElement?.querySelectorAll(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+
+		if (!focusableElements || focusableElements.length === 0) return;
+
+		const firstElement = focusableElements[0];
+		const lastElement = focusableElements[focusableElements.length - 1];
+
+		if (event.key === 'Tab') {
+			if (event.shiftKey) {
+				if (document.activeElement === firstElement) {
+					event.preventDefault();
+					lastElement.focus();
+				}
+			} else {
+				if (document.activeElement === lastElement) {
+					event.preventDefault();
+					firstElement.focus();
+				}
+			}
+		}
+	}
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
-
 {#if isOpen && action}
-	<!-- Modal backdrop -->
 	<div
-		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
-		aria-labelledby="modal-title"
+		class="fixed inset-0 z-50 overflow-y-auto"
 		role="dialog"
 		aria-modal="true"
 	>
-		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-			<!-- Background overlay -->
-			<div
-				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
-				onclick={handleBackdropClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="button"
-				aria-label="Close modal"
-				aria-hidden="true"
-			></div>
+		<!-- Backdrop with blur -->
+		<div
+			class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+			onclick={handleBackdropClick}
+			aria-hidden="true"
+		></div>
 
+		<div class="flex min-h-full items-center justify-center p-4">
 			<!-- Modal panel -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
-				onclick={(e) => e.stopPropagation()}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="dialog"
+				bind:this={modalElement}
+				class="relative w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all dark:bg-gray-900"
+				onkeydown={handleTabKey}
+				tabindex="-1"
+				role="document"
 			>
-				<!-- Modal header -->
-				<div
-					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
-				>
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						Просмотр акции
-					</h3>
-					<button
-						type="button"
-						onclick={onClose}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
-						aria-label="Закрыть модальное окно"
-					>
-						<svg
-							class="h-6 w-6"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
+				<!-- Header with gradient -->
+				<div class="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 px-6 py-5">
+					<div class="absolute inset-0 bg-grid-white/10"></div>
+					<div class="relative flex items-start justify-between">
+						<div>
+							<div class="flex items-center gap-3">
+								<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+									<svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+									</svg>
+								</div>
+								<div>
+									<h2 class="text-xl font-bold text-white">
+										{action.action_name || 'Акция'}
+									</h2>
+									<p class="mt-0.5 text-sm text-amber-100">
+										{action.company_name || 'Компания не указана'}
+									</p>
+								</div>
+							</div>
+						</div>
+						<button
+							type="button"
+							onclick={handleClose}
+							aria-label="Закрыть"
+							class="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
+					<!-- Status badges -->
+					<div class="relative mt-4 flex flex-wrap gap-2">
+						{#if action.is_active !== undefined}
+							<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {action.is_active ? 'bg-emerald-500/20 text-emerald-100' : 'bg-red-500/20 text-red-100'}">
+								<span class="h-1.5 w-1.5 rounded-full {action.is_active ? 'bg-emerald-400' : 'bg-red-400'}"></span>
+								{action.is_active ? 'Активна' : 'Неактивна'}
+							</span>
+						{/if}
+					</div>
 				</div>
 
-				<!-- Modal content -->
-				<div class="mt-6">
-					<!-- Action header -->
-					<div class="mb-6 flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{action.action_name || 'Название не указано'}
-							</h4>
-						</div>
-					</div>
-
-					<!-- Action details grid -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-						<!-- Basic Information -->
-						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Основная информация:
-							</h5>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-								>
-									Компания:
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{action.company_name || 'Не указана'}
-								</dd>
+				<!-- Content -->
+				<div class="p-6">
+					<div class="grid gap-6 lg:grid-cols-2">
+						<!-- Left column -->
+						<div class="space-y-6">
+							<!-- Basic Info Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+									</svg>
+									Основная информация
+								</h3>
+								<div class="space-y-4">
+									<div>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Название акции</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{action.action_name || '—'}</p>
+									</div>
+									<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Компания</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{action.company_name || '—'}</p>
+									</div>
+								</div>
 							</div>
 
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-								>
-									Название акции:
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{action.action_name || 'Не указано'}
-								</dd>
-							</div>
-
+							<!-- Description Card -->
 							{#if action.description}
-								<div>
-									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-									>
-										Описание:
-									</dt>
-									<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-										{action.description}
-									</dd>
-								</div>
-							{/if}
-
-							{#if action.comment}
-								<div>
-									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-									>
-										Комментарий:
-									</dt>
-									<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-										{action.comment}
-									</dd>
+								<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+									<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+										<svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+										</svg>
+										Описание
+									</h3>
+									<p class="text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">{action.description}</p>
 								</div>
 							{/if}
 						</div>
 
-						<!-- Period and Details -->
-						<div class="space-y-4">
-							<h5 class="text-base font-semibold text-gray-900 dark:text-white">
-								Период и детали:
-							</h5>
-
-							<div>
-								<dt
-									class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-								>
-									Период проведения:
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if action.start_date && action.end_date}
-										с {formatDate(action.start_date)} по {formatDate(action.end_date)}
-									{:else if action.start_date}
-										с {formatDate(action.start_date)}
-									{:else if action.end_date}
-										до {formatDate(action.end_date)}
-									{:else}
-										Не указан
-									{/if}
-								</dd>
+						<!-- Right column -->
+						<div class="space-y-6">
+							<!-- Period Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+									</svg>
+									Период проведения
+								</h3>
+								<div class="grid grid-cols-2 gap-4">
+									<div>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Начало</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{formatDate(action.start_date)}</p>
+									</div>
+									<div>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Окончание</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{formatDate(action.end_date)}</p>
+									</div>
+								</div>
 							</div>
 
-							{#if action.created_at}
-								<div>
-									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-									>
-										Дата создания:
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(action.created_at)}
-									</dd>
+							<!-- Comment Card -->
+							{#if action.comment}
+								<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+									<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+										<svg class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+										</svg>
+										Комментарий
+									</h3>
+									<p class="text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">{action.comment}</p>
 								</div>
 							{/if}
+						</div>
+					</div>
 
+					<!-- Metadata footer -->
+					<div class="mt-6 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
+						<div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+							<span>Создано: {formatDateTime(action.created_at)}</span>
 							{#if action.updated_at && action.updated_at !== action.created_at}
-								<div>
-									<dt
-										class="text-sm font-semibold tracking-wide text-indigo-500 uppercase dark:text-indigo-300"
-									>
-										Дата обновления:
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(action.updated_at)}
-									</dd>
-								</div>
+								<span>•</span>
+								<span>Обновлено: {formatDateTime(action.updated_at)}</span>
 							{/if}
 						</div>
 					</div>
 				</div>
 
-				<!-- Modal footer -->
-				<div class="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-gray-600">
-					<button
-						type="button"
-						onclick={onClose}
-						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
-					>
-						Закрыть
-					</button>
+				<!-- Footer -->
+				<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
+					<div class="flex justify-end">
+						<button
+							type="button"
+							onclick={handleClose}
+							class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white dark:focus:ring-gray-100"
+						>
+							Закрыть
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

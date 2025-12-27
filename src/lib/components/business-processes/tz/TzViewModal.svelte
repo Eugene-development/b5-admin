@@ -3,36 +3,28 @@
 
 	let { isOpen = false, tz = null, onClose } = $props();
 
-	// Get curator name from project
+	let modalElement = $state();
+	let previousActiveElement;
+
 	function getCuratorName(tz) {
 		return tz?.project?.agent?.name || 'Не указан';
 	}
 
-	// Get curator phone from project
 	function getCuratorPhone(tz) {
 		const phones = tz?.project?.agent?.phones;
 		if (!phones || phones.length === 0) return null;
-
-		// Find primary phone or return first phone
 		const primaryPhone = phones.find((p) => p.is_primary);
 		return primaryPhone?.value || phones[0]?.value || null;
 	}
 
-	// Get approval status display
 	function getApprovalStatus(tz) {
-		if (tz?.is_approved) {
-			return { text: 'Согласовано', color: 'green' };
-		}
-		if (tz?.requires_approval) {
-			return { text: 'Требуется', color: 'yellow' };
-		}
+		if (tz?.is_approved) return { text: 'Согласовано', color: 'green' };
+		if (tz?.requires_approval) return { text: 'Требуется', color: 'yellow' };
 		return { text: 'Не требуется', color: 'gray' };
 	}
 
-	// Handle file download
 	function handleFileDownload(fileUrl, fileName) {
 		if (!fileUrl) return;
-
 		const link = document.createElement('a');
 		link.href = fileUrl;
 		link.download = fileName || 'file';
@@ -42,397 +34,319 @@
 		document.body.removeChild(link);
 	}
 
-	// Format date helper function
 	function formatDate(dateString) {
 		if (!dateString) return 'Не указана';
 		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'long',
 			day: 'numeric',
+			month: 'short',
+			year: 'numeric'
+		});
+	}
+
+	function formatDateTime(dateString) {
+		if (!dateString) return 'Не указана';
+		return new Date(dateString).toLocaleString('ru-RU', {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric',
 			hour: '2-digit',
 			minute: '2-digit'
 		});
 	}
 
-	// Handle backdrop click to close modal
 	function handleBackdropClick(event) {
 		if (event.target === event.currentTarget) {
-			onClose();
+			handleClose();
 		}
 	}
 
-	// Handle escape key to close modal
 	function handleKeydown(event) {
-		if (event.key === 'Escape') {
+		if (event.key === 'Escape' && isOpen) {
+			handleClose();
+		}
+	}
+
+	function handleClose() {
+		if (onClose) {
 			onClose();
 		}
 	}
 
-	// Prevent modal content click from closing modal
-	function handleModalClick(event) {
-		event.stopPropagation();
-	}
-
-	// Handle body scroll when modal is open/closed
 	$effect(() => {
 		if (isOpen) {
-			// Prevent body scroll when modal is open
+			previousActiveElement = document.activeElement;
+			document.addEventListener('keydown', handleKeydown);
 			document.body.style.overflow = 'hidden';
 		} else {
-			// Restore body scroll when modal is closed
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
+			if (previousActiveElement) {
+				previousActiveElement.focus();
+			}
 		}
 
-		// Cleanup on component unmount
 		return () => {
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
 		};
 	});
+
+	function handleTabKey(event) {
+		if (!isOpen) return;
+		const focusableElements = modalElement?.querySelectorAll(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+		if (!focusableElements || focusableElements.length === 0) return;
+		const firstElement = focusableElements[0];
+		const lastElement = focusableElements[focusableElements.length - 1];
+		if (event.key === 'Tab') {
+			if (event.shiftKey) {
+				if (document.activeElement === firstElement) {
+					event.preventDefault();
+					lastElement.focus();
+				}
+			} else {
+				if (document.activeElement === lastElement) {
+					event.preventDefault();
+					firstElement.focus();
+				}
+			}
+		}
+	}
 </script>
 
 {#if isOpen && tz}
-	<!-- Modal backdrop -->
-	<div
-		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
-		aria-labelledby="modal-title"
-		role="dialog"
-		aria-modal="true"
-	>
-		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-			<!-- Background overlay -->
-			<div
-				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
-				onclick={handleBackdropClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="button"
-				aria-label="Close modal"
-				aria-hidden="true"
-			></div>
+	<div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+		<!-- Backdrop with blur -->
+		<div
+			class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+			onclick={handleBackdropClick}
+			aria-hidden="true"
+		></div>
 
+		<div class="flex min-h-full items-center justify-center p-4">
 			<!-- Modal panel -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
-				onclick={handleModalClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="dialog"
+				bind:this={modalElement}
+				class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all dark:bg-gray-900"
+				onkeydown={handleTabKey}
+				tabindex="-1"
+				role="document"
 			>
-				<!-- Modal header -->
-				<div
-					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
-				>
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						{tz.value || `Техзадание #${tz.id}`}
-					</h3>
-					<button
-						type="button"
-						onclick={onClose}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
-						aria-label="Закрыть модальное окно"
-					>
-						<svg
-							class="h-6 w-6"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
+				<!-- Header with gradient -->
+				<div class="relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 px-6 py-5">
+					<div class="absolute inset-0 bg-grid-white/10"></div>
+					<div class="relative flex items-start justify-between">
+						<div>
+							<div class="flex items-center gap-3">
+								<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+									<svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+									</svg>
+								</div>
+								<div>
+									<h2 class="text-xl font-bold text-white">
+										{tz.value || `Техзадание #${tz.id}`}
+									</h2>
+									<p class="mt-0.5 text-sm text-violet-100">
+										{tz.project?.value || 'Проект не указан'}
+									</p>
+								</div>
+							</div>
+						</div>
+						<button
+							type="button"
+							onclick={handleClose}
+							aria-label="Закрыть"
+							class="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
+					<!-- Status badges -->
+					<div class="relative mt-4 flex flex-wrap gap-2">
+						{#if getApprovalStatus(tz).color === 'green'}
+							<span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-100">
+								<span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+								{getApprovalStatus(tz).text}
+							</span>
+						{:else if getApprovalStatus(tz).color === 'yellow'}
+							<span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-medium text-amber-100">
+								<span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+								{getApprovalStatus(tz).text}
+							</span>
+						{:else}
+							<span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white">
+								<span class="h-1.5 w-1.5 rounded-full bg-white/60"></span>
+								{getApprovalStatus(tz).text}
+							</span>
+						{/if}
+					</div>
 				</div>
 
-				<!-- Modal content -->
-				<div class="mt-6">
-					<!-- TZ details grid -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-						<!-- Basic Information -->
-						<div class="space-y-4">
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Куратор
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{getCuratorName(tz)}
-								</dd>
-							</div>
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Телефон куратора
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if getCuratorPhone(tz)}
-										<a
-											href="tel:{getCuratorPhone(tz)}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-										>
-											{formatPhone(getCuratorPhone(tz))}
-										</a>
-									{:else}
-										Не указан
-									{/if}
-								</dd>
-							</div>
-
-							{#if tz.project}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Проект
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{tz.project.value || 'Не указан'}
-									</dd>
-								</div>
-
-								{#if tz.project.region}
+				<!-- Content -->
+				<div class="max-h-[calc(100vh-280px)] overflow-y-auto p-6">
+					<div class="grid gap-6 lg:grid-cols-2">
+						<!-- Left column -->
+						<div class="space-y-6">
+							<!-- Curator & Project Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+									</svg>
+									Куратор и проект
+								</h3>
+								<div class="space-y-4">
 									<div>
-										<dt
-											class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-										>
-											Адрес объекта
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{tz.project.region}
-										</dd>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Куратор</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{getCuratorName(tz)}</p>
+										{#if getCuratorPhone(tz)}
+											<a href="tel:{getCuratorPhone(tz)}" class="mt-0.5 text-sm text-violet-600 hover:text-violet-500 dark:text-violet-400">
+												{formatPhone(getCuratorPhone(tz))}
+											</a>
+										{/if}
 									</div>
-								{/if}
+									{#if tz.project}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Проект</p>
+											<p class="mt-1 font-medium text-gray-900 dark:text-white">{tz.project.value || '—'}</p>
+											{#if tz.project.region}
+												<p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">{tz.project.region}</p>
+											{/if}
+										</div>
+									{/if}
+								</div>
+							</div>
+
+							<!-- Comment Card -->
+							{#if tz.comment || tz.description}
+								<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+									<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+										<svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+										</svg>
+										{tz.description ? 'Описание' : 'Комментарий'}
+									</h3>
+									<p class="text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">{tz.description || tz.comment}</p>
+								</div>
 							{/if}
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Комментарий
-								</dt>
-								<dd class="mt-1 text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-									{tz.comment || 'Нет комментария'}
-								</dd>
-							</div>
 						</div>
 
-						<!-- Approval Status -->
-						<div class="space-y-4">
-							<div class="flex items-center space-x-3">
-								<h5 class="text-sm font-medium text-gray-900 dark:text-white">Согласование:</h5>
-								{#if getApprovalStatus(tz).color === 'green'}
-									<span
-										class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200"
-									>
-										{getApprovalStatus(tz).text}
-									</span>
-								{:else if getApprovalStatus(tz).color === 'yellow'}
-									<span
-										class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-									>
-										{getApprovalStatus(tz).text}
-									</span>
-								{:else}
-									<span
-										class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
-									>
-										{getApprovalStatus(tz).text}
-									</span>
-								{/if}
-							</div>
-						</div>
-					</div>
-
-					<!-- Description Section -->
-					{#if tz.description}
-						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<div class="text-sm whitespace-pre-wrap text-gray-900 dark:text-white">
-								{tz.description}
-							</div>
-						</div>
-					{/if}
-
-					<!-- TZ Files Section -->
-					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-							<!-- TZ Sketches -->
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
+						<!-- Right column -->
+						<div class="space-y-6">
+							<!-- Sketches Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+									</svg>
 									Эскизы
-								</dt>
-								<dd class="mt-2 space-y-2">
-									{#if tz.sketches && tz.sketches.length > 0}
+								</h3>
+								{#if tz.sketches && tz.sketches.length > 0}
+									<div class="space-y-2">
 										{#each tz.sketches as sketch}
-											<div
-												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
-											>
-												<div class="min-w-0">
-														<p
-															class="truncate text-xs font-medium text-gray-900 dark:text-white"
-															title={sketch.file_name}
-														>
-															{sketch.file_name}
-														</p>
-														<div
-															class="mt-1 flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
-														>
-															{#if sketch.file_size}
-																<span>{(sketch.file_size / 1024 / 1024).toFixed(2)} MB</span>
-															{/if}
-															{#if sketch.uploader}
-																<span>•</span>
-																<span class="truncate">{sketch.uploader.name || sketch.uploader.email}</span>
-															{/if}
-														</div>
-														<button
-															type="button"
-															onclick={() =>
-																handleFileDownload(
-																	sketch.download_url,
-																	sketch.file_name
-																)}
-															class="mt-2 inline-flex items-center rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-blue-500"
-														>
-															<svg
-																class="mr-1.5 h-3.5 w-3.5"
-																fill="none"
-																stroke="currentColor"
-																viewBox="0 0 24 24"
-															>
-																<path
-																	stroke-linecap="round"
-																	stroke-linejoin="round"
-																	stroke-width="2"
-																	d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-																/>
-															</svg>
-															Скачать
-														</button>
+											<div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+												<div class="min-w-0 flex-1">
+													<p class="truncate text-sm font-medium text-gray-900 dark:text-white" title={sketch.file_name}>{sketch.file_name}</p>
+													<div class="mt-0.5 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+														{#if sketch.file_size}
+															<span>{(sketch.file_size / 1024 / 1024).toFixed(2)} MB</span>
+														{/if}
+														{#if sketch.uploader}
+															<span>•</span>
+															<span class="truncate">{sketch.uploader.name || sketch.uploader.email}</span>
+														{/if}
+													</div>
 												</div>
+												<button
+													type="button"
+													onclick={() => handleFileDownload(sketch.download_url, sketch.file_name)}
+													class="ml-3 inline-flex items-center rounded-lg bg-violet-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-violet-500"
+												>
+													<svg class="mr-1 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+													</svg>
+													Скачать
+												</button>
 											</div>
 										{/each}
-									{:else}
-										<p class="text-sm text-gray-500 dark:text-gray-400">Эскизы не загружены</p>
-									{/if}
-								</dd>
+									</div>
+								{:else}
+									<p class="text-sm text-gray-500 dark:text-gray-400">Эскизы не загружены</p>
+								{/if}
 							</div>
 
-							<!-- TZ Commercial Offers -->
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
+							<!-- Commercial Offers Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-violet-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+									</svg>
 									Коммерческие предложения
-								</dt>
-								<dd class="mt-2 space-y-2">
-									{#if tz.commercialOffers && tz.commercialOffers.length > 0}
+								</h3>
+								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
+									<div class="space-y-2">
 										{#each tz.commercialOffers as offer}
-											<div
-												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"
-											>
-												<div class="min-w-0">
-														<p
-															class="truncate text-xs font-medium text-gray-900 dark:text-white"
-															title={offer.file_name}
-														>
-															{offer.file_name}
-														</p>
-														<div
-															class="mt-1 flex items-center space-x-2 text-xs text-gray-500 dark:text-gray-400"
-														>
-															{#if offer.file_size}
-																<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
-															{/if}
-															{#if offer.uploader}
-																<span>•</span>
-																<span class="truncate">{offer.uploader.name || offer.uploader.email}</span>
-															{/if}
-														</div>
-														<button
-															type="button"
-															onclick={() =>
-																handleFileDownload(
-																	offer.download_url,
-																	offer.file_name
-																)}
-															class="mt-2 inline-flex items-center rounded-md bg-purple-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-purple-500"
-														>
-															<svg
-																class="mr-1.5 h-3.5 w-3.5"
-																fill="none"
-																stroke="currentColor"
-																viewBox="0 0 24 24"
-															>
-																<path
-																	stroke-linecap="round"
-																	stroke-linejoin="round"
-																	stroke-width="2"
-																	d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-																/>
-															</svg>
-															Скачать
-														</button>
+											<div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+												<div class="min-w-0 flex-1">
+													<p class="truncate text-sm font-medium text-gray-900 dark:text-white" title={offer.file_name}>{offer.file_name}</p>
+													<div class="mt-0.5 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+														{#if offer.file_size}
+															<span>{(offer.file_size / 1024 / 1024).toFixed(2)} MB</span>
+														{/if}
+														{#if offer.uploader}
+															<span>•</span>
+															<span class="truncate">{offer.uploader.name || offer.uploader.email}</span>
+														{/if}
+													</div>
 												</div>
+												<button
+													type="button"
+													onclick={() => handleFileDownload(offer.download_url, offer.file_name)}
+													class="ml-3 inline-flex items-center rounded-lg bg-fuchsia-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-fuchsia-500"
+												>
+													<svg class="mr-1 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+													</svg>
+													Скачать
+												</button>
 											</div>
 										{/each}
-									{:else}
-										<p class="text-sm text-gray-500 dark:text-gray-400">
-											Коммерческие предложения не загружены
-										</p>
-									{/if}
-								</dd>
+									</div>
+								{:else}
+									<p class="text-sm text-gray-500 dark:text-gray-400">Коммерческие предложения не загружены</p>
+								{/if}
 							</div>
 						</div>
 					</div>
 
-					<!-- Dates Section -->
-					<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-						<div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-							{#if tz.created_at}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Дата создания
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(tz.created_at)}
-									</dd>
-								</div>
-							{/if}
-
+					<!-- Metadata footer -->
+					<div class="mt-6 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700">
+						<div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+							<span>Создан: {formatDateTime(tz.created_at)}</span>
 							{#if tz.updated_at && tz.updated_at !== tz.created_at}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Дата обновления
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(tz.updated_at)}
-									</dd>
-								</div>
+								<span>•</span>
+								<span>Обновлён: {formatDateTime(tz.updated_at)}</span>
 							{/if}
 						</div>
 					</div>
 				</div>
 
-				<!-- Modal footer -->
-				<div class="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-gray-600">
-					<button
-						type="button"
-						onclick={onClose}
-						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
-					>
-						Закрыть
-					</button>
+				<!-- Footer -->
+				<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
+					<div class="flex justify-end">
+						<button
+							type="button"
+							onclick={handleClose}
+							class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white dark:focus:ring-gray-100"
+						>
+							Закрыть
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -1,284 +1,312 @@
 <script>
-	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let { isOpen = false, user = null, onClose } = $props();
 
-	// Format date helper function
+	let modalElement = $state();
+	let previousActiveElement;
+
 	function formatDate(dateString) {
 		if (!dateString) return 'Не указана';
 		return new Date(dateString).toLocaleDateString('ru-RU', {
-			year: 'numeric',
-			month: 'long',
 			day: 'numeric',
+			month: 'short',
+			year: 'numeric'
+		});
+	}
+
+	function formatDateTime(dateString) {
+		if (!dateString) return 'Не указана';
+		return new Date(dateString).toLocaleString('ru-RU', {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric',
 			hour: '2-digit',
 			minute: '2-digit'
 		});
 	}
 
-	// Check if updated_at is different from created_at
 	function shouldShowUpdatedDate(user) {
 		if (!user?.updated_at || !user?.created_at) return false;
-		
-		// Compare dates (ignoring milliseconds)
 		const createdDate = new Date(user.created_at).getTime();
 		const updatedDate = new Date(user.updated_at).getTime();
-		
-		// Show only if dates are different (with 1 second tolerance)
 		return Math.abs(updatedDate - createdDate) > 1000;
 	}
 
-	// Get user status for StatusBadge
 	function getUserStatus(user) {
 		return user?.status === 'banned' || user?.status === 'inactive' || user?.status === 'suspended'
-			? 'banned'
+			? 'inactive'
 			: 'active';
 	}
 
-	// Handle backdrop click to close modal
 	function handleBackdropClick(event) {
 		if (event.target === event.currentTarget) {
-			onClose();
+			handleClose();
 		}
 	}
 
-	// Handle escape key to close modal
 	function handleKeydown(event) {
-		if (event.key === 'Escape') {
+		if (event.key === 'Escape' && isOpen) {
+			handleClose();
+		}
+	}
+
+	function handleClose() {
+		if (onClose) {
 			onClose();
 		}
 	}
 
-	// Prevent modal content click from closing modal
-	function handleModalClick(event) {
-		event.stopPropagation();
-	}
-
-	// Handle body scroll when modal is open/closed
 	$effect(() => {
 		if (isOpen) {
-			// Prevent body scroll when modal is open
+			previousActiveElement = document.activeElement;
+			document.addEventListener('keydown', handleKeydown);
 			document.body.style.overflow = 'hidden';
 		} else {
-			// Restore body scroll when modal is closed
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
+			if (previousActiveElement) {
+				previousActiveElement.focus();
+			}
 		}
 
-		// Cleanup on component unmount
 		return () => {
+			document.removeEventListener('keydown', handleKeydown);
 			document.body.style.overflow = '';
 		};
 	});
+
+	function handleTabKey(event) {
+		if (!isOpen) return;
+		const focusableElements = modalElement?.querySelectorAll(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+		);
+		if (!focusableElements || focusableElements.length === 0) return;
+		const firstElement = focusableElements[0];
+		const lastElement = focusableElements[focusableElements.length - 1];
+		if (event.key === 'Tab') {
+			if (event.shiftKey) {
+				if (document.activeElement === firstElement) {
+					event.preventDefault();
+					lastElement.focus();
+				}
+			} else {
+				if (document.activeElement === lastElement) {
+					event.preventDefault();
+					firstElement.focus();
+				}
+			}
+		}
+	}
 </script>
 
 {#if isOpen && user}
-	<!-- Modal backdrop -->
-	<div
-		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
-		aria-labelledby="modal-title"
-		role="dialog"
-		aria-modal="true"
-	>
-		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-			<!-- Background overlay -->
-			<div
-				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
-				onclick={handleBackdropClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="button"
-				aria-label="Close modal"
-				aria-hidden="true"
-			></div>
+	<div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+		<!-- Backdrop with blur -->
+		<div
+			class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+			onclick={handleBackdropClick}
+			aria-hidden="true"
+		></div>
 
+		<div class="flex min-h-full items-center justify-center p-4">
 			<!-- Modal panel -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-4xl sm:p-6 dark:bg-gray-800"
-				onclick={handleModalClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="dialog"
+				bind:this={modalElement}
+				class="relative w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all dark:bg-gray-900"
+				onkeydown={handleTabKey}
+				tabindex="-1"
+				role="document"
 			>
-				<!-- Modal header -->
-				<div
-					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
-				>
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						{user.name || 'Информация'}
-					</h3>
-					<button
-						type="button"
-						onclick={onClose}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
-						aria-label="Закрыть модальное окно"
-					>
-						<svg
-							class="h-6 w-6"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
+				<!-- Header with gradient -->
+				<div class="relative overflow-hidden bg-gradient-to-r from-slate-700 via-gray-600 to-zinc-600 px-6 py-5">
+					<div class="absolute inset-0 bg-grid-white/10"></div>
+					<div class="relative flex items-start justify-between">
+						<div>
+							<div class="flex items-center gap-3">
+								<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+									<svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+									</svg>
+								</div>
+								<div>
+									<h2 class="text-xl font-bold text-white">
+										{user.name || 'Пользователь'}
+									</h2>
+									<p class="mt-0.5 text-sm text-gray-300">
+										{user.email || 'Email не указан'}
+									</p>
+								</div>
+							</div>
+						</div>
+						<button
+							type="button"
+							onclick={handleClose}
+							aria-label="Закрыть"
+							class="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
+					<!-- Status badges -->
+					<div class="relative mt-4 flex flex-wrap gap-2">
+						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {getUserStatus(user) === 'active' ? 'bg-emerald-500/20 text-emerald-100' : 'bg-red-500/20 text-red-100'}">
+							<span class="h-1.5 w-1.5 rounded-full {getUserStatus(user) === 'active' ? 'bg-emerald-400' : 'bg-red-400'}"></span>
+							{getUserStatus(user) === 'active' ? 'Активен' : 'Заблокирован'}
+						</span>
+						{#if user.region}
+							<span class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white">
+								<svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+								</svg>
+								{user.region}
+							</span>
+						{/if}
+					</div>
 				</div>
 
-				<!-- Modal content -->
-				<div class="mt-6">
-					<!-- User header -->
-					<div class="mb-6 flex items-start justify-between">
-						<div class="min-w-0 flex-1">
-							<!-- <h4 class="text-xl font-bold text-gray-900 dark:text-white">
-								{user.name || 'Имя не указано'}
-							</h4> -->
-							<!-- <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-								{user.email}
-							</p> -->
-						</div>
-						<div class="ml-4 flex flex-shrink-0 gap-2 space-y-2">
-							<div>
-								<StatusBadge status={getUserStatus(user)} />
-							</div>
-						</div>
-					</div>
-
-					<!-- User details grid -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-						<!-- Basic Information -->
-						<div class="space-y-4">
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Email
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{#if user.email}
-										<a
-											href="mailto:{user.email}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-										>
-											{user.email}
-										</a>
-									{:else}
-										Не указан
+				<!-- Content -->
+				<div class="max-h-[calc(100vh-280px)] overflow-y-auto p-6">
+					<div class="grid gap-6 lg:grid-cols-2">
+						<!-- Left column -->
+						<div class="space-y-6">
+							<!-- Contact Info Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+									</svg>
+									Контакты
+								</h3>
+								<div class="space-y-4">
+									<div>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Email</p>
+										{#if user.email}
+											<a href="mailto:{user.email}" class="mt-1 block text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+												{user.email}
+											</a>
+										{:else}
+											<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">—</p>
+										{/if}
+									</div>
+									{#if user.phones && user.phones.length > 0}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Телефоны</p>
+											<div class="mt-2 space-y-1">
+												{#each user.phones as phone}
+													<div class="flex items-center gap-2">
+														<a href="tel:{phone.value}" class="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+															{formatPhone(phone.value)}
+														</a>
+														{#if phone.is_primary}
+															<span class="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">основной</span>
+														{/if}
+													</div>
+												{/each}
+											</div>
+										</div>
+									{:else if user.phone}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Телефон</p>
+											<a href="tel:{user.phone}" class="mt-1 block text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+												{formatPhone(user.phone)}
+											</a>
+										</div>
 									{/if}
-								</dd>
+								</div>
 							</div>
 
-							<!-- Agent (for clients) -->
+							<!-- Agent Info Card (for clients) -->
 							{#if user.agent}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
+								<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+									<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+										<svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+										</svg>
 										Агент
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{user.agent.name}
+									</h3>
+									<div class="space-y-2">
+										<p class="font-medium text-gray-900 dark:text-white">{user.agent.name}</p>
 										{#if user.agent.email}
-											<div class="text-xs text-gray-500 dark:text-gray-400">
-												<a
-													href="mailto:{user.agent.email}"
-													class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-												>
-													{user.agent.email}
+											<a href="mailto:{user.agent.email}" class="text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+												{user.agent.email}
+											</a>
+										{/if}
+									</div>
+								</div>
+							{/if}
+						</div>
+
+						<!-- Right column -->
+						<div class="space-y-6">
+							<!-- Account Info Card -->
+							<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+								<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+									<svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+									</svg>
+									Аккаунт
+								</h3>
+								<div class="space-y-4">
+									<div>
+										<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Дата регистрации</p>
+										<p class="mt-1 font-medium text-gray-900 dark:text-white">{formatDateTime(user.created_at)}</p>
+									</div>
+									{#if shouldShowUpdatedDate(user)}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Последнее обновление</p>
+											<p class="mt-1 text-sm text-gray-900 dark:text-white">{formatDateTime(user.updated_at)}</p>
+										</div>
+									{/if}
+								</div>
+							</div>
+
+							<!-- Additional Info Card -->
+							{#if user.bio || user.website || user.address || user.birth_date}
+								<div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+									<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+										<svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+										</svg>
+										Дополнительно
+									</h3>
+									<div class="space-y-4">
+										{#if user.website}
+											<div>
+												<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Веб-сайт</p>
+												<a href={user.website} target="_blank" rel="noopener noreferrer" class="mt-1 block text-sm text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+													{user.website}
 												</a>
 											</div>
 										{/if}
-									</dd>
-								</div>
-							{/if}
-
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Регион
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{user.region || 'Не указан'}
-								</dd>
-							</div>
-
-							<!-- Phone from phones array (for clients) or direct phone field (for users) -->
-							{#if user.phones && user.phones.length > 0}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Телефон
-									</dt>
-									<dd class="mt-1 space-y-1">
-										{#each user.phones as phone, index}
-											<div class="text-sm text-gray-900 dark:text-white">
-												<a
-													href="tel:{phone.value}"
-													class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-												>
-													{formatPhone(phone.value)}
-												</a>
-												{#if phone.is_primary}
-													<span class="ml-2 text-xs text-gray-500 dark:text-gray-400"
-														>(основной)</span
-													>
-												{/if}
+										{#if user.address}
+											<div class="{user.website ? 'border-t border-gray-200 pt-4 dark:border-gray-700' : ''}">
+												<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Адрес</p>
+												<p class="mt-1 text-sm text-gray-900 dark:text-white">{user.address}</p>
 											</div>
-										{/each}
-									</dd>
-								</div>
-							{:else if user.phone}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Телефон
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										<a
-											href="tel:{user.phone}"
-											class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-										>
-											{formatPhone(user.phone)}
-										</a>
-									</dd>
-								</div>
-							{/if}
-						</div>
-
-						<!-- Account Information -->
-						<div class="space-y-4">
-							<div>
-								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-								>
-									Дата регистрации
-								</dt>
-								<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-									{formatDate(user.created_at)}
-								</dd>
-							</div>
-
-							{#if shouldShowUpdatedDate(user)}
-								<div>
-									<dt
-										class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-									>
-										Последнее обновление
-									</dt>
-									<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-										{formatDate(user.updated_at)}
-									</dd>
+										{/if}
+										{#if user.birth_date}
+											<div class="{user.website || user.address ? 'border-t border-gray-200 pt-4 dark:border-gray-700' : ''}">
+												<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Дата рождения</p>
+												<p class="mt-1 text-sm text-gray-900 dark:text-white">{formatDate(user.birth_date)}</p>
+											</div>
+										{/if}
+										{#if user.bio}
+											<div class="{user.website || user.address || user.birth_date ? 'border-t border-gray-200 pt-4 dark:border-gray-700' : ''}">
+												<p class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">О себе</p>
+												<p class="mt-1 text-sm whitespace-pre-wrap text-gray-700 dark:text-gray-300">{user.bio}</p>
+											</div>
+										{/if}
+									</div>
 								</div>
 							{/if}
 						</div>
 					</div>
 
-					<!-- Agents and Projects Section (for clients) -->
+					<!-- Projects Section (for clients) -->
 					{#if user.projects && user.projects.length > 0}
 						{@const uniqueAgents = user.projects
 							.filter((p) => p.agent)
@@ -289,60 +317,46 @@
 								return acc;
 							}, [])}
 
-						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-								<!-- Agents Column -->
-								<div>
-									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Агенты</h5>
-									<div class="space-y-3">
-										{#if uniqueAgents.length > 0}
+						<div class="mt-6 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50">
+							<h3 class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white">
+								<svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+								</svg>
+								Проекты ({user.projects.length})
+							</h3>
+							<div class="grid gap-4 lg:grid-cols-2">
+								<!-- Agents -->
+								{#if uniqueAgents.length > 0}
+									<div>
+										<p class="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Агенты</p>
+										<div class="space-y-2">
 											{#each uniqueAgents as agent}
-												<div
-													class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700"
-												>
-													<div class="font-medium text-gray-900 dark:text-white">
-														{agent.name}
-													</div>
+												<div class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
+													<p class="font-medium text-gray-900 dark:text-white">{agent.name}</p>
 													{#if agent.email}
-														<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-															<a
-																href="mailto:{agent.email}"
-																class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-															>
-																{agent.email}
-															</a>
-														</div>
+														<a href="mailto:{agent.email}" class="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400">
+															{agent.email}
+														</a>
 													{/if}
 												</div>
 											{/each}
-										{:else}
-											<p class="text-sm text-gray-500 dark:text-gray-400">Нет связанных агентов</p>
-										{/if}
+										</div>
 									</div>
-								</div>
-
-								<!-- Projects Column -->
+								{/if}
+								<!-- Projects list -->
 								<div>
-									<h5 class="mb-4 text-sm font-medium text-gray-900 dark:text-white">Проекты</h5>
-									<div class="space-y-3">
+									<p class="mb-2 text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">Список проектов</p>
+									<div class="space-y-2">
 										{#each user.projects as project}
-											<div
-												class="rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-600 dark:bg-gray-700"
-											>
+											<div class="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-600 dark:bg-gray-800">
 												{#if project.value}
-													<div class="font-medium text-gray-900 dark:text-white">
-														{project.value}
-													</div>
+													<p class="font-medium text-gray-900 dark:text-white">{project.value}</p>
 												{/if}
 												{#if project.contract_number}
-													<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-														Договор: {project.contract_number}
-													</div>
+													<p class="text-xs text-gray-500 dark:text-gray-400">Договор: {project.contract_number}</p>
 												{/if}
 												{#if project.agent}
-													<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-														Агент: {project.agent.name}
-													</div>
+													<p class="text-xs text-gray-500 dark:text-gray-400">Агент: {project.agent.name}</p>
 												{/if}
 											</div>
 										{/each}
@@ -351,87 +365,19 @@
 							</div>
 						</div>
 					{/if}
-
-					<!-- Additional Information -->
-					{#if user.bio || user.website || user.address || user.birth_date}
-						<div class="mt-6 border-t border-gray-200 pt-6 dark:border-gray-600">
-							<h5 class="text-sm font-medium text-gray-900 dark:text-white">
-								Дополнительная информация
-							</h5>
-
-							<div class="mt-4 space-y-4">
-								{#if user.website}
-									<div>
-										<dt
-											class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-										>
-											Веб-сайт
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											<a
-												href={user.website}
-												target="_blank"
-												rel="noopener noreferrer"
-												class="text-indigo-600 hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-											>
-												{user.website}
-											</a>
-										</dd>
-									</div>
-								{/if}
-
-								{#if user.address}
-									<div>
-										<dt
-											class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-										>
-											Адрес
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{user.address}
-										</dd>
-									</div>
-								{/if}
-
-								{#if user.birth_date}
-									<div>
-										<dt
-											class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-										>
-											Дата рождения
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{formatDate(user.birth_date)}
-										</dd>
-									</div>
-								{/if}
-
-								{#if user.bio}
-									<div>
-										<dt
-											class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
-										>
-											О себе
-										</dt>
-										<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-											{user.bio}
-										</dd>
-									</div>
-								{/if}
-							</div>
-						</div>
-					{/if}
 				</div>
 
-				<!-- Modal footer -->
-				<div class="mt-6 flex justify-end border-t border-gray-200 pt-4 dark:border-gray-600">
-					<button
-						type="button"
-						onclick={onClose}
-						class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
-					>
-						Закрыть
-					</button>
+				<!-- Footer -->
+				<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
+					<div class="flex justify-end">
+						<button
+							type="button"
+							onclick={handleClose}
+							class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white dark:focus:ring-gray-100"
+						>
+							Закрыть
+						</button>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -2,8 +2,11 @@
 	import { onMount } from 'svelte';
 	import { getAllProjects } from '$lib/api/projects.js';
 	import { refreshCompanies } from '$lib/api/companies.js';
+	import { authState } from '$lib/state/auth.svelte.js';
 
 	let { isOpen = false, contract = null, onSave, onCancel, isLoading = false } = $props();
+
+	const isAdmin = $derived(authState.user?.type === 'Админ');
 
 	let modalElement = $state();
 	let firstInputElement = $state();
@@ -38,6 +41,19 @@
 			formData.planned_completion_date &&
 			Object.keys(errors).length === 0
 	);
+
+	// Reactive bonus calculations
+	let calculatedAgentBonus = $derived(() => {
+		const amount = parseFloat(formData.contract_amount) || 0;
+		const percentage = parseFloat(formData.agent_percentage) || 0;
+		return Math.round(amount * percentage / 100);
+	});
+
+	let calculatedCuratorBonus = $derived(() => {
+		const amount = parseFloat(formData.contract_amount) || 0;
+		const percentage = parseFloat(formData.curator_percentage) || 0;
+		return Math.round(amount * percentage / 100);
+	});
 
 	// Load projects and companies
 	async function loadOptions() {
@@ -318,7 +334,7 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:max-w-2xl sm:p-6 dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:max-w-5xl sm:p-6 dark:bg-gray-800"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
@@ -489,136 +505,114 @@
 						/>
 					</div>
 
-					<!-- Contract Amount -->
-					<div>
-						<label
-							for="contract-amount"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-						>
-							Сумма контракта (₽)
-						</label>
-						<input
-							type="number"
-							id="contract-amount"
-							min="0"
-							step="0.01"
-							value={formData.contract_amount}
-							oninput={(e) => handleInputChange('contract_amount', e.target.value)}
-							disabled={isLoading}
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-							aria-describedby={errors.contract_amount ? 'contract-amount-error' : undefined}
-							aria-invalid={errors.contract_amount ? 'true' : 'false'}
-							placeholder="Опционально"
-						/>
-						{#if errors.contract_amount}
-							<p id="contract-amount-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
-								{errors.contract_amount}
+					<!-- Bonus Fields (Admin only) -->
+					{#if isAdmin}
+					<div class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20">
+						<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
+							Бонусы агента и куратора
+						</h4>
+						<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+							<div>
+								<label
+									for="contract-amount"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
+									Сумма контракта (₽)
+								</label>
+								<input
+									type="number"
+									id="contract-amount"
+									min="0"
+									step="0.01"
+									value={formData.contract_amount}
+									oninput={(e) => handleInputChange('contract_amount', e.target.value)}
+									disabled={isLoading}
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									aria-describedby={errors.contract_amount ? 'contract-amount-error' : undefined}
+									aria-invalid={errors.contract_amount ? 'true' : 'false'}
+									placeholder="Не указана"
+								/>
+								{#if errors.contract_amount}
+									<p id="contract-amount-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.contract_amount}
+									</p>
+								{/if}
+							</div>
+							<div>
+								<label
+									for="agent-percentage"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
+									Процент агента (%)
+								</label>
+								<input
+									type="number"
+									id="agent-percentage"
+									min="0"
+									max="100"
+									step="0.01"
+									value={formData.agent_percentage}
+									oninput={(e) => handleInputChange('agent_percentage', e.target.value)}
+									disabled={isLoading}
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									aria-describedby={errors.agent_percentage ? 'agent-percentage-error' : undefined}
+									aria-invalid={errors.agent_percentage ? 'true' : 'false'}
+								/>
+								{#if errors.agent_percentage}
+									<p id="agent-percentage-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.agent_percentage}
+									</p>
+								{/if}
+							</div>
+							<div>
+								<label
+									for="curator-percentage"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								>
+									Процент куратора (%)
+								</label>
+								<input
+									type="number"
+									id="curator-percentage"
+									min="0"
+									max="100"
+									step="0.01"
+									value={formData.curator_percentage}
+									oninput={(e) => handleInputChange('curator_percentage', e.target.value)}
+									disabled={isLoading}
+									class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+									aria-describedby={errors.curator_percentage ? 'curator-percentage-error' : undefined}
+									aria-invalid={errors.curator_percentage ? 'true' : 'false'}
+								/>
+								{#if errors.curator_percentage}
+									<p id="curator-percentage-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.curator_percentage}
+									</p>
+								{/if}
+							</div>
+						</div>
+						{#if calculatedAgentBonus() > 0 || calculatedCuratorBonus() > 0}
+							<div class="mt-3 grid grid-cols-2 gap-4 border-t border-indigo-200 pt-3 dark:border-indigo-700">
+								<div>
+									<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус агента:</span>
+									<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+										{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(calculatedAgentBonus())}
+									</span>
+								</div>
+								<div>
+									<span class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус куратора:</span>
+									<span class="ml-2 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+										{new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(calculatedCuratorBonus())}
+									</span>
+								</div>
+							</div>
+						{/if}
+						{#if !formData.is_active}
+							<p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
+								⚠️ Договор неактивен — бонусы не начисляются
 							</p>
 						{/if}
 					</div>
-
-					<!-- Percentages -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-						<div>
-							<label
-								for="agent-percentage"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-							>
-								Процент агента (%)
-							</label>
-							<input
-								type="number"
-								id="agent-percentage"
-								min="0"
-								max="100"
-								step="0.01"
-								value={formData.agent_percentage}
-								oninput={(e) => handleInputChange('agent_percentage', e.target.value)}
-								disabled={isLoading}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								aria-describedby={errors.agent_percentage ? 'agent-percentage-error' : undefined}
-								aria-invalid={errors.agent_percentage ? 'true' : 'false'}
-								placeholder="Опционально"
-							/>
-							{#if errors.agent_percentage}
-								<p id="agent-percentage-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
-									{errors.agent_percentage}
-								</p>
-							{/if}
-						</div>
-
-						<div>
-							<label
-								for="curator-percentage"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-							>
-								Процент куратора (%)
-							</label>
-							<input
-								type="number"
-								id="curator-percentage"
-								min="0"
-								max="100"
-								step="0.01"
-								value={formData.curator_percentage}
-								oninput={(e) => handleInputChange('curator_percentage', e.target.value)}
-								disabled={isLoading}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-								aria-describedby={errors.curator_percentage
-									? 'curator-percentage-error'
-									: undefined}
-								aria-invalid={errors.curator_percentage ? 'true' : 'false'}
-								placeholder="Опционально"
-							/>
-							{#if errors.curator_percentage}
-								<p
-									id="curator-percentage-error"
-									class="mt-1 text-sm text-red-600 dark:text-red-400"
-								>
-									{errors.curator_percentage}
-								</p>
-							{/if}
-						</div>
-					</div>
-
-					<!-- Calculated Bonuses (read-only) -->
-					{#if contract.agent_bonus !== undefined || contract.curator_bonus !== undefined}
-						<div
-							class="rounded-lg border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-900/20"
-						>
-							<h4 class="mb-3 text-sm font-semibold text-indigo-700 dark:text-indigo-300">
-								Рассчитанные бонусы
-							</h4>
-							<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-								<div>
-									<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">Бонус агента</dt>
-									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-										{new Intl.NumberFormat('ru-RU', {
-											style: 'currency',
-											currency: 'RUB',
-											minimumFractionDigits: 2
-										}).format(contract.agent_bonus || 0)}
-									</dd>
-								</div>
-								<div>
-									<dt class="text-xs font-medium text-gray-500 dark:text-gray-400">
-										Бонус куратора
-									</dt>
-									<dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-white">
-										{new Intl.NumberFormat('ru-RU', {
-											style: 'currency',
-											currency: 'RUB',
-											minimumFractionDigits: 2
-										}).format(contract.curator_bonus || 0)}
-									</dd>
-								</div>
-							</div>
-							{#if !formData.is_active}
-								<p class="mt-2 text-xs text-amber-600 dark:text-amber-400">
-									⚠️ Договор неактивен — бонусы не начисляются
-								</p>
-							{/if}
-						</div>
 					{/if}
 
 					<!-- Active Checkbox -->

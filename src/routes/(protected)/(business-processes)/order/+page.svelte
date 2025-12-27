@@ -377,6 +377,9 @@
 						order_number: orderData.order_number,
 						delivery_date: orderData.delivery_date,
 						actual_delivery_date: orderData.actual_delivery_date,
+						order_amount: orderData.order_amount,
+						agent_percentage: orderData.agent_percentage,
+						curator_percentage: orderData.curator_percentage,
 						is_active: orderData.is_active,
 						is_urgent: orderData.is_urgent
 					});
