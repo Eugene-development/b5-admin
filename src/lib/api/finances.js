@@ -63,6 +63,10 @@ const ADMIN_BONUSES_QUERY = gql`
 						id
 						name
 						email
+						phones {
+							id
+							value
+						}
 					}
 					projectUsers {
 						id
@@ -71,6 +75,10 @@ const ADMIN_BONUSES_QUERY = gql`
 							id
 							name
 							email
+							phones {
+								id
+								value
+							}
 						}
 					}
 				}
@@ -97,6 +105,10 @@ const ADMIN_BONUSES_QUERY = gql`
 						id
 						name
 						email
+						phones {
+							id
+							value
+						}
 					}
 					projectUsers {
 						id
@@ -105,6 +117,10 @@ const ADMIN_BONUSES_QUERY = gql`
 							id
 							name
 							email
+							phones {
+								id
+								value
+							}
 						}
 					}
 				}
@@ -113,6 +129,10 @@ const ADMIN_BONUSES_QUERY = gql`
 				id
 				name
 				email
+				phones {
+					id
+					value
+				}
 			}
 		}
 	}
@@ -121,8 +141,7 @@ const ADMIN_BONUSES_QUERY = gql`
 const ADMIN_BONUS_STATS_QUERY = gql`
 	query GetAdminBonusStats($filters: AgentBonusFilters) {
 		adminBonusStats(filters: $filters) {
-			total_accrued
-			total_available
+			total_pending
 			total_paid
 			total_pending
 			contracts_count
@@ -598,10 +617,8 @@ export async function getAdminBonusStats(filters = null, customFetch = null) {
 			customFetch
 		);
 		return result.adminBonusStats || {
-			total_accrued: 0,
-			total_available: 0,
-			total_paid: 0,
 			total_pending: 0,
+			total_paid: 0,
 			contracts_count: 0,
 			orders_count: 0
 		};

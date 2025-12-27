@@ -16,7 +16,7 @@
 
 	// Get current status
 	let currentStatus = $derived(
-		bonus?.status || { code: 'accrued', name: 'Начислено' }
+		bonus?.status || { code: 'pending', name: 'Ожидание' }
 	);
 
 	// Get date for current status
@@ -26,9 +26,7 @@
 		switch (currentStatus.code) {
 			case 'paid':
 				return bonus.paid_at;
-			case 'available':
-				return bonus.available_at;
-			case 'accrued':
+			case 'pending':
 			default:
 				return bonus.accrued_at;
 		}
@@ -50,9 +48,7 @@
 		switch (code) {
 			case 'paid':
 				return 'bg-green-500 dark:bg-green-600';
-			case 'available':
-				return 'bg-blue-500 dark:bg-blue-600';
-			case 'accrued':
+			case 'pending':
 			default:
 				return 'bg-yellow-500 dark:bg-yellow-600';
 		}
@@ -63,9 +59,7 @@
 		switch (code) {
 			case 'paid':
 				return 'bg-green-500';
-			case 'available':
-				return 'bg-blue-500';
-			case 'accrued':
+			case 'pending':
 			default:
 				return 'bg-yellow-500';
 		}

@@ -92,15 +92,6 @@
 		return true;
 	}
 
-	// Проверяет, нужно ли показывать дату доступности
-	function shouldShowAvailableDate(bonus) {
-		const sourceEntity = getSourceEntity(bonus);
-		const partnerPaymentStatus = sourceEntity?.partnerPaymentStatus?.code;
-		
-		// Показываем дату только если статус оплаты партнера = "paid" (Оплачено)
-		return partnerPaymentStatus === 'paid';
-	}
-
 	// Проверяет, нужно ли показывать размер бонуса
 	function shouldShowBonusAmount(bonus) {
 		// Для заказов - показываем всегда
@@ -161,14 +152,14 @@
 				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Бонус
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Нач
+				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Начислено
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Дост
+				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Оплачено
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Вып
+				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Выплачено
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Инкогнито
@@ -202,7 +193,7 @@
 							{bonus.project_name || '—'}
 						</td>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div>
+							<div title={bonus.agent?.phones && bonus.agent.phones.length > 0 ? `Телефон: ${bonus.agent.phones[0].value}` : ''}>
 								<div class="font-medium">{bonus.agent?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
 							</div>
@@ -214,14 +205,14 @@
 								—
 							{/if}
 						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
 								<DateIndicator date={bonus.accrued_at} />
 							{:else}
 								<DateIndicator date={null} />
 							{/if}
 						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							<PartnerPaymentStatusIndicator
 								{sourceEntity}
 								sourceType={bonus.source_type}
@@ -229,7 +220,7 @@
 								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
 							/>
 						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							<BonusPaymentStatusIndicator
 								{bonus}
 								{bonusStatuses}
@@ -249,7 +240,7 @@
 					<!-- Curator Row -->
 					<tr>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div>
+							<div title={curator?.phones && curator.phones.length > 0 ? `Телефон: ${curator.phones[0].value}` : ''}>
 								<div class="font-medium">{curator?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
 							</div>
@@ -327,6 +318,16 @@
 							</dd>
 						</div>
 						<div>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Начислено</dt>
+							<dd>
+								{#if shouldShowAccruedDate(bonus)}
+									<DateIndicator date={bonus.accrued_at} />
+								{:else}
+									<DateIndicator date={null} />
+								{/if}
+							</dd>
+						</div>
+						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Инкогнито</dt>
 							<dd class="font-medium text-gray-900 dark:text-white">
 								{#if isProjectIncognito(bonus)}
@@ -339,31 +340,7 @@
 							</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Начислено</dt>
-							<dd>
-								{#if shouldShowAccruedDate(bonus)}
-									<DateIndicator date={bonus.accrued_at} />
-								{:else}
-									<DateIndicator date={null} />
-								{/if}
-							</dd>
-						</div>
-						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Доступно</dt>
-							<dd>
-								{#if shouldShowAvailableDate(bonus)}
-									<DateIndicator date={bonus.available_at} />
-								{:else}
-									<DateIndicator date={null} />
-								{/if}
-							</dd>
-						</div>
-						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Выплачено</dt>
-							<dd><DateIndicator date={bonus.paid_at} /></dd>
-						</div>
-						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Статус</dt>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Статус выплаты</dt>
 							<dd>
 								<BonusPaymentStatusIndicator
 									{bonus}

@@ -16,16 +16,14 @@
 	let portalContainer = null;
 
 	let currentStatus = $derived(
-		bonus?.status || { code: 'accrued', name: 'Начислено' }
+		bonus?.status || { code: 'pending', name: 'Ожидание' }
 	);
 
 	function getStatusColor(code) {
 		switch (code) {
 			case 'paid':
 				return 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400';
-			case 'available':
-				return 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400';
-			case 'accrued':
+			case 'pending':
 			default:
 				return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
 		}
@@ -35,9 +33,7 @@
 		switch (code) {
 			case 'paid':
 				return 'bg-green-500';
-			case 'available':
-				return 'bg-blue-500';
-			case 'accrued':
+			case 'pending':
 			default:
 				return 'bg-yellow-500';
 		}

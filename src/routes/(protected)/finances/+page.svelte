@@ -21,10 +21,8 @@
 	// Data state
 	let bonuses = $state([]);
 	let stats = $state({
-		total_accrued: 0,
-		total_available: 0,
-		total_paid: 0,
 		total_pending: 0,
+		total_paid: 0,
 		contracts_count: 0,
 		orders_count: 0
 	});
@@ -82,10 +80,6 @@
 				case 'accrued_at':
 					aVal = new Date(a.accrued_at || 0).getTime();
 					bVal = new Date(b.accrued_at || 0).getTime();
-					break;
-				case 'available_at':
-					aVal = new Date(a.available_at || 0).getTime();
-					bVal = new Date(b.available_at || 0).getTime();
 					break;
 				case 'paid_at':
 					aVal = new Date(a.paid_at || 0).getTime();
@@ -204,17 +198,11 @@
 						<div class="my-6 border-t border-gray-200 dark:border-gray-700"></div>
 
 						<!-- Metrics Cards -->
-						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Начислено</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидание</dt>
 								<dd class="mt-1 text-2xl font-semibold text-yellow-600 dark:text-yellow-400">
-									{formatCurrency(stats.total_accrued)}
-								</dd>
-							</div>
-							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Доступно</dt>
-								<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
-									{formatCurrency(stats.total_available)}
+									{formatCurrency(stats.total_pending)}
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
@@ -224,9 +212,9 @@
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидает</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Всего</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-300">
-									{formatCurrency(stats.total_pending)}
+									{formatCurrency((stats.total_pending || 0) + (stats.total_paid || 0))}
 								</dd>
 							</div>
 						</div>
@@ -294,7 +282,6 @@
 									class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
 								>
 									<option value="accrued_at">Дата начисления</option>
-									<option value="available_at">Дата доступности</option>
 									<option value="paid_at">Дата выплаты</option>
 									<option value="commission_amount">Сумма бонуса</option>
 								</select>
