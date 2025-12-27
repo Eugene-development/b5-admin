@@ -25,6 +25,12 @@
 		return bonus.order;
 	}
 
+	// Check if project is incognito
+	function isProjectIncognito(bonus) {
+		const sourceEntity = getSourceEntity(bonus);
+		return sourceEntity?.project?.is_incognito === true;
+	}
+
 	// Debug: log first bonus to see structure
 	$effect(() => {
 		if (bonuses.length > 0) {
@@ -149,11 +155,11 @@
 				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
 					Проект
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Бонус
-				</th>
 				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
 					Агент/Куратор
+				</th>
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Бонус
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Нач
@@ -164,12 +170,15 @@
 				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Вып
 				</th>
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Инкогнито
+				</th>
 			</tr>
 		</thead>
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if bonuses.length === 0}
 				<tr>
-					<td colspan="9" class="px-3 py-12 text-center">
+					<td colspan="10" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 							description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
@@ -192,18 +201,18 @@
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700">
-							{#if shouldShowBonusAmount(bonus)}
-								{formatCurrency(bonus.commission_amount)}
-							{:else}
-								—
-							{/if}
-						</td>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
 							<div>
 								<div class="font-medium">{bonus.agent?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
 							</div>
+						</td>
+						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+							{#if shouldShowBonusAmount(bonus)}
+								{formatCurrency(bonus.commission_amount)}
+							{:else}
+								—
+							{/if}
 						</td>
 						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
@@ -227,21 +236,30 @@
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+							{#if isProjectIncognito(bonus)}
+								<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+									Да
+								</span>
+							{:else}
+								<span class="text-gray-400">—</span>
+							{/if}
+						</td>
 					</tr>
 					<!-- Curator Row -->
 					<tr>
+						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+							<div>
+								<div class="font-medium">{curator?.name || '—'}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
+							</div>
+						</td>
 						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus) && curatorBonus}
 								{formatCurrency(curatorBonus)}
 							{:else}
 								—
 							{/if}
-						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div>
-								<div class="font-medium">{curator?.name || '—'}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
-							</div>
 						</td>
 					</tr>
 				{/each}
@@ -303,6 +321,18 @@
 							<dd class="font-semibold text-gray-900 dark:text-white">
 								{#if shouldShowBonusAmount(bonus) && curatorBonus}
 									{formatCurrency(curatorBonus)}
+								{:else}
+									—
+								{/if}
+							</dd>
+						</div>
+						<div>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Инкогнито</dt>
+							<dd class="font-medium text-gray-900 dark:text-white">
+								{#if isProjectIncognito(bonus)}
+									<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+										Да
+									</span>
 								{:else}
 									—
 								{/if}

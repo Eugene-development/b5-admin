@@ -58,6 +58,7 @@ const ADMIN_BONUSES_QUERY = gql`
 				project {
 					id
 					value
+					is_incognito
 					curator {
 						id
 						name
@@ -91,6 +92,7 @@ const ADMIN_BONUSES_QUERY = gql`
 				project {
 					id
 					value
+					is_incognito
 					curator {
 						id
 						name
