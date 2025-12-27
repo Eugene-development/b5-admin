@@ -156,7 +156,7 @@
 					Начислено
 				</th>
 				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Оплачено
+					Доступно
 				</th>
 				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Выплачено

@@ -43,7 +43,7 @@
 				return 'bg-green-500 dark:bg-green-600';
 			case 'pending':
 			default:
-				return 'bg-yellow-500 dark:bg-yellow-600';
+				return 'bg-gray-400 dark:bg-gray-500';
 		}
 	}
 
@@ -102,7 +102,7 @@
 							data-status-code="${status.code}"
 							class="flex w-full items-center px-4 py-2 text-left text-sm ${status.code === currentStatus.code ? 'bg-gray-100 dark:bg-gray-600' : 'hover:bg-gray-50 dark:hover:bg-gray-600'} text-gray-700 dark:text-gray-200"
 						>
-							<span class="mr-2 h-2 w-2 rounded-full ${status.code === 'paid' ? 'bg-green-500' : 'bg-yellow-500'}"></span>
+							<span class="mr-2 h-2 w-2 rounded-full ${status.code === 'paid' ? 'bg-green-500' : 'bg-gray-400'}"></span>
 							${status.name}
 							${status.code === currentStatus.code ? `
 								<svg class="ml-auto h-4 w-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">

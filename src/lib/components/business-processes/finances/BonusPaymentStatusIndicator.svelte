@@ -50,7 +50,7 @@
 				return 'bg-green-500 dark:bg-green-600';
 			case 'pending':
 			default:
-				return 'bg-yellow-500 dark:bg-yellow-600';
+				return 'bg-gray-400 dark:bg-gray-500';
 		}
 	}
 
@@ -61,7 +61,7 @@
 				return 'bg-green-500';
 			case 'pending':
 			default:
-				return 'bg-yellow-500';
+				return 'bg-gray-400';
 		}
 	}
 
