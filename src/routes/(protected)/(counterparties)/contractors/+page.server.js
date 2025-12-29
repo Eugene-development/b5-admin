@@ -48,15 +48,18 @@ const COMPANIES_QUERY = `
 
 /**
  * Load contractors data from GraphQL API
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadContractorsData(token, fetch) {
+async function loadContractorsData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Contractors SSR: Starting data load...');
 
 		// Make GraphQL request with JWT token from httpOnly cookie
-		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch, hostname);
 		const allCompanies = data.companies?.data || [];
 
 		// Filter only contractors based on status.slug
@@ -108,9 +111,10 @@ async function loadContractorsData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('🚀 Contractors SSR: Starting server-side load', {
+			hostname: url.hostname,
 			hasLocals: !!locals,
 			hasUser: !!locals?.user,
 			hasToken: !!locals?.token
@@ -150,8 +154,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Contractors SSR: Loading data for user:', locals.user.email);
 
-		// Load contractors data
-		const contractorsData = await loadContractorsData(locals.token, fetch);
+		// Load contractors data with hostname for domain-based URL resolution
+		const contractorsData = await loadContractorsData(locals.token, fetch, url.hostname);
 
 		return {
 			contractorsData

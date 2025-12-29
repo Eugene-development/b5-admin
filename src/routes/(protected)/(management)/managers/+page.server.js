@@ -37,15 +37,18 @@ const USERS_QUERY = `
 
 /**
  * Load managers data from GraphQL API
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadManagersData(token, fetch) {
+async function loadManagersData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Managers SSR: Starting data load...');
 
 		// Make GraphQL request with JWT token from httpOnly cookie
-		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch, hostname);
 		const allUsers = data.users || [];
 
 		// Filter only managers based on userStatus.slug
@@ -104,9 +107,10 @@ async function loadManagersData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('🚀 Managers SSR: Starting server-side load', {
+			hostname: url.hostname,
 			hasLocals: !!locals,
 			hasUser: !!locals?.user,
 			hasToken: !!locals?.token
@@ -126,8 +130,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Managers SSR: Loading data for user:', locals.user.email);
 
-		// Load managers data
-		const managersData = await loadManagersData(locals.token, fetch);
+		// Load managers data with hostname for domain-based URL resolution
+		const managersData = await loadManagersData(locals.token, fetch, url.hostname);
 
 		return {
 			usersData: managersData

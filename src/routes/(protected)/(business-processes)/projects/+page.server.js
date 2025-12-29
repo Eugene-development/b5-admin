@@ -107,8 +107,11 @@ const PROJECTS_QUERY = `
 
 /**
  * Load projects data from GraphQL API
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadProjectsData(token, fetch) {
+async function loadProjectsData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
@@ -119,7 +122,8 @@ async function loadProjectsData(token, fetch) {
 			token,
 			PROJECTS_QUERY,
 			{ first: 1000, page: 1 },
-			fetch
+			fetch,
+			hostname
 		);
 
 		const rawProjects = data.projects?.data || [];
@@ -202,9 +206,10 @@ async function loadProjectsData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('🚀 Projects SSR: Starting server-side load', {
+			hostname: url.hostname,
 			hasLocals: !!locals,
 			hasUser: !!locals?.user,
 			hasToken: !!locals?.token
@@ -234,8 +239,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Projects SSR: Loading data for user:', locals.user.email);
 
-		// Load projects data
-		const projectsData = await loadProjectsData(locals.token, fetch);
+		// Load projects data with hostname for domain-based URL resolution
+		const projectsData = await loadProjectsData(locals.token, fetch, url.hostname);
 
 		return {
 			projectsData

@@ -183,15 +183,13 @@
 					</div>
 					<!-- Status badges -->
 					<div class="relative mt-4 flex flex-wrap gap-2">
-						{@const priorityConfig = getPriorityConfig(complaint.priority)}
-						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {priorityConfig.bgClass} {priorityConfig.textClass}">
-							<span class="h-1.5 w-1.5 rounded-full {priorityConfig.dotClass}"></span>
-							{priorityConfig.label}
+						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {getPriorityConfig(complaint.priority).bgClass} {getPriorityConfig(complaint.priority).textClass}">
+							<span class="h-1.5 w-1.5 rounded-full {getPriorityConfig(complaint.priority).dotClass}"></span>
+							{getPriorityConfig(complaint.priority).label}
 						</span>
-						{@const statusConfig = getStatusConfig(complaint.status)}
-						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {statusConfig.bgClass} {statusConfig.textClass}">
-							<span class="h-1.5 w-1.5 rounded-full {statusConfig.dotClass}"></span>
-							{statusConfig.label}
+						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {getStatusConfig(complaint.status).bgClass} {getStatusConfig(complaint.status).textClass}">
+							<span class="h-1.5 w-1.5 rounded-full {getStatusConfig(complaint.status).dotClass}"></span>
+							{getStatusConfig(complaint.status).label}
 						</span>
 						<span class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium {complaint.is_active ? 'bg-emerald-500/20 text-emerald-100' : 'bg-gray-500/20 text-gray-100'}">
 							<span class="h-1.5 w-1.5 rounded-full {complaint.is_active ? 'bg-emerald-400' : 'bg-gray-400'}"></span>

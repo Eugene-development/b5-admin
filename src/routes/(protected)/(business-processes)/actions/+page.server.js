@@ -63,14 +63,14 @@ const COMPANIES_QUERY = `
 	}
 `;
 
-async function loadActionsData(token, fetch) {
+async function loadActionsData(token, fetch, hostname) {
 	try {
 		console.log('📊 Actions SSR: Starting data load...');
 
 		// Load actions and companies in parallel
 		const [actionsResult, companiesResult] = await Promise.all([
-			makeServerGraphQLRequest(token, ACTIONS_QUERY, { first: 1000, page: 1 }, fetch),
-			makeServerGraphQLRequest(token, COMPANIES_QUERY, { first: 1000, page: 1 }, fetch)
+			makeServerGraphQLRequest(token, ACTIONS_QUERY, { first: 1000, page: 1 }, fetch, hostname),
+			makeServerGraphQLRequest(token, COMPANIES_QUERY, { first: 1000, page: 1 }, fetch, hostname)
 		]);
 
 		const rawActions = actionsResult.actions?.data || [];
@@ -115,10 +115,10 @@ async function loadActionsData(token, fetch) {
 	}
 }
 
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	if (!locals?.user || !locals?.token) {
 		return { actionsData: { actions: [], companies: [], needsClientLoad: true } };
 	}
-	const actionsData = await loadActionsData(locals.token, fetch);
+	const actionsData = await loadActionsData(locals.token, fetch, url.hostname);
 	return { actionsData };
 }

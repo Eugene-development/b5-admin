@@ -16,6 +16,10 @@ const DOMAIN_CONFIG = {
 		api: 'https://api.bonus.band'
 	},
 	// rubonus.pro domain family
+	'admin.rubonus.pro': {
+		authApi: 'https://auth.rubonus.pro',
+		api: 'https://api.rubonus.pro'
+	},
 	'rubonus.pro': {
 		authApi: 'https://auth.rubonus.pro',
 		api: 'https://api.rubonus.pro'
@@ -108,4 +112,34 @@ export function getApiUrl(requestOrHostname = null) {
 	}
 	const config = getDomainConfig(hostname);
 	return config.api;
+}
+
+/**
+ * Get cookie domain for cross-subdomain cookie sharing
+ * @param {Request|string} [requestOrHostname] - Optional request object or hostname for server-side
+ * @returns {string|undefined} Cookie domain (e.g., '.bonus.band') or undefined for localhost
+ */
+export function getCookieDomain(requestOrHostname = null) {
+	let hostname;
+	if (typeof requestOrHostname === 'string') {
+		hostname = requestOrHostname;
+	} else {
+		hostname = getCurrentHostname(requestOrHostname);
+	}
+
+	// No domain for localhost
+	if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+		return undefined;
+	}
+
+	// Extract root domain for cookie sharing across subdomains
+	if (hostname.includes('bonus.band')) {
+		return '.bonus.band';
+	}
+	if (hostname.includes('rubonus.pro')) {
+		return '.rubonus.pro';
+	}
+
+	// Fallback: return undefined to use current domain
+	return undefined;
 }

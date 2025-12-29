@@ -93,15 +93,15 @@ const PROJECTS_QUERY = `
 	}
 `;
 
-async function loadOrdersData(token, fetch) {
+async function loadOrdersData(token, fetch, hostname) {
 	try {
 		console.log('📊 Orders SSR: Starting data load...');
 		
 		// Load orders, companies and projects in parallel
 		const [ordersData, companiesData, projectsData] = await Promise.all([
-			makeServerGraphQLRequest(token, ORDERS_QUERY, { first: 1000, page: 1 }, fetch),
-			makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch),
-			makeServerGraphQLRequest(token, PROJECTS_QUERY, {}, fetch)
+			makeServerGraphQLRequest(token, ORDERS_QUERY, { first: 1000, page: 1 }, fetch, hostname),
+			makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch, hostname),
+			makeServerGraphQLRequest(token, PROJECTS_QUERY, {}, fetch, hostname)
 		]);
 		
 		const rawOrders = ordersData.orders?.data || [];
@@ -123,8 +123,9 @@ async function loadOrdersData(token, fetch) {
 	}
 }
 
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	console.log('🚀 Orders SSR: load function called', {
+		hostname: url.hostname,
 		hasUser: !!locals?.user,
 		hasToken: !!locals?.token
 	});
@@ -143,7 +144,7 @@ export async function load({ locals, fetch }) {
 	
 	// Load data and return it directly (not as a promise)
 	try {
-		const ordersData = await loadOrdersData(locals.token, fetch);
+		const ordersData = await loadOrdersData(locals.token, fetch, url.hostname);
 		console.log('✅ Orders SSR: Returning data', {
 			ordersCount: ordersData.orders?.length || 0,
 			companiesCount: ordersData.companies?.length || 0,

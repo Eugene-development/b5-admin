@@ -38,15 +38,18 @@ const USERS_QUERY = `
 
 /**
  * Load agents data asynchronously
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadAgentsData(token, fetch) {
+async function loadAgentsData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Agents SSR: Loading users data');
 
 		// Fetch users using GraphQL with JWT token
-		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, USERS_QUERY, {}, fetch, hostname);
 		const allUsers = data.users || [];
 
 		// Filter only agents
@@ -101,9 +104,10 @@ async function loadAgentsData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('📊 Agents SSR: Server-side load started');
+		console.log('🌐 Agents SSR: Request hostname:', url.hostname);
 
 		// Check authentication from event.locals (set by hooks.server.js)
 		// Note: SSR data loading is optional - client will handle auth redirect via auth-guard
@@ -122,8 +126,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Agents SSR: Loading data for user:', locals.user.email);
 
-		// Load agents data
-		const agentsData = await loadAgentsData(locals.token, fetch);
+		// Load agents data with hostname for domain-based URL resolution
+		const agentsData = await loadAgentsData(locals.token, fetch, url.hostname);
 
 		return {
 			agentsData

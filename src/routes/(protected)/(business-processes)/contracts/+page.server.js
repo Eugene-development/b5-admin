@@ -56,10 +56,10 @@ const CONTRACTS_QUERY = `
 	}
 `;
 
-async function loadContractsData(token, fetch) {
+async function loadContractsData(token, fetch, hostname) {
 	try {
 		console.log('📊 Contracts SSR: Starting data load...');
-		const data = await makeServerGraphQLRequest(token, CONTRACTS_QUERY, { first: 1000, page: 1 }, fetch);
+		const data = await makeServerGraphQLRequest(token, CONTRACTS_QUERY, { first: 1000, page: 1 }, fetch, hostname);
 		const contracts = data.contracts?.data || [];
 		console.log(`✅ Contracts SSR: Loaded ${contracts.length} contracts`);
 		return { contracts, error: null };
@@ -69,8 +69,9 @@ async function loadContractsData(token, fetch) {
 	}
 }
 
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	console.log('🚀 Contracts SSR: load function called', {
+		hostname: url.hostname,
 		hasUser: !!locals?.user,
 		hasToken: !!locals?.token
 	});
@@ -87,7 +88,7 @@ export async function load({ locals, fetch }) {
 	
 	// Load data and return it directly (not as a promise)
 	try {
-		const contractsData = await loadContractsData(locals.token, fetch);
+		const contractsData = await loadContractsData(locals.token, fetch, url.hostname);
 		console.log('✅ Contracts SSR: Returning data', {
 			contractsCount: contractsData.contracts?.length || 0,
 			hasError: !!contractsData.error

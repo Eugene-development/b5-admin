@@ -48,15 +48,18 @@ const COMPANIES_QUERY = `
 
 /**
  * Load suppliers data from GraphQL API
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadSuppliersData(token, fetch) {
+async function loadSuppliersData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Suppliers SSR: Starting data load...');
 
 		// Make GraphQL request with JWT token from httpOnly cookie
-		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch, hostname);
 		const allCompanies = data.companies?.data || [];
 
 		// Filter only suppliers based on status.slug
@@ -108,9 +111,10 @@ async function loadSuppliersData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('🚀 Suppliers SSR: Starting server-side load', {
+			hostname: url.hostname,
 			hasLocals: !!locals,
 			hasUser: !!locals?.user,
 			hasToken: !!locals?.token
@@ -150,8 +154,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Suppliers SSR: Loading data for user:', locals.user.email);
 
-		// Load suppliers data
-		const suppliersData = await loadSuppliersData(locals.token, fetch);
+		// Load suppliers data with hostname for domain-based URL resolution
+		const suppliersData = await loadSuppliersData(locals.token, fetch, url.hostname);
 
 		return {
 			suppliersData

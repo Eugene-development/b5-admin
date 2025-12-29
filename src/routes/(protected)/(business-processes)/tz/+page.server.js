@@ -92,10 +92,10 @@ const TZ_QUERY = `
 	}
 `;
 
-async function loadTzData(token, fetch) {
+async function loadTzData(token, fetch, hostname) {
 	try {
 		console.log('📊 TZ SSR: Starting data load...');
-		const data = await makeServerGraphQLRequest(token, TZ_QUERY, { first: 1000, page: 1 }, fetch);
+		const data = await makeServerGraphQLRequest(token, TZ_QUERY, { first: 1000, page: 1 }, fetch, hostname);
 		const rawTzList = data.technicalSpecifications?.data || [];
 		
 		// Sort by created_at descending (newest first)
@@ -113,10 +113,10 @@ async function loadTzData(token, fetch) {
 	}
 }
 
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	if (!locals?.user || !locals?.token) {
 		return { tzData: { tzList: [], needsClientLoad: true } };
 	}
-	const tzData = await loadTzData(locals.token, fetch);
+	const tzData = await loadTzData(locals.token, fetch, url.hostname);
 	return { tzData };
 }

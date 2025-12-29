@@ -47,15 +47,18 @@ const CLIENTS_QUERY = `
 
 /**
  * Load clients data asynchronously
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadClientsData(token, fetch) {
+async function loadClientsData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Clients SSR: Loading clients data');
 
 		// Fetch clients using GraphQL with JWT token
-		const data = await makeServerGraphQLRequest(token, CLIENTS_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, CLIENTS_QUERY, {}, fetch, hostname);
 
 		const rawClients = data.clients || [];
 
@@ -125,9 +128,10 @@ async function loadClientsData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('📊 Clients SSR: Server-side load started');
+		console.log('🌐 Clients SSR: Request hostname:', url.hostname);
 
 		// Check authentication from event.locals (set by hooks.server.js)
 		if (!locals.isAuthenticated || !locals.user || !locals.token) {
@@ -167,8 +171,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Clients SSR: Loading data for user:', locals.user.email);
 
-		// Load clients data
-		const clientsData = await loadClientsData(locals.token, fetch);
+		// Load clients data with hostname for domain-based URL resolution
+		const clientsData = await loadClientsData(locals.token, fetch, url.hostname);
 
 		return {
 			clientsData

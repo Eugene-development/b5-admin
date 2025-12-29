@@ -63,10 +63,10 @@ const COMPLAINTS_QUERY = `
 	}
 `;
 
-async function loadComplaintsData(token, fetch) {
+async function loadComplaintsData(token, fetch, hostname) {
 	try {
 		console.log('📊 Complaints SSR: Starting data load...');
-		const data = await makeServerGraphQLRequest(token, COMPLAINTS_QUERY, { first: 1000, page: 1 }, fetch);
+		const data = await makeServerGraphQLRequest(token, COMPLAINTS_QUERY, { first: 1000, page: 1 }, fetch, hostname);
 		const rawComplaints = data.complaints?.data || [];
 		
 		// Sort by created_at descending (newest first)
@@ -84,10 +84,10 @@ async function loadComplaintsData(token, fetch) {
 	}
 }
 
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	if (!locals?.user || !locals?.token) {
 		return { complaintsData: { complaints: [], contracts: [], orders: [], needsClientLoad: true } };
 	}
-	const complaintsData = await loadComplaintsData(locals.token, fetch);
+	const complaintsData = await loadComplaintsData(locals.token, fetch, url.hostname);
 	return { complaintsData };
 }

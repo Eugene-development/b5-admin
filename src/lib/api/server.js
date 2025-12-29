@@ -4,6 +4,7 @@
  */
 
 import { API_BASE_URL } from '../config/api.js';
+import { getApiUrl } from '../config/domain.js';
 
 /**
  * Make GraphQL request with JWT token from server context
@@ -11,10 +12,33 @@ import { API_BASE_URL } from '../config/api.js';
  * @param {string} query - GraphQL query
  * @param {Object} variables - GraphQL variables
  * @param {Function} fetch - SvelteKit fetch function (optional, for SSR)
+ * @param {string|Request|URL} [hostnameOrRequest] - Hostname string, Request object, or URL for domain-based URL resolution
  * @returns {Promise<Object>} GraphQL response data
  */
-export async function makeServerGraphQLRequest(token, query, variables = {}, fetch = globalThis.fetch) {
-	const response = await fetch(`${API_BASE_URL}/graphql`, {
+export async function makeServerGraphQLRequest(token, query, variables = {}, fetch = globalThis.fetch, hostnameOrRequest = null) {
+	// Determine API URL based on hostname/request
+	let apiBaseUrl = API_BASE_URL;
+	
+	if (hostnameOrRequest) {
+		if (typeof hostnameOrRequest === 'string') {
+			// Direct hostname string
+			apiBaseUrl = getApiUrl(hostnameOrRequest);
+		} else if (hostnameOrRequest instanceof URL) {
+			// URL object
+			apiBaseUrl = getApiUrl(hostnameOrRequest.hostname);
+		} else if (hostnameOrRequest?.url) {
+			// SvelteKit event object with url property
+			const url = new URL(hostnameOrRequest.url);
+			apiBaseUrl = getApiUrl(url.hostname);
+		} else if (hostnameOrRequest?.headers) {
+			// Request object
+			apiBaseUrl = getApiUrl(hostnameOrRequest);
+		}
+	}
+	
+	console.log(`🌐 SSR GraphQL: Using API URL: ${apiBaseUrl}/graphql`);
+	
+	const response = await fetch(`${apiBaseUrl}/graphql`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

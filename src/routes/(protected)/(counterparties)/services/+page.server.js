@@ -48,15 +48,18 @@ const COMPANIES_QUERY = `
 
 /**
  * Load service companies data from GraphQL API
+ * @param {string} token - JWT token
+ * @param {Function} fetch - SvelteKit fetch function
+ * @param {string} hostname - Hostname for domain-based URL resolution
  */
-async function loadServicesData(token, fetch) {
+async function loadServicesData(token, fetch, hostname) {
 	const startTime = Date.now();
 
 	try {
 		console.log('📊 Services SSR: Starting data load...');
 
 		// Make GraphQL request with JWT token from httpOnly cookie
-		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch);
+		const data = await makeServerGraphQLRequest(token, COMPANIES_QUERY, {}, fetch, hostname);
 		const allCompanies = data.companies?.data || [];
 
 		// Filter only service companies based on status.slug
@@ -108,9 +111,10 @@ async function loadServicesData(token, fetch) {
 }
 
 /** @type {import('./$types').PageServerLoad} */
-export async function load({ locals, fetch }) {
+export async function load({ locals, fetch, url }) {
 	try {
 		console.log('🚀 Services SSR: Starting server-side load', {
+			hostname: url.hostname,
 			hasLocals: !!locals,
 			hasUser: !!locals?.user,
 			hasToken: !!locals?.token
@@ -150,8 +154,8 @@ export async function load({ locals, fetch }) {
 
 		console.log('👤 Services SSR: Loading data for user:', locals.user.email);
 
-		// Load services data
-		const servicesData = await loadServicesData(locals.token, fetch);
+		// Load services data with hostname for domain-based URL resolution
+		const servicesData = await loadServicesData(locals.token, fetch, url.hostname);
 
 		return {
 			servicesData
