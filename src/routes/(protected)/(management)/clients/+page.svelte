@@ -24,7 +24,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	let showViewModal = $state(false);
 	let showEditModal = $state(false);

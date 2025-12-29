@@ -37,7 +37,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	let isActionLoading = $state(false);
 	let showConfirmModal = $state(false);

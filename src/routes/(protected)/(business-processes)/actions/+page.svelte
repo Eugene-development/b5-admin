@@ -34,7 +34,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 8;
+	const itemsPerPage = 10;
 
 	// Modal state
 	let selectedAction = $state(null);
