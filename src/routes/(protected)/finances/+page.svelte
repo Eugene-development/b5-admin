@@ -183,7 +183,7 @@
 						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
 							<div class="flex flex-1 items-center justify-start">
 								<div class="w-full max-w-md">
-									<SearchBar bind:value={searchTerm} placeholder="Поиск..." />
+									<SearchBar bind:value={searchTerm} placeholder="Поиск по таблице Финансы..." />
 								</div>
 							</div>
 							<div class="flex items-center justify-end space-x-3">
@@ -198,9 +198,6 @@
 						<h1 id="page-title" class="sr-only">
 							Финансы
 						</h1>
-
-						<!-- Separator -->
-						<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 						<!-- Metrics Cards -->
 						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">

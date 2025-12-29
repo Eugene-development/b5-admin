@@ -393,7 +393,7 @@
 								>
 									<div class="flex flex-1 items-center justify-start">
 										<div class="w-full max-w-md">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
+											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Сервисы..." />
 										</div>
 									</div>
 									<div class="flex items-center justify-end space-x-3">
@@ -409,9 +409,6 @@
 								<h1 id="page-title" class="sr-only">
 									Сервисы
 								</h1>
-
-								<!-- Separator -->
-								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 								{#if searchTerm.trim()}
 									<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
