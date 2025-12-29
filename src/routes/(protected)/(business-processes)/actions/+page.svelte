@@ -6,7 +6,7 @@
 	import ActionEditModal from '$lib/components/business-processes/actions/ActionEditModal.svelte';
 	import ActionsTableSkeleton from '$lib/components/business-processes/actions/ActionsTableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
-	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton } from '$lib';
+	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton, SearchBar } from '$lib';
 	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
@@ -338,34 +338,7 @@
 
 						{#snippet filters()}
 							<div class="flex flex-1 items-center space-x-4">
-								<!-- Search Input -->
-								<div class="relative max-w-md flex-1">
-									<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-										<svg
-											class="h-5 w-5 text-gray-400"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-											/>
-										</svg>
-									</div>
-									<input
-										id="action-search"
-										type="text"
-										bind:value={searchTerm}
-										oninput={() => handleSearch(searchTerm)}
-										placeholder="Поиск по таблице..."
-										class="block w-full rounded-md border-0 py-1.5 pr-3 pl-10 bg-black text-white ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-black dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-									/>
-								</div>
+								<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
 								{#if hasSearched}
 									<button
 										type="button"

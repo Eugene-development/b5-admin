@@ -3,7 +3,7 @@
 	import ComplaintAddModal from '$lib/components/business-processes/complaints/ComplaintAddModal.svelte';
 	import ComplaintEditModal from '$lib/components/business-processes/complaints/ComplaintEditModal.svelte';
 	import ComplaintViewModal from '$lib/components/business-processes/complaints/ComplaintViewModal.svelte';
-	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton } from '$lib';
+	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton, SearchBar } from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		addSuccessToast,
@@ -429,40 +429,7 @@
 									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 								>
 									<div class="flex flex-1 items-center space-x-4">
-										<!-- Search Input -->
-										<div
-											class="relative max-w-md flex-1"
-											role="search"
-											aria-label="Complaint search"
-										>
-											<div
-												class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-											>
-												<svg
-													class="h-5 w-5 text-gray-400"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													aria-hidden="true"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-													/>
-												</svg>
-											</div>
-											<input
-												id="complaint-search"
-												type="text"
-												bind:value={searchTerm}
-												oninput={() => handleSearch(searchTerm)}
-												placeholder="Поиск по таблице..."
-												class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 bg-black text-white ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-black dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500"
-											/>
-										</div>
+										<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
 									</div>
 								</div>
 

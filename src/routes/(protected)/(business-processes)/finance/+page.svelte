@@ -3,7 +3,7 @@
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
-	import { RefreshButton, AddButton, ErrorBoundary } from '$lib';
+	import { RefreshButton, AddButton, ErrorBoundary, SearchBar } from '$lib';
 	import AgentPaymentsTable from '$lib/components/business-processes/finance/AgentPaymentsTable.svelte';
 	import CreatePaymentModal from '$lib/components/business-processes/finance/CreatePaymentModal.svelte';
 	import PaymentDetailModal from '$lib/components/business-processes/finance/PaymentDetailModal.svelte';
@@ -216,19 +216,10 @@
 
 								<!-- Search -->
 								<div class="mb-6">
-									<div class="relative max-w-md">
-										<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-											<svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-											</svg>
-										</div>
-										<input
-											type="text"
-											bind:value={searchTerm}
-											placeholder="Поиск по агенту или номеру документа..."
-											class="block w-full rounded-md border-0 py-1.5 pl-10 pr-3 bg-black text-white ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-black dark:text-white dark:ring-gray-600"
-										/>
-									</div>
+									<SearchBar 
+										bind:value={searchTerm} 
+										placeholder="Поиск по агенту или номеру документа..." 
+									/>
 								</div>
 
 								<!-- Table -->
