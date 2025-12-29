@@ -93,7 +93,7 @@
 		{value}
 		oninput={handleInput}
 		onkeydown={handleKeydown}
-		class="block w-full rounded-md border-0 bg-white py-2.5 pr-12 pl-10 text-base text-gray-900 shadow-sm ring-1 ring-gray-300 transition-all duration-200 ease-in-out ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500"
+		class="block w-full rounded-md border-0 bg-black py-2.5 pr-12 pl-10 text-base text-white shadow-sm ring-1 ring-gray-300 transition-all duration-200 ease-in-out ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-black dark:text-white dark:ring-gray-600 dark:placeholder:text-gray-500 dark:focus:ring-indigo-500"
 		aria-label="Поиск по таблице"
 		aria-describedby="{descriptionId} {statusId}"
 		role="searchbox"
