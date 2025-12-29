@@ -1,6 +1,8 @@
 <script>
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import ActionButton from '$lib/components/common/ActionButton.svelte';
+	import MobileActionButton from '$lib/components/common/MobileActionButton.svelte';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
@@ -194,27 +196,27 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{tz.sequentialNumber || index + 1}
 						</td>
-						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed whitespace-nowrap">
 								{tz.value || '—'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="max-w-xs pr-4 leading-relaxed break-words">
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3">
 								{#if getApprovalStatus(tz).color === 'green'}
 									<span
@@ -237,7 +239,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.sketches && tz.sketches.length > 0}
 									<span
@@ -250,7 +252,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
 									<span
@@ -263,77 +265,40 @@
 								{/if}
 							</div>
 						</td>
-						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center gap-1.5">
-								<!-- View Button -->
-								<button
-									type="button"
+								<ActionButton
+									variant="view"
 									onclick={() => onViewTz && onViewTz(tz)}
-									class="group relative inline-flex items-center justify-center rounded-lg p-2 text-gray-500 transition-all duration-200 hover:bg-gray-100 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-1 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-									aria-label="Просмотреть техзадание {tz.id}"
+									ariaLabel="Просмотреть техзадание {tz.id}"
 									title="Просмотреть"
-								>
-									<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-									</svg>
-								</button>
-								<!-- Edit Button -->
-								<button
-									type="button"
+								/>
+								<ActionButton
+									variant="edit"
 									onclick={() => onEditTz && onEditTz(tz)}
-									class="group relative inline-flex items-center justify-center rounded-lg p-2 text-blue-500 transition-all duration-200 hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-1 dark:text-blue-400 dark:hover:bg-blue-900/30 dark:hover:text-blue-300"
-									aria-label="Редактировать техзадание {tz.id}"
+									ariaLabel="Редактировать техзадание {tz.id}"
 									title="Редактировать"
-								>
-									<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-									</svg>
-								</button>
-								<!-- Upload TZ Button -->
-								<button
-									type="button"
+								/>
+								<ActionButton
+									variant="upload"
 									onclick={() => onUploadSketch && onUploadSketch(tz)}
-									class="group relative inline-flex items-center justify-center rounded-lg p-2 text-violet-500 transition-all duration-200 hover:bg-violet-50 hover:text-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-400 focus:ring-offset-1 dark:text-violet-400 dark:hover:bg-violet-900/30 dark:hover:text-violet-300"
-									aria-label="Загрузить ТЗ"
+									ariaLabel="Загрузить ТЗ"
 									title="Загрузить ТЗ"
-								>
-									<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-									</svg>
-								</button>
-								<!-- Upload Offer Button -->
-								<button
-									type="button"
+								/>
+								<ActionButton
+									variant="download"
 									onclick={() => onUploadCP && onUploadCP(tz)}
-									class="group relative inline-flex items-center justify-center rounded-lg p-2 text-emerald-500 transition-all duration-200 hover:bg-emerald-50 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-1 dark:text-emerald-400 dark:hover:bg-emerald-900/30 dark:hover:text-emerald-300"
-									aria-label="Загрузить КП"
+									ariaLabel="Загрузить КП"
 									title="Загрузить КП"
-								>
-									<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-									</svg>
-								</button>
-								<!-- Delete Button -->
-								<button
-									type="button"
+								/>
+								<ActionButton
+									variant="delete"
 									onclick={() => onDeleteTz && onDeleteTz(tz)}
 									disabled={isLoading}
-									class="group relative inline-flex items-center justify-center rounded-lg p-2 text-red-500 transition-all duration-200 hover:bg-red-50 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 dark:text-red-400 dark:hover:bg-red-900/30 dark:hover:text-red-300"
-									aria-label="Удалить техзадание {tz.id}"
+									{isLoading}
+									ariaLabel="Удалить техзадание {tz.id}"
 									title="Удалить"
-								>
-									{#if isLoading}
-										<svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
-											<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-											<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-										</svg>
-									{:else}
-										<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-										</svg>
-									{/if}
-								</button>
+								/>
 							</div>
 						</td>
 					</tr>
@@ -457,68 +422,37 @@
 					<div
 						class="flex flex-wrap items-center justify-end gap-2 border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
-						<!-- View Button -->
-						<button
-							type="button"
+						<MobileActionButton
+							variant="view"
 							onclick={() => onViewTz && onViewTz(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-gray-100 px-4 py-2.5 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-							aria-label="Просмотреть"
+							ariaLabel="Просмотреть"
 							title="Просмотреть"
-						>
-							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-							</svg>
-						</button>
-						<!-- Edit Button -->
-						<button
-							type="button"
+						/>
+						<MobileActionButton
+							variant="edit"
 							onclick={() => onEditTz && onEditTz(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-2.5 text-sm font-medium text-blue-700 transition-all duration-200 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-900/50"
-							aria-label="Редактировать"
+							ariaLabel="Редактировать"
 							title="Редактировать"
-						>
-							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-							</svg>
-						</button>
-						<!-- Upload Sketch Button -->
-						<button
-							type="button"
+						/>
+						<MobileActionButton
+							variant="upload"
 							onclick={() => onUploadSketch && onUploadSketch(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-violet-50 px-4 py-2.5 text-sm font-medium text-violet-700 transition-all duration-200 hover:bg-violet-100 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
-							aria-label="Загрузить ТЗ"
+							ariaLabel="Загрузить ТЗ"
 							title="Загрузить ТЗ"
-						>
-							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-							</svg>
-						</button>
-						<!-- Upload Offer Button -->
-						<button
-							type="button"
+						/>
+						<MobileActionButton
+							variant="download"
 							onclick={() => onUploadCP && onUploadCP(tz)}
-							class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-emerald-50 px-4 py-2.5 text-sm font-medium text-emerald-700 transition-all duration-200 hover:bg-emerald-100 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/50"
-							aria-label="Загрузить КП"
+							ariaLabel="Загрузить КП"
 							title="Загрузить КП"
-						>
-							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-							</svg>
-						</button>
-						<!-- Delete Button -->
-						<button
-							type="button"
+						/>
+						<MobileActionButton
+							variant="delete"
 							onclick={() => onDeleteTz && onDeleteTz(tz)}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700 transition-all duration-200 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-red-900/30 dark:text-red-300 dark:hover:bg-red-900/50"
-							aria-label="Удалить"
+							ariaLabel="Удалить"
 							title="Удалить"
-						>
-							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-							</svg>
-						</button>
+						/>
 					</div>
 				</div>
 			{/each}

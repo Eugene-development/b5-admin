@@ -3,6 +3,7 @@
 	import ActionButtons from '$lib/components/business-processes/actions/ActionButtons.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import DateBadge from '$lib/components/common/DateBadge.svelte';
+	import { ActionButton, MobileActionButton } from '$lib';
 	import { authState } from '$lib/state/auth.svelte.js';
 
 	let {
@@ -235,83 +236,27 @@
 							headers="col-actions"
 						>
 							<div class="flex items-center justify-center space-x-2">
-								<!-- View Button -->
-								<button
-									type="button"
+								<ActionButton
+									variant="view"
 									onclick={() => onViewUser && onViewUser(user)}
-									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-									aria-label="Просмотреть пользователя {user.name || user.email}"
-								>
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-										/>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-										/>
-									</svg>
-								</button>
-								<!-- Edit Button - Only visible for admin -->
+									ariaLabel="Просмотреть пользователя {user.name || user.email}"
+									title="Просмотреть"
+								/>
 								{#if isAdmin}
-									<button
-										type="button"
+									<ActionButton
+										variant="edit"
 										onclick={() => onEditUser && onEditUser(user)}
-										class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-										aria-label="Редактировать пользователя {user.name || user.email}"
-									>
-										<svg
-											class="h-4 w-4"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-											/>
-										</svg>
-									</button>
-									<!-- Delete Button -->
-									<button
-										type="button"
+										ariaLabel="Редактировать пользователя {user.name || user.email}"
+										title="Редактировать"
+									/>
+									<ActionButton
+										variant="delete"
 										onclick={() => onDeleteUser(user)}
 										disabled={isLoading}
-										class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-										aria-label="Удалить пользователя {user.name || user.email}"
-									>
-										<svg
-											class="h-4 w-4"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-											/>
-										</svg>
-									</button>
+										{isLoading}
+										ariaLabel="Удалить пользователя {user.name || user.email}"
+										title="Удалить"
+									/>
 								{/if}
 							</div>
 						</td>
@@ -401,82 +346,27 @@
 						class="flex justify-end space-x-2 border-t border-gray-200 pt-3 dark:border-gray-600"
 					>
 						<!-- View Button -->
-						<button
-							type="button"
+						<MobileActionButton
+							variant="view"
 							onclick={() => onViewUser && onViewUser(user)}
-							class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500"
-							aria-label="Просмотреть пользователя {user.name || user.email}"
-						>
-							<svg
-								class="h-5 w-5"
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-								aria-hidden="true"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-								/>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-								/>
-							</svg>
-						</button>
-						<!-- Edit Button - Only visible for admin -->
+							ariaLabel="Просмотреть пользователя {user.name || user.email}"
+							title="Просмотреть"
+						/>
 						{#if isAdmin}
-							<button
-								type="button"
+							<MobileActionButton
+								variant="edit"
 								onclick={() => onEditUser && onEditUser(user)}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500"
-								aria-label="Редактировать пользователя {user.name || user.email}"
-							>
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-									/>
-								</svg>
-							</button>
-							<!-- Delete Button -->
-							<button
-								type="button"
+								ariaLabel="Редактировать пользователя {user.name || user.email}"
+								title="Редактировать"
+							/>
+							<MobileActionButton
+								variant="delete"
 								onclick={() => onDeleteUser(user)}
 								disabled={isLoading}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-								aria-label="Удалить пользователя {user.name || user.email}"
-							>
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-									/>
-								</svg>
-							</button>
+								isLoading={isLoading}
+								ariaLabel="Удалить пользователя {user.name || user.email}"
+								title="Удалить"
+							/>
 						{/if}
 					</div>
 				</div>
@@ -575,83 +465,27 @@
 										class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap"
 									>
 										<div class="flex items-center justify-center space-x-2">
-											<!-- View Button -->
-											<button
-												type="button"
+											<ActionButton
+												variant="view"
 												onclick={() => onViewUser && onViewUser(user)}
-												class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500"
-												aria-label="Просмотреть пользователя {user.name || user.email}"
-											>
-												<svg
-													class="h-4 w-4"
-													xmlns="http://www.w3.org/2000/svg"
-													fill="none"
-													viewBox="0 0 24 24"
-													stroke="currentColor"
-													aria-hidden="true"
-												>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-													/>
-													<path
-														stroke-linecap="round"
-														stroke-linejoin="round"
-														stroke-width="2"
-														d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-													/>
-												</svg>
-											</button>
-											<!-- Edit Button - Only visible for admin -->
+												ariaLabel="Просмотреть пользователя {user.name || user.email}"
+												title="Просмотреть"
+											/>
 											{#if isAdmin}
-												<button
-													type="button"
+												<ActionButton
+													variant="edit"
 													onclick={() => onEditUser && onEditUser(user)}
-													class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500"
-													aria-label="Редактировать пользователя {user.name || user.email}"
-												>
-													<svg
-														class="h-4 w-4"
-														xmlns="http://www.w3.org/2000/svg"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-														aria-hidden="true"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-														/>
-													</svg>
-												</button>
-												<!-- Delete Button -->
-												<button
-													type="button"
+													ariaLabel="Редактировать пользователя {user.name || user.email}"
+													title="Редактировать"
+												/>
+												<ActionButton
+													variant="delete"
 													onclick={() => onDeleteUser(user)}
 													disabled={isLoading}
-													class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-													aria-label="Удалить пользователя {user.name || user.email}"
-												>
-													<svg
-														class="h-4 w-4"
-														xmlns="http://www.w3.org/2000/svg"
-														fill="none"
-														viewBox="0 0 24 24"
-														stroke="currentColor"
-														aria-hidden="true"
-													>
-														<path
-															stroke-linecap="round"
-															stroke-linejoin="round"
-															stroke-width="2"
-															d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-														/>
-													</svg>
-												</button>
+													{isLoading}
+													ariaLabel="Удалить пользователя {user.name || user.email}"
+													title="Удалить"
+												/>
 											{/if}
 										</div>
 									</td>

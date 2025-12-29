@@ -1,6 +1,7 @@
 <script>
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import DateBadge from '$lib/components/common/DateBadge.svelte';
+	import { ActionButton, MobileActionButton } from '$lib';
 
 	let {
 		payments = [],
@@ -111,39 +112,27 @@
 						</td>
 						<td class="px-6 py-4 text-right text-sm whitespace-nowrap">
 							<div class="flex items-center justify-end space-x-2">
-								<button
-									type="button"
+								<ActionButton
+									variant="view"
 									onclick={() => onViewPayment && onViewPayment(payment)}
-									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-gray-500"
-								>
-									<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-									</svg>
-								</button>
+									ariaLabel="Просмотреть выплату"
+									title="Просмотреть"
+								/>
 								{#if payment.status?.code === 'pending'}
-									<button
-										type="button"
+									<ActionButton
+										variant="approve"
 										onclick={() => onUpdateStatus && onUpdateStatus(payment, 'completed')}
 										disabled={isLoading}
-										class="inline-flex items-center rounded-md bg-green-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-green-500 disabled:opacity-50"
+										ariaLabel="Завершить выплату"
 										title="Завершить выплату"
-									>
-										<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-										</svg>
-									</button>
-									<button
-										type="button"
+									/>
+									<ActionButton
+										variant="reject"
 										onclick={() => onUpdateStatus && onUpdateStatus(payment, 'failed')}
 										disabled={isLoading}
-										class="inline-flex items-center rounded-md bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-red-500 disabled:opacity-50"
+										ariaLabel="Отметить как ошибку"
 										title="Отметить как ошибку"
-									>
-										<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-										</svg>
-									</button>
+									/>
 								{/if}
 							</div>
 						</td>
@@ -189,13 +178,12 @@
 						</div>
 					</dl>
 					<div class="flex items-center justify-end space-x-2 border-t border-gray-200 pt-3 dark:border-gray-600">
-						<button
-							type="button"
+						<MobileActionButton
+							variant="view"
 							onclick={() => onViewPayment && onViewPayment(payment)}
-							class="inline-flex items-center rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500"
-						>
-							Подробнее
-						</button>
+							ariaLabel="Просмотреть выплату"
+							title="Просмотреть"
+						/>
 					</div>
 				</div>
 			{/each}

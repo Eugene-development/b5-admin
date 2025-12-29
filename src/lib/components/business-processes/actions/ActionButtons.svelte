@@ -5,16 +5,9 @@
 	 * A reusable component for agent/project management actions (Ban/Unban and Delete or Edit and Delete).
 	 * Provides proper styling, loading states, and accessibility features.
 	 * Uses Svelte 5 runes for reactive state management.
-	 *
-	 * @param {Object} agent - The agent/project object containing id, name, status, etc.
-	 * @param {Function} onBan - Callback function for ban/edit action
-	 * @param {Function} onDelete - Callback function for delete action
-	 * @param {Function} [onView] - Callback function for view action (projects only)
-	 * @param {boolean} [isLoading=false] - Loading state for disabling buttons
-	 * @param {boolean} [mobile=false] - Mobile mode with larger touch targets
-	 * @param {boolean} [compact=false] - Compact mode for tablet view
-	 * @param {boolean} [projectMode=false] - Project mode changes ban/unban to edit
 	 */
+	import { ActionButton, MobileActionButton } from '$lib';
+	
 	let {
 		agent,
 		user,
@@ -120,455 +113,99 @@
 
 {#if mobile}
 	<!-- Mobile Layout - Larger touch targets, actions in one row -->
-	<div class="flex w-full flex-row justify-end space-x-2">
+	<div class="flex w-full flex-wrap justify-end gap-2">
 		{#if onView}
-			<!-- View Button -->
-			<button
-				type="button"
-				id={viewButtonId}
+			<MobileActionButton
+				variant="view"
 				onclick={handleViewAction}
-				onkeydown={(e) => handleKeydown(e, 'view')}
-				class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 active:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(entity.name)}
-				aria-describedby="{viewButtonId}-description"
-			>
-				{#if isLoading}
-					<svg
-						class="h-4 w-4 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-5 w-5"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleViewText(entity.name)}
+				title="Просмотреть"
+			/>
 		{/if}
 
 		{#if projectMode}
-			<button
-				type="button"
-				id={banButtonId}
+			<MobileActionButton
+				variant="edit"
 				onclick={handleBanAction}
-				onkeydown={(e) => handleKeydown(e, 'ban')}
-				class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleBanText(isBanned, entity.name)}
-				aria-describedby={`${banButtonId}-description`}
-			>
-				{#if isLoading}
-					<svg
-						class="mr-2 h-4 w-4 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-5 w-5"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleBanText(isBanned, entity.name)}
+				title="Редактировать"
+			/>
 		{/if}
 
-		<!-- Delete Button -->
-		<button
-			type="button"
-			id={deleteButtonId}
+		<MobileActionButton
+			variant="delete"
 			onclick={handleDeleteAction}
-			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 active:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(entity.name)}
-			aria-describedby={`${deleteButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-2 h-4 w-4 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else}
-				<svg
-					class="h-5 w-5"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"
-					/>
-				</svg>
-			{/if}
-		</button>
+			{isLoading}
+			ariaLabel={getAccessibleDeleteText(entity.name)}
+			title="Удалить"
+		/>
 	</div>
 {:else if compact}
 	<!-- Compact Layout - Smaller buttons for tablet view -->
-	<div class="flex justify-end space-x-1">
+	<div class="flex justify-end gap-1.5">
 		{#if onView}
-			<!-- View Button -->
-			<button
-				type="button"
-				id={viewButtonId}
+			<ActionButton
+				variant="view"
 				onclick={handleViewAction}
-				onkeydown={(e) => handleKeydown(e, 'view')}
-				class="inline-flex min-h-[36px] items-center rounded-md bg-gray-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(entity.name)}
-				aria-describedby="{viewButtonId}-description"
-			>
-				{#if isLoading}
-					<svg
-						class="mr-1 h-3 w-3 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleViewText(entity.name)}
+				title="Просмотреть"
+			/>
 		{/if}
 
 		{#if projectMode}
-			<!-- Edit Button (only for projects) -->
-			<button
-				type="button"
-				id={banButtonId}
+			<ActionButton
+				variant="edit"
 				onclick={handleBanAction}
-				onkeydown={(e) => handleKeydown(e, 'ban')}
-				class="inline-flex min-h-[36px] items-center rounded-md bg-blue-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleBanText(isBanned, entity.name)}
-				aria-describedby={`${banButtonId}-description`}
-			>
-				{#if isLoading}
-					<svg
-						class="mr-1 h-3 w-3 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleBanText(isBanned, entity.name)}
+				title="Редактировать"
+			/>
 		{/if}
 
-		<!-- Delete Button -->
-		<button
-			type="button"
-			id={deleteButtonId}
+		<ActionButton
+			variant="delete"
 			onclick={handleDeleteAction}
-			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex min-h-[36px] items-center rounded-md bg-red-600 px-2 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(entity.name)}
-			aria-describedby={`${deleteButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-1 h-3 w-3 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else}
-				<svg
-					class="h-5 w-5"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"
-					/>
-				</svg>
-			{/if}
-		</button>
+			{isLoading}
+			ariaLabel={getAccessibleDeleteText(entity.name)}
+			title="Удалить"
+		/>
 	</div>
 {:else}
-	<!-- Desktop Layout - Original design -->
-	<div class="flex justify-end space-x-2">
+	<!-- Desktop Layout - Modern design -->
+	<div class="flex justify-end gap-1.5">
 		{#if onView}
-			<!-- View Button -->
-			<button
-				type="button"
-				id={viewButtonId}
+			<ActionButton
+				variant="view"
 				onclick={handleViewAction}
-				onkeydown={(e) => handleKeydown(e, 'view')}
-				class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleViewText(entity.name)}
-				aria-describedby="{viewButtonId}-description"
-			>
-				{#if isLoading}
-					<svg
-						class="mr-1 h-3 w-3 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-						/>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleViewText(entity.name)}
+				title="Просмотреть"
+			/>
 		{/if}
 
 		{#if projectMode}
-			<!-- Edit Button (only for projects) -->
-			<button
-				type="button"
-				id={banButtonId}
+			<ActionButton
+				variant="edit"
 				onclick={handleBanAction}
-				onkeydown={(e) => handleKeydown(e, 'ban')}
-				class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={isLoading}
-				aria-label={getAccessibleBanText(isBanned, entity.name)}
-				aria-describedby={`${banButtonId}-description`}
-			>
-				{#if isLoading}
-					<svg
-						class="mr-1 h-3 w-3 animate-spin"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-						></circle>
-						<path
-							class="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
-				{:else}
-					<svg
-						class="h-4 w-4"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-						aria-hidden="true"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				ariaLabel={getAccessibleBanText(isBanned, entity.name)}
+				title="Редактировать"
+			/>
 		{/if}
 
-		<!-- Delete Button -->
-		<button
-			type="button"
-			id={deleteButtonId}
+		<ActionButton
+			variant="delete"
 			onclick={handleDeleteAction}
-			onkeydown={(e) => handleKeydown(e, 'delete')}
-			class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 			disabled={isLoading}
-			aria-label={getAccessibleDeleteText(entity.name)}
-			aria-describedby={`${deleteButtonId}-description`}
-		>
-			{#if isLoading}
-				<svg
-					class="mr-1 h-3 w-3 animate-spin"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					aria-hidden="true"
-				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
-					></circle>
-					<path
-						class="opacity-75"
-						fill="currentColor"
-						d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-					></path>
-				</svg>
-			{:else}
-				<svg
-					class="h-5 w-5"
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"
-					/>
-				</svg>
-			{/if}
-		</button>
+			{isLoading}
+			ariaLabel={getAccessibleDeleteText(entity.name)}
+			title="Удалить"
+		/>
 	</div>
 
 	<!-- Hidden descriptions for screen readers (shared across all layouts) -->

@@ -76,6 +76,8 @@ export { default as AgentDisplay } from './components/common/AgentDisplay.svelte
 export { default as ProtectedRoute } from './components/common/ProtectedRoute.svelte';
 export { default as Pagination } from './components/common/Pagination.svelte';
 export { default as TablePageLayout } from './components/common/TablePageLayout.svelte';
+export { default as ActionButton } from './components/common/ActionButton.svelte';
+export { default as MobileActionButton } from './components/common/MobileActionButton.svelte';
 
 // Modals
 export { default as FileUploadModal } from './components/modals/FileUploadModal.svelte';

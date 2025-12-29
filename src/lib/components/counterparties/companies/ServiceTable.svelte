@@ -1,6 +1,7 @@
 <script>
 	import StatusBadge from '$lib/components/common/StatusBadge.svelte';
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
+	import { ActionButton, MobileActionButton } from '$lib';
 	import { formatPhone } from '$lib/utils/formatters.js';
 
 	let {
@@ -163,18 +164,18 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 align-top text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{service.sequentialNumber || index + 1}
 						</td>
-						<td class="px-3 py-5 align-top text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{service.service_name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={formatPhone(service.phone)}>
@@ -182,7 +183,7 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.email || 'Не указана'}>
@@ -190,7 +191,7 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.contact_person || 'Не указано'}>
@@ -198,14 +199,14 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-top text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.region || 'Не указан'}>
 								{service.region || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanService(service)}
@@ -275,105 +276,28 @@
 								{/if}
 							</button>
 						</td>
-						<td class="relative px-4 py-5 text-center align-top whitespace-nowrap" role="cell">
+						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
-								<button
-									type="button"
+								<ActionButton
+									variant="view"
 									onclick={() => onViewService && onViewService(service)}
-									class="inline-flex items-center rounded-md bg-gray-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-									aria-label="Просмотреть сервис {service.service_name || service.id}"
-								>
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-										/>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-										/>
-									</svg>
-								</button>
-								<button
-									type="button"
+									ariaLabel="Просмотреть сервис {service.service_name || service.id}"
+									title="Просмотреть"
+								/>
+								<ActionButton
+									variant="edit"
 									onclick={() => onEditService && onEditService(service)}
-									class="inline-flex items-center rounded-md bg-blue-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-									aria-label="Редактировать сервис {service.service_name || service.id}"
-								>
-									<svg
-										class="h-4 w-4"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-										/>
-									</svg>
-								</button>
-								<button
-									type="button"
+									ariaLabel="Редактировать сервис {service.service_name || service.id}"
+									title="Редактировать"
+								/>
+								<ActionButton
+									variant="delete"
 									onclick={() => onDeleteService(service)}
 									disabled={isLoading}
-									class="inline-flex items-center rounded-md bg-red-800 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-									aria-label="Удалить сервис {service.service_name || service.id}"
-								>
-									{#if isLoading}
-										<svg
-											class="mr-1 h-3 w-3 animate-spin"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											aria-hidden="true"
-										>
-											<circle
-												class="opacity-25"
-												cx="12"
-												cy="12"
-												r="10"
-												stroke="currentColor"
-												stroke-width="4"
-											></circle>
-											<path
-												class="opacity-75"
-												fill="currentColor"
-												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-											></path>
-										</svg>
-									{:else}
-										<svg
-											class="h-4 w-4"
-											xmlns="http://www.w3.org/2000/svg"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											aria-hidden="true"
-										>
-											<path
-												stroke-linecap="round"
-												stroke-linejoin="round"
-												stroke-width="2"
-												d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-											/>
-										</svg>
-									{/if}
-								</button>
+									isLoading={isLoading}
+									ariaLabel="Удалить сервис {service.service_name || service.id}"
+									title="Удалить"
+								/>
 							</div>
 						</td>
 					</tr>
@@ -535,103 +459,26 @@ bile Card View -->
 							</button>
 						</div>
 						<div class="flex space-x-2">
-							<button
-								type="button"
+							<MobileActionButton
+								variant="view"
 								onclick={() => onViewService && onViewService(service)}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-gray-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-								aria-label="Просмотреть сервис {service.service_name || service.id}"
-							>
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-									/>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-									/>
-								</svg>
-							</button>
-							<button
-								type="button"
+								ariaLabel="Просмотреть сервис {service.service_name || service.id}"
+								title="Просмотреть"
+							/>
+							<MobileActionButton
+								variant="edit"
 								onclick={() => onEditService && onEditService(service)}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-blue-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-								aria-label="Редактировать сервис {service.service_name || service.id}"
-							>
-								<svg
-									class="h-5 w-5"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-									aria-hidden="true"
-								>
-									<path
-										stroke-linecap="round"
-										stroke-linejoin="round"
-										stroke-width="2"
-										d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-									/>
-								</svg>
-							</button>
-							<button
-								type="button"
+								ariaLabel="Редактировать сервис {service.service_name || service.id}"
+								title="Редактировать"
+							/>
+							<MobileActionButton
+								variant="delete"
 								onclick={() => onDeleteService(service)}
 								disabled={isLoading}
-								class="inline-flex min-h-[44px] items-center justify-center rounded-md bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-red-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-								aria-label="Удалить сервис {service.service_name || service.id}"
-							>
-								{#if isLoading}
-									<svg
-										class="mr-2 h-4 w-4 animate-spin"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										aria-hidden="true"
-									>
-										<circle
-											class="opacity-25"
-											cx="12"
-											cy="12"
-											r="10"
-											stroke="currentColor"
-											stroke-width="4"
-										></circle>
-										<path
-											class="opacity-75"
-											fill="currentColor"
-											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-										></path>
-									</svg>
-								{:else}
-									<svg
-										class="h-5 w-5"
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-										/>
-									</svg>
-								{/if}
-							</button>
+								isLoading={isLoading}
+								ariaLabel="Удалить сервис {service.service_name || service.id}"
+								title="Удалить"
+							/>
 						</div>
 					</div>
 				</div>
