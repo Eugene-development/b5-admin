@@ -118,11 +118,6 @@
 		}
 	}
 
-	// Prevent modal content click from closing modal
-	function handleModalClick(event) {
-		event.stopPropagation();
-	}
-
 	// Handle body scroll when modal is open/closed
 	$effect(() => {
 		if (isOpen) {
@@ -138,71 +133,60 @@
 </script>
 
 {#if isOpen && client}
-	<!-- Modal backdrop -->
-	<div
-		class="fixed inset-0 z-50 animate-fade overflow-y-auto animate-duration-100 animate-ease-linear"
-		aria-labelledby="modal-title"
-		role="dialog"
-		aria-modal="true"
-	>
-		<div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-			<!-- Background overlay -->
-			<div
-				class="fixed inset-0 bg-black/80 transition-opacity dark:bg-black/80"
-				onclick={handleBackdropClick}
-				onkeydown={handleKeydown}
-				tabindex="0"
-				role="button"
-				aria-label="Close modal"
-				aria-hidden="true"
-			></div>
+	<div class="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-modal="true">
+		<!-- Backdrop with blur -->
+		<div
+			class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+			onclick={handleBackdropClick}
+			aria-hidden="true"
+		></div>
 
-			<!-- Modal panel -->
+		<div class="flex min-h-full items-center justify-center p-4">
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-2xl sm:p-6 dark:bg-gray-800"
-				onclick={handleModalClick}
+				class="relative w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all dark:bg-gray-900"
 				onkeydown={handleKeydown}
-				tabindex="0"
-				role="dialog"
+				tabindex="-1"
+				role="document"
 			>
-				<!-- Modal header -->
-				<div
-					class="flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
-				>
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						Редактировать клиента
-					</h3>
-					<button
-						type="button"
-						onclick={onClose}
-						disabled={isSaving}
-						class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 dark:bg-gray-800 dark:text-gray-300 dark:hover:text-white"
-						aria-label="Закрыть модальное окно"
-					>
-						<svg
-							class="h-6 w-6"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke-width="1.5"
-							stroke="currentColor"
+				<!-- Header with gradient -->
+				<div class="relative overflow-hidden bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-600 px-6 py-5">
+					<div class="absolute inset-0 bg-grid-white/10"></div>
+					<div class="relative flex items-start justify-between">
+						<div class="flex items-center gap-3">
+							<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
+								<svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+								</svg>
+							</div>
+							<div>
+								<h2 class="text-xl font-bold text-white" id="modal-title">Редактировать клиента</h2>
+								<p class="mt-0.5 text-sm text-indigo-100">Обновите информацию о клиенте "{client.name}"</p>
+							</div>
+						</div>
+						<button
+							type="button"
+							onclick={onClose}
+							disabled={isSaving}
+							aria-label="Закрыть"
+							class="rounded-lg p-2 text-white/80 transition-colors hover:bg-white/20 hover:text-white disabled:opacity-50"
 						>
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-						</svg>
-					</button>
+							<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
 				</div>
 
-				<!-- Modal content - Form -->
-				<form onsubmit={handleSubmit} class="mt-6">
+				<!-- Form Content -->
+				<form onsubmit={handleSubmit} class="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
 					{#if errors.general}
-						<div class="mb-4 rounded-md bg-red-50 p-4 dark:bg-red-900/20">
+						<div class="mb-4 rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
 							<p class="text-sm text-red-800 dark:text-red-200">{errors.general}</p>
 						</div>
 					{/if}
 
-					<div class="space-y-4">
+					<div class="space-y-5">
 						<!-- Name Field -->
 						<div>
 							<label
@@ -215,7 +199,7 @@
 								id="client-name"
 								type="text"
 								bind:value={formData.name}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 								class:border-red-500={errors.name}
 								disabled={isSaving}
 								required
@@ -237,7 +221,7 @@
 								id="client-birthday"
 								type="date"
 								bind:value={formData.birthday}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 								disabled={isSaving}
 							/>
 						</div>
@@ -262,14 +246,14 @@
 						<!-- Phones -->
 						<div>
 							<div class="mb-2 flex items-center justify-between">
-								<label class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+								<span class="block text-sm font-medium text-gray-700 dark:text-gray-300">
 									Телефоны <span class="text-red-500">*</span>
-								</label>
+								</span>
 								<button
 									type="button"
 									onclick={addPhone}
 									disabled={isSaving}
-									class="text-sm text-indigo-600 hover:text-indigo-500 disabled:opacity-50 dark:text-indigo-400 dark:hover:text-indigo-300"
+									class="text-sm font-medium text-indigo-600 hover:text-indigo-500 disabled:opacity-50 dark:text-indigo-400 dark:hover:text-indigo-300"
 								>
 									+ Добавить телефон
 								</button>
@@ -284,14 +268,14 @@
 											type="tel"
 											bind:value={phone.value}
 											placeholder="+7 (XXX) XXX-XX-XX"
-											class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+											class="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
 											disabled={isSaving}
 										/>
 										<button
 											type="button"
 											onclick={() => setPrimaryPhone(index)}
 											disabled={isSaving}
-											class="rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+											class="rounded-lg px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50"
 											class:bg-indigo-600={phone.is_primary}
 											class:text-white={phone.is_primary}
 											class:hover:bg-indigo-700={phone.is_primary}
@@ -300,9 +284,9 @@
 											class:hover:bg-gray-300={!phone.is_primary}
 											class:dark:bg-indigo-500={phone.is_primary}
 											class:dark:hover:bg-indigo-600={phone.is_primary}
-											class:dark:bg-gray-600={!phone.is_primary}
+											class:dark:bg-gray-700={!phone.is_primary}
 											class:dark:text-gray-300={!phone.is_primary}
-											class:dark:hover:bg-gray-500={!phone.is_primary}
+											class:dark:hover:bg-gray-600={!phone.is_primary}
 											title={phone.is_primary ? 'Основной' : 'Сделать основным'}
 										>
 											★
@@ -312,7 +296,7 @@
 												type="button"
 												onclick={() => removePhone(index)}
 												disabled={isSaving}
-												class="rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-600"
+												class="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50 dark:bg-red-500 dark:hover:bg-red-600"
 											>
 												×
 											</button>
@@ -322,52 +306,35 @@
 							</div>
 						</div>
 					</div>
+				</form>
 
-					<!-- Modal footer -->
-					<div
-						class="mt-6 flex justify-end gap-3 border-t border-gray-200 pt-4 dark:border-gray-600"
-					>
+				<!-- Footer -->
+				<div class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50">
+					<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 						<button
 							type="button"
 							onclick={onClose}
 							disabled={isSaving}
-							class="inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
+							class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
 						>
 							Отмена
 						</button>
 						<button
 							type="submit"
+							onclick={handleSubmit}
 							disabled={isSaving}
-							class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50"
+							class="inline-flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
 						>
 							{#if isSaving}
-								<svg
-									class="mr-2 h-4 w-4 animate-spin"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-								>
-									<circle
-										class="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										stroke-width="4"
-									></circle>
-									<path
-										class="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-									></path>
+								<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 								</svg>
-								Сохранение...
-							{:else}
-								Сохранить
 							{/if}
+							{isSaving ? 'Сохранение...' : 'Сохранить изменения'}
 						</button>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>

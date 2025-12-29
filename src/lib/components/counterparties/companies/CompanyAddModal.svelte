@@ -294,33 +294,55 @@
 			<!-- Modal panel -->
 			<div
 				bind:this={modalElement}
-				class="relative w-full transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:max-w-2xl sm:p-6 dark:bg-gray-800"
+				class="relative w-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:max-w-2xl dark:bg-gray-900"
 				onkeydown={handleTabKey}
 				role="dialog"
 				aria-modal="true"
 				aria-labelledby="modal-title"
 				tabindex="-1"
 			>
-				<!-- Modal Header -->
-				<div class="mb-6">
-					<h3
-						class="text-lg leading-6 font-semibold text-gray-900 dark:text-white"
-						id="modal-title"
-					>
-						Добавить компанию
-					</h3>
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-						Заполните информацию о новой компании
-					</p>
+				<!-- Modal Header with gradient -->
+				<div class="relative bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-6">
+					<div class="flex items-start justify-between">
+						<div class="flex items-center space-x-3">
+							<div class="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20">
+								<svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+								</svg>
+							</div>
+							<div>
+								<h3
+									class="text-xl font-bold text-white"
+									id="modal-title"
+								>
+									Добавить компанию
+								</h3>
+								<p class="mt-1 text-sm text-indigo-100">
+									Заполните информацию о новой компании
+								</p>
+							</div>
+						</div>
+						<button
+							type="button"
+							onclick={handleCancel}
+							disabled={isLoading}
+							class="rounded-lg p-1 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/50 disabled:cursor-not-allowed disabled:opacity-50"
+							aria-label="Закрыть"
+						>
+							<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+							</svg>
+						</button>
+					</div>
 				</div>
 
 				<!-- Form -->
-				<form onsubmit={handleSubmit} class="space-y-6">
+				<form onsubmit={handleSubmit} class="max-h-[60vh] space-y-5 overflow-y-auto bg-gray-50 px-6 py-6 dark:bg-gray-800">
 					<!-- Company Name -->
 					<div>
 						<label
 							for="company-name"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
 							Название компании <span class="text-red-500">*</span>
 						</label>
@@ -332,12 +354,12 @@
 							oninput={(e) => handleInputChange('name', e.target.value)}
 							disabled={isLoading}
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+							class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 							aria-describedby={errors.name ? 'company-name-error' : undefined}
 							aria-invalid={errors.name ? 'true' : 'false'}
 						/>
 						{#if errors.name}
-							<p id="company-name-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+							<p id="company-name-error" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
 								{errors.name}
 							</p>
 						{/if}
@@ -347,7 +369,7 @@
 					<div>
 						<label
 							for="legal-name"
-							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+							class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
 						>
 							Официальное название <span class="text-red-500">*</span>
 						</label>
@@ -358,21 +380,21 @@
 							oninput={(e) => handleInputChange('legal_name', e.target.value)}
 							disabled={isLoading}
 							required
-							class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+							class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 							aria-describedby={errors.legal_name ? 'legal-name-error' : undefined}
 							aria-invalid={errors.legal_name ? 'true' : 'false'}
 						/>
 						{#if errors.legal_name}
-							<p id="legal-name-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+							<p id="legal-name-error" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
 								{errors.legal_name}
 							</p>
 						{/if}
 					</div>
 
 					<!-- INN and Region -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+					<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 						<div>
-							<label for="inn" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label for="inn" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
 								ИНН <span class="text-red-500">*</span>
 							</label>
 							<input
@@ -384,17 +406,17 @@
 								required
 								maxlength="12"
 								placeholder="10 или 12 цифр"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 								aria-describedby={errors.inn ? 'inn-error' : 'inn-help'}
 								aria-invalid={errors.inn ? 'true' : 'false'}
 							/>
 							{#if errors.inn}
-								<p id="inn-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								<p id="inn-error" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
 									{errors.inn}
 								</p>
 							{:else}
-								<p id="inn-help" class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-									ИНН должен быть уникальным. Компания с таким ИНН не должна существовать в системе.
+								<p id="inn-help" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+									ИНН должен быть уникальным
 								</p>
 							{/if}
 						</div>
@@ -402,7 +424,7 @@
 						<div>
 							<label
 								for="region"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
 								Регион
 							</label>
@@ -412,15 +434,15 @@
 								value={formData.region}
 								oninput={(e) => handleInputChange('region', e.target.value)}
 								disabled={isLoading}
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 							/>
 						</div>
 					</div>
 
 					<!-- Phone and Contact Person -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+					<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 						<div>
-							<label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label for="phone" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
 								Телефон
 							</label>
 							<input
@@ -430,12 +452,12 @@
 								oninput={(e) => handleInputChange('phone', e.target.value)}
 								disabled={isLoading}
 								placeholder="+7 (999) 123-45-67"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 								aria-describedby={errors.phone ? 'phone-error' : undefined}
 								aria-invalid={errors.phone ? 'true' : 'false'}
 							/>
 							{#if errors.phone}
-								<p id="phone-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								<p id="phone-error" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
 									{errors.phone}
 								</p>
 							{/if}
@@ -444,7 +466,7 @@
 						<div>
 							<label
 								for="phone-contact"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
 								Контактное лицо (телефон)
 							</label>
@@ -455,15 +477,15 @@
 								oninput={(e) => handleInputChange('phone_contact', e.target.value)}
 								disabled={isLoading}
 								placeholder="Иванов Иван"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 							/>
 						</div>
 					</div>
 
 					<!-- Email and Contact Person -->
-					<div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+					<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 						<div>
-							<label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+							<label for="email" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300">
 								Рабочая почта
 							</label>
 							<input
@@ -473,12 +495,12 @@
 								oninput={(e) => handleInputChange('email', e.target.value)}
 								disabled={isLoading}
 								placeholder="company@example.com"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 								aria-describedby={errors.email ? 'email-error' : undefined}
 								aria-invalid={errors.email ? 'true' : 'false'}
 							/>
 							{#if errors.email}
-								<p id="email-error" class="mt-1 text-sm text-red-600 dark:text-red-400">
+								<p id="email-error" class="mt-1.5 text-sm text-red-600 dark:text-red-400">
 									{errors.email}
 								</p>
 							{/if}
@@ -487,7 +509,7 @@
 						<div>
 							<label
 								for="email-contact"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+								class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-300"
 							>
 								Контактное лицо (email)
 							</label>
@@ -498,24 +520,28 @@
 								oninput={(e) => handleInputChange('email_contact', e.target.value)}
 								disabled={isLoading}
 								placeholder="Петров Петр"
-								class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-400 dark:focus:ring-indigo-400 dark:disabled:bg-gray-800"
+								class="block w-full rounded-lg border-2 border-gray-200 bg-white px-4 py-3 text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-indigo-400 dark:focus:ring-indigo-400/20"
 							/>
 						</div>
 					</div>
 
-					<!-- Action buttons -->
+				</form>
+
+				<!-- Action buttons - outside form, in footer -->
+				<div class="bg-gray-100 px-6 py-4 dark:bg-gray-900">
 					<div
 						class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-y-0 sm:space-x-3 sm:space-x-reverse"
 					>
 						<!-- Save button -->
 						<button
 							type="submit"
+							onclick={handleSubmit}
 							disabled={isLoading || !isFormValid}
-							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors duration-200 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2"
+							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:from-indigo-500 hover:to-purple-500 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto"
 						>
 							{#if isLoading}
 								<svg
-									class="mr-2 h-4 w-4 animate-spin"
+									class="mr-2 h-5 w-5 animate-spin"
 									xmlns="http://www.w3.org/2000/svg"
 									fill="none"
 									viewBox="0 0 24 24"
@@ -544,12 +570,12 @@
 							type="button"
 							onclick={handleCancel}
 							disabled={isLoading}
-							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 transition-colors duration-200 ring-inset hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 active:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:py-2 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 dark:active:bg-gray-600"
+							class="inline-flex min-h-[44px] w-full items-center justify-center rounded-lg border-2 border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-all duration-200 hover:border-gray-400 hover:bg-gray-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 sm:w-auto dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-gray-500 dark:hover:bg-gray-700"
 						>
 							Отмена
 						</button>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
