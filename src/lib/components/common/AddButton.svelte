@@ -11,11 +11,11 @@
 	type="button"
 	{onclick}
 	{disabled}
-	class="inline-flex items-center rounded-md bg-slate-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700 disabled:cursor-not-allowed disabled:opacity-50"
+	class="inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-700 to-emerald-800 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-600/30 transition-all duration-200 hover:from-emerald-800 hover:to-emerald-900 hover:shadow-xl hover:shadow-emerald-600/40 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-lg dark:from-emerald-600 dark:to-emerald-700 dark:hover:from-emerald-700 dark:hover:to-emerald-800"
 >
 	{#if isLoading}
 		<svg
-			class="mr-2 h-4 w-4 animate-spin"
+			class="h-4 w-4 animate-spin"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
@@ -37,17 +37,17 @@
 		</svg>
 	{:else}
 		<svg
-			class="mr-2 h-4 w-4"
+			class="h-4 w-4"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
 			stroke="currentColor"
+			stroke-width="2.5"
 			aria-hidden="true"
 		>
 			<path
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				stroke-width="2"
 				d="M12 4v16m8-8H4"
 			/>
 		</svg>

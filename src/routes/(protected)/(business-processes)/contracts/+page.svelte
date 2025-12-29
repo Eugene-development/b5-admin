@@ -517,7 +517,7 @@
 								{/if}
 
 								<!-- Contracts Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<ContractsTable
 										contracts={paginatedContracts}
 										isLoading={isActionLoading}

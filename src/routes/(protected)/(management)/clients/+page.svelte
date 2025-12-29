@@ -264,7 +264,7 @@
 								{/if}
 
 								<!-- Clients Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<ClientsTable
 										users={paginatedClients}
 										isLoading={false}

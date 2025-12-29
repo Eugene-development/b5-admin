@@ -1,10 +1,9 @@
 <script>
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
-	import RefreshButton from '$lib/components/common/RefreshButton.svelte';
+	import { RefreshButton, SearchBar } from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
-	import SearchBar from '$lib/components/common/SearchBar.svelte';
 	import FinancesBonusTable from '$lib/components/business-processes/finances/FinancesBonusTable.svelte';
 	import {
 		getAdminBonuses,

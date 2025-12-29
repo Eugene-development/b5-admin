@@ -442,7 +442,7 @@
 								{/if}
 
 								<!-- Complaints Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<ComplaintsTable
 										complaints={paginatedComplaints}
 										isLoading={isActionLoading}

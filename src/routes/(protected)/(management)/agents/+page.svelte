@@ -488,7 +488,7 @@
 								{/if}
 
 								<!-- Users Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<UsersTable
 										users={paginatedUsers}
 										isLoading={isActionLoading}

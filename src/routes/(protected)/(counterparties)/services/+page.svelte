@@ -426,17 +426,20 @@
 									</div>
 								{/if}
 
-								<CompanyTable
-									companies={paginatedServices}
-									isLoading={isActionLoading}
-									onBanCompany={handleBanService}
-									onDeleteCompany={handleDeleteService}
-									onViewCompany={handleViewService}
-									onEditCompany={handleEditCompany}
-									{updateCounter}
-									{searchTerm}
-									hasSearched={searchTerm.trim().length > 0}
-								/>
+								<!-- Table -->
+								<div class="mt-4">
+									<CompanyTable
+										companies={paginatedServices}
+										isLoading={isActionLoading}
+										onBanCompany={handleBanService}
+										onDeleteCompany={handleDeleteService}
+										onViewCompany={handleViewService}
+										onEditCompany={handleEditCompany}
+										{updateCounter}
+										{searchTerm}
+										hasSearched={searchTerm.trim().length > 0}
+									/>
+								</div>
 
 								<!-- Pagination -->
 								<Pagination

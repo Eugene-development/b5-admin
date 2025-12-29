@@ -624,19 +624,21 @@
 									{/if}
 
 									<!-- Table -->
-									<OrderTable
-										orders={paginatedOrders}
-										{isLoading}
-										{searchTerm}
-										{hasSearched}
-										{updateCounter}
-										{partnerPaymentStatuses}
-										{orderStatuses}
-										onDeleteOrder={handleDeleteOrder}
-										onEditOrder={handleEditOrder}
-										onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
-										onOrderStatusChange={handleOrderStatusChange}
-									/>
+									<div class="mt-4">
+										<OrderTable
+											orders={paginatedOrders}
+											{isLoading}
+											{searchTerm}
+											{hasSearched}
+											{updateCounter}
+											{partnerPaymentStatuses}
+											{orderStatuses}
+											onDeleteOrder={handleDeleteOrder}
+											onEditOrder={handleEditOrder}
+											onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
+											onOrderStatusChange={handleOrderStatusChange}
+										/>
+									</div>
 
 									<!-- Pagination -->
 									<Pagination

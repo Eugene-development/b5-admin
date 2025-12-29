@@ -12,11 +12,11 @@
 	{onclick}
 	disabled={isRefreshing || disabled}
 	aria-label={ariaLabel}
-	class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 focus-visible:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
+	class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-md ring-1 ring-gray-200 ring-inset transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 hover:shadow-lg hover:-translate-y-0.5 hover:ring-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-md dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:ring-gray-600"
 >
 	{#if isRefreshing}
 		<svg
-			class="mr-2 h-4 w-4 animate-spin"
+			class="h-4 w-4 animate-spin"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
@@ -38,17 +38,17 @@
 		</svg>
 	{:else}
 		<svg
-			class="mr-2 h-4 w-4"
+			class="h-4 w-4"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
 			stroke="currentColor"
+			stroke-width="2.5"
 			aria-hidden="true"
 		>
 			<path
 				stroke-linecap="round"
 				stroke-linejoin="round"
-				stroke-width="2"
 				d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
 			></path>
 		</svg>

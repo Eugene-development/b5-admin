@@ -624,7 +624,7 @@
 								{/if}
 
 								<!-- Projects Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<ProjectsTable
 										projects={paginatedProjects}
 										{projectStatuses}

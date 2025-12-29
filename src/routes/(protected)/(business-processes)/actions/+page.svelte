@@ -368,16 +368,18 @@
 									{/if}
 
 									<!-- Table -->
-									<ActionTable
-										actions={paginatedActions}
-										{isLoading}
-										{searchTerm}
-										{hasSearched}
-										{updateCounter}
-										onViewAction={handleViewAction}
-										onEditAction={handleEditAction}
-										onDeleteAction={handleDeleteAction}
-									/>
+									<div class="mt-4">
+										<ActionTable
+											actions={paginatedActions}
+											{isLoading}
+											{searchTerm}
+											{hasSearched}
+											{updateCounter}
+											onViewAction={handleViewAction}
+											onEditAction={handleEditAction}
+											onDeleteAction={handleDeleteAction}
+										/>
+									</div>
 
 									<!-- Pagination -->
 									<Pagination

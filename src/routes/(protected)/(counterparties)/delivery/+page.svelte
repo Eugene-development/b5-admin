@@ -484,7 +484,7 @@
 								{/if}
 
 								<!-- Company Table -->
-								<div class="mt-8">
+								<div class="mt-4">
 									<CompanyTable
 										companies={paginatedDeliveryCompanies}
 										isLoading={isActionLoading}

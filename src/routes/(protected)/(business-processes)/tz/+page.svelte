@@ -480,18 +480,20 @@
 										{/if}
 
 										<!-- Table -->
-										<TzTable
-											tzList={paginatedTzList}
-											{isLoading}
-											{searchTerm}
-											{hasSearched}
-											{updateCounter}
-											onViewTz={handleViewTz}
-											onEditTz={handleEditTz}
-											onDeleteTz={handleDeleteTz}
-											onUploadSketch={handleUploadSketch}
-											onUploadCP={handleUploadCP}
-										/>
+										<div class="mt-4">
+											<TzTable
+												tzList={paginatedTzList}
+												{isLoading}
+												{searchTerm}
+												{hasSearched}
+												{updateCounter}
+												onViewTz={handleViewTz}
+												onEditTz={handleEditTz}
+												onDeleteTz={handleDeleteTz}
+												onUploadSketch={handleUploadSketch}
+												onUploadCP={handleUploadCP}
+											/>
+										</div>
 
 										<!-- Pagination -->
 										<Pagination
