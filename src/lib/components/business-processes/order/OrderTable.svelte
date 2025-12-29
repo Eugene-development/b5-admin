@@ -322,31 +322,31 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-3 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
 							{order.sequentialNumber || index + 1}
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-right align-middle text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400" role="cell">
+						<td class="px-3 py-3 text-right align-middle text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400" role="cell">
 							{formatCurrency(calculateOrderTotal(order))}
 						</td>
 						<td
-							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="flex items-center justify-center gap-2 pr-3">
@@ -378,7 +378,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="px-3 py-3 text-center align-middle whitespace-nowrap" role="cell">
 							<OrderStatusBadge
 								{order}
 								{orderStatuses}
@@ -389,7 +389,7 @@
 								}}
 							/>
 						</td>
-						<td class="relative px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative px-3 py-3 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<ActionButton
 									variant="view"

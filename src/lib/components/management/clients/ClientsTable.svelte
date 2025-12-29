@@ -176,28 +176,28 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Не указано'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-agent"
 						>
 							{user.agent?.name || 'Не указан'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-phone"
 						>
@@ -208,25 +208,25 @@
 							{/if}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-registration"
 						>
 							{formatDate(user.created_at)}
 						</td>
-						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-status">
+						<td class="px-3 py-3 text-sm whitespace-nowrap" role="cell" headers="col-status">
 							<StatusBadge status={getClientStatus(user)} />
 						</td>
 						{#if showActions}
 							<td
-								class="relative py-5 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
+								class="relative py-3 pr-4 pl-3 text-center text-sm font-medium whitespace-nowrap sm:pr-6"
 								role="cell"
 								headers="col-actions"
 							>
@@ -427,16 +427,16 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Не указано'}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.agent?.name || 'Не указан'}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{#if user.phones && user.phones.length > 0}
 											{formatPhone(
 												user.phones.find((p) => p.is_primary)?.value || user.phones[0]?.value
@@ -445,10 +445,10 @@
 											Не указан
 										{/if}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap">
+									<td class="px-3 py-3 text-sm whitespace-nowrap">
 										<StatusBadge status={getClientStatus(user)} />
 									</td>
 									{#if showActions}

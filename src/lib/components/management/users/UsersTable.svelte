@@ -172,21 +172,21 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400"
 							role="cell"
 							headers="col-number"
 						>
 							{user.sequentialNumber || index + 1}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-name"
 						>
 							{user.name || 'Not specified'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-email"
 						>
@@ -195,20 +195,20 @@
 						</td>
 
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 							headers="col-region"
 						>
 							{user.region || 'Не указан'}
 						</td>
 						<td
-							class="px-3 py-5 text-sm whitespace-nowrap"
+							class="px-3 py-3 text-sm whitespace-nowrap"
 							role="cell"
 							headers="col-registration"
 						>
 							<DateBadge date={user.created_at} fallback="Не указана" />
 						</td>
-						<td class="px-3 py-5 text-sm whitespace-nowrap" role="cell" headers="col-ban">
+						<td class="px-3 py-3 text-sm whitespace-nowrap" role="cell" headers="col-ban">
 							<button
 								type="button"
 								onclick={() => onBanUser(user)}
@@ -439,19 +439,19 @@
 						{:else}
 							{#each users as user, index (user.id + '-' + user.status + '-' + updateCounter)}
 								<tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
 										{user.sequentialNumber || index + 1}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.name || 'Not specified'}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.email}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+									<td class="px-3 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-white">
 										{user.region || 'Не указан'}
 									</td>
-									<td class="px-3 py-5 text-sm whitespace-nowrap">
+									<td class="px-3 py-3 text-sm whitespace-nowrap">
 										<div class="flex flex-col space-y-1">
 											{#if user.status === 'banned' || user.status === 'inactive' || user.status === 'suspended'}
 												<StatusBadge status="banned" />

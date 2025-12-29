@@ -164,18 +164,18 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{service.sequentialNumber || index + 1}
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{service.service_name || 'Не указано'}
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={formatPhone(service.phone)}>
@@ -183,7 +183,7 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.email || 'Не указана'}>
@@ -191,7 +191,7 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.contact_person || 'Не указано'}>
@@ -199,14 +199,14 @@
 							</div>
 						</td>
 						<td
-							class="px-3 py-5 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="pr-3" title={service.region || 'Не указан'}>
 								{service.region || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="px-3 py-3 text-center align-middle whitespace-nowrap" role="cell">
 							<button
 								type="button"
 								onclick={() => onBanService(service)}
@@ -276,7 +276,7 @@
 								{/if}
 							</button>
 						</td>
-						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative px-4 py-3 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<ActionButton
 									variant="view"

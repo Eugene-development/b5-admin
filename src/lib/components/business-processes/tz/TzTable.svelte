@@ -196,27 +196,27 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-5 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="px-3 py-3 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{tz.sequentialNumber || index + 1}
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed whitespace-nowrap">
 								{tz.value || '—'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3 leading-relaxed break-words">
 								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="max-w-xs pr-4 leading-relaxed break-words">
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
-						<td class="px-3 py-5 align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="pr-3">
 								{#if getApprovalStatus(tz).color === 'green'}
 									<span
@@ -239,7 +239,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.sketches && tz.sketches.length > 0}
 									<span
@@ -252,7 +252,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-5 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="flex items-center justify-center">
 								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
 									<span
@@ -265,7 +265,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="relative px-4 py-5 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative px-4 py-3 text-center align-middle whitespace-nowrap" role="cell">
 							<div class="flex items-center justify-center gap-1.5">
 								<ActionButton
 									variant="view"

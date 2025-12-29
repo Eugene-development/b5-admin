@@ -89,22 +89,22 @@
 			{:else}
 				{#each payments as payment (payment.id)}
 					<tr class="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800">
-						<td class="px-6 py-5 text-sm whitespace-nowrap">
+						<td class="px-6 py-3 text-sm whitespace-nowrap">
 							<DateBadge date={payment.payment_date} fallback="—" />
 						</td>
-						<td class="px-6 py-5 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-3 text-sm text-gray-900 dark:text-gray-100">
 							<div class="font-medium">{payment.agent?.name || '—'}</div>
 							<div class="text-xs text-gray-500 dark:text-gray-400">{payment.agent?.email || ''}</div>
 						</td>
-						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-3 text-right text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{formatCurrency(payment.total_amount)}
 						</td>
-						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
+						<td class="px-6 py-3 text-center text-sm whitespace-nowrap">
 							<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {getStatusColor(payment.status?.code)}">
 								{payment.status?.name || '—'}
 							</span>
 						</td>
-						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="px-6 py-3 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{getMethodName(payment.method)}
 						</td>
 						<td class="px-6 py-4 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
