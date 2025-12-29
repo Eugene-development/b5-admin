@@ -404,19 +404,14 @@
 						<div class="mx-auto ">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
-									<div class="flex items-center justify-between">
-										<div>
-											<h1
-												id="page-title"
-												class="text-4xl font-semibold text-gray-900 dark:text-white"
-											>
-												Агенты
-											</h1>
+								<!-- Header with Search and Refresh Button -->
+								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+									<div class="flex flex-1 items-center justify-start">
+										<div class="w-full max-w-md">
+											<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
 										</div>
 									</div>
-									<div class="flex items-center space-x-3">
+									<div class="flex items-center justify-end space-x-3">
 										<!-- Add Button -->
 										<AddButton onclick={handleAddUser} />
 
@@ -424,6 +419,11 @@
 										<RefreshButton {isRefreshing} onclick={refreshData} />
 									</div>
 								</div>
+								
+								<!-- Hidden H1 for accessibility -->
+								<h1 id="page-title" class="sr-only">
+									Агенты
+								</h1>
 
 								<!-- Separator -->
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
@@ -469,15 +469,6 @@
 										</div>
 									</div>
 								{/if}
-
-								<!-- Search and Filters -->
-								<div
-									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-								>
-									<div class="flex flex-1 items-center space-x-4">
-										<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
-									</div>
-								</div>
 
 								<!-- Results summary -->
 								{#if searchTerm.trim()}

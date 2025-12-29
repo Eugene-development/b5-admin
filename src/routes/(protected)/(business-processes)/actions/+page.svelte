@@ -327,64 +327,72 @@
 						{((allActions = actionsData.actions), (companies = actionsData.companies), '')}
 					{/if}
 
-					<TablePageLayout title="Акции">
-						{#snippet headerActions()}
-							<!-- Add Action Button -->
-							<AddButton onclick={handleAddAction} disabled={isActionLoading} />
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with SearchBar -->
+									<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+										<div class="flex flex-1 items-center justify-start">
+											<div class="w-full max-w-md">
+												<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
+											</div>
+										</div>
+										<div class="flex items-center justify-end space-x-3">
+											<!-- Add Action Button -->
+											<AddButton onclick={handleAddAction} disabled={isActionLoading} />
 
-							<!-- Refresh Button -->
-							<RefreshButton {isRefreshing} onclick={refreshData} />
-						{/snippet}
+											<!-- Refresh Button -->
+											<RefreshButton {isRefreshing} onclick={refreshData} />
+										</div>
+									</div>
 
-						{#snippet filters()}
-							<div class="flex flex-1 items-center space-x-4">
-								<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
-								{#if hasSearched}
-									<button
-										type="button"
-										onclick={clearSearch}
-										class="inline-flex items-center rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-									>
-										Очистить
-									</button>
-								{/if}
-							</div>
-						{/snippet}
+									<!-- Hidden H1 for accessibility -->
+									<h1 id="page-title" class="sr-only">
+										Акции
+									</h1>
 
-						{#snippet resultsInfo()}
-							{#if hasSearched}
-								<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-									{#if filteredActions.length === 0}
-										Акции не найдены по запросу "{searchTerm}"
-									{:else}
-										Найдено {filteredActions.length} акци{filteredActions.length === 1
-											? 'я'
-											: filteredActions.length < 5
-												? 'и'
-												: 'й'} по запросу "{searchTerm}"
+									<!-- Separator -->
+									<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+									<!-- Results info -->
+									{#if hasSearched}
+										<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+											{#if filteredActions.length === 0}
+												Акции не найдены по запросу "{searchTerm}"
+											{:else}
+												Найдено {filteredActions.length} акци{filteredActions.length === 1
+													? 'я'
+													: filteredActions.length < 5
+														? 'и'
+														: 'й'} по запросу "{searchTerm}"
+											{/if}
+										</div>
 									{/if}
-								</div>
-							{/if}
-						{/snippet}
 
-						<ActionTable
-							actions={paginatedActions}
-							{isLoading}
-							{searchTerm}
-							{hasSearched}
-							{updateCounter}
-							onViewAction={handleViewAction}
-							onEditAction={handleEditAction}
-							onDeleteAction={handleDeleteAction}
-						/>
+									<!-- Table -->
+									<ActionTable
+										actions={paginatedActions}
+										{isLoading}
+										{searchTerm}
+										{hasSearched}
+										{updateCounter}
+										onViewAction={handleViewAction}
+										onEditAction={handleEditAction}
+										onDeleteAction={handleDeleteAction}
+									/>
 
-						<Pagination
-							bind:currentPage
-							totalItems={filteredActions.length}
-							{itemsPerPage}
-							filteredFrom={searchTerm.trim() ? allActions.length : null}
-						/>
-					</TablePageLayout>
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredActions.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? allActions.length : null}
+									/>
+								</main>
+							</div>
+						</div>
+					</div>
 				{/if}
 			{:catch error}
 				<!-- Critical error state -->

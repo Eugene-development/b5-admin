@@ -162,21 +162,29 @@
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
 						<div class="mx-auto ">
 							<main>
-								<!-- Header -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
-									<div>
-										<h1 class="text-4xl font-semibold text-gray-900 dark:text-white">
-											Выплаты агентам
-										</h1>
-										<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-											Управление выплатами бонусов агентам
-										</p>
+								<!-- Header with Search -->
+								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+									<div class="flex flex-1 items-center justify-start">
+										<div class="w-full max-w-md">
+											<SearchBar 
+												bind:value={searchTerm} 
+												placeholder="Поиск по агенту или номеру документа..." 
+											/>
+										</div>
 									</div>
-									<div class="flex items-center space-x-3">
+									<div class="flex items-center justify-end space-x-3">
 										<AddButton onclick={handleCreatePayment} disabled={isLoading} />
 										<RefreshButton {isRefreshing} onclick={() => refreshData()} />
 									</div>
 								</div>
+								
+								<!-- Hidden H1 for accessibility -->
+								<h1 class="sr-only">
+									Выплаты агентам
+								</h1>
+								<p class="sr-only">
+									Управление выплатами бонусов агентам
+								</p>
 
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
@@ -213,14 +221,6 @@
 										</div>
 									</div>
 								{/if}
-
-								<!-- Search -->
-								<div class="mb-6">
-									<SearchBar 
-										bind:value={searchTerm} 
-										placeholder="Поиск по агенту или номеру документа..." 
-									/>
-								</div>
 
 								<!-- Table -->
 								<AgentPaymentsTable

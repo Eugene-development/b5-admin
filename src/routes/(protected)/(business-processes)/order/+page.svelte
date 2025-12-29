@@ -583,24 +583,37 @@
 					<!-- Show skeleton during initial load or refresh when no data is available -->
 					<TableSkeleton columns={6} />
 				{:else}
-					<TablePageLayout title="Заказы">
-								{#snippet headerActions()}
-									<!-- Add Order Button -->
-									<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with SearchBar -->
+									<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+										<div class="flex flex-1 items-center justify-start">
+											<div class="w-full max-w-md">
+												<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
+											</div>
+										</div>
+										<div class="flex items-center justify-end space-x-3">
+											<!-- Add Order Button -->
+											<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
 
-									<!-- Refresh Button -->
-									<RefreshButton {isRefreshing} onclick={refreshData} />
-								{/snippet}
-
-								{#snippet filters()}
-									<div class="flex flex-1 items-center space-x-4">
-										<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
+											<!-- Refresh Button -->
+											<RefreshButton {isRefreshing} onclick={refreshData} />
+										</div>
 									</div>
-								{/snippet}
 
-								{#snippet resultsInfo()}
+									<!-- Hidden H1 for accessibility -->
+									<h1 id="page-title" class="sr-only">
+										Заказы
+									</h1>
+
+									<!-- Separator -->
+									<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+									<!-- Results info -->
 									{#if searchTerm.trim()}
-										<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+										<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
 											{#if filteredOrders.length === 0}
 												Заказы не найдены по запросу "{searchTerm}"
 											{:else}
@@ -612,29 +625,33 @@
 											{/if}
 										</div>
 									{/if}
-								{/snippet}
 
-								<OrderTable
-									orders={paginatedOrders}
-									{isLoading}
-									{searchTerm}
-									{hasSearched}
-									{updateCounter}
-									{partnerPaymentStatuses}
-									{orderStatuses}
-									onDeleteOrder={handleDeleteOrder}
-									onEditOrder={handleEditOrder}
-									onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
-									onOrderStatusChange={handleOrderStatusChange}
-								/>
+									<!-- Table -->
+									<OrderTable
+										orders={paginatedOrders}
+										{isLoading}
+										{searchTerm}
+										{hasSearched}
+										{updateCounter}
+										{partnerPaymentStatuses}
+										{orderStatuses}
+										onDeleteOrder={handleDeleteOrder}
+										onEditOrder={handleEditOrder}
+										onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
+										onOrderStatusChange={handleOrderStatusChange}
+									/>
 
-								<Pagination
-									bind:currentPage
-									totalItems={filteredOrders.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? orders.length : null}
-								/>
-					</TablePageLayout>
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredOrders.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? orders.length : null}
+									/>
+								</main>
+							</div>
+						</div>
+					</div>
 				{/if}
 			{/if}
 		</ErrorBoundary>

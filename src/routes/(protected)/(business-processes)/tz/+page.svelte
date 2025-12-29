@@ -439,57 +439,74 @@
 					{#if isRefreshing && tzList.length === 0}
 						<TableSkeleton columns={6} />
 					{:else}
-						<TablePageLayout title="Техзадания">
-							{#snippet headerActions()}
-								<!-- Create TZ Button -->
-								<AddButton onclick={handleOpenCreateModal} disabled={isLoading} />
+						<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+							<div class="px-4 py-7 sm:px-6 lg:px-7">
+								<div class="mx-auto">
+									<main id="main-content" aria-labelledby="page-title">
+										<!-- Header with SearchBar -->
+										<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+											<div class="flex flex-1 items-center justify-start">
+												<div class="w-full max-w-md">
+													<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
+												</div>
+											</div>
+											<div class="flex items-center justify-end space-x-3">
+												<!-- Create TZ Button -->
+												<AddButton onclick={handleOpenCreateModal} disabled={isLoading} />
 
-								<!-- Refresh Button -->
-								<RefreshButton {isRefreshing} onclick={loadServices} />
-							{/snippet}
+												<!-- Refresh Button -->
+												<RefreshButton {isRefreshing} onclick={loadServices} />
+											</div>
+										</div>
 
-							{#snippet filters()}
-								<div class="flex flex-1 items-center space-x-4">
-									<SearchBar bind:value={searchTerm} onSearch={handleSearch} />
-								</div>
-							{/snippet}
+										<!-- Hidden H1 for accessibility -->
+										<h1 id="page-title" class="sr-only">
+											Техзадания
+										</h1>
 
-							{#snippet resultsInfo()}
-								{#if searchTerm.trim()}
-									<div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
-										{#if filteredTzList.length === 0}
-											Техзадания не найдены по запросу "{searchTerm}"
-										{:else}
-											Найдено {filteredTzList.length} техзадани{filteredTzList.length === 1
-												? 'е'
-												: filteredTzList.length < 5
-													? 'я'
-													: 'й'} по запросу "{searchTerm}"
+										<!-- Separator -->
+										<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+										<!-- Results info -->
+										{#if searchTerm.trim()}
+											<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+												{#if filteredTzList.length === 0}
+													Техзадания не найдены по запросу "{searchTerm}"
+												{:else}
+													Найдено {filteredTzList.length} техзадани{filteredTzList.length === 1
+														? 'е'
+														: filteredTzList.length < 5
+															? 'я'
+															: 'й'} по запросу "{searchTerm}"
+												{/if}
+											</div>
 										{/if}
-									</div>
-								{/if}
-							{/snippet}
 
-							<TzTable
-								tzList={paginatedTzList}
-								{isLoading}
-								{searchTerm}
-								{hasSearched}
-								{updateCounter}
-								onViewTz={handleViewTz}
-								onEditTz={handleEditTz}
-								onDeleteTz={handleDeleteTz}
-								onUploadSketch={handleUploadSketch}
-								onUploadCP={handleUploadCP}
-							/>
+										<!-- Table -->
+										<TzTable
+											tzList={paginatedTzList}
+											{isLoading}
+											{searchTerm}
+											{hasSearched}
+											{updateCounter}
+											onViewTz={handleViewTz}
+											onEditTz={handleEditTz}
+											onDeleteTz={handleDeleteTz}
+											onUploadSketch={handleUploadSketch}
+											onUploadCP={handleUploadCP}
+										/>
 
-							<Pagination
-								bind:currentPage
-								totalItems={filteredTzList.length}
-								{itemsPerPage}
-								filteredFrom={searchTerm.trim() ? tzList.length : null}
-							/>
-						</TablePageLayout>
+										<!-- Pagination -->
+										<Pagination
+											bind:currentPage
+											totalItems={filteredTzList.length}
+											{itemsPerPage}
+											filteredFrom={searchTerm.trim() ? tzList.length : null}
+										/>
+									</main>
+								</div>
+							</div>
+						</div>
 					{/if}
 				{/if}
 			{:catch error}

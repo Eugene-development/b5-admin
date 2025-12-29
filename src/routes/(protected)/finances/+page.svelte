@@ -179,24 +179,28 @@
 			<div class="px-4 py-7 sm:px-6 lg:px-7">
 				<div class="mx-auto">
 					<main id="main-content" aria-labelledby="page-title">
-						<!-- Header -->
-						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between">
-							<div>
-								<h1 id="page-title" class="text-4xl font-semibold text-gray-900 dark:text-white">
-									Финансы
-								</h1>
-								<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-									Управление выплатами и бонусами агентов
-								</p>
+						<!-- Header with SearchBar -->
+						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+							<div class="flex flex-1 items-center justify-start">
+								<div class="w-full max-w-md">
+									<SearchBar bind:value={searchTerm} placeholder="Поиск..." />
+								</div>
 							</div>
-							<RefreshButton
-								{isRefreshing}
-								onclick={() => loadData(true)}
-							/>
+							<div class="flex items-center justify-end space-x-3">
+								<RefreshButton
+									{isRefreshing}
+									onclick={() => loadData(true)}
+								/>
+							</div>
 						</div>
 
+						<!-- Hidden H1 for accessibility -->
+						<h1 id="page-title" class="sr-only">
+							Финансы
+						</h1>
+
 						<!-- Separator -->
-						<div class="my-6 border-t border-gray-200 dark:border-gray-700"></div>
+						<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
 						<!-- Metrics Cards -->
 						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -249,9 +253,6 @@
 						<!-- Filters -->
 						<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 							<div class="flex flex-1 items-center gap-4">
-								<!-- Search -->
-								<SearchBar bind:value={searchTerm} placeholder="Поиск..." />
-
 								<!-- Status Filter -->
 								<select
 									bind:value={statusFilter}
