@@ -9,7 +9,8 @@
 		TableSkeleton,
 		RefreshButton,
 		AddButton,
-		SearchBar
+		SearchBar,
+		PageTitle
 	} from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
@@ -427,17 +428,15 @@
 						<div class="mx-auto ">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with Search and Refresh Buttons -->
+								<!-- Header with H1, Search and Refresh Button -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-									<div class="flex flex-1 items-center justify-start">
-										<div class="w-full max-w-md">
+									<PageTitle title="Договора" />
+									<div class="flex items-center space-x-3">
+										<div class="w-80">
 											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Договора..." />
 										</div>
-									</div>
-									<div class="flex items-center justify-end space-x-3">
 										<!-- Add Button -->
 										<AddButton onclick={handleAddContract} disabled={isActionLoading} />
-
 										<!-- Refresh Button -->
 										<RefreshButton
 											{isRefreshing}
@@ -448,11 +447,6 @@
 										/>
 									</div>
 								</div>
-								
-								<!-- Hidden H1 for accessibility -->
-								<h1 id="page-title" class="sr-only">
-									Договора
-								</h1>
 
 								<!-- Load Error Banner -->
 								{#if loadError && loadError.canRetry}

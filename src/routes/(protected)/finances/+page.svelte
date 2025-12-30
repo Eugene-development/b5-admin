@@ -1,7 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
-	import { RefreshButton, SearchBar } from '$lib';
+	import { RefreshButton, SearchBar, PageTitle } from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import FinancesBonusTable from '$lib/components/business-processes/finances/FinancesBonusTable.svelte';
@@ -178,25 +178,19 @@
 			<div class="px-4 py-7 sm:px-6 lg:px-7">
 				<div class="mx-auto">
 					<main id="main-content" aria-labelledby="page-title">
-						<!-- Header with SearchBar -->
+						<!-- Header with H1, Search and Refresh Button -->
 						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-							<div class="flex flex-1 items-center justify-start">
-								<div class="w-full max-w-md">
+							<PageTitle title="Финансы" />
+							<div class="flex items-center space-x-3">
+								<div class="w-80">
 									<SearchBar bind:value={searchTerm} placeholder="Поиск по таблице Финансы..." />
 								</div>
-							</div>
-							<div class="flex items-center justify-end space-x-3">
 								<RefreshButton
 									{isRefreshing}
 									onclick={() => loadData(true)}
 								/>
 							</div>
 						</div>
-
-						<!-- Hidden H1 for accessibility -->
-						<h1 id="page-title" class="sr-only">
-							Финансы
-						</h1>
 
 						<!-- Metrics Cards -->
 						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">

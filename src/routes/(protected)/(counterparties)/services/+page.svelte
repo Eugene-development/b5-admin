@@ -10,7 +10,8 @@
 		CompanyEditModal,
 		RefreshButton,
 		AddButton,
-		SearchBar
+		SearchBar,
+		PageTitle
 	} from '$lib';
 	import {
 		addSuccessToast,
@@ -387,28 +388,21 @@
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
 						<div class="mx-auto ">
 							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with Search and Refresh Button -->
+								<!-- Header with H1, Search and Refresh Button -->
 								<div
 									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 								>
-									<div class="flex flex-1 items-center justify-start">
-										<div class="w-full max-w-md">
+									<PageTitle title="Сервисы" />
+									<div class="flex items-center space-x-3">
+										<div class="w-80">
 											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Сервисы..." />
 										</div>
-									</div>
-									<div class="flex items-center justify-end space-x-3">
 										<!-- Add Button -->
 										<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
-
 										<!-- Refresh Button -->
 										<RefreshButton {isRefreshing} onclick={refreshData} />
 									</div>
 								</div>
-								
-								<!-- Hidden H1 for accessibility -->
-								<h1 id="page-title" class="sr-only">
-									Сервисы
-								</h1>
 
 								{#if searchTerm.trim()}
 									<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">

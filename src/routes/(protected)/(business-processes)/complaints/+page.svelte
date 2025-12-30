@@ -3,7 +3,7 @@
 	import ComplaintAddModal from '$lib/components/business-processes/complaints/ComplaintAddModal.svelte';
 	import ComplaintEditModal from '$lib/components/business-processes/complaints/ComplaintEditModal.svelte';
 	import ComplaintViewModal from '$lib/components/business-processes/complaints/ComplaintViewModal.svelte';
-	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton, SearchBar } from '$lib';
+	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton, SearchBar, PageTitle } from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		addSuccessToast,
@@ -348,21 +348,19 @@
 						<div class="mx-auto ">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with Search and Refresh Buttons -->
+								<!-- Header with H1, Search and Refresh Button -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-									<div class="flex flex-1 items-center justify-start">
-										<div class="w-full max-w-md">
+									<PageTitle title="Рекламации" />
+									<div class="flex items-center space-x-3">
+										<div class="w-80">
 											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Рекламации..." />
 										</div>
-									</div>
-									<div class="flex items-center justify-end space-x-3">
 										<!-- Add Button -->
 										<AddButton
 											text="Добавить"
 											onclick={handleAddComplaint}
 											disabled={isActionLoading}
 										/>
-
 										<!-- Refresh Button -->
 										<RefreshButton
 											{isRefreshing}
@@ -373,11 +371,6 @@
 										/>
 									</div>
 								</div>
-								
-								<!-- Hidden H1 for accessibility -->
-								<h1 id="page-title" class="sr-only">
-									Рекламации
-								</h1>
 
 								<!-- Load Error Banner -->
 								{#if loadError && loadError.canRetry}

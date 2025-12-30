@@ -12,11 +12,11 @@
 	{onclick}
 	disabled={isRefreshing || disabled}
 	aria-label={ariaLabel}
-	class="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-md ring-1 ring-gray-200 ring-inset transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 hover:shadow-lg hover:-translate-y-0.5 hover:ring-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-md dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:ring-gray-600"
+	class="inline-flex items-center justify-center rounded-lg bg-white p-2.5 text-gray-700 shadow-md ring-1 ring-gray-200 ring-inset transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 hover:shadow-lg hover:-translate-y-0.5 hover:ring-gray-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-md dark:bg-gray-800 dark:text-gray-100 dark:ring-gray-700 dark:hover:bg-gray-700 dark:hover:text-white dark:hover:ring-gray-600"
 >
 	{#if isRefreshing}
 		<svg
-			class="h-4 w-4 animate-spin"
+			class="h-5 w-5 animate-spin"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
@@ -38,7 +38,7 @@
 		</svg>
 	{:else}
 		<svg
-			class="h-4 w-4"
+			class="h-5 w-5"
 			xmlns="http://www.w3.org/2000/svg"
 			fill="none"
 			viewBox="0 0 24 24"
@@ -53,5 +53,4 @@
 			></path>
 		</svg>
 	{/if}
-	Обновить
 </button>

@@ -7,7 +7,7 @@
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
-	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton, SearchBar } from '$lib';
+	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton, SearchBar, PageTitle } from '$lib';
 	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
@@ -587,26 +587,19 @@
 						<div class="px-4 py-7 sm:px-6 lg:px-7">
 							<div class="mx-auto">
 								<main id="main-content" aria-labelledby="page-title">
-									<!-- Header with SearchBar -->
+									<!-- Header with H1, Search and Refresh Button -->
 									<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-										<div class="flex flex-1 items-center justify-start">
-											<div class="w-full max-w-md">
+										<PageTitle title="Заказы" />
+										<div class="flex items-center space-x-3">
+											<div class="w-80">
 												<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Заказы..." />
 											</div>
-										</div>
-										<div class="flex items-center justify-end space-x-3">
 											<!-- Add Order Button -->
 											<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
-
 											<!-- Refresh Button -->
 											<RefreshButton {isRefreshing} onclick={refreshData} />
 										</div>
 									</div>
-
-									<!-- Hidden H1 for accessibility -->
-									<h1 id="page-title" class="sr-only">
-										Заказы
-									</h1>
 
 									<!-- Results info -->
 									{#if searchTerm.trim()}

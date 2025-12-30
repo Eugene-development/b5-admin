@@ -3,7 +3,7 @@
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
-	import { RefreshButton, AddButton, ErrorBoundary, SearchBar } from '$lib';
+	import { RefreshButton, AddButton, ErrorBoundary, SearchBar, PageTitle } from '$lib';
 	import AgentPaymentsTable from '$lib/components/business-processes/finance/AgentPaymentsTable.svelte';
 	import CreatePaymentModal from '$lib/components/business-processes/finance/CreatePaymentModal.svelte';
 	import PaymentDetailModal from '$lib/components/business-processes/finance/PaymentDetailModal.svelte';
@@ -162,29 +162,20 @@
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
 						<div class="mx-auto ">
 							<main>
-								<!-- Header with Search -->
+								<!-- Header with H1, Search and Refresh Button -->
 								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-									<div class="flex flex-1 items-center justify-start">
-										<div class="w-full max-w-md">
+									<PageTitle title="Выплаты агентам" id="page-title-finance" />
+									<div class="flex items-center space-x-3">
+										<div class="w-80">
 											<SearchBar 
 												bind:value={searchTerm} 
 												placeholder="Поиск по агенту или номеру документа..." 
 											/>
 										</div>
-									</div>
-									<div class="flex items-center justify-end space-x-3">
 										<AddButton onclick={handleCreatePayment} disabled={isLoading} />
 										<RefreshButton {isRefreshing} onclick={() => refreshData()} />
 									</div>
 								</div>
-								
-								<!-- Hidden H1 for accessibility -->
-								<h1 class="sr-only">
-									Выплаты агентам
-								</h1>
-								<p class="sr-only">
-									Управление выплатами бонусов агентам
-								</p>
 
 								<div class="my-4 border-t border-gray-200 dark:border-gray-700"></div>
 
