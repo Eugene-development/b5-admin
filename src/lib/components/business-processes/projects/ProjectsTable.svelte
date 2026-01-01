@@ -173,7 +173,7 @@
 </div>
 
 <!-- Desktop Table View (hidden on mobile) -->
-<div class="ring-opacity-5 hidden overflow-hidden shadow ring-1 ring-black md:block md:rounded-lg">
+<div class="ring-opacity-5 hidden overflow-visible shadow ring-1 ring-black md:block md:rounded-lg">
 	<table
 		id={tableId}
 		class="min-w-full divide-y divide-gray-300 dark:divide-gray-700"

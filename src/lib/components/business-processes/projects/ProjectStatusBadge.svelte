@@ -117,7 +117,7 @@
 		</button>
 
 		{#if showDropdown}
-			<div class="absolute left-0 z-50 mt-1 w-48 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700">
+			<div class="absolute left-0 z-[9999] mt-1 w-48 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700">
 				<div class="py-1">
 					{#each projectStatuses as status}
 						<button
