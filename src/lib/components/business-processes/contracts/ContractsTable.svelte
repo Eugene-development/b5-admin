@@ -266,22 +266,24 @@
 							/>
 						</td>
 						<td class="px-6 py-5 text-right text-sm whitespace-nowrap">
-							<div class="flex items-center justify-end gap-2">
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_static_element_interactions -->
+							<div class="flex items-center justify-end gap-2" onclick={(e) => e.stopPropagation()}>
 								<ActionButton
 									variant="view"
-									onclick={() => onViewContract(contract)}
+									onclick={(e) => { e.stopPropagation(); onViewContract(contract); }}
 									ariaLabel="Просмотреть договор"
 									title="Просмотреть"
 								/>
 								<ActionButton
 									variant="edit"
-									onclick={() => onEditContract(contract)}
+									onclick={(e) => { e.stopPropagation(); onEditContract(contract); }}
 									ariaLabel="Редактировать договор"
 									title="Редактировать"
 								/>
 								<ActionButton
 									variant="delete"
-									onclick={() => onDeleteContract(contract)}
+									onclick={(e) => { e.stopPropagation(); onDeleteContract(contract); }}
 									disabled={isLoading}
 									isLoading={isLoading}
 									ariaLabel="Удалить договор"

@@ -1,7 +1,11 @@
 import { handleApiError } from '$lib/utils/toastStore.js';
 import { getAuthHeaders } from './config.js';
+import { getGraphQLEndpoint } from '$lib/config/api.js';
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'}/graphql`;
+// Use dynamic GraphQL endpoint based on current domain
+function getApiUrl() {
+	return getGraphQLEndpoint();
+}
 
 /**
  * Create a new order with positions
@@ -60,7 +64,7 @@ export async function createOrder(orderData) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -202,7 +206,7 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 	`;
 
 	try {
-		const response = await fetchFn(API_URL, {
+		const response = await fetchFn(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -277,7 +281,7 @@ export async function updateOrder(orderData) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -339,7 +343,7 @@ export async function deleteOrder(orderId) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -398,7 +402,7 @@ export async function getCompaniesForDropdown(fetchFn = fetch) {
 	`;
 
 	try {
-		const response = await fetchFn(API_URL, {
+		const response = await fetchFn(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -444,7 +448,7 @@ export async function getProjectsForDropdown(fetchFn = fetch) {
 	`;
 
 	try {
-		const response = await fetchFn(API_URL, {
+		const response = await fetchFn(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -498,7 +502,7 @@ export async function updateOrderPosition(positionData) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -546,7 +550,7 @@ export async function deleteOrderPosition(positionId) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -605,7 +609,7 @@ export async function createOrderPosition(positionData) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -656,7 +660,7 @@ export async function getOrderStatuses(fetchFn = fetch) {
 	`;
 
 	try {
-		const response = await fetchFn(API_URL, {
+		const response = await fetchFn(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -708,7 +712,7 @@ export async function updateOrderStatus(orderId, statusSlug) {
 	`;
 
 	try {
-		const response = await fetch(API_URL, {
+		const response = await fetch(getApiUrl(), {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
