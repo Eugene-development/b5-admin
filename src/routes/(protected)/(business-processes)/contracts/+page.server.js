@@ -17,6 +17,13 @@ const CONTRACTS_QUERY = `
 					value
 					region
 					description
+					client {
+						id
+						name
+						phones {
+							value
+						}
+					}
 				}
 				company {
 					id

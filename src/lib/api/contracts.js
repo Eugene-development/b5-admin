@@ -25,6 +25,13 @@ const CONTRACTS_QUERY = gql`
 					value
 					region
 					description
+					client {
+						id
+						name
+						phones {
+							value
+						}
+					}
 				}
 				company {
 					id
@@ -78,6 +85,13 @@ const CREATE_CONTRACT_MUTATION = gql`
 				value
 				region
 				description
+				client {
+					id
+					name
+					phones {
+						value
+					}
+				}
 			}
 			company {
 				id
@@ -120,6 +134,13 @@ const UPDATE_CONTRACT_MUTATION = gql`
 				value
 				region
 				description
+				client {
+					id
+					name
+					phones {
+						value
+					}
+				}
 			}
 			company {
 				id
