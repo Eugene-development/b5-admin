@@ -189,7 +189,7 @@
 				role="document"
 			>
 				<!-- Header with gradient -->
-				<div class="relative overflow-hidden bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 px-6 py-5">
+				<div class="relative overflow-hidden bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 px-6 py-5">
 					<div class="absolute inset-0 bg-grid-white/10"></div>
 					<div class="relative flex items-start justify-between">
 						<div class="flex items-center gap-3">

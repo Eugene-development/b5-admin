@@ -671,26 +671,19 @@
 					{/if}
 
 					<!-- Agent Bonuses Section (Admin only) -->
-
-					<!-- Metadata footer -->
-					<div
-						class="mt-6 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-700"
-					>
-						<div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-							<span>Создан: {formatDateTime(project.created_at)}</span>
-							{#if project.updated_at && project.updated_at !== project.created_at}
-								<span>•</span>
-								<span>Обновлён: {formatDateTime(project.updated_at)}</span>
-							{/if}
-						</div>
-					</div>
 				</div>
 
 				<!-- Footer -->
 				<div
 					class="border-t border-gray-200 bg-gray-50 px-6 py-4 dark:border-gray-700 dark:bg-gray-800/50"
 				>
-					<div class="flex justify-end">
+					<div class="flex items-center justify-between">
+						<div class="flex flex-col gap-0.5 text-xs text-gray-400 dark:text-gray-500">
+							<span>Создан: {formatDateTime(project.created_at)}</span>
+							{#if project.updated_at && project.updated_at !== project.created_at}
+								<span>Обновлён: {formatDateTime(project.updated_at)}</span>
+							{/if}
+						</div>
 						<button
 							type="button"
 							onclick={handleClose}

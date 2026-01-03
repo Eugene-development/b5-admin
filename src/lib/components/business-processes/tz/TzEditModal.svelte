@@ -93,7 +93,7 @@
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<div bind:this={modalElement} class="relative w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all dark:bg-gray-900" onkeydown={handleTabKey} tabindex="-1" role="document">
 				<!-- Header with gradient -->
-				<div class="relative overflow-hidden bg-gradient-to-r from-violet-600 via-purple-500 to-fuchsia-500 px-6 py-5">
+				<div class="relative overflow-hidden bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 px-6 py-5">
 					<div class="absolute inset-0 bg-grid-white/10"></div>
 					<div class="relative flex items-start justify-between">
 						<div class="flex items-center gap-3">

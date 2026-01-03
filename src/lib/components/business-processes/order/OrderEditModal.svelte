@@ -242,7 +242,7 @@
 			>
 				<!-- Header with gradient -->
 				<div
-					class="relative overflow-hidden bg-gradient-to-r from-amber-600 via-orange-500 to-yellow-500 px-6 py-5"
+					class="relative overflow-hidden bg-gradient-to-r from-slate-700 via-slate-800 to-slate-900 px-6 py-5"
 				>
 					<div class="bg-grid-white/10 absolute inset-0"></div>
 					<div class="relative flex items-start justify-between">
