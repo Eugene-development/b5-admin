@@ -40,6 +40,14 @@ const ORDERS_QUERY = `
 					id
 					value
 					contract_name
+					region
+					client {
+						id
+						name
+						phones {
+							value
+						}
+					}
 				}
 				positions {
 					id

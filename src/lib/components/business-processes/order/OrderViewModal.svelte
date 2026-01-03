@@ -162,9 +162,6 @@
 									<h2 class="text-xl font-bold text-white">
 										№ {order.order_number || 'Без номера'}
 									</h2>
-									<p class="mt-0.5 text-sm text-amber-100">
-										{order.project?.value || 'Проект не указан'}
-									</p>
 								</div>
 							</div>
 						</div>
@@ -248,11 +245,11 @@
 											Поставщик
 										</p>
 										<p class="mt-1 font-medium text-gray-900 dark:text-white">
-											{order.supplier?.name || '—'}
+											{order.company?.name || '—'}
 										</p>
-										{#if order.supplier?.legal_name}
+										{#if order.company?.legal_name}
 											<p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
-												{order.supplier.legal_name}
+												{order.company.legal_name}
 											</p>
 										{/if}
 									</div>
@@ -270,8 +267,18 @@
 												{order.project.region}
 											</p>
 										{/if}
+										{#if order.project?.client?.phones && order.project.client.phones.length > 0}
+											<p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+												<a
+													href="tel:{order.project.client.phones[0].value}"
+													class="hover:text-amber-600"
+												>
+													{formatPhone(order.project.client.phones[0].value)}
+												</a>
+											</p>
+										{/if}
 									</div>
-									{#if order.supplier?.phones && order.supplier.phones.length > 0}
+									{#if order.company?.phones && order.company.phones.length > 0}
 										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
 											<p
 												class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
@@ -279,7 +286,7 @@
 												Телефоны
 											</p>
 											<div class="mt-2 space-y-1">
-												{#each order.supplier.phones as phone}
+												{#each order.company.phones as phone}
 													<div>
 														<a
 															href="tel:{phone.value}"
