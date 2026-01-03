@@ -10,6 +10,11 @@ const USERS_QUERY = gql`
 			region
 			name
 			email
+			phones {
+				id
+				value
+				is_primary
+			}
 			email_verified_at
 			created_at
 			updated_at
@@ -60,6 +65,11 @@ const UPDATE_USER_MUTATION = gql`
 			id
 			name
 			email
+			phones {
+				id
+				value
+				is_primary
+			}
 			region
 			status_id
 			userStatus {

@@ -21,6 +21,11 @@ const USERS_QUERY = `
 			region
 			name
 			email
+			phones {
+				id
+				value
+				is_primary
+			}
 			email_verified_at
 			created_at
 			updated_at
