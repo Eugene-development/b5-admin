@@ -99,10 +99,10 @@
 			return true;
 		}
 		
-		// Для договоров - показываем только при статусе договора "signed" (Заключён)
+		// Для договоров - показываем при статусах "signed" (Заключён) или "completed" (Выполнен)
 		if (bonus.source_type === 'contract') {
 			const contractStatus = bonus.contract?.status?.slug;
-			return contractStatus === 'signed';
+			return contractStatus === 'signed' || contractStatus === 'completed';
 		}
 		
 		return false;
