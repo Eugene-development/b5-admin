@@ -2,12 +2,20 @@
 	import OrderTable from '$lib/components/business-processes/order/OrderTable.svelte';
 	import OrderAddModal from '$lib/components/business-processes/order/OrderAddModal.svelte';
 	import OrderEditModal from '$lib/components/business-processes/order/OrderEditModal.svelte';
+	import OrderViewModal from '$lib/components/business-processes/order/OrderViewModal.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { page } from '$app/stores';
 	import { hasOrderAccess, initializeDomainDetection } from '$lib/utils/domainAccess.svelte.js';
 	import { onMount } from 'svelte';
-	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton, SearchBar, PageTitle } from '$lib';
+	import {
+		ErrorBoundary,
+		ConfirmationModal,
+		RefreshButton,
+		AddButton,
+		SearchBar,
+		PageTitle
+	} from '$lib';
 	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
@@ -51,6 +59,10 @@
 	let showEditModal = $state(false);
 	let editingOrder = $state(null);
 
+	// View modal state
+	let showViewModal = $state(false);
+	let viewingOrder = $state(null);
+
 	// Confirmation modal state
 	let showConfirmModal = $state(false);
 	let confirmAction = $state(null);
@@ -78,7 +90,9 @@
 		// Always load statuses first
 		try {
 			const [paymentStatuses, statuses] = await Promise.all([
-				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses),
+				partnerPaymentStatuses.length === 0
+					? getPartnerPaymentStatuses()
+					: Promise.resolve(partnerPaymentStatuses),
 				orderStatuses.length === 0 ? getOrderStatuses() : Promise.resolve(orderStatuses)
 			]);
 			partnerPaymentStatuses = paymentStatuses;
@@ -453,6 +467,18 @@
 		isActionLoading = false;
 	}
 
+	// Handle view order
+	function handleViewOrder(order) {
+		viewingOrder = order;
+		showViewModal = true;
+	}
+
+	// Cancel view order
+	function handleCancelViewOrder() {
+		showViewModal = false;
+		viewingOrder = null;
+	}
+
 	// Handle partner payment status change
 	function handlePartnerPaymentStatusChange(orderId, result) {
 		orders = orders.map((order) =>
@@ -515,7 +541,7 @@
 				</div>
 			{:else}
 				{@const ordersData = data.ordersData}
-				
+
 				<!-- Initialize local state from loaded data -->
 				{#if orders.length === 0 && ordersData.orders?.length > 0}
 					{((orders = ordersData.orders), '')}
@@ -528,57 +554,55 @@
 				{/if}
 
 				{#if ordersData.error}
-						<!-- Error state from API -->
-						<div class="flex min-h-[400px] items-center justify-center">
-							<div class="mx-auto max-w-md text-center">
-								<div
-									class="rounded-lg border border-red-500/30 bg-red-500/10 p-8 dark:bg-red-500/20"
+					<!-- Error state from API -->
+					<div class="flex min-h-[400px] items-center justify-center">
+						<div class="mx-auto max-w-md text-center">
+							<div class="rounded-lg border border-red-500/30 bg-red-500/10 p-8 dark:bg-red-500/20">
+								<svg
+									class="mx-auto h-12 w-12 text-red-600 dark:text-red-400"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+									aria-hidden="true"
 								>
-									<svg
-										class="mx-auto h-12 w-12 text-red-600 dark:text-red-400"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-										aria-hidden="true"
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
+									/>
+								</svg>
+								<h3 class="mb-4 mt-4 text-xl font-semibold text-gray-900 dark:text-white">
+									Ошибка загрузки заказов
+								</h3>
+								<p class="mb-6 text-sm text-red-600 dark:text-red-300">
+									{ordersData.error.message}
+								</p>
+								{#if ordersData.error.canRetry}
+									<button
+										onclick={handleRetry}
+										class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
 									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
-										/>
-									</svg>
-									<h3 class="mt-4 mb-4 text-xl font-semibold text-gray-900 dark:text-white">
-										Ошибка загрузки заказов
-									</h3>
-									<p class="mb-6 text-sm text-red-600 dark:text-red-300">
-										{ordersData.error.message}
-									</p>
-									{#if ordersData.error.canRetry}
-										<button
-											onclick={handleRetry}
-											class="inline-flex items-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+										<svg
+											class="mr-2 h-4 w-4"
+											xmlns="http://www.w3.org/2000/svg"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
 										>
-											<svg
-												class="mr-2 h-4 w-4"
-												xmlns="http://www.w3.org/2000/svg"
-												fill="none"
-												viewBox="0 0 24 24"
-												stroke="currentColor"
-											>
-												<path
-													stroke-linecap="round"
-													stroke-linejoin="round"
-													stroke-width="2"
-													d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-												/>
-											</svg>
-											Попробовать снова
-										</button>
-									{/if}
-								</div>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+											/>
+										</svg>
+										Попробовать снова
+									</button>
+								{/if}
 							</div>
 						</div>
+					</div>
 				{:else if isLoading || (isRefreshing && orders.length === 0)}
 					<!-- Show skeleton during initial load or refresh when no data is available -->
 					<TableSkeleton columns={6} />
@@ -588,11 +612,17 @@
 							<div class="mx-auto">
 								<main id="main-content" aria-labelledby="page-title">
 									<!-- Header with H1, Search and Refresh Button -->
-									<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
 										<PageTitle title="Заказы" />
 										<div class="flex items-center space-x-3">
 											<div class="w-80">
-												<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Заказы..." />
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Заказы..."
+												/>
 											</div>
 											<!-- Add Order Button -->
 											<AddButton onclick={handleAddOrder} disabled={isActionLoading} />
@@ -628,6 +658,7 @@
 											{orderStatuses}
 											onDeleteOrder={handleDeleteOrder}
 											onEditOrder={handleEditOrder}
+											onViewOrder={handleViewOrder}
 											onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
 											onOrderStatusChange={handleOrderStatusChange}
 										/>
@@ -683,3 +714,8 @@
 	onConfirm={confirmActionHandler}
 	onCancel={cancelAction}
 />
+
+<!-- Order View Modal -->
+{#if viewingOrder}
+	<OrderViewModal order={viewingOrder} onClose={handleCancelViewOrder} />
+{/if}

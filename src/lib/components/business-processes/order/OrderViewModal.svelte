@@ -523,7 +523,7 @@
 													>{position.price?.toLocaleString('ru-RU') || '—'} ₽</td
 												>
 												<td class="px-3 py-3 text-right text-sm text-gray-900 dark:text-white"
-													>{position.amount}</td
+													>{position.count}</td
 												>
 												<td
 													class="px-3 py-3 text-right text-sm font-medium text-gray-900 dark:text-white"

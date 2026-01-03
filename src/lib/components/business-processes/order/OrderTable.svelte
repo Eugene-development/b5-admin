@@ -1,6 +1,5 @@
 <script>
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
-	import OrderViewModal from './OrderViewModal.svelte';
 	import PartnerPaymentStatusBadge from './PartnerPaymentStatusBadge.svelte';
 	import OrderStatusBadge from './OrderStatusBadge.svelte';
 	import { ActionButton, MobileActionButton } from '$lib';
@@ -10,6 +9,7 @@
 		isLoading = false,
 		onDeleteOrder,
 		onEditOrder,
+		onViewOrder,
 		onPartnerPaymentStatusChange = null,
 		onOrderStatusChange = null,
 		partnerPaymentStatuses = [],
@@ -18,9 +18,6 @@
 		searchTerm = '',
 		hasSearched = false
 	} = $props();
-
-	let showViewModal = $state(false);
-	let selectedOrder = $state(null);
 
 	// Sorting state
 	let sortColumn = $state(null); // 'supplier', 'urgency_status', null
@@ -74,10 +71,10 @@
 					const bUrgent = b.is_urgent || b.urgency === 'high' ? 1 : 0;
 					const aActive = a.is_active ? 1 : 0;
 					const bActive = b.is_active ? 1 : 0;
-					
+
 					// Сначала сравниваем по срочности
 					compareResult = bUrgent - aUrgent;
-					
+
 					// Если срочность одинаковая, сравниваем по активности
 					if (compareResult === 0) {
 						compareResult = bActive - aActive;
@@ -112,14 +109,9 @@
 
 	// Handle view order
 	function handleViewOrder(order) {
-		selectedOrder = order;
-		showViewModal = true;
-	}
-
-	// Handle close modal
-	function handleCloseModal() {
-		showViewModal = false;
-		selectedOrder = null;
+		if (onViewOrder) {
+			onViewOrder(order);
+		}
 	}
 
 	// Generate unique table ID for accessibility
@@ -160,7 +152,9 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="ring-opacity-5 hidden w-full overflow-x-auto shadow ring-1 ring-black md:block md:rounded-lg">
+<div
+	class="hidden w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg"
+>
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -176,28 +170,28 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 60px; width: 60px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					НОМЕР
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					<button
@@ -235,14 +229,14 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 120px;"
 				>
 					СУММА
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					<button
@@ -280,7 +274,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-200"
+					class="cursor-pointer whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
 					style="min-width: 180px; width: 180px;"
 				>
 					<button
@@ -298,7 +292,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 200px; width: 200px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -322,63 +316,66 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-3 align-middle text-sm font-medium whitespace-nowrap text-gray-500 dark:text-gray-400"
+							class="whitespace-nowrap px-3 py-3 align-middle text-sm font-medium text-gray-500 dark:text-gray-400"
 							role="cell"
 						>
 							{order.sequentialNumber || index + 1}
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 leading-relaxed break-words">
+							<div class="break-words pr-3 leading-relaxed">
 								{order.order_number || order.deal || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 leading-relaxed break-words">
+							<div class="break-words pr-3 leading-relaxed">
 								{order.project?.value || order.project?.contract_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 leading-relaxed break-words">
+							<div class="break-words pr-3 leading-relaxed">
 								{order.company?.name || order.supplier || 'Не указан'}
 							</div>
 						</td>
-						<td class="px-3 py-3 text-right align-middle text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400" role="cell">
+						<td
+							class="whitespace-nowrap px-3 py-3 text-right align-middle text-sm font-semibold text-violet-600 dark:text-violet-400"
+							role="cell"
+						>
 							{formatCurrency(calculateOrderTotal(order))}
 						</td>
 						<td
-							class="px-3 py-3 align-middle text-sm whitespace-nowrap text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-3 py-3 align-middle text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
 							<div class="flex items-center justify-center gap-2 pr-3">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
-										class="inline-block h-6 w-6 rounded bg-red-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-red-500"
 										title="Срочный"
 										aria-label="Срочный"
 									></span>
 								{:else}
 									<span
-										class="inline-block h-6 w-6 rounded bg-blue-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-blue-500"
 										title="Обычный"
 										aria-label="Обычный"
 									></span>
 								{/if}
 								{#if order.is_active}
 									<span
-										class="inline-block h-6 w-6 rounded bg-green-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-green-500"
 										title="Активен"
 										aria-label="Активен"
 									></span>
 								{:else}
 									<span
-										class="inline-block h-6 w-6 rounded bg-gray-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-gray-500"
 										title="Неактивен"
 										aria-label="Неактивен"
 									></span>
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-3 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="whitespace-nowrap px-3 py-3 text-center align-middle" role="cell">
 							<OrderStatusBadge
 								{order}
 								{orderStatuses}
@@ -389,7 +386,7 @@
 								}}
 							/>
 						</td>
-						<td class="relative px-3 py-3 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative whitespace-nowrap px-3 py-3 text-center align-middle" role="cell">
 							<div class="flex items-center justify-center space-x-2">
 								<ActionButton
 									variant="view"
@@ -407,7 +404,7 @@
 									variant="delete"
 									onclick={() => onDeleteOrder && onDeleteOrder(order)}
 									disabled={isLoading}
-									isLoading={isLoading}
+									{isLoading}
 									ariaLabel="Удалить закупку № {index + 1}"
 									title="Удалить"
 								/>
@@ -439,10 +436,10 @@
 					<!-- Order Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
+							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
 								{order.order_number || order.deal || 'Номер не указан'}
 							</h3>
-							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
+							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
 								{order.company?.name || order.supplier || 'Поставщик не указан'}
 							</p>
 						</div>
@@ -459,33 +456,33 @@
 					<dl class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Метки
 							</dt>
 							<dd class="mt-1 flex items-center gap-2">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
-										class="inline-block h-6 w-6 rounded bg-red-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-red-500"
 										title="Срочный"
 										aria-label="Срочный"
 									></span>
 								{:else}
 									<span
-										class="inline-block h-6 w-6 rounded bg-blue-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-blue-500"
 										title="Обычный"
 										aria-label="Обычный"
 									></span>
 								{/if}
 								{#if order.is_active}
 									<span
-										class="inline-block h-6 w-6 rounded bg-green-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-green-500"
 										title="Активен"
 										aria-label="Активен"
 									></span>
 								{:else}
 									<span
-										class="inline-block h-6 w-6 rounded bg-gray-500 cursor-help"
+										class="inline-block h-6 w-6 cursor-help rounded bg-gray-500"
 										title="Неактивен"
 										aria-label="Неактивен"
 									></span>
@@ -494,7 +491,7 @@
 						</div>
 						<div class="col-span-2">
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Проект
 							</dt>
@@ -504,7 +501,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Сумма
 							</dt>
@@ -514,7 +511,7 @@
 						</div>
 						<div class="col-span-2">
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Статус
 							</dt>
@@ -552,7 +549,7 @@
 							variant="delete"
 							onclick={() => onDeleteOrder && onDeleteOrder(order)}
 							disabled={isLoading}
-							isLoading={isLoading}
+							{isLoading}
 							ariaLabel="Удалить заказ № {index + 1}"
 							title="Удалить"
 						/>
@@ -562,8 +559,3 @@
 		</div>
 	{/if}
 </div>
-
-<!-- View Modal -->
-{#if showViewModal && selectedOrder}
-	<OrderViewModal order={selectedOrder} onClose={handleCloseModal} />
-{/if}
