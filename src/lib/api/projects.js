@@ -30,6 +30,11 @@ const PROJECTS_QUERY = gql`
 					name
 					birthday
 					ban
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				status {
 					id
@@ -44,11 +49,21 @@ const PROJECTS_QUERY = gql`
 					id
 					name
 					email
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				curator {
 					id
 					name
 					email
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				projectUsers {
 					id
@@ -58,6 +73,11 @@ const PROJECTS_QUERY = gql`
 						id
 						name
 						email
+						phones {
+							id
+							value
+							is_primary
+						}
 					}
 				}
 				contracts {
@@ -89,6 +109,7 @@ const PROJECTS_QUERY = gql`
 				region
 				description
 				is_active
+				is_incognito
 				contract_name
 				contract_number
 				contract_date

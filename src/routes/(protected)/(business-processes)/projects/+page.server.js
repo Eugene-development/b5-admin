@@ -30,11 +30,16 @@ const PROJECTS_QUERY = `
 					}
 				}
 				client {
+				id
+				name
+				birthday
+				ban
+				phones {
 					id
-					name
-					birthday
-					ban
+					value
+					is_primary
 				}
+			}
 				status {
 					id
 					value
@@ -48,11 +53,21 @@ const PROJECTS_QUERY = `
 					id
 					name
 					email
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				curator {
 					id
 					name
 					email
+					phones {
+						id
+						value
+						is_primary
+					}
 				}
 				projectUsers {
 					id
@@ -62,6 +77,11 @@ const PROJECTS_QUERY = `
 						id
 						name
 						email
+						phones {
+							id
+							value
+							is_primary
+						}
 					}
 				}
 				contracts {
@@ -79,9 +99,18 @@ const PROJECTS_QUERY = `
 						legal_name
 					}
 				}
+			orders {
+				id
+				order_number
+				order_amount
+				agent_bonus
+				curator_bonus
+				is_active
+			}
 				region
 				description
 				is_active
+				is_incognito
 				contract_name
 				contract_number
 				contract_date
