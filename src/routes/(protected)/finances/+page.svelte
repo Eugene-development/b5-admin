@@ -22,6 +22,7 @@
 	let bonuses = $state([]);
 	let stats = $state({
 		total_pending: 0,
+		total_available: 0,
 		total_paid: 0,
 		contracts_count: 0,
 		orders_count: 0
@@ -45,7 +46,7 @@
 
 	// Filter bonuses by source type
 	let filteredBonuses = $derived.by(() => {
-		let filtered = bonuses.filter(b => {
+		let filtered = bonuses.filter((b) => {
 			if (activeTab === 'contracts') return b.source_type === 'contract';
 			if (activeTab === 'orders') return b.source_type === 'order';
 			return true;
@@ -53,19 +54,22 @@
 
 		// Apply status filter
 		if (statusFilter !== 'all') {
-			filtered = filtered.filter(b => b.status?.code === statusFilter);
+			filtered = filtered.filter((b) => b.status?.code === statusFilter);
 		}
 
 		// Apply search
 		if (searchTerm.trim()) {
 			const term = searchTerm.toLowerCase();
-			filtered = filtered.filter(b => {
-				const sourceNumber = b.source_type === 'contract' 
-					? (b.contract?.contract_number || '').toLowerCase()
-					: (b.order?.order_number || '').toLowerCase();
+			filtered = filtered.filter((b) => {
+				const sourceNumber =
+					b.source_type === 'contract'
+						? (b.contract?.contract_number || '').toLowerCase()
+						: (b.order?.order_number || '').toLowerCase();
 				const projectName = (b.project_name || '').toLowerCase();
 				const agentName = (b.agent?.name || '').toLowerCase();
-				return sourceNumber.includes(term) || projectName.includes(term) || agentName.includes(term);
+				return (
+					sourceNumber.includes(term) || projectName.includes(term) || agentName.includes(term)
+				);
 			});
 		}
 
@@ -128,12 +132,15 @@
 				getAdminBonuses(),
 				getAdminBonusStats(),
 				bonusStatuses.length === 0 ? getBonusStatuses() : Promise.resolve(bonusStatuses),
-				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses)
+				partnerPaymentStatuses.length === 0
+					? getPartnerPaymentStatuses()
+					: Promise.resolve(partnerPaymentStatuses)
 			]);
 			bonuses = bonusesData;
 			stats = statsData;
 			if (statusesData !== bonusStatuses) bonusStatuses = statusesData;
-			if (partnerStatusesData !== partnerPaymentStatuses) partnerPaymentStatuses = partnerStatusesData;
+			if (partnerStatusesData !== partnerPaymentStatuses)
+				partnerPaymentStatuses = partnerStatusesData;
 			if (showToast) addSuccessToast('Данные обновлены');
 		} catch (error) {
 			handleApiError(error, 'Не удалось загрузить данные');
@@ -145,7 +152,7 @@
 
 	// Handle bonus status change
 	function handleStatusChange(bonusId, result) {
-		bonuses = bonuses.map(b => 
+		bonuses = bonuses.map((b) =>
 			b.id === bonusId ? { ...b, status: result.status, paid_at: result.paid_at } : b
 		);
 		loadData(); // Refresh stats
@@ -179,25 +186,32 @@
 				<div class="mx-auto">
 					<main id="main-content" aria-labelledby="page-title">
 						<!-- Header with H1, Search and Refresh Button -->
-						<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+						<div
+							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+						>
 							<PageTitle title="Финансы" />
 							<div class="flex items-center space-x-3">
 								<div class="w-80">
 									<SearchBar bind:value={searchTerm} placeholder="Поиск по таблице Финансы..." />
 								</div>
-								<RefreshButton
-									{isRefreshing}
-									onclick={() => loadData(true)}
-								/>
+								<RefreshButton {isRefreshing} onclick={() => loadData(true)} />
 							</div>
 						</div>
 
 						<!-- Metrics Cards -->
-						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидание</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-400">
 									{formatCurrency(stats.total_pending)}
+								</dd>
+							</div>
+							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
+									Доступно к выплате
+								</dt>
+								<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
+									{formatCurrency(stats.total_available)}
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
@@ -219,21 +233,31 @@
 							<nav class="-mb-px flex space-x-8" aria-label="Tabs">
 								<button
 									type="button"
-									onclick={() => activeTab = 'contracts'}
-									class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'contracts' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+									onclick={() => (activeTab = 'contracts')}
+									class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
+									'contracts'
+										? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+										: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
 								>
 									Договора
-									<span class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+									<span
+										class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+									>
 										{stats.contracts_count || 0}
 									</span>
 								</button>
 								<button
 									type="button"
-									onclick={() => activeTab = 'orders'}
-									class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'orders' ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+									onclick={() => (activeTab = 'orders')}
+									class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
+									'orders'
+										? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+										: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
 								>
 									Заказы
-									<span class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+									<span
+										class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+									>
 										{stats.orders_count || 0}
 									</span>
 								</button>
@@ -267,17 +291,27 @@
 								</select>
 								<button
 									type="button"
-									onclick={() => sortDirection = sortDirection === 'asc' ? 'desc' : 'asc'}
+									onclick={() => (sortDirection = sortDirection === 'asc' ? 'desc' : 'asc')}
 									class="rounded-md p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
 									title={sortDirection === 'asc' ? 'По возрастанию' : 'По убыванию'}
 								>
 									{#if sortDirection === 'asc'}
 										<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"
+											/>
 										</svg>
 									{:else}
 										<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4" />
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"
+											/>
 										</svg>
 									{/if}
 								</button>
@@ -302,17 +336,17 @@
 								isLoading={isRefreshing}
 								onStatusChange={handleStatusChange}
 								onPartnerPaymentStatusChange={handlePartnerPaymentStatusChange}
-								sourceType={activeTab === 'contracts' ? 'contract' : activeTab === 'orders' ? 'order' : 'all'}
+								sourceType={activeTab === 'contracts'
+									? 'contract'
+									: activeTab === 'orders'
+										? 'order'
+										: 'all'}
 								{searchTerm}
 							/>
 						{/if}
 
 						<!-- Pagination -->
-						<Pagination
-							bind:currentPage
-							totalItems={filteredBonuses.length}
-							{itemsPerPage}
-						/>
+						<Pagination bind:currentPage totalItems={filteredBonuses.length} {itemsPerPage} />
 					</main>
 				</div>
 			</div>
