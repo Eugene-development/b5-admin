@@ -150,6 +150,9 @@
 					Агент/Куратор
 				</th>
 				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+					Тип
+				</th>
+				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
 					Бонус
 				</th>
 				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
@@ -169,7 +172,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if bonuses.length === 0}
 				<tr>
-					<td colspan="10" class="px-3 py-12 text-center">
+					<td colspan="11" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 							description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
@@ -197,6 +200,22 @@
 								<div class="font-medium">{bonus.agent?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
 							</div>
+						</td>
+						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+							{#if bonus.bonus_type === 'referral'}
+								<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+									Реферальный
+								</span>
+								{#if bonus.referralUser}
+									<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+										от {bonus.referralUser.name || 'N/A'}
+									</div>
+								{/if}
+							{:else}
+								<span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+									Агентский
+								</span>
+							{/if}
 						</td>
 						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
 							{#if shouldShowBonusAmount(bonus)}
@@ -292,6 +311,20 @@
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Агент</dt>
 							<dd class="font-medium text-gray-900 dark:text-white">{bonus.agent?.name || '—'}</dd>
+						</div>
+						<div>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Тип бонуса</dt>
+							<dd>
+								{#if bonus.bonus_type === 'referral'}
+									<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+										Реферальный
+									</span>
+								{:else}
+									<span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+										Агентский
+									</span>
+								{/if}
+							</dd>
 						</div>
 						<div>
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус агента</dt>

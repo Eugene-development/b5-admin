@@ -37,6 +37,7 @@
 	// Search and filter state
 	let searchTerm = $state('');
 	let statusFilter = $state('all');
+	let bonusTypeFilter = $state('all');
 	let sortField = $state('accrued_at');
 	let sortDirection = $state('desc');
 
@@ -55,6 +56,16 @@
 		// Apply status filter
 		if (statusFilter !== 'all') {
 			filtered = filtered.filter((b) => b.status?.code === statusFilter);
+		}
+
+		// Apply bonus type filter
+		if (bonusTypeFilter !== 'all') {
+			filtered = filtered.filter((b) => {
+				if (bonusTypeFilter === 'agent') {
+					return !b.bonus_type || b.bonus_type === 'agent';
+				}
+				return b.bonus_type === bonusTypeFilter;
+			});
 		}
 
 		// Apply search
@@ -110,6 +121,7 @@
 		activeTab;
 		searchTerm;
 		statusFilter;
+		bonusTypeFilter;
 		currentPage = 1;
 	});
 
@@ -199,7 +211,7 @@
 						</div>
 
 						<!-- Metrics Cards -->
-						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидание</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-400">
@@ -224,6 +236,15 @@
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Всего</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-300">
 									{formatCurrency((stats.total_pending || 0) + (stats.total_paid || 0))}
+								</dd>
+							</div>
+							<div class="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-4 shadow dark:from-purple-900/20 dark:to-pink-900/20 dark:bg-gray-800">
+								<dt class="text-sm font-medium text-purple-600 dark:text-purple-400">Реферальные</dt>
+								<dd class="mt-1 text-2xl font-semibold text-purple-700 dark:text-purple-300">
+									{formatCurrency(stats.total_referral || 0)}
+								</dd>
+								<dd class="mt-1 text-xs text-purple-500 dark:text-purple-400">
+									{stats.referral_count || 0} бонусов
 								</dd>
 							</div>
 						</div>
@@ -276,6 +297,16 @@
 									{#each bonusStatuses as status}
 										<option value={status.code}>{status.name}</option>
 									{/each}
+								</select>
+
+								<!-- Bonus Type Filter -->
+								<select
+									bind:value={bonusTypeFilter}
+									class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
+								>
+									<option value="all">Все типы</option>
+									<option value="agent">Агентские</option>
+									<option value="referral">Реферальные</option>
 								</select>
 							</div>
 
