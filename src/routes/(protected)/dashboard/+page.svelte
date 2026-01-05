@@ -10,9 +10,7 @@
 	{#snippet children()}
 		<div class="space-y-8">
 			<div>
-				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">
-					Модули для работы
-				</h1>
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Модули для работы</h1>
 				<!-- <p class="my-4 text-gray-600 dark:text-gray-400">
 					Ниже представлены доступные вашему аккаунту модуля системы.
 				</p> -->
@@ -29,7 +27,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-pink-200/50 bg-gradient-to-br from-pink-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-pink-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-pink-300 hover:shadow-xl dark:border-pink-900/30 dark:from-pink-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-pink-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-pink-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-pink-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-pink-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-pink-400/50"
@@ -50,7 +48,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-pink-600 dark:text-white dark:group-hover:text-pink-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-pink-600 dark:text-white dark:group-hover:text-pink-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Клиенты
@@ -66,7 +64,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-indigo-200/50 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-indigo-300 hover:shadow-xl dark:border-indigo-900/30 dark:from-indigo-950/20 dark:via-gray-800 dark:to-blue-950/20 dark:hover:border-indigo-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400/10 to-blue-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400/10 to-blue-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-indigo-400 to-blue-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-indigo-400/50"
@@ -87,7 +85,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Агенты
@@ -105,7 +103,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-cyan-200/50 bg-gradient-to-br from-cyan-50 via-white to-sky-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-cyan-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-cyan-300 hover:shadow-xl dark:border-cyan-900/30 dark:from-cyan-950/20 dark:via-gray-800 dark:to-sky-950/20 dark:hover:border-cyan-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-400/10 to-sky-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-cyan-400/10 to-sky-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-cyan-400 to-sky-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-cyan-400/50"
@@ -126,7 +124,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-cyan-600 dark:text-white dark:group-hover:text-cyan-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-cyan-600 dark:text-white dark:group-hover:text-cyan-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Кураторы
@@ -142,7 +140,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-violet-200/50 bg-gradient-to-br from-violet-50 via-white to-purple-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-violet-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-violet-300 hover:shadow-xl dark:border-violet-900/30 dark:from-violet-950/20 dark:via-gray-800 dark:to-purple-950/20 dark:hover:border-violet-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-violet-400/10 to-purple-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-violet-400/10 to-purple-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-violet-400 to-purple-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-violet-400/50"
@@ -163,7 +161,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Менеджеры
@@ -181,7 +179,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-fuchsia-200/50 bg-gradient-to-br from-fuchsia-50 via-white to-pink-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-fuchsia-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-fuchsia-300 hover:shadow-xl dark:border-fuchsia-900/30 dark:from-fuchsia-950/20 dark:via-gray-800 dark:to-pink-950/20 dark:hover:border-fuchsia-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-fuchsia-400/10 to-pink-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-fuchsia-400/10 to-pink-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-fuchsia-400 to-pink-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-fuchsia-400/50"
@@ -202,7 +200,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-fuchsia-600 dark:text-white dark:group-hover:text-fuchsia-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-fuchsia-600 dark:text-white dark:group-hover:text-fuchsia-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Дизайнеры
@@ -228,7 +226,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-blue-200/50 bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-blue-300 hover:shadow-xl dark:border-blue-900/30 dark:from-blue-950/20 dark:via-gray-800 dark:to-indigo-950/20 dark:hover:border-blue-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/10 to-indigo-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-blue-400/10 to-indigo-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-blue-400/50"
@@ -249,14 +247,12 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Фабрики
 									</h3>
-									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-										Управление фабриками
-									</p>
+									<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление фабриками</p>
 								</div>
 							</a>
 						{/if}
@@ -267,7 +263,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-green-200/50 bg-gradient-to-br from-green-50 via-white to-emerald-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-green-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-green-300 hover:shadow-xl dark:border-green-900/30 dark:from-green-950/20 dark:via-gray-800 dark:to-emerald-950/20 dark:hover:border-green-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-green-400/10 to-emerald-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-green-400/10 to-emerald-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-green-400 to-emerald-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-green-400/50"
@@ -288,7 +284,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-green-600 dark:text-white dark:group-hover:text-green-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-green-600 dark:text-white dark:group-hover:text-green-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Поставщики
@@ -306,7 +302,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-orange-200/50 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-orange-300 hover:shadow-xl dark:border-orange-900/30 dark:from-orange-950/20 dark:via-gray-800 dark:to-amber-950/20 dark:hover:border-orange-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-orange-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-orange-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-orange-400 to-amber-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-orange-400/50"
@@ -327,7 +323,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Службы доставки
@@ -343,7 +339,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-teal-200/50 bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-teal-300 hover:shadow-xl dark:border-teal-900/30 dark:from-teal-950/20 dark:via-gray-800 dark:to-cyan-950/20 dark:hover:border-teal-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/10 to-cyan-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/10 to-cyan-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-teal-400/50"
@@ -364,7 +360,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Сервис
@@ -388,7 +384,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-purple-200/50 bg-gradient-to-br from-purple-50 via-white to-fuchsia-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-purple-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-purple-300 hover:shadow-xl dark:border-purple-900/30 dark:from-purple-950/20 dark:via-gray-800 dark:to-fuchsia-950/20 dark:hover:border-purple-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-purple-400/10 to-fuchsia-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-purple-400/10 to-fuchsia-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-purple-400 to-fuchsia-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-purple-400/50"
@@ -409,7 +405,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-purple-600 dark:text-white dark:group-hover:text-purple-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Проекты
@@ -425,7 +421,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-yellow-200/50 bg-gradient-to-br from-yellow-50 via-white to-amber-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-yellow-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-yellow-300 hover:shadow-xl dark:border-yellow-900/30 dark:from-yellow-950/20 dark:via-gray-800 dark:to-amber-950/20 dark:hover:border-yellow-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-yellow-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-yellow-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-yellow-400 to-amber-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-yellow-400/50"
@@ -446,7 +442,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-yellow-600 dark:text-white dark:group-hover:text-yellow-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Техзадания
@@ -464,7 +460,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-lime-200/50 bg-gradient-to-br from-lime-50 via-white to-green-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-lime-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-lime-300 hover:shadow-xl dark:border-lime-900/30 dark:from-lime-950/20 dark:via-gray-800 dark:to-green-950/20 dark:hover:border-lime-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-lime-400/10 to-green-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-lime-400/10 to-green-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-lime-400 to-green-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-lime-400/50"
@@ -485,7 +481,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-lime-600 dark:text-white dark:group-hover:text-lime-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-lime-600 dark:text-white dark:group-hover:text-lime-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Заказы
@@ -501,7 +497,7 @@
 							class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-emerald-200/50 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-emerald-300 hover:shadow-xl dark:border-emerald-900/30 dark:from-emerald-950/20 dark:via-gray-800 dark:to-teal-950/20 dark:hover:border-emerald-700"
 						>
 							<div
-								class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/10 to-teal-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/10 to-teal-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 							></div>
 							<span
 								class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-emerald-400/50"
@@ -522,7 +518,7 @@
 							</span>
 							<div class="relative">
 								<h3
-									class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
+									class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
 								>
 									<span class="absolute inset-0" aria-hidden="true"></span>
 									Договора
@@ -537,7 +533,7 @@
 							class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-orange-200/50 bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-orange-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-orange-300 hover:shadow-xl dark:border-orange-900/30 dark:from-orange-950/20 dark:via-gray-800 dark:to-amber-950/20 dark:hover:border-orange-700"
 						>
 							<div
-								class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-orange-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+								class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-orange-400/10 to-amber-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 							></div>
 							<span
 								class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-orange-400 to-amber-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-orange-400/50"
@@ -558,7 +554,7 @@
 							</span>
 							<div class="relative">
 								<h3
-									class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400"
+									class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-orange-600 dark:text-white dark:group-hover:text-orange-400"
 								>
 									<span class="absolute inset-0" aria-hidden="true"></span>
 									Рекламации
@@ -581,7 +577,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-red-200/50 bg-gradient-to-br from-red-50 via-white to-rose-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-red-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-red-300 hover:shadow-xl dark:border-red-900/30 dark:from-red-950/20 dark:via-gray-800 dark:to-rose-950/20 dark:hover:border-red-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-red-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-red-400/10 to-rose-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-red-400 to-rose-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-red-400/50"
@@ -603,7 +599,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-red-600 dark:text-white dark:group-hover:text-red-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Акции
@@ -619,7 +615,7 @@
 								class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-slate-200/50 bg-gradient-to-br from-slate-50 via-white to-gray-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-slate-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-slate-300 hover:shadow-xl dark:border-slate-900/30 dark:from-slate-950/20 dark:via-gray-800 dark:to-gray-950/20 dark:hover:border-slate-700"
 							>
 								<div
-									class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-slate-400/10 to-gray-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+									class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-slate-400/10 to-gray-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 								></div>
 								<span
 									class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-slate-400 to-gray-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-slate-400/50"
@@ -640,7 +636,7 @@
 								</span>
 								<div class="relative">
 									<h3
-										class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-slate-600 dark:text-white dark:group-hover:text-slate-400"
+										class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-slate-600 dark:text-white dark:group-hover:text-slate-400"
 									>
 										<span class="absolute inset-0" aria-hidden="true"></span>
 										Документация
@@ -660,11 +656,11 @@
 				<h2 class="mb-4 text-lg font-semibold text-gray-400">Финансы</h2>
 				<div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
 					<a
-						href="/finances"
+						href="/bonuses"
 						class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-emerald-200/50 bg-gradient-to-br from-emerald-50 via-white to-green-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-emerald-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-emerald-300 hover:shadow-xl dark:border-emerald-900/30 dark:from-emerald-950/20 dark:via-gray-800 dark:to-green-950/20 dark:hover:border-emerald-700"
 					>
 						<div
-							class="absolute -top-8 -right-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/10 to-green-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+							class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-emerald-400/10 to-green-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
 						></div>
 						<span
 							class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-emerald-400 to-green-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-emerald-400/50"
@@ -685,14 +681,12 @@
 						</span>
 						<div class="relative">
 							<h3
-								class="text-base leading-6 font-semibold text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
+								class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400"
 							>
 								<span class="absolute inset-0" aria-hidden="true"></span>
-								Выплаты
+								Бонусы
 							</h3>
-							<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-								Управление выплатами
-							</p>
+							<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление бонусами</p>
 						</div>
 					</a>
 				</div>

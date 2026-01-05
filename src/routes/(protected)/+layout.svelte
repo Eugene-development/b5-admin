@@ -272,7 +272,7 @@
 			</div>
 
 			<!-- Navigation content -->
-			<nav class="scrollbar-hide flex flex-1 flex-col overflow-x-hidden overflow-y-auto px-6">
+			<nav class="scrollbar-hide flex flex-1 flex-col overflow-y-auto overflow-x-hidden px-6">
 				<ul role="list" class="flex flex-1 flex-col gap-y-5">
 					<li class="mb-2">
 						<ul role="list" class="space-y-1">
@@ -314,67 +314,67 @@
 							</button>
 							{#if openSections.management}
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
-								{#if navigationVisibility.showClients}
+									{#if navigationVisibility.showClients}
+										<li>
+											<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/clients')}
+												onclick={() => handleMobileNavigation('/clients')}
+											>
+												<span class={getSpanIconClasses('/clients')}>Кл</span>
+												<span class="truncate">Клиенты</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showAgents}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/agents')}
+												onclick={() => handleMobileNavigation('/agents')}
+											>
+												<span class={getSpanIconClasses('/agents')}>Аг</span>
+												<span class="truncate">Агенты</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showCurators}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/curators')}
+												onclick={() => handleMobileNavigation('/curators')}
+											>
+												<span class={getSpanIconClasses('/curators')}>Кр</span>
+												<span class="truncate">Кураторы</span>
+											</button>
+										</li>
+									{/if}
 									<li>
-										<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/clients')}
-											onclick={() => handleMobileNavigation('/clients')}
+											class={getNavClassesWithSpan('/managers')}
+											onclick={() => handleMobileNavigation('/managers')}
 										>
-											<span class={getSpanIconClasses('/clients')}>Кл</span>
-											<span class="truncate">Клиенты</span>
+											<span class={getSpanIconClasses('/managers')}>Мн</span>
+											<span class="truncate">Менеджеры</span>
 										</button>
 									</li>
-								{/if}
-								{#if navigationVisibility.showAgents}
 									<li>
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/agents')}
-											onclick={() => handleMobileNavigation('/agents')}
+											class={getNavClassesWithSpan('/designers')}
+											onclick={() => handleMobileNavigation('/designers')}
 										>
-											<span class={getSpanIconClasses('/agents')}>Аг</span>
-											<span class="truncate">Агенты</span>
+											<span class={getSpanIconClasses('/designers')}>Дз</span>
+											<span class="truncate">Дизайнеры</span>
 										</button>
 									</li>
-								{/if}
-								{#if navigationVisibility.showCurators}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/curators')}
-											onclick={() => handleMobileNavigation('/curators')}
-										>
-											<span class={getSpanIconClasses('/curators')}>Кр</span>
-											<span class="truncate">Кураторы</span>
-										</button>
-									</li>
-								{/if}
-								<li>
-									<button
-										type="button"
-										class={getNavClassesWithSpan('/managers')}
-										onclick={() => handleMobileNavigation('/managers')}
-									>
-										<span class={getSpanIconClasses('/managers')}>Мн</span>
-										<span class="truncate">Менеджеры</span>
-									</button>
-								</li>
-								<li>
-									<button
-										type="button"
-										class={getNavClassesWithSpan('/designers')}
-										onclick={() => handleMobileNavigation('/designers')}
-									>
-										<span class={getSpanIconClasses('/designers')}>Дз</span>
-										<span class="truncate">Дизайнеры</span>
-									</button>
-								</li>
-							</ul>
-						{/if}
-					</li>
-				{/if}
+								</ul>
+							{/if}
+						</li>
+					{/if}
 					{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
@@ -400,58 +400,58 @@
 							</button>
 							{#if openSections.contractors}
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
-								{#if navigationVisibility.showContractors}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/contractors')}
-											onclick={() => handleMobileNavigation('/contractors')}
-										>
-											<span class={getSpanIconClasses('/contractors')}>Фб</span>
-											<span class="truncate">Фабрики</span>
-										</button>
-									</li>
-								{/if}
-								{#if navigationVisibility.showSuppliers}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/suppliers')}
-											onclick={() => handleMobileNavigation('/suppliers')}
-										>
-											<span class={getSpanIconClasses('/suppliers')}>Пс</span>
-											<span class="truncate">Поставщики</span>
-										</button>
-									</li>
-								{/if}
-								{#if navigationVisibility.showDelivery}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/delivery')}
-											onclick={() => handleMobileNavigation('/delivery')}
-										>
-											<span class={getSpanIconClasses('/delivery')}>Дс</span>
-											<span class="truncate">Доставка</span>
-										</button>
-									</li>
-								{/if}
-								{#if navigationVisibility.showServices}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/services')}
-											onclick={() => handleMobileNavigation('/services')}
-										>
-											<span class={getSpanIconClasses('/services')}>Ср</span>
-											<span class="truncate">Сервис</span>
-										</button>
-									</li>
-								{/if}
-							</ul>
-						{/if}
-					</li>
-				{/if}
+									{#if navigationVisibility.showContractors}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/contractors')}
+												onclick={() => handleMobileNavigation('/contractors')}
+											>
+												<span class={getSpanIconClasses('/contractors')}>Фб</span>
+												<span class="truncate">Фабрики</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showSuppliers}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/suppliers')}
+												onclick={() => handleMobileNavigation('/suppliers')}
+											>
+												<span class={getSpanIconClasses('/suppliers')}>Пс</span>
+												<span class="truncate">Поставщики</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showDelivery}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/delivery')}
+												onclick={() => handleMobileNavigation('/delivery')}
+											>
+												<span class={getSpanIconClasses('/delivery')}>Дс</span>
+												<span class="truncate">Доставка</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showServices}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/services')}
+												onclick={() => handleMobileNavigation('/services')}
+											>
+												<span class={getSpanIconClasses('/services')}>Ср</span>
+												<span class="truncate">Сервис</span>
+											</button>
+										</li>
+									{/if}
+								</ul>
+							{/if}
+						</li>
+					{/if}
 					{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
@@ -477,71 +477,71 @@
 							</button>
 							{#if openSections.businessProcesses}
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
-								{#if navigationVisibility.showProjects}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/projects')}
-											onclick={() => handleMobileNavigation('/projects')}
-										>
-											<span class={getSpanIconClasses('/projects')}>Пр</span>
-											<span class="truncate"
-												>Проекты{#if newProjectsState.hasNew}<span
-														class="ml-2 text-red-600"
-														title="Есть новые проекты">!</span
-													>{/if}</span
+									{#if navigationVisibility.showProjects}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/projects')}
+												onclick={() => handleMobileNavigation('/projects')}
 											>
-										</button>
-									</li>
-								{/if}
-								{#if navigationVisibility.showTz}
+												<span class={getSpanIconClasses('/projects')}>Пр</span>
+												<span class="truncate"
+													>Проекты{#if newProjectsState.hasNew}<span
+															class="ml-2 text-red-600"
+															title="Есть новые проекты">!</span
+														>{/if}</span
+												>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showTz}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/tz')}
+												onclick={() => handleMobileNavigation('/tz')}
+											>
+												<span class={getSpanIconClasses('/tz')}>Тз</span>
+												<span class="truncate">Техзадания</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showOrder}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/order')}
+												onclick={() => handleMobileNavigation('/order')}
+											>
+												<span class={getSpanIconClasses('/order')}>Зк</span>
+												<sppan class="truncate">Заказы</sppan>
+											</button>
+										</li>
+									{/if}
 									<li>
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/tz')}
-											onclick={() => handleMobileNavigation('/tz')}
+											class={getNavClassesWithSpan('/contracts')}
+											onclick={() => handleMobileNavigation('/contracts')}
 										>
-											<span class={getSpanIconClasses('/tz')}>Тз</span>
-											<span class="truncate">Техзадания</span>
+											<span class={getSpanIconClasses('/contracts')}>Кт</span>
+											<span class="truncate">Договора</span>
 										</button>
 									</li>
-								{/if}
-								{#if navigationVisibility.showOrder}
 									<li>
 										<button
 											type="button"
-											class={getNavClassesWithSpan('/order')}
-											onclick={() => handleMobileNavigation('/order')}
+											class={getNavClassesWithSpan('/complaints')}
+											onclick={() => handleMobileNavigation('/complaints')}
 										>
-											<span class={getSpanIconClasses('/order')}>Зк</span>
-											<sppan class="truncate">Заказы</sppan>
+											<span class={getSpanIconClasses('/complaints')}>Рк</span>
+											<span class="truncate">Рекламации</span>
 										</button>
 									</li>
-								{/if}
-								<li>
-									<button
-										type="button"
-										class={getNavClassesWithSpan('/contracts')}
-										onclick={() => handleMobileNavigation('/contracts')}
-									>
-										<span class={getSpanIconClasses('/contracts')}>Кт</span>
-										<span class="truncate">Договора</span>
-									</button>
-								</li>
-								<li>
-									<button
-										type="button"
-										class={getNavClassesWithSpan('/complaints')}
-										onclick={() => handleMobileNavigation('/complaints')}
-									>
-										<span class={getSpanIconClasses('/complaints')}>Рк</span>
-										<span class="truncate">Рекламации</span>
-									</button>
-								</li>
-							</ul>
-						{/if}
-					</li>
-				{/if}
+								</ul>
+							{/if}
+						</li>
+					{/if}
 					{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 						<!-- Separator -->
 						<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
@@ -567,34 +567,34 @@
 							</button>
 							{#if openSections.information}
 								<ul role="list" class="-mx-2 mt-2 space-y-1">
-								{#if navigationVisibility.showActions}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/actions')}
-											onclick={() => handleMobileNavigation('/actions')}
-										>
-											<span class={getSpanIconClasses('/actions')}>Ак</span>
-											<span class="truncate">Акции</span>
-										</button>
-									</li>
-								{/if}
-								{#if navigationVisibility.showDocumentation}
-									<li>
-										<button
-											type="button"
-											class={getNavClassesWithSpan('/documentation')}
-											onclick={() => handleMobileNavigation('/documentation')}
-										>
-											<span class={getSpanIconClasses('/documentation')}>Дк</span>
-											<span class="truncate">Документация</span>
-										</button>
-									</li>
-								{/if}
-							</ul>
-						{/if}
-					</li>
-				{/if}
+									{#if navigationVisibility.showActions}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/actions')}
+												onclick={() => handleMobileNavigation('/actions')}
+											>
+												<span class={getSpanIconClasses('/actions')}>Ак</span>
+												<span class="truncate">Акции</span>
+											</button>
+										</li>
+									{/if}
+									{#if navigationVisibility.showDocumentation}
+										<li>
+											<button
+												type="button"
+												class={getNavClassesWithSpan('/documentation')}
+												onclick={() => handleMobileNavigation('/documentation')}
+											>
+												<span class={getSpanIconClasses('/documentation')}>Дк</span>
+												<span class="truncate">Документация</span>
+											</button>
+										</li>
+									{/if}
+								</ul>
+							{/if}
+						</li>
+					{/if}
 					<!-- Separator -->
 					<li class="-mx-2 border-t border-gray-200 dark:border-white/10"></li>
 					<li>
@@ -619,19 +619,19 @@
 						</button>
 						{#if openSections.finances}
 							<ul role="list" class="-mx-2 mt-2 space-y-1">
-							<li>
-								<button
-									type="button"
-									class={getNavClassesWithSpan('/finances')}
-									onclick={() => handleMobileNavigation('/finances')}
-								>
-									<span class={getSpanIconClasses('/finances')}>Фн</span>
-									<span class="truncate">Выплаты</span>
-								</button>
-							</li>
-						</ul>
-					{/if}
-				</li>
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/bonuses')}
+										onclick={() => handleMobileNavigation('/bonuses')}
+									>
+										<span class={getSpanIconClasses('/bonuses')}>Фн</span>
+										<span class="truncate">Бонусы</span>
+									</button>
+								</li>
+							</ul>
+						{/if}
+					</li>
 					<li class="mt-auto">
 						{#if isAuthenticated()}
 							<!-- User info section for mobile -->
@@ -752,7 +752,7 @@
 	<div
 		class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-gray-950"
 	>
-		<div class="flex h-20 shrink-0 items-center border-b border-gray-200 pb-5  dark:border-white/10">
+		<div class="flex h-20 shrink-0 items-center border-b border-gray-200 pb-5 dark:border-white/10">
 			<span
 				class="bg-gradient-to-b from-white via-white to-gray-400 bg-clip-text text-2xl font-bold text-transparent"
 			>
@@ -760,7 +760,7 @@
 			</span>
 		</div>
 		<nav
-			class="scrollbar-hide flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-x-hidden overflow-y-auto"
+			class="scrollbar-hide flex max-h-[calc(100vh-8rem)] flex-1 flex-col overflow-y-auto overflow-x-hidden"
 		>
 			<ul role="list" class="flex flex-1 flex-col gap-y-3">
 				<li class="mb-2">
@@ -799,47 +799,47 @@
 						</button>
 						{#if openSections.management}
 							<ul role="list" class="mt-2 space-y-1">
-							{#if navigationVisibility.showClients}
+								{#if navigationVisibility.showClients}
+									<li>
+										<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
+										<a href="/clients" class={getNavClassesWithSpan('/clients')}>
+											<span class={getSpanIconClasses('/clients')}>Кл</span>
+											<span class="truncate">Клиенты</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showAgents}
+									<li>
+										<a href="/agents" class={getNavClassesWithSpan('/agents')}>
+											<span class={getSpanIconClasses('/agents')}>Аг</span>
+											<span class="truncate">Агенты</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showCurators}
+									<li>
+										<a href="/curators" class={getNavClassesWithSpan('/curators')}>
+											<span class={getSpanIconClasses('/curators')}>Кр</span>
+											<span class="truncate">Кураторы</span>
+										</a>
+									</li>
+								{/if}
 								<li>
-									<!-- Current: "bg-gray-50 dark:bg-white/5 text-indigo-600 dark:text-white", Default: "text-gray-900 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5" -->
-									<a href="/clients" class={getNavClassesWithSpan('/clients')}>
-										<span class={getSpanIconClasses('/clients')}>Кл</span>
-										<span class="truncate">Клиенты</span>
+									<a href="/managers" class={getNavClassesWithSpan('/managers')}>
+										<span class={getSpanIconClasses('/managers')}>Мн</span>
+										<span class="truncate">Менеджеры</span>
 									</a>
 								</li>
-							{/if}
-							{#if navigationVisibility.showAgents}
 								<li>
-									<a href="/agents" class={getNavClassesWithSpan('/agents')}>
-										<span class={getSpanIconClasses('/agents')}>Аг</span>
-										<span class="truncate">Агенты</span>
+									<a href="/designers" class={getNavClassesWithSpan('/designers')}>
+										<span class={getSpanIconClasses('/designers')}>Дз</span>
+										<span class="truncate">Дизайнеры</span>
 									</a>
 								</li>
+							</ul>
 						{/if}
-							{#if navigationVisibility.showCurators}
-								<li>
-									<a href="/curators" class={getNavClassesWithSpan('/curators')}>
-										<span class={getSpanIconClasses('/curators')}>Кр</span>
-										<span class="truncate">Кураторы</span>
-									</a>
-								</li>
-							{/if}
-							<li>
-								<a href="/managers" class={getNavClassesWithSpan('/managers')}>
-									<span class={getSpanIconClasses('/managers')}>Мн</span>
-									<span class="truncate">Менеджеры</span>
-								</a>
-							</li>
-							<li>
-								<a href="/designers" class={getNavClassesWithSpan('/designers')}>
-									<span class={getSpanIconClasses('/designers')}>Дз</span>
-									<span class="truncate">Дизайнеры</span>
-								</a>
-							</li>
-						</ul>
-					{/if}
-				</li>
-			{/if}
+					</li>
+				{/if}
 				{#if navigationVisibility.showContractors || navigationVisibility.showSuppliers || navigationVisibility.showDelivery || navigationVisibility.showServices}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
@@ -865,42 +865,42 @@
 						</button>
 						{#if openSections.contractors}
 							<ul role="list" class="mt-2 space-y-1">
-							{#if navigationVisibility.showContractors}
-								<li>
-									<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
-										<span class={getSpanIconClasses('/contractors')}>Ф</span>
-										<span class="truncate">Фабрики</span>
-									</a>
-								</li>
-							{/if}
-							{#if navigationVisibility.showSuppliers}
-								<li>
-									<a href="/suppliers" class={getNavClassesWithSpan('/suppliers')}>
-										<span class={getSpanIconClasses('/suppliers')}>Пс</span>
-										<span class="truncate">Поставщики</span>
-									</a>
-								</li>
-							{/if}
-							{#if navigationVisibility.showDelivery}
-								<li>
-									<a href="/delivery" class={getNavClassesWithSpan('/delivery')}>
-										<span class={getSpanIconClasses('/delivery')}>Дс</span>
-										<span class="truncate">Доставка</span>
-									</a>
-								</li>
-							{/if}
-							{#if navigationVisibility.showServices}
-								<li>
-									<a href="/services" class={getNavClassesWithSpan('/services')}>
-										<span class={getSpanIconClasses('/services')}>Ср</span>
-										<span class="truncate">Сервис</span>
-									</a>
-								</li>
-							{/if}
-						</ul>
-					{/if}
-				</li>
-			{/if}
+								{#if navigationVisibility.showContractors}
+									<li>
+										<a href="/contractors" class={getNavClassesWithSpan('/contractors')}>
+											<span class={getSpanIconClasses('/contractors')}>Ф</span>
+											<span class="truncate">Фабрики</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showSuppliers}
+									<li>
+										<a href="/suppliers" class={getNavClassesWithSpan('/suppliers')}>
+											<span class={getSpanIconClasses('/suppliers')}>Пс</span>
+											<span class="truncate">Поставщики</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showDelivery}
+									<li>
+										<a href="/delivery" class={getNavClassesWithSpan('/delivery')}>
+											<span class={getSpanIconClasses('/delivery')}>Дс</span>
+											<span class="truncate">Доставка</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showServices}
+									<li>
+										<a href="/services" class={getNavClassesWithSpan('/services')}>
+											<span class={getSpanIconClasses('/services')}>Ср</span>
+											<span class="truncate">Сервис</span>
+										</a>
+									</li>
+								{/if}
+							</ul>
+						{/if}
+					</li>
+				{/if}
 				{#if navigationVisibility.showTz || navigationVisibility.showBz || navigationVisibility.showOrder || navigationVisibility.showProjects}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
@@ -926,51 +926,51 @@
 						</button>
 						{#if openSections.businessProcesses}
 							<ul role="list" class="mt-2 space-y-1">
-							{#if navigationVisibility.showProjects}
+								{#if navigationVisibility.showProjects}
+									<li>
+										<a href="/projects" class={getNavClassesWithSpan('/projects')}>
+											<span class={getSpanIconClasses('/projects')}>Пр</span>
+											<span class="truncate"
+												>Проекты{#if newProjectsState.hasNew}<span
+														class="ml-2 text-red-600"
+														title="Есть новые проекты">!</span
+													>{/if}</span
+											>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showTz}
+									<li>
+										<a href="/tz" class={getNavClassesWithSpan('/tz')}>
+											<span class={getSpanIconClasses('/tz')}>Тз</span>
+											<span class="truncate">Техзадания</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showOrder}
+									<li>
+										<a href="/order" class={getNavClassesWithSpan('/order')}>
+											<span class={getSpanIconClasses('/order')}>Зк</span>
+											<span class="truncate">Заказы</span>
+										</a>
+									</li>
+								{/if}
 								<li>
-									<a href="/projects" class={getNavClassesWithSpan('/projects')}>
-										<span class={getSpanIconClasses('/projects')}>Пр</span>
-										<span class="truncate"
-											>Проекты{#if newProjectsState.hasNew}<span
-													class="ml-2 text-red-600"
-													title="Есть новые проекты">!</span
-												>{/if}</span
-										>
+									<a href="/contracts" class={getNavClassesWithSpan('/contracts')}>
+										<span class={getSpanIconClasses('/contracts')}>Кт</span>
+										<span class="truncate">Договора</span>
 									</a>
 								</li>
-							{/if}
-							{#if navigationVisibility.showTz}
 								<li>
-									<a href="/tz" class={getNavClassesWithSpan('/tz')}>
-										<span class={getSpanIconClasses('/tz')}>Тз</span>
-										<span class="truncate">Техзадания</span>
+									<a href="/complaints" class={getNavClassesWithSpan('/complaints')}>
+										<span class={getSpanIconClasses('/complaints')}>Рк</span>
+										<span class="truncate">Рекламации</span>
 									</a>
 								</li>
-							{/if}
-							{#if navigationVisibility.showOrder}
-								<li>
-									<a href="/order" class={getNavClassesWithSpan('/order')}>
-										<span class={getSpanIconClasses('/order')}>Зк</span>
-										<span class="truncate">Заказы</span>
-									</a>
-								</li>
-							{/if}
-							<li>
-								<a href="/contracts" class={getNavClassesWithSpan('/contracts')}>
-									<span class={getSpanIconClasses('/contracts')}>Кт</span>
-									<span class="truncate">Договора</span>
-								</a>
-							</li>
-							<li>
-								<a href="/complaints" class={getNavClassesWithSpan('/complaints')}>
-									<span class={getSpanIconClasses('/complaints')}>Рк</span>
-									<span class="truncate">Рекламации</span>
-								</a>
-							</li>
-						</ul>
-					{/if}
-				</li>
-			{/if}
+							</ul>
+						{/if}
+					</li>
+				{/if}
 				{#if navigationVisibility.showActions || navigationVisibility.showDocumentation}
 					<!-- Separator -->
 					<li class="border-t border-gray-200 dark:border-white/10"></li>
@@ -996,26 +996,26 @@
 						</button>
 						{#if openSections.information}
 							<ul role="list" class="mt-2 space-y-1">
-							{#if navigationVisibility.showActions}
-								<li>
-									<a href="/actions" class={getNavClassesWithSpan('/actions')}>
-										<span class={getSpanIconClasses('/actions')}>Ак</span>
-										<span class="truncate">Акции</span>
-									</a>
-								</li>
-							{/if}
-							{#if navigationVisibility.showDocumentation}
-								<li>
-									<a href="/documentation" class={getNavClassesWithSpan('/documentation')}>
-										<span class={getSpanIconClasses('/documentation')}>Дк</span>
-										<span class="truncate">Документация</span>
-									</a>
-								</li>
-							{/if}
-						</ul>
-					{/if}
-				</li>
-			{/if}
+								{#if navigationVisibility.showActions}
+									<li>
+										<a href="/actions" class={getNavClassesWithSpan('/actions')}>
+											<span class={getSpanIconClasses('/actions')}>Ак</span>
+											<span class="truncate">Акции</span>
+										</a>
+									</li>
+								{/if}
+								{#if navigationVisibility.showDocumentation}
+									<li>
+										<a href="/documentation" class={getNavClassesWithSpan('/documentation')}>
+											<span class={getSpanIconClasses('/documentation')}>Дк</span>
+											<span class="truncate">Документация</span>
+										</a>
+									</li>
+								{/if}
+							</ul>
+						{/if}
+					</li>
+				{/if}
 				<!-- Separator -->
 				<li class="border-t border-gray-200 dark:border-white/10"></li>
 				<li>
@@ -1040,15 +1040,15 @@
 					</button>
 					{#if openSections.finances}
 						<ul role="list" class="mt-2 space-y-1">
-						<li>
-							<a href="/finances" class={getNavClassesWithSpan('/finances')}>
-								<span class={getSpanIconClasses('/finances')}>Фн</span>
-								<span class="truncate">Выплаты</span>
-							</a>
-						</li>
-					</ul>
-				{/if}
-			</li>
+							<li>
+								<a href="/bonuses" class={getNavClassesWithSpan('/bonuses')}>
+									<span class={getSpanIconClasses('/bonuses')}>Фн</span>
+									<span class="truncate">Бонусы</span>
+								</a>
+							</li>
+						</ul>
+					{/if}
+				</li>
 				<li class="mt-auto">
 					{#if isAuthenticated()}
 						<!-- User info section for desktop -->
@@ -1137,7 +1137,7 @@
 <div class="h-screen bg-gray-950 lg:pl-64">
 	<div class="sticky top-0 z-20 lg:mx-auto lg:max-w-full">
 		<div
-			class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"
+			class="shadow-xs flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-950 dark:shadow-none"
 		>
 			<button
 				type="button"
@@ -1252,7 +1252,7 @@
 									<a
 										href="/profile"
 										onclick={closeUserMenu}
-										class="block px-3 py-1 text-sm/6 text-gray-900 hover:bg-gray-50 focus:outline-hidden dark:text-white dark:hover:bg-gray-950"
+										class="focus:outline-hidden block px-3 py-1 text-sm/6 text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-950"
 										>Ваш профиль</a
 									>
 									<button
@@ -1260,7 +1260,7 @@
 											closeUserMenu();
 											handleLogoutClick();
 										}}
-										class="block w-full px-3 py-1 text-left text-sm/6 text-gray-900 hover:bg-gray-50 focus:outline-hidden dark:text-white dark:hover:bg-gray-950"
+										class="focus:outline-hidden block w-full px-3 py-1 text-left text-sm/6 text-gray-900 hover:bg-gray-50 dark:text-white dark:hover:bg-gray-950"
 										>Выйти</button
 									>
 								</div>

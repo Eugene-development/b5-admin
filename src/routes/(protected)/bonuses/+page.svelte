@@ -201,7 +201,7 @@
 						<div
 							class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 						>
-							<PageTitle title="Финансы" />
+							<PageTitle title="Бонусы" />
 							<div class="flex items-center space-x-3">
 								<div class="w-80">
 									<SearchBar bind:value={searchTerm} placeholder="Поиск по таблице Финансы..." />
@@ -238,8 +238,12 @@
 									{formatCurrency((stats.total_pending || 0) + (stats.total_paid || 0))}
 								</dd>
 							</div>
-							<div class="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-4 shadow dark:from-purple-900/20 dark:to-pink-900/20 dark:bg-gray-800">
-								<dt class="text-sm font-medium text-purple-600 dark:text-purple-400">Реферальные</dt>
+							<div
+								class="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-4 shadow dark:bg-gray-800 dark:from-purple-900/20 dark:to-pink-900/20"
+							>
+								<dt class="text-sm font-medium text-purple-600 dark:text-purple-400">
+									Реферальные
+								</dt>
 								<dd class="mt-1 text-2xl font-semibold text-purple-700 dark:text-purple-300">
 									{formatCurrency(stats.total_referral || 0)}
 								</dd>
