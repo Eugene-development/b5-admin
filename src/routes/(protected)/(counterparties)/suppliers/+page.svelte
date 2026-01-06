@@ -89,6 +89,9 @@
 
 	// Computed filteredSuppliers reactive statement
 	let filteredSuppliers = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) {
 			return localSuppliers;
 		}
@@ -118,6 +121,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredSuppliers.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredSuppliers.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search handler function
@@ -449,71 +462,76 @@
 				{#if isRefreshing && localSuppliers.length === 0}
 					<TableSkeleton columns={7} />
 				{:else}
-
-				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
-							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with H1, Search and Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-									<PageTitle title="Поставщики" />
-									<div class="flex items-center space-x-3">
-										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Поставщики..." />
-										</div>
-										<!-- Add Button -->
-										<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
-										<!-- Refresh Button -->
-										<RefreshButton {isRefreshing} onclick={refreshData} />
-									</div>
-								</div>
-
-								<!-- Results summary -->
-								{#if searchTerm.trim()}
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with H1, Search and Refresh Button -->
 									<div
-										class="mt-4 text-sm text-gray-600 dark:text-gray-400"
-										role="status"
-										aria-live="polite"
-										aria-atomic="true"
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
 									>
-										{#if filteredSuppliers.length === 0}
-											Поставщики не найдены по запросу "{searchTerm}"
-										{:else}
-											Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1
-												? ''
-												: filteredSuppliers.length < 5
-													? 'а'
-													: 'ов'} по запросу "{searchTerm}"
-										{/if}
+										<PageTitle title="Поставщики" />
+										<div class="flex items-center space-x-3">
+											<div class="w-80">
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Поставщики..."
+												/>
+											</div>
+											<!-- Add Button -->
+											<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
+											<!-- Refresh Button -->
+											<RefreshButton {isRefreshing} onclick={refreshData} />
+										</div>
 									</div>
-								{/if}
 
-								<!-- Company Table -->
-								<div class="mt-4">
-									<CompanyTable
-										companies={paginatedSuppliers}
-										isLoading={isActionLoading}
-										onBanCompany={handleBanSupplier}
-										onDeleteCompany={handleDeleteSupplier}
-										onViewCompany={handleViewSupplier}
-										onEditCompany={handleEditCompany}
-										{updateCounter}
-										{searchTerm}
-										hasSearched={searchTerm.trim().length > 0}
+									<!-- Results summary -->
+									{#if searchTerm.trim()}
+										<div
+											class="mt-4 text-sm text-gray-600 dark:text-gray-400"
+											role="status"
+											aria-live="polite"
+											aria-atomic="true"
+										>
+											{#if filteredSuppliers.length === 0}
+												Поставщики не найдены по запросу "{searchTerm}"
+											{:else}
+												Найдено {filteredSuppliers.length} поставщик{filteredSuppliers.length === 1
+													? ''
+													: filteredSuppliers.length < 5
+														? 'а'
+														: 'ов'} по запросу "{searchTerm}"
+											{/if}
+										</div>
+									{/if}
+
+									<!-- Company Table -->
+									<div class="mt-4">
+										<CompanyTable
+											companies={paginatedSuppliers}
+											isLoading={isActionLoading}
+											onBanCompany={handleBanSupplier}
+											onDeleteCompany={handleDeleteSupplier}
+											onViewCompany={handleViewSupplier}
+											onEditCompany={handleEditCompany}
+											{updateCounter}
+											{searchTerm}
+											hasSearched={searchTerm.trim().length > 0}
+										/>
+									</div>
+
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredSuppliers.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? localSuppliers.length : null}
 									/>
-								</div>
-
-								<!-- Pagination -->
-								<Pagination
-									bind:currentPage
-									totalItems={filteredSuppliers.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? localSuppliers.length : null}
-								/>
-							</main>
+								</main>
+							</div>
 						</div>
 					</div>
-				</div>
 				{/if}
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">

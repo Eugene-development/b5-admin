@@ -126,6 +126,9 @@
 
 	// Filtered orders based on search term - automatically reactive
 	let filteredOrders = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) {
 			return orders;
 		}
@@ -151,6 +154,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredOrders.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredOrders.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search functionality

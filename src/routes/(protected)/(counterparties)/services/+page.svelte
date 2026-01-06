@@ -70,6 +70,9 @@
 	}
 
 	let filteredServices = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) return localServices;
 		const term = searchTerm.toLowerCase().trim();
 		return localServices.filter((service) => {
@@ -95,6 +98,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredServices.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredServices.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	function handleSearch(term) {
@@ -383,69 +396,72 @@
 				{#if isRefreshing && localServices.length === 0}
 					<TableSkeleton columns={7} />
 				{:else}
-
-				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
-							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with H1, Search and Refresh Button -->
-								<div
-									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-								>
-									<PageTitle title="Сервисы" />
-									<div class="flex items-center space-x-3">
-										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Сервисы..." />
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with H1, Search and Refresh Button -->
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
+										<PageTitle title="Сервисы" />
+										<div class="flex items-center space-x-3">
+											<div class="w-80">
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Сервисы..."
+												/>
+											</div>
+											<!-- Add Button -->
+											<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
+											<!-- Refresh Button -->
+											<RefreshButton {isRefreshing} onclick={refreshData} />
 										</div>
-										<!-- Add Button -->
-										<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
-										<!-- Refresh Button -->
-										<RefreshButton {isRefreshing} onclick={refreshData} />
 									</div>
-								</div>
 
-								{#if searchTerm.trim()}
-									<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
-										{#if filteredServices.length === 0}
-											<p>Сервисы не найдены</p>
-										{:else}
-											<p>
-												Найдено {filteredServices.length} сервис{filteredServices.length === 1
-													? ''
-													: filteredServices.length < 5
-														? 'а'
-														: 'ов'} по запросу "{searchTerm}"
-											</p>
-										{/if}
+									{#if searchTerm.trim()}
+										<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
+											{#if filteredServices.length === 0}
+												<p>Сервисы не найдены</p>
+											{:else}
+												<p>
+													Найдено {filteredServices.length} сервис{filteredServices.length === 1
+														? ''
+														: filteredServices.length < 5
+															? 'а'
+															: 'ов'} по запросу "{searchTerm}"
+												</p>
+											{/if}
+										</div>
+									{/if}
+
+									<!-- Table -->
+									<div class="mt-4">
+										<CompanyTable
+											companies={paginatedServices}
+											isLoading={isActionLoading}
+											onBanCompany={handleBanService}
+											onDeleteCompany={handleDeleteService}
+											onViewCompany={handleViewService}
+											onEditCompany={handleEditCompany}
+											{updateCounter}
+											{searchTerm}
+											hasSearched={searchTerm.trim().length > 0}
+										/>
 									</div>
-								{/if}
 
-								<!-- Table -->
-								<div class="mt-4">
-									<CompanyTable
-										companies={paginatedServices}
-										isLoading={isActionLoading}
-										onBanCompany={handleBanService}
-										onDeleteCompany={handleDeleteService}
-										onViewCompany={handleViewService}
-										onEditCompany={handleEditCompany}
-										{updateCounter}
-										{searchTerm}
-										hasSearched={searchTerm.trim().length > 0}
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredServices.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? localServices.length : null}
 									/>
-								</div>
-
-								<!-- Pagination -->
-								<Pagination
-									bind:currentPage
-									totalItems={filteredServices.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? localServices.length : null}
-								/>
-							</main>
+								</main>
+							</div>
 						</div>
 					</div>
-				</div>
 				{/if}
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">

@@ -80,6 +80,9 @@
 
 	// Computed filteredUsers reactive statement
 	let filteredUsers = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) {
 			return localUsers;
 		}
@@ -99,6 +102,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredUsers.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredUsers.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search handler function
@@ -395,22 +408,28 @@
 				<!-- Skip link for keyboard navigation -->
 				<a
 					href="#main-content"
-					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 				>
 					Перейти к основному контенту
 				</a>
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
+						<div class="mx-auto">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with H1, Search and Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+								>
 									<PageTitle title="Агенты" />
 									<div class="flex items-center space-x-3">
 										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Агенты..." />
+											<SearchBar
+												bind:value={searchTerm}
+												onSearch={handleSearch}
+												placeholder="Поиск по таблице Агенты..."
+											/>
 										</div>
 										<!-- Add Button -->
 										<AddButton onclick={handleAddUser} />
@@ -450,7 +469,7 @@
 															type="button"
 															onclick={refreshData}
 															disabled={isRefreshing}
-															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
 														>
 															{isRefreshing ? 'Повтор...' : 'Повторить'}
 														</button>

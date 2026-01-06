@@ -75,7 +75,7 @@
 	// Keep selectedTz in sync with tzList updates
 	$effect(() => {
 		if (isViewModalOpen && selectedTz) {
-			const updatedTz = tzList.find(t => t.id === selectedTz.id);
+			const updatedTz = tzList.find((t) => t.id === selectedTz.id);
 			if (updatedTz) {
 				selectedTz = updatedTz;
 			}
@@ -165,6 +165,16 @@
 		return filteredTzList.slice(startIndex, endIndex);
 	});
 
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredTzList.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
+	});
+
 	function handleSearch() {
 		hasSearched = searchTerm.trim().length > 0;
 		currentPage = 1;
@@ -181,14 +191,14 @@
 		isRefreshing = true;
 		try {
 			const refreshedData = await refreshTechnicalSpecifications();
-			
+
 			// Sort by created_at descending (newest first) to match server-side sorting
 			const sortedData = [...(refreshedData || [])].sort((a, b) => {
 				const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
 				const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
 				return dateB - dateA;
 			});
-			
+
 			tzList = sortedData;
 			if (!isInitialLoad) {
 				addSuccessToast('Данные успешно обновлены');
@@ -317,9 +327,9 @@
 				async () => {
 					const tzId = uploadingTz.id;
 					const fileType = uploadType === 'sketch' ? 'SKETCH' : 'COMMERCIAL_OFFER';
-					
+
 					await uploadTzFile(tzId, fileType, file);
-					
+
 					if (uploadType === 'sketch') {
 						addSuccessToast('Эскиз успешно загружен');
 					} else {
@@ -328,15 +338,15 @@
 
 					// Reload data to get updated files
 					await loadServices();
-					
+
 					// Update selectedTz if view modal is open
 					if (isViewModalOpen && selectedTz && selectedTz.id === tzId) {
-						const updatedTz = tzList.find(t => t.id === tzId);
+						const updatedTz = tzList.find((t) => t.id === tzId);
 						if (updatedTz) {
 							selectedTz = updatedTz;
 						}
 					}
-					
+
 					isUploadModalOpen = false;
 					uploadingTz = null;
 					uploadType = null;
@@ -414,7 +424,7 @@
 					<div class="space-y-6">
 						<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
 							<h1
-								class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+								class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 							>
 								Техзадания
 							</h1>
@@ -444,11 +454,17 @@
 								<div class="mx-auto">
 									<main id="main-content" aria-labelledby="page-title">
 										<!-- Header with H1, Search and Refresh Button -->
-										<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+										<div
+											class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+										>
 											<PageTitle title="Техзадания" />
 											<div class="flex items-center space-x-3">
 												<div class="w-80">
-													<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Техзадания..." />
+													<SearchBar
+														bind:value={searchTerm}
+														onSearch={handleSearch}
+														placeholder="Поиск по таблице Техзадания..."
+													/>
 												</div>
 												<!-- Create TZ Button -->
 												<AddButton onclick={handleOpenCreateModal} disabled={isLoading} />
@@ -506,7 +522,7 @@
 				<div class="space-y-6">
 					<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
 						<h1
-							class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+							class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 						>
 							Техзадания
 						</h1>
@@ -565,7 +581,7 @@
 <!-- File Upload Modal -->
 <FileUploadModal
 	isOpen={isUploadModalOpen}
-		title={uploadType === 'sketch' ? 'Загрузить ТЗ' : 'Загрузить КП'}
+	title={uploadType === 'sketch' ? 'Загрузить ТЗ' : 'Загрузить КП'}
 	onUpload={handleFileUpload}
 	onCancel={handleCloseUploadModal}
 	{isLoading}

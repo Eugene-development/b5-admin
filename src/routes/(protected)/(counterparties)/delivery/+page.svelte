@@ -89,6 +89,9 @@
 
 	// Computed filteredDeliveryCompanies reactive statement
 	let filteredDeliveryCompanies = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) {
 			return localDeliveryCompanies;
 		}
@@ -118,6 +121,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredDeliveryCompanies.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredDeliveryCompanies.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search handler function
@@ -429,80 +442,83 @@
 				{#if isRefreshing && localDeliveryCompanies.length === 0}
 					<TableSkeleton columns={7} />
 				{:else}
-
-				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
-							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with H1, Search and Refresh Button -->
-								<div
-									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
-								>
-									<PageTitle title="Службы доставки" />
-									<div class="flex items-center space-x-3">
-										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Службы доставки..." />
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with H1, Search and Refresh Button -->
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
+										<PageTitle title="Службы доставки" />
+										<div class="flex items-center space-x-3">
+											<div class="w-80">
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Службы доставки..."
+												/>
+											</div>
+											<!-- Add Button -->
+											<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
+											<!-- Refresh Button -->
+											<RefreshButton
+												{isRefreshing}
+												onclick={refreshData}
+												ariaLabel="Refresh delivery companies data from server"
+											/>
 										</div>
-										<!-- Add Button -->
-										<AddButton onclick={handleAddCompany} disabled={isActionLoading} />
-										<!-- Refresh Button -->
-										<RefreshButton
-											{isRefreshing}
-											onclick={refreshData}
-											ariaLabel="Refresh delivery companies data from server"
+									</div>
+
+									<!-- Results summary -->
+									{#if searchTerm.trim()}
+										<div
+											class="mt-4 text-sm text-gray-600 dark:text-gray-400"
+											role="status"
+											aria-live="polite"
+											aria-atomic="true"
+										>
+											{#if filteredDeliveryCompanies.length === 0}
+												<p>Службы доставки не найдены</p>
+											{:else}
+												<p>
+													Найдено {filteredDeliveryCompanies.length} служб{filteredDeliveryCompanies.length ===
+													1
+														? 'а'
+														: filteredDeliveryCompanies.length < 5
+															? 'ы'
+															: ''} доставки по запросу "{searchTerm}"
+												</p>
+											{/if}
+										</div>
+									{/if}
+
+									<!-- Company Table -->
+									<div class="mt-4">
+										<CompanyTable
+											companies={paginatedDeliveryCompanies}
+											isLoading={isActionLoading}
+											onBanCompany={handleBanDeliveryCompany}
+											onDeleteCompany={handleDeleteDeliveryCompany}
+											onViewCompany={handleViewDeliveryCompany}
+											onEditCompany={handleEditCompany}
+											{updateCounter}
+											{searchTerm}
+											hasSearched={searchTerm.trim().length > 0}
 										/>
 									</div>
-								</div>
 
-								<!-- Results summary -->
-								{#if searchTerm.trim()}
-									<div
-										class="mt-4 text-sm text-gray-600 dark:text-gray-400"
-										role="status"
-										aria-live="polite"
-										aria-atomic="true"
-									>
-										{#if filteredDeliveryCompanies.length === 0}
-											<p>Службы доставки не найдены</p>
-										{:else}
-											<p>
-												Найдено {filteredDeliveryCompanies.length} служб{filteredDeliveryCompanies.length ===
-												1
-													? 'а'
-													: filteredDeliveryCompanies.length < 5
-														? 'ы'
-														: ''} доставки по запросу "{searchTerm}"
-											</p>
-										{/if}
-									</div>
-								{/if}
-
-								<!-- Company Table -->
-								<div class="mt-4">
-									<CompanyTable
-										companies={paginatedDeliveryCompanies}
-										isLoading={isActionLoading}
-										onBanCompany={handleBanDeliveryCompany}
-										onDeleteCompany={handleDeleteDeliveryCompany}
-										onViewCompany={handleViewDeliveryCompany}
-										onEditCompany={handleEditCompany}
-										{updateCounter}
-										{searchTerm}
-										hasSearched={searchTerm.trim().length > 0}
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredDeliveryCompanies.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? localDeliveryCompanies.length : null}
 									/>
-								</div>
-
-								<!-- Pagination -->
-								<Pagination
-									bind:currentPage
-									totalItems={filteredDeliveryCompanies.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? localDeliveryCompanies.length : null}
-								/>
-							</main>
+								</main>
+							</div>
 						</div>
 					</div>
-				</div>
 				{/if}
 			{:catch error}
 				<div class="flex min-h-screen items-center justify-center bg-gray-950">

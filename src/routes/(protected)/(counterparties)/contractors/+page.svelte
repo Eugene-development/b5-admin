@@ -70,6 +70,9 @@
 	}
 
 	let filteredContractors = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		if (!searchTerm.trim()) return localContractors;
 		const term = searchTerm.toLowerCase().trim();
 		return localContractors.filter((contractor) => {
@@ -95,6 +98,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredContractors.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredContractors.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	function handleSearch(term) {
@@ -385,7 +398,7 @@
 				{:else}
 					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 						<div class="px-4 py-7 sm:px-6 lg:px-7">
-							<div class="mx-auto ">
+							<div class="mx-auto">
 								<main id="main-content" aria-labelledby="page-title">
 									<!-- Header with H1, Search and Refresh Button -->
 									<div
@@ -394,7 +407,11 @@
 										<PageTitle title="Подрядчики" />
 										<div class="flex items-center space-x-3">
 											<div class="w-80">
-												<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Подрядчики..." />
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Подрядчики..."
+												/>
 											</div>
 											<!-- Add Button -->
 											<AddButton onclick={handleAddCompany} disabled={isActionLoading} />

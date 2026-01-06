@@ -81,6 +81,9 @@
 
 	// Computed filteredContracts reactive statement
 	let filteredContracts = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		// Filter out any undefined or null contracts first
 		let filtered = localContracts.filter((contract) => contract != null);
 
@@ -113,6 +116,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredContracts.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredContracts.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search handler function
@@ -347,7 +360,7 @@
 	// Handle initial load
 	onMount(async () => {
 		console.log('🚀 Contracts page onMount called');
-		
+
 		if (loadError) {
 			addErrorToast(loadError.message, { duration: 0 });
 		}
@@ -355,7 +368,9 @@
 		// Always load statuses
 		try {
 			const [paymentStatuses, statuses] = await Promise.all([
-				partnerPaymentStatuses.length === 0 ? getPartnerPaymentStatuses() : Promise.resolve(partnerPaymentStatuses),
+				partnerPaymentStatuses.length === 0
+					? getPartnerPaymentStatuses()
+					: Promise.resolve(partnerPaymentStatuses),
 				contractStatuses.length === 0 ? getContractStatuses() : Promise.resolve(contractStatuses)
 			]);
 			partnerPaymentStatuses = paymentStatuses;
@@ -414,26 +429,31 @@
 			{#if isLoading || (isRefreshing && localContracts.length === 0)}
 				<TableSkeleton columns={10} />
 			{:else}
-
 				<!-- Skip link for keyboard navigation -->
 				<a
 					href="#main-content"
-					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
 				>
 					Перейти к основному контенту
 				</a>
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
+						<div class="mx-auto">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with H1, Search and Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+								>
 									<PageTitle title="Договора" />
 									<div class="flex items-center space-x-3">
 										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Договора..." />
+											<SearchBar
+												bind:value={searchTerm}
+												onSearch={handleSearch}
+												placeholder="Поиск по таблице Договора..."
+											/>
 										</div>
 										<!-- Add Button -->
 										<AddButton onclick={handleAddContract} disabled={isActionLoading} />
@@ -479,7 +499,7 @@
 															type="button"
 															onclick={refreshData}
 															disabled={isRefreshing}
-															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
 														>
 															{isRefreshing ? 'Retrying...' : 'Retry'}
 														</button>

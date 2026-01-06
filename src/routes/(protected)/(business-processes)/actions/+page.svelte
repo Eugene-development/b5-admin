@@ -6,7 +6,14 @@
 	import ActionEditModal from '$lib/components/business-processes/actions/ActionEditModal.svelte';
 	import ActionsTableSkeleton from '$lib/components/business-processes/actions/ActionsTableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
-	import { ErrorBoundary, ConfirmationModal, RefreshButton, AddButton, SearchBar, PageTitle } from '$lib';
+	import {
+		ErrorBoundary,
+		ConfirmationModal,
+		RefreshButton,
+		AddButton,
+		SearchBar,
+		PageTitle
+	} from '$lib';
 	import TablePageLayout from '$lib/components/common/TablePageLayout.svelte';
 	import {
 		toasts,
@@ -116,7 +123,9 @@
 				async () => {
 					if (type === 'delete') {
 						await deleteAction(action.id);
-						await invalidate(() => true);
+						// Remove from local state
+						allActions = allActions.filter((a) => a.id !== action.id);
+						updateCounter++;
 						addSuccessToast(`Акция "${action.action_name}" успешно удалена.`);
 					}
 				},
@@ -229,6 +238,16 @@
 		return filteredActions.slice(startIndex, endIndex);
 	});
 
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredActions.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
+	});
+
 	function handleSearch(term) {
 		searchTerm = term;
 		hasSearched = searchTerm.trim().length > 0;
@@ -332,11 +351,17 @@
 							<div class="mx-auto">
 								<main id="main-content" aria-labelledby="page-title">
 									<!-- Header with H1, Search and Refresh Button -->
-									<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
 										<PageTitle title="Акции" />
 										<div class="flex items-center space-x-3">
 											<div class="w-80">
-												<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Акции..." />
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Акции..."
+												/>
 											</div>
 											<!-- Add Action Button -->
 											<AddButton onclick={handleAddAction} disabled={isActionLoading} />

@@ -84,6 +84,9 @@
 
 	// Computed filteredProjects reactive statement
 	let filteredProjects = $derived.by(() => {
+		// Explicitly depend on updateCounter to ensure reactivity
+		updateCounter;
+
 		let filtered = localProjects;
 
 		// Apply search filter
@@ -137,6 +140,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredProjects.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredProjects.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Reset to first page when filters change
@@ -514,142 +527,147 @@
 				{#if isRefreshing && localProjects.length === 0}
 					<TableSkeleton columns={8} />
 				{:else}
+					<!-- Update local state only once when data arrives -->
+					{#if localProjects.length === 0 && processedProjects.length > 0}
+						{((localProjects = processedProjects), '')}
+					{/if}
 
-				<!-- Update local state only once when data arrives -->
-				{#if localProjects.length === 0 && processedProjects.length > 0}
-					{((localProjects = processedProjects), '')}
-				{/if}
+					<!-- Set load error if present -->
+					{#if projectsData.error && !loadError}
+						{((loadError = projectsData), '')}
+					{/if}
 
-				<!-- Set load error if present -->
-				{#if projectsData.error && !loadError}
-					{((loadError = projectsData), '')}
-				{/if}
+					<!-- Skip link for keyboard navigation -->
+					<a
+						href="#main-content"
+						class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+					>
+						Перейти к основному контенту
+					</a>
 
-				<!-- Skip link for keyboard navigation -->
-				<a
-					href="#main-content"
-					class="sr-only z-50 rounded-md bg-indigo-600 px-4 py-2 text-white focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-				>
-					Перейти к основному контенту
-				</a>
-
-				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
-					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
-							<!-- Page landmark -->
-							<main id="main-content" aria-labelledby="page-title">
-								<!-- Header with H1, Search and Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-									<PageTitle title="Проекты" />
-									<div class="flex items-center space-x-3">
-										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Проекты..." />
-										</div>
-										<!-- Refresh Button -->
-										<RefreshButton
-											{isRefreshing}
-											onclick={(event) => {
-												event.stopPropagation();
-												refreshData();
-											}}
-										/>
-									</div>
-								</div>
-
-								<!-- Load Error Banner -->
-								{#if loadError && loadError.canRetry}
-									<div class="mb-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
-										<div class="flex">
-											<div class="flex-shrink-0">
-												<svg
-													class="h-5 w-5 text-yellow-400"
-													viewBox="0 0 20 20"
-													fill="currentColor"
-													aria-hidden="true"
-												>
-													<path
-														fill-rule="evenodd"
-														d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
-														clip-rule="evenodd"
-													/>
-												</svg>
+					<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+						<div class="px-4 py-7 sm:px-6 lg:px-7">
+							<div class="mx-auto">
+								<!-- Page landmark -->
+								<main id="main-content" aria-labelledby="page-title">
+									<!-- Header with H1, Search and Refresh Button -->
+									<div
+										class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+									>
+										<PageTitle title="Проекты" />
+										<div class="flex items-center space-x-3">
+											<div class="w-80">
+												<SearchBar
+													bind:value={searchTerm}
+													onSearch={handleSearch}
+													placeholder="Поиск по таблице Проекты..."
+												/>
 											</div>
-											<div class="ml-3">
-												<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-													Ошибка загрузки данных
-												</h3>
-												<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
-													<p>{loadError.message}</p>
+											<!-- Refresh Button -->
+											<RefreshButton
+												{isRefreshing}
+												onclick={(event) => {
+													event.stopPropagation();
+													refreshData();
+												}}
+											/>
+										</div>
+									</div>
+
+									<!-- Load Error Banner -->
+									{#if loadError && loadError.canRetry}
+										<div class="mb-4 rounded-md bg-yellow-50 p-4 dark:bg-yellow-900/20">
+											<div class="flex">
+												<div class="flex-shrink-0">
+													<svg
+														class="h-5 w-5 text-yellow-400"
+														viewBox="0 0 20 20"
+														fill="currentColor"
+														aria-hidden="true"
+													>
+														<path
+															fill-rule="evenodd"
+															d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"
+															clip-rule="evenodd"
+														/>
+													</svg>
 												</div>
-												<div class="mt-4">
-													<div class="-mx-2 -my-1.5 flex">
-														<button
-															type="button"
-															onclick={refreshData}
-															disabled={isRefreshing}
-															class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 focus:outline-none disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
-														>
-															{isRefreshing ? 'Retrying...' : 'Retry'}
-														</button>
+												<div class="ml-3">
+													<h3 class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+														Ошибка загрузки данных
+													</h3>
+													<div class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+														<p>{loadError.message}</p>
+													</div>
+													<div class="mt-4">
+														<div class="-mx-2 -my-1.5 flex">
+															<button
+																type="button"
+																onclick={refreshData}
+																disabled={isRefreshing}
+																class="rounded-md bg-yellow-50 px-2 py-1.5 text-sm font-medium text-yellow-800 hover:bg-yellow-100 focus:outline-none focus:ring-2 focus:ring-yellow-600 focus:ring-offset-2 focus:ring-offset-yellow-50 disabled:opacity-50 dark:bg-yellow-900/20 dark:text-yellow-200 dark:hover:bg-yellow-900/40"
+															>
+																{isRefreshing ? 'Retrying...' : 'Retry'}
+															</button>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								{/if}
+									{/if}
 
-								<!-- Results summary -->
-								{#if searchTerm.trim()}
-									<div
-										class="mt-4 text-sm text-gray-600 dark:text-gray-400"
-										role="status"
-										aria-live="polite"
-										aria-atomic="true"
-									>
-										{#if filteredProjects.length === 0}
-											Проекты не найдены по запросу "{searchTerm}"
-										{:else}
-											Найдено {filteredProjects.length} проект{filteredProjects.length === 1
-												? ''
-												: filteredProjects.length < 5
-													? 'а'
-													: 'ов'} по запросу "{searchTerm}"
-										{/if}
-									</div>
-								{/if}
+									<!-- Results summary -->
+									{#if searchTerm.trim()}
+										<div
+											class="mt-4 text-sm text-gray-600 dark:text-gray-400"
+											role="status"
+											aria-live="polite"
+											aria-atomic="true"
+										>
+											{#if filteredProjects.length === 0}
+												Проекты не найдены по запросу "{searchTerm}"
+											{:else}
+												Найдено {filteredProjects.length} проект{filteredProjects.length === 1
+													? ''
+													: filteredProjects.length < 5
+														? 'а'
+														: 'ов'} по запросу "{searchTerm}"
+											{/if}
+										</div>
+									{/if}
 
-								<!-- Projects Table -->
-								<div class="mt-4">
-									<ProjectsTable
-										projects={paginatedProjects}
-										{projectStatuses}
-										isLoading={isActionLoading}
-										onEditProject={handleEditProject}
-										onDeleteProject={handleDeleteProject}
-										onViewProject={handleViewProject}
-										onAcceptProject={handleAcceptProject}
-										onStatusChange={handleStatusChange}
-										{updateCounter}
-										{searchTerm}
-										hasSearched={searchTerm.trim().length > 0}
-										currentUserId={authState.user?.id}
-										{sortColumn}
-										{sortDirection}
-										onSort={handleSort}
+									<!-- Projects Table -->
+									<div class="mt-4">
+										<ProjectsTable
+											projects={paginatedProjects}
+											{projectStatuses}
+											isLoading={isActionLoading}
+											onEditProject={handleEditProject}
+											onDeleteProject={handleDeleteProject}
+											onViewProject={handleViewProject}
+											onAcceptProject={handleAcceptProject}
+											onStatusChange={handleStatusChange}
+											{updateCounter}
+											{searchTerm}
+											hasSearched={searchTerm.trim().length > 0}
+											currentUserId={authState.user?.id}
+											{sortColumn}
+											{sortDirection}
+											onSort={handleSort}
+										/>
+									</div>
+
+									<!-- Pagination -->
+									<Pagination
+										bind:currentPage
+										totalItems={filteredProjects.length}
+										{itemsPerPage}
+										filteredFrom={searchTerm.trim() ? localProjects.length : null}
 									/>
-								</div>
-
-								<!-- Pagination -->
-								<Pagination
-									bind:currentPage
-									totalItems={filteredProjects.length}
-									{itemsPerPage}
-									filteredFrom={searchTerm.trim() ? localProjects.length : null}
-								/>
-							</main>
+								</main>
+							</div>
 						</div>
 					</div>
-				</div>
 				{/if}
 			{:catch error}
 				<!-- Critical error state -->

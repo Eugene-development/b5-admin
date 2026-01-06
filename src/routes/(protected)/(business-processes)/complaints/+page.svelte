@@ -3,7 +3,15 @@
 	import ComplaintAddModal from '$lib/components/business-processes/complaints/ComplaintAddModal.svelte';
 	import ComplaintEditModal from '$lib/components/business-processes/complaints/ComplaintEditModal.svelte';
 	import ComplaintViewModal from '$lib/components/business-processes/complaints/ComplaintViewModal.svelte';
-	import { ConfirmationModal, ErrorBoundary, TableSkeleton, RefreshButton, AddButton, SearchBar, PageTitle } from '$lib';
+	import {
+		ConfirmationModal,
+		ErrorBoundary,
+		TableSkeleton,
+		RefreshButton,
+		AddButton,
+		SearchBar,
+		PageTitle
+	} from '$lib';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import {
 		addSuccessToast,
@@ -105,6 +113,16 @@
 		const startIndex = (currentPage - 1) * itemsPerPage;
 		const endIndex = startIndex + itemsPerPage;
 		return filteredComplaints.slice(startIndex, endIndex);
+	});
+
+	// Calculate total pages
+	let totalPages = $derived(Math.ceil(filteredComplaints.length / itemsPerPage));
+
+	// Auto-correct currentPage if it exceeds total pages after deletion
+	$effect(() => {
+		if (totalPages > 0 && currentPage > totalPages) {
+			currentPage = totalPages;
+		}
 	});
 
 	// Search handler function
@@ -345,15 +363,21 @@
 
 				<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 					<div class="px-4 py-7 sm:px-6 lg:px-7">
-						<div class="mx-auto ">
+						<div class="mx-auto">
 							<!-- Page landmark -->
 							<main id="main-content" aria-labelledby="page-title">
 								<!-- Header with H1, Search and Refresh Button -->
-								<div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+								<div
+									class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0"
+								>
 									<PageTitle title="Рекламации" />
 									<div class="flex items-center space-x-3">
 										<div class="w-80">
-											<SearchBar bind:value={searchTerm} onSearch={handleSearch} placeholder="Поиск по таблице Рекламации..." />
+											<SearchBar
+												bind:value={searchTerm}
+												onSearch={handleSearch}
+												placeholder="Поиск по таблице Рекламации..."
+											/>
 										</div>
 										<!-- Add Button -->
 										<AddButton
