@@ -47,24 +47,22 @@
 	function getCurator(bonus) {
 		const sourceEntity = getSourceEntity(bonus);
 		const project = sourceEntity?.project;
-		
+
 		// First try to get from curator relationship
 		if (project?.curator && project.curator.length > 0) {
 			return project.curator[0];
 		}
-		
+
 		// Fallback: find curator in projectUsers
 		if (project?.projectUsers && project.projectUsers.length > 0) {
-			const curatorUser = project.projectUsers.find(pu => pu.role === 'curator');
+			const curatorUser = project.projectUsers.find((pu) => pu.role === 'curator');
 			if (curatorUser?.user) {
 				return curatorUser.user;
 			}
 		}
-		
+
 		return null;
 	}
-
-
 
 	// Get curator bonus from source entity
 	function getCuratorBonus(bonus) {
@@ -78,17 +76,17 @@
 		if (bonus.source_type === 'order') {
 			return true;
 		}
-		
+
 		// Для договоров показываем только если договор активен И статус: Заключён, Выполнен, Рекламация
 		if (bonus.source_type === 'contract') {
 			const contract = bonus.contract;
 			const isActive = contract?.is_active === true;
 			const contractStatus = contract?.status?.slug;
 			const allowedStatuses = ['signed', 'completed', 'claim'];
-			
+
 			return isActive && allowedStatuses.includes(contractStatus);
 		}
-		
+
 		return true;
 	}
 
@@ -98,13 +96,13 @@
 		if (bonus.source_type === 'order') {
 			return true;
 		}
-		
+
 		// Для договоров - показываем при статусах "signed" (Заключён) или "completed" (Выполнен)
 		if (bonus.source_type === 'contract') {
 			const contractStatus = bonus.contract?.status?.slug;
 			return contractStatus === 'signed' || contractStatus === 'completed';
 		}
-		
+
 		return false;
 	}
 
@@ -133,38 +131,70 @@
 	const tableId = `finances-table-${Math.random().toString(36).substr(2, 9)}`;
 </script>
 
-<div class="ring-opacity-5 hidden w-full overflow-x-auto shadow ring-1 ring-black md:block md:rounded-lg">
+<div
+	class="hidden w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg"
+>
 	<table id={tableId} class="min-w-full divide-y divide-gray-300 dark:divide-gray-700">
 		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
-				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="whitespace-nowrap px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					№
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					{sourceType === 'contract' ? 'Договор' : sourceType === 'order' ? 'Заказ' : 'Источник'}
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Проект
 				</th>
-				<th scope="col" class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Агент/Куратор
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="whitespace-nowrap px-3 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Тип
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="whitespace-nowrap px-3 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Бонус
 				</th>
-				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="whitespace-nowrap px-1 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Начислено
 				</th>
-				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Доступно
+				<th
+					scope="col"
+					class="whitespace-nowrap px-1 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
+					Оплачено
 				</th>
-				<th scope="col" class="px-1 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
-					Выплачено
+				<th
+					scope="col"
+					class="whitespace-nowrap px-1 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
+					Погашено
 				</th>
-				<th scope="col" class="px-3 py-4 text-center text-sm font-medium tracking-wide whitespace-nowrap text-gray-500 dark:text-gray-400">
+				<th
+					scope="col"
+					class="whitespace-nowrap px-3 py-4 text-center text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
+				>
 					Инкогнито
 				</th>
 			</tr>
@@ -175,7 +205,9 @@
 					<td colspan="11" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
-							description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
+							description={searchTerm
+								? `По запросу "${searchTerm}" записи не найдены.`
+								: 'Данные о бонусах отсутствуют.'}
 						/>
 					</td>
 				</tr>
@@ -186,7 +218,10 @@
 					{@const curatorBonus = getCuratorBonus(bonus)}
 					<!-- Agent Row -->
 					<tr class="border-b-0">
-						<td class="px-3 py-2 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100" rowspan="2">
+						<td
+							class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
+							rowspan="2"
+						>
 							{index + 1}
 						</td>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
@@ -196,14 +231,22 @@
 							{bonus.project_name || '—'}
 						</td>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div title={bonus.agent?.phones && bonus.agent.phones.length > 0 ? `Телефон: ${bonus.agent.phones[0].value}` : ''}>
+							<div
+								title={bonus.agent?.phones && bonus.agent.phones.length > 0
+									? `Телефон: ${bonus.agent.phones[0].value}`
+									: ''}
+							>
 								<div class="font-medium">{bonus.agent?.name || '—'}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{bonus.agent?.email || ''}</div>
+								<div class="text-xs text-gray-500 dark:text-gray-400">
+									{bonus.agent?.email || ''}
+								</div>
 							</div>
 						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="whitespace-nowrap px-3 py-2 text-center text-sm" rowspan="2">
 							{#if bonus.bonus_type === 'referral'}
-								<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+								<span
+									class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+								>
 									Реферальный
 								</span>
 								{#if bonus.referralUser}
@@ -212,43 +255,50 @@
 									</div>
 								{/if}
 							{:else}
-								<span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+								<span
+									class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+								>
 									Агентский
 								</span>
 							{/if}
 						</td>
-						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td
+							class="whitespace-nowrap px-3 py-2 text-center text-sm font-semibold text-gray-900 dark:text-gray-100"
+						>
 							{#if shouldShowBonusAmount(bonus)}
 								{formatCurrency(bonus.commission_amount)}
 							{:else}
 								—
 							{/if}
 						</td>
-						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
 							{#if shouldShowAccruedDate(bonus)}
 								<DateIndicator date={bonus.accrued_at} />
 							{:else}
 								<DateIndicator date={null} />
 							{/if}
 						</td>
-						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
 							<PartnerPaymentStatusIndicator
 								{sourceEntity}
 								sourceType={bonus.source_type}
 								{partnerPaymentStatuses}
-								onStatusChange={(result) => onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
+								onStatusChange={(result) =>
+									onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
 							/>
 						</td>
-						<td class="px-1 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
 							<BonusPaymentStatusIndicator
 								{bonus}
 								{bonusStatuses}
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
-						<td class="px-3 py-2 text-center text-sm whitespace-nowrap" rowspan="2">
+						<td class="whitespace-nowrap px-3 py-2 text-center text-sm" rowspan="2">
 							{#if isProjectIncognito(bonus)}
-								<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+								<span
+									class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+								>
 									Да
 								</span>
 							{:else}
@@ -259,12 +309,18 @@
 					<!-- Curator Row -->
 					<tr>
 						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div title={curator?.phones && curator.phones.length > 0 ? `Телефон: ${curator.phones[0].value}` : ''}>
+							<div
+								title={curator?.phones && curator.phones.length > 0
+									? `Телефон: ${curator.phones[0].value}`
+									: ''}
+							>
 								<div class="font-medium">{curator?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
 							</div>
 						</td>
-						<td class="px-3 py-2 text-center text-sm font-semibold whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td
+							class="whitespace-nowrap px-3 py-2 text-center text-sm font-semibold text-gray-900 dark:text-gray-100"
+						>
 							{#if shouldShowBonusAmount(bonus) && curatorBonus}
 								{formatCurrency(curatorBonus)}
 							{:else}
@@ -284,7 +340,9 @@
 		<div class="px-3 py-6">
 			<EmptyState
 				title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
-				description={searchTerm ? `По запросу "${searchTerm}" записи не найдены.` : 'Данные о бонусах отсутствуют.'}
+				description={searchTerm
+					? `По запросу "${searchTerm}" записи не найдены.`
+					: 'Данные о бонусах отсутствуют.'}
 			/>
 		</div>
 	{:else}
@@ -292,17 +350,22 @@
 			{#each bonuses as bonus, index (bonus.id)}
 				{@const curator = getCurator(bonus)}
 				{@const curatorBonus = getCuratorBonus(bonus)}
-				<div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+				<div
+					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+				>
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
 							<h3 class="text-sm font-medium text-gray-900 dark:text-white">
 								{getSourceNumber(bonus)}
 							</h3>
 							<p class="text-xs text-gray-500 dark:text-gray-400">
-								{bonus.source_type === 'contract' ? 'Договор' : 'Заказ'} • {bonus.project_name || 'Без проекта'}
+								{bonus.source_type === 'contract' ? 'Договор' : 'Заказ'} • {bonus.project_name ||
+									'Без проекта'}
 							</p>
 						</div>
-						<span class="ml-2 inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200">
+						<span
+							class="ml-2 inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
+						>
 							№ {index + 1}
 						</span>
 					</div>
@@ -316,11 +379,15 @@
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Тип бонуса</dt>
 							<dd>
 								{#if bonus.bonus_type === 'referral'}
-									<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+									<span
+										class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+									>
 										Реферальный
 									</span>
 								{:else}
-									<span class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+									<span
+										class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+									>
 										Агентский
 									</span>
 								{/if}
@@ -364,7 +431,9 @@
 							<dt class="text-xs text-gray-500 dark:text-gray-400">Инкогнито</dt>
 							<dd class="font-medium text-gray-900 dark:text-white">
 								{#if isProjectIncognito(bonus)}
-									<span class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300">
+									<span
+										class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+									>
 										Да
 									</span>
 								{:else}
