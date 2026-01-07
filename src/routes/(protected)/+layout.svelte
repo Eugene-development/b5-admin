@@ -629,6 +629,16 @@
 										<span class="truncate">Бонусы</span>
 									</button>
 								</li>
+								<li>
+									<button
+										type="button"
+										class={getNavClassesWithSpan('/payments')}
+										onclick={() => handleMobileNavigation('/payments')}
+									>
+										<span class={getSpanIconClasses('/payments')}>Вп</span>
+										<span class="truncate">Выплаты</span>
+									</button>
+								</li>
 							</ul>
 						{/if}
 					</li>
@@ -1044,6 +1054,12 @@
 								<a href="/bonuses" class={getNavClassesWithSpan('/bonuses')}>
 									<span class={getSpanIconClasses('/bonuses')}>Бн</span>
 									<span class="truncate">Бонусы</span>
+								</a>
+							</li>
+							<li>
+								<a href="/payments" class={getNavClassesWithSpan('/payments')}>
+									<span class={getSpanIconClasses('/payments')}>Вп</span>
+									<span class="truncate">Выплаты</span>
 								</a>
 							</li>
 						</ul>

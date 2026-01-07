@@ -689,6 +689,41 @@
 							<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление бонусами</p>
 						</div>
 					</a>
+
+					<a
+						href="/payments"
+						class="group relative flex min-h-[100px] items-center gap-4 overflow-hidden rounded-xl border border-teal-200/50 bg-gradient-to-br from-teal-50 via-white to-cyan-50 p-6 shadow-lg transition-all duration-300 focus-within:ring-2 focus-within:ring-teal-500 focus-within:ring-offset-2 hover:scale-[1.02] hover:border-teal-300 hover:shadow-xl dark:border-teal-900/30 dark:from-teal-950/20 dark:via-gray-800 dark:to-cyan-950/20 dark:hover:border-teal-700"
+					>
+						<div
+							class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-teal-400/10 to-cyan-400/10 blur-2xl transition-all duration-300 group-hover:scale-150"
+						></div>
+						<span
+							class="relative inline-flex flex-shrink-0 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-400 p-3 text-white shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-teal-400/50"
+						>
+							<svg
+								class="h-6 w-6"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"
+								/>
+							</svg>
+						</span>
+						<div class="relative">
+							<h3
+								class="text-base font-semibold leading-6 text-gray-900 transition-colors group-hover:text-teal-600 dark:text-white dark:group-hover:text-teal-400"
+							>
+								<span class="absolute inset-0" aria-hidden="true"></span>
+								Выплаты
+							</h3>
+							<p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Управление выплатами</p>
+						</div>
+					</a>
 				</div>
 			</div>
 		</div>
