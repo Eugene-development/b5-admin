@@ -625,7 +625,7 @@
 										class={getNavClassesWithSpan('/bonuses')}
 										onclick={() => handleMobileNavigation('/bonuses')}
 									>
-										<span class={getSpanIconClasses('/bonuses')}>Фн</span>
+										<span class={getSpanIconClasses('/bonuses')}>Бн</span>
 										<span class="truncate">Бонусы</span>
 									</button>
 								</li>
@@ -1042,7 +1042,7 @@
 						<ul role="list" class="mt-2 space-y-1">
 							<li>
 								<a href="/bonuses" class={getNavClassesWithSpan('/bonuses')}>
-									<span class={getSpanIconClasses('/bonuses')}>Фн</span>
+									<span class={getSpanIconClasses('/bonuses')}>Бн</span>
 									<span class="truncate">Бонусы</span>
 								</a>
 							</li>
