@@ -62,8 +62,6 @@
 		return sorted;
 	});
 
-
-
 	// Format percentage
 	function formatPercentage(value) {
 		if (value === null || value === undefined) return '—';
@@ -115,7 +113,7 @@
 
 <!-- Desktop Table View -->
 <div
-	class="ring-opacity-5 hidden w-full overflow-x-auto shadow ring-1 ring-black md:block md:rounded-lg"
+	class="hidden w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg"
 >
 	<table
 		id={tableId}
@@ -133,25 +131,25 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-6 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					Договор
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					Проект
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+					class="cursor-pointer px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
 					onclick={() => handleSort('company')}
 					role="button"
 					tabindex="0"
@@ -171,19 +169,26 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					Дата
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-right text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					Сумма
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400 cursor-pointer hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
+					class="whitespace-nowrap px-6 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 100px;"
+				>
+					Метки
+				</th>
+				<th
+					scope="col"
+					class="cursor-pointer whitespace-nowrap px-6 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
 					style="min-width: 180px; width: 180px;"
 					onclick={() => handleSort('status')}
 					role="button"
@@ -204,7 +209,7 @@
 				</th>
 				<th
 					scope="col"
-					class="px-6 py-4 text-right text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-6 py-4 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 				>
 					<span class="sr-only">Действия</span>
 				</th>
@@ -236,7 +241,7 @@
 							}
 						}}
 					>
-						<td class="px-6 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-gray-100">
+						<td class="whitespace-nowrap px-6 py-5 text-sm text-gray-900 dark:text-gray-100">
 							{index + 1}
 						</td>
 						<td class="px-6 py-5 text-sm text-gray-900 dark:text-gray-100">
@@ -252,40 +257,69 @@
 								{contract.company?.name || 'Не указана'}
 							</div>
 						</td>
-						<td class="px-6 py-5 text-sm whitespace-nowrap">
+						<td class="whitespace-nowrap px-6 py-5 text-sm">
 							<DateBadge date={contract.contract_date} />
 						</td>
-						<td class="px-6 py-5 text-right text-sm font-semibold whitespace-nowrap text-violet-600 dark:text-violet-400">
+						<td
+							class="whitespace-nowrap px-6 py-5 text-left text-sm font-semibold text-violet-600 dark:text-violet-400"
+						>
 							{formatCurrency(contract.contract_amount)}
 						</td>
-						<td class="px-6 py-5 text-center text-sm whitespace-nowrap">
+						<td class="whitespace-nowrap px-6 py-5 text-center text-sm">
+							<div class="flex items-center justify-center gap-2">
+								{#if contract.is_active}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-green-500"
+										title="Активен"
+										aria-label="Активен"
+									></span>
+								{:else}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-gray-500"
+										title="Неактивен"
+										aria-label="Неактивен"
+									></span>
+								{/if}
+							</div>
+						</td>
+						<td class="whitespace-nowrap px-6 py-5 text-center text-sm">
 							<ContractStatusBadge
 								{contract}
 								{contractStatuses}
-								onStatusChange={(result) => onContractStatusChange && onContractStatusChange(contract.id, result)}
+								onStatusChange={(result) =>
+									onContractStatusChange && onContractStatusChange(contract.id, result)}
 							/>
 						</td>
-						<td class="px-6 py-5 text-right text-sm whitespace-nowrap">
+						<td class="whitespace-nowrap px-6 py-5 text-right text-sm">
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div class="flex items-center justify-end gap-2" onclick={(e) => e.stopPropagation()}>
 								<ActionButton
 									variant="view"
-									onclick={(e) => { e.stopPropagation(); onViewContract(contract); }}
+									onclick={(e) => {
+										e.stopPropagation();
+										onViewContract(contract);
+									}}
 									ariaLabel="Просмотреть договор"
 									title="Просмотреть"
 								/>
 								<ActionButton
 									variant="edit"
-									onclick={(e) => { e.stopPropagation(); onEditContract(contract); }}
+									onclick={(e) => {
+										e.stopPropagation();
+										onEditContract(contract);
+									}}
 									ariaLabel="Редактировать договор"
 									title="Редактировать"
 								/>
 								<ActionButton
 									variant="delete"
-									onclick={(e) => { e.stopPropagation(); onDeleteContract(contract); }}
+									onclick={(e) => {
+										e.stopPropagation();
+										onDeleteContract(contract);
+									}}
 									disabled={isLoading}
-									isLoading={isLoading}
+									{isLoading}
 									ariaLabel="Удалить договор"
 									title="Удалить"
 								/>
@@ -319,10 +353,10 @@
 					<!-- Contract Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
+							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
 								{contract.contract_number || 'Без номера'}
 							</h3>
-							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
+							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
 								{contract.company?.name || 'Компания не указана'}
 							</p>
 						</div>
@@ -339,7 +373,7 @@
 					<dl class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Проект
 							</dt>
@@ -349,7 +383,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Дата
 							</dt>
@@ -359,7 +393,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Статус
 							</dt>
@@ -367,13 +401,14 @@
 								<ContractStatusBadge
 									{contract}
 									{contractStatuses}
-									onStatusChange={(result) => onContractStatusChange && onContractStatusChange(contract.id, result)}
+									onStatusChange={(result) =>
+										onContractStatusChange && onContractStatusChange(contract.id, result)}
 								/>
 							</dd>
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Сумма
 							</dt>
@@ -384,7 +419,7 @@
 						{#if contract.project?.region}
 							<div class="col-span-2">
 								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
 									Регион
 								</dt>
@@ -396,7 +431,7 @@
 						{#if contract.company?.inn}
 							<div class="col-span-2">
 								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
 									ИНН
 								</dt>
@@ -427,7 +462,7 @@
 							variant="delete"
 							onclick={() => onDeleteContract(contract)}
 							disabled={isLoading}
-							isLoading={isLoading}
+							{isLoading}
 							ariaLabel="Удалить контракт"
 							title="Удалить"
 						/>

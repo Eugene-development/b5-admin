@@ -229,7 +229,7 @@
 				</th>
 				<th
 					scope="col"
-					class="whitespace-nowrap px-3 py-4 text-right text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 120px;"
 				>
 					СУММА
@@ -337,7 +337,7 @@
 							</div>
 						</td>
 						<td
-							class="whitespace-nowrap px-3 py-3 text-right align-middle text-sm font-semibold text-violet-600 dark:text-violet-400"
+							class="whitespace-nowrap px-3 py-3 text-left align-middle text-sm font-semibold text-violet-600 dark:text-violet-400"
 							role="cell"
 						>
 							{formatCurrency(calculateOrderTotal(order))}
@@ -346,7 +346,7 @@
 							class="whitespace-nowrap px-3 py-3 align-middle text-sm text-gray-900 dark:text-white"
 							role="cell"
 						>
-							<div class="flex items-center justify-center gap-2 pr-3">
+							<div class="flex items-center justify-center gap-2">
 								{#if order.is_urgent || order.urgency === 'high'}
 									<span
 										class="inline-block h-6 w-6 cursor-help rounded bg-red-500"

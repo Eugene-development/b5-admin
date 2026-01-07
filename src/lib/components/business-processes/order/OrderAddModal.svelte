@@ -19,7 +19,7 @@
 		order_amount: '',
 		agent_percentage: '5',
 		curator_percentage: '5',
-		is_active: false,
+		is_active: true,
 		is_urgent: false
 	});
 
@@ -50,7 +50,7 @@
 				order_amount: '',
 				agent_percentage: '5',
 				curator_percentage: '5',
-				is_active: false,
+				is_active: true,
 				is_urgent: false
 			};
 			positions = [];
