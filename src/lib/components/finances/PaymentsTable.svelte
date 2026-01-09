@@ -6,6 +6,7 @@
 	 */
 	import EmptyState from '$lib/components/common/EmptyState.svelte';
 	import PaymentStatusBadge from './PaymentStatusBadge.svelte';
+	import PaymentViewModal from './PaymentViewModal.svelte';
 
 	let {
 		requests = [],
@@ -17,15 +18,17 @@
 		hasSearched = false
 	} = $props();
 
+	// Modal state
+	let isViewModalOpen = $state(false);
+	let selectedPayment = $state(null);
+
 	// Format currency
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
-		return (
-			new Intl.NumberFormat('ru-RU', {
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0
-			}).format(amount) + ' ₽'
-		);
+		return new Intl.NumberFormat('ru-RU', {
+			minimumFractionDigits: 0,
+			maximumFractionDigits: 0
+		}).format(amount);
 	}
 
 	// Format date
@@ -80,9 +83,24 @@
 		}
 	}
 
+	// Open view modal
+	function openViewModal(request) {
+		selectedPayment = request;
+		isViewModalOpen = true;
+	}
+
+	// Close view modal
+	function closeViewModal() {
+		isViewModalOpen = false;
+		selectedPayment = null;
+	}
+
 	// Generate unique table ID for accessibility
 	const tableId = `payments-table-${Math.random().toString(36).substr(2, 9)}`;
 </script>
+
+<!-- View Modal -->
+<PaymentViewModal isOpen={isViewModalOpen} payment={selectedPayment} onClose={closeViewModal} />
 
 <!-- Desktop Table View -->
 <div
@@ -91,7 +109,7 @@
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
-		style="min-width: 1200px;"
+		style="min-width: 1000px;"
 	>
 		<thead class="bg-gray-100 dark:bg-gray-900">
 			<tr>
@@ -153,10 +171,10 @@
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-					style="min-width: 200px;"
+					class="px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 80px; width: 80px;"
 				>
-					КОММЕНТАРИЙ
+					ДЕЙСТВИЯ
 				</th>
 			</tr>
 		</thead>
@@ -200,10 +218,7 @@
 							{formatCurrency(request.amount)}
 						</td>
 						<td class="whitespace-nowrap px-3 py-3 text-center align-middle text-sm">
-							<span class="inline-flex items-center gap-1">
-								<span>{methodInfo.icon}</span>
-								<span class="text-gray-700 dark:text-gray-300">{methodInfo.name}</span>
-							</span>
+							<span class="text-gray-700 dark:text-gray-300">{methodInfo.name}</span>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white">
 							<div class="max-w-[180px] truncate" title={getPaymentDetails(request)}>
@@ -231,10 +246,35 @@
 						>
 							{formatDate(request.payment_date)}
 						</td>
-						<td class="px-3 py-3 align-middle text-sm text-gray-500 dark:text-gray-400">
-							<div class="max-w-[200px] truncate" title={request.comment || ''}>
-								{request.comment || '—'}
-							</div>
+						<td class="whitespace-nowrap px-3 py-3 text-center align-middle">
+							<button
+								type="button"
+								onclick={() => openViewModal(request)}
+								class="inline-flex items-center rounded-md bg-indigo-50 p-2 text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
+								title="Просмотр"
+								aria-label="Просмотреть заявку"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-5 w-5"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+									/>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+									/>
+								</svg>
+							</button>
 						</td>
 					</tr>
 				{/each}
@@ -270,12 +310,40 @@
 								<p class="text-xs text-gray-500 dark:text-gray-400">{request.agent.email}</p>
 							{/if}
 						</div>
-						<div class="ml-3 flex-shrink-0">
+						<div class="ml-3 flex items-center gap-2">
 							<span
 								class="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-200"
 							>
 								№ {index + 1}
 							</span>
+							<button
+								type="button"
+								onclick={() => openViewModal(request)}
+								class="inline-flex items-center rounded-md bg-indigo-50 p-1.5 text-indigo-600 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50"
+								title="Просмотр"
+								aria-label="Просмотреть заявку"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-4 w-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+									/>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+									/>
+								</svg>
+							</button>
 						</div>
 					</div>
 
@@ -298,7 +366,6 @@
 								Способ
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{methodInfo.icon}
 								{methodInfo.name}
 							</dd>
 						</div>
@@ -332,18 +399,6 @@
 								{formatDate(request.payment_date)}
 							</dd>
 						</div>
-						{#if request.comment}
-							<div class="col-span-2">
-								<dt
-									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
-								>
-									Комментарий
-								</dt>
-								<dd class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-									{request.comment}
-								</dd>
-							</div>
-						{/if}
 						<div class="col-span-2">
 							<dt
 								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"

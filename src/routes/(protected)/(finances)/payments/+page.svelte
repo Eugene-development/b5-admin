@@ -8,22 +8,11 @@
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import { onMount } from 'svelte';
-	import {
-		ErrorBoundary,
-		RefreshButton,
-		SearchBar,
-		PageTitle
-	} from '$lib';
-	import {
-		addSuccessToast,
-		handleApiError
-	} from '$lib/utils/toastStore.js';
+	import { ErrorBoundary, RefreshButton, SearchBar, PageTitle } from '$lib';
+	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { invalidateAll } from '$app/navigation';
-	import {
-		getBonusPaymentRequests,
-		getBonusPaymentStatuses
-	} from '$lib/api/bonusPayments.js';
+	import { getBonusPaymentRequests, getBonusPaymentStatuses } from '$lib/api/bonusPayments.js';
 
 	let { data } = $props();
 	let requests = $state([]);
@@ -36,7 +25,7 @@
 
 	// Pagination state
 	let currentPage = $state(1);
-	const itemsPerPage = 20;
+	const itemsPerPage = 10;
 
 	// Error boundary state
 	let hasError = $state(false);
@@ -176,7 +165,12 @@
 	function handleStatusChange(requestId, result) {
 		requests = requests.map((request) =>
 			request.id === requestId
-				? { ...request, status: result.status, status_id: result.status_id, payment_date: result.payment_date }
+				? {
+						...request,
+						status: result.status,
+						status_id: result.status_id,
+						payment_date: result.payment_date
+					}
 				: request
 		);
 		updateCounter++;
