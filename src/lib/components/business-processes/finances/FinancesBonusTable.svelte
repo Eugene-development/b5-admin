@@ -31,45 +31,6 @@
 		return sourceEntity?.project?.is_incognito === true;
 	}
 
-	// Debug: log first bonus to see structure
-	$effect(() => {
-		if (bonuses.length > 0) {
-			console.log('First bonus structure:', bonuses[0]);
-			const entity = getSourceEntity(bonuses[0]);
-			console.log('Source entity:', entity);
-			console.log('Project:', entity?.project);
-			console.log('Curator:', entity?.project?.curator);
-			console.log('ProjectUsers:', entity?.project?.projectUsers);
-		}
-	});
-
-	// Get curator from project
-	function getCurator(bonus) {
-		const sourceEntity = getSourceEntity(bonus);
-		const project = sourceEntity?.project;
-
-		// First try to get from curator relationship
-		if (project?.curator && project.curator.length > 0) {
-			return project.curator[0];
-		}
-
-		// Fallback: find curator in projectUsers
-		if (project?.projectUsers && project.projectUsers.length > 0) {
-			const curatorUser = project.projectUsers.find((pu) => pu.role === 'curator');
-			if (curatorUser?.user) {
-				return curatorUser.user;
-			}
-		}
-
-		return null;
-	}
-
-	// Get curator bonus from source entity
-	function getCuratorBonus(bonus) {
-		const sourceEntity = getSourceEntity(bonus);
-		return sourceEntity?.curator_bonus;
-	}
-
 	// Проверяет, нужно ли показывать дату начисления для договора
 	function shouldShowAccruedDate(bonus) {
 		// Для заказов всегда показываем дату
@@ -116,9 +77,9 @@
 
 	function getSourceNumber(bonus) {
 		if (bonus.source_type === 'contract') {
-			return bonus.contract?.contract_number || '—';
+			return bonus.contract?.contract_number || bonus.contract_number || '—';
 		}
-		return bonus.order?.order_number || '—';
+		return bonus.order?.order_number || bonus.order_number || '—';
 	}
 
 	function getSourceAmount(bonus) {
@@ -126,6 +87,20 @@
 			return bonus.contract?.contract_amount;
 		}
 		return bonus.order?.order_amount;
+	}
+
+	// Get recipient type badge color
+	function getRecipientTypeBadgeClass(recipientType) {
+		switch (recipientType) {
+			case 'agent':
+				return 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300';
+			case 'curator':
+				return 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300';
+			case 'referrer':
+				return 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300';
+			default:
+				return 'bg-gray-100 text-gray-700 dark:bg-gray-900 dark:text-gray-300';
+		}
 	}
 
 	const tableId = `finances-table-${Math.random().toString(36).substr(2, 9)}`;
@@ -159,7 +134,7 @@
 					scope="col"
 					class="px-3 py-4 text-left text-sm font-medium tracking-wide text-gray-500 dark:text-gray-400"
 				>
-					Агент/Куратор
+					Получатель
 				</th>
 				<th
 					scope="col"
@@ -202,7 +177,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if bonuses.length === 0}
 				<tr>
-					<td colspan="11" class="px-3 py-12 text-center">
+					<td colspan="10" class="px-3 py-12 text-center">
 						<EmptyState
 							title={searchTerm ? 'Записи не найдены' : 'Нет данных'}
 							description={searchTerm
@@ -214,71 +189,63 @@
 			{:else}
 				{#each bonuses as bonus, index (bonus.id)}
 					{@const sourceEntity = getSourceEntity(bonus)}
-					{@const curator = getCurator(bonus)}
-					{@const curatorBonus = getCuratorBonus(bonus)}
-					<!-- Agent Row -->
-					<tr class="border-b-0">
-						<td
-							class="whitespace-nowrap px-3 py-2 text-sm text-gray-900 dark:text-gray-100"
-							rowspan="2"
-						>
+					{@const recipient = bonus.user || bonus.agent}
+					<tr>
+						<td class="whitespace-nowrap px-3 py-3 text-sm text-gray-900 dark:text-gray-100">
 							{index + 1}
 						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
+						<td class="px-3 py-3 text-sm text-gray-900 dark:text-gray-100">
 							<div class="font-medium">{getSourceNumber(bonus)}</div>
 						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100" rowspan="2">
+						<td class="px-3 py-3 text-sm text-gray-900 dark:text-gray-100">
 							{bonus.project_name || '—'}
 						</td>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
+						<td class="px-3 py-3 text-sm text-gray-900 dark:text-gray-100">
 							<div
-								title={bonus.agent?.phones && bonus.agent.phones.length > 0
-									? `Телефон: ${bonus.agent.phones[0].value}`
+								title={recipient?.phones && recipient.phones.length > 0
+									? `Телефон: ${recipient.phones[0].value}`
 									: ''}
 							>
-								<div class="font-medium">{bonus.agent?.name || '—'}</div>
+								<div class="font-medium">{recipient?.name || '—'}</div>
 								<div class="text-xs text-gray-500 dark:text-gray-400">
-									{bonus.agent?.email || ''}
+									{recipient?.email || ''}
 								</div>
 							</div>
 						</td>
-						<td class="whitespace-nowrap px-3 py-2 text-center text-sm" rowspan="2">
-							{#if bonus.bonus_type === 'referral'}
-								<span
-									class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-								>
-									Реферальный
-								</span>
-								{#if bonus.referralUser}
-									<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
-										от {bonus.referralUser.name || 'N/A'}
-									</div>
-								{/if}
-							{:else}
-								<span
-									class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-								>
-									Агентский
-								</span>
+						<td class="whitespace-nowrap px-3 py-3 text-center text-sm">
+							<span
+								class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {getRecipientTypeBadgeClass(bonus.recipient_type)}"
+							>
+								{bonus.recipient_type_label || bonus.recipient_type || '—'}
+							</span>
+							{#if bonus.recipient_type === 'referrer' && bonus.referralUser}
+								<div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+									от {bonus.referralUser.name || 'N/A'}
+								</div>
 							{/if}
 						</td>
 						<td
-							class="whitespace-nowrap px-3 py-2 text-center text-sm font-semibold text-gray-900 dark:text-gray-100"
+							class="whitespace-nowrap px-3 py-3 text-center text-sm font-semibold text-gray-900 dark:text-gray-100"
 						>
 							{#if shouldShowBonusAmount(bonus)}
 								{formatCurrency(bonus.commission_amount)}
+								{#if bonus.percentage}
+									<div class="text-xs font-normal text-gray-500 dark:text-gray-400">
+										{bonus.percentage}%
+									</div>
+								{/if}
 							{:else}
 								—
 							{/if}
 						</td>
-						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-3 text-center text-sm">
 							{#if shouldShowAccruedDate(bonus)}
 								<DateIndicator date={bonus.accrued_at} />
 							{:else}
 								<DateIndicator date={null} />
 							{/if}
 						</td>
-						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-3 text-center text-sm">
 							<PartnerPaymentStatusIndicator
 								{sourceEntity}
 								sourceType={bonus.source_type}
@@ -287,14 +254,14 @@
 									onPartnerPaymentStatusChange && onPartnerPaymentStatusChange(bonus, result)}
 							/>
 						</td>
-						<td class="whitespace-nowrap px-1 py-2 text-center text-sm" rowspan="2">
+						<td class="whitespace-nowrap px-1 py-3 text-center text-sm">
 							<BonusPaymentStatusIndicator
 								{bonus}
 								{bonusStatuses}
 								onStatusChange={(result) => onStatusChange && onStatusChange(bonus.id, result)}
 							/>
 						</td>
-						<td class="whitespace-nowrap px-3 py-2 text-center text-sm" rowspan="2">
+						<td class="whitespace-nowrap px-3 py-3 text-center text-sm">
 							{#if isProjectIncognito(bonus)}
 								<span
 									class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
@@ -303,28 +270,6 @@
 								</span>
 							{:else}
 								<span class="text-gray-400">—</span>
-							{/if}
-						</td>
-					</tr>
-					<!-- Curator Row -->
-					<tr>
-						<td class="px-3 py-2 text-sm text-gray-900 dark:text-gray-100">
-							<div
-								title={curator?.phones && curator.phones.length > 0
-									? `Телефон: ${curator.phones[0].value}`
-									: ''}
-							>
-								<div class="font-medium">{curator?.name || '—'}</div>
-								<div class="text-xs text-gray-500 dark:text-gray-400">{curator?.email || ''}</div>
-							</div>
-						</td>
-						<td
-							class="whitespace-nowrap px-3 py-2 text-center text-sm font-semibold text-gray-900 dark:text-gray-100"
-						>
-							{#if shouldShowBonusAmount(bonus) && curatorBonus}
-								{formatCurrency(curatorBonus)}
-							{:else}
-								—
 							{/if}
 						</td>
 					</tr>
@@ -348,8 +293,7 @@
 	{:else}
 		<div class="space-y-4" role="list">
 			{#each bonuses as bonus, index (bonus.id)}
-				{@const curator = getCurator(bonus)}
-				{@const curatorBonus = getCuratorBonus(bonus)}
+				{@const recipient = bonus.user || bonus.agent}
 				<div
 					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
 				>
@@ -372,46 +316,27 @@
 
 					<dl class="mb-3 grid grid-cols-2 gap-2 text-sm">
 						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Агент</dt>
-							<dd class="font-medium text-gray-900 dark:text-white">{bonus.agent?.name || '—'}</dd>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Получатель</dt>
+							<dd class="font-medium text-gray-900 dark:text-white">{recipient?.name || '—'}</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Тип бонуса</dt>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Тип</dt>
 							<dd>
-								{#if bonus.bonus_type === 'referral'}
-									<span
-										class="inline-flex items-center rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700 dark:bg-purple-900 dark:text-purple-300"
-									>
-										Реферальный
-									</span>
-								{:else}
-									<span
-										class="inline-flex items-center rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-									>
-										Агентский
-									</span>
-								{/if}
+								<span
+									class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {getRecipientTypeBadgeClass(bonus.recipient_type)}"
+								>
+									{bonus.recipient_type_label || bonus.recipient_type || '—'}
+								</span>
 							</dd>
 						</div>
 						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус агента</dt>
+							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус</dt>
 							<dd class="font-semibold text-gray-900 dark:text-white">
 								{#if shouldShowBonusAmount(bonus)}
 									{formatCurrency(bonus.commission_amount)}
-								{:else}
-									—
-								{/if}
-							</dd>
-						</div>
-						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Куратор</dt>
-							<dd class="font-medium text-gray-900 dark:text-white">{curator?.name || '—'}</dd>
-						</div>
-						<div>
-							<dt class="text-xs text-gray-500 dark:text-gray-400">Бонус куратора</dt>
-							<dd class="font-semibold text-gray-900 dark:text-white">
-								{#if shouldShowBonusAmount(bonus) && curatorBonus}
-									{formatCurrency(curatorBonus)}
+									{#if bonus.percentage}
+										<span class="text-xs font-normal text-gray-500">({bonus.percentage}%)</span>
+									{/if}
 								{:else}
 									—
 								{/if}

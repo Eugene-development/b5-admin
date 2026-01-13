@@ -19,16 +19,24 @@ const ADMIN_BONUSES_QUERY = gql`
 	query GetAdminBonuses($filters: AgentBonusFilters) {
 		adminBonuses(filters: $filters) {
 			id
+			user_id
 			agent_id
 			contract_id
 			order_id
 			commission_amount
+			percentage
 			accrued_at
 			available_at
 			paid_at
 			source_type
 			source_amount
 			project_name
+			contract_number
+			order_number
+			recipient_type
+			recipient_type_label
+			bonus_type
+			bonus_type_label
 			status {
 				id
 				code
@@ -40,8 +48,6 @@ const ADMIN_BONUSES_QUERY = gql`
 				contract_amount
 				agent_percentage
 				curator_percentage
-				agent_bonus
-				curator_bonus
 				is_active
 				partner_payment_date
 				status {
@@ -89,8 +95,6 @@ const ADMIN_BONUSES_QUERY = gql`
 				order_amount
 				agent_percentage
 				curator_percentage
-				agent_bonus
-				curator_bonus
 				partner_payment_date
 				partnerPaymentStatus {
 					id
@@ -125,6 +129,15 @@ const ADMIN_BONUSES_QUERY = gql`
 					}
 				}
 			}
+			user {
+				id
+				name
+				email
+				phones {
+					id
+					value
+				}
+			}
 			agent {
 				id
 				name
@@ -146,6 +159,12 @@ const ADMIN_BONUS_STATS_QUERY = gql`
 			total_paid
 			contracts_count
 			orders_count
+			total_referral
+			referral_count
+			total_agent
+			agent_count
+			total_curator
+			curator_count
 		}
 	}
 `;

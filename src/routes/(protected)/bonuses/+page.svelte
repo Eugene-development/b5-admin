@@ -25,7 +25,13 @@
 		total_available: 0,
 		total_paid: 0,
 		contracts_count: 0,
-		orders_count: 0
+		orders_count: 0,
+		total_referral: 0,
+		referral_count: 0,
+		total_agent: 0,
+		agent_count: 0,
+		total_curator: 0,
+		curator_count: 0
 	});
 	let bonusStatuses = $state([]);
 	let partnerPaymentStatuses = $state([]);
@@ -37,7 +43,7 @@
 	// Search and filter state
 	let searchTerm = $state('');
 	let statusFilter = $state('all');
-	let bonusTypeFilter = $state('all');
+	let recipientTypeFilter = $state('all');
 	let sortField = $state('accrued_at');
 	let sortDirection = $state('desc');
 
@@ -58,14 +64,9 @@
 			filtered = filtered.filter((b) => b.status?.code === statusFilter);
 		}
 
-		// Apply bonus type filter
-		if (bonusTypeFilter !== 'all') {
-			filtered = filtered.filter((b) => {
-				if (bonusTypeFilter === 'agent') {
-					return !b.bonus_type || b.bonus_type === 'agent';
-				}
-				return b.bonus_type === bonusTypeFilter;
-			});
+		// Apply recipient type filter
+		if (recipientTypeFilter !== 'all') {
+			filtered = filtered.filter((b) => b.recipient_type === recipientTypeFilter);
 		}
 
 		// Apply search
@@ -74,12 +75,12 @@
 			filtered = filtered.filter((b) => {
 				const sourceNumber =
 					b.source_type === 'contract'
-						? (b.contract?.contract_number || '').toLowerCase()
-						: (b.order?.order_number || '').toLowerCase();
+						? (b.contract?.contract_number || b.contract_number || '').toLowerCase()
+						: (b.order?.order_number || b.order_number || '').toLowerCase();
 				const projectName = (b.project_name || '').toLowerCase();
-				const agentName = (b.agent?.name || '').toLowerCase();
+				const userName = (b.user?.name || b.agent?.name || '').toLowerCase();
 				return (
-					sourceNumber.includes(term) || projectName.includes(term) || agentName.includes(term)
+					sourceNumber.includes(term) || projectName.includes(term) || userName.includes(term)
 				);
 			});
 		}
@@ -121,16 +122,14 @@
 		activeTab;
 		searchTerm;
 		statusFilter;
-		bonusTypeFilter;
+		recipientTypeFilter;
 		currentPage = 1;
 	});
 
 	// Format currency
 	function formatCurrency(amount) {
-		if (amount === null || amount === undefined) return '0 ₽';
+		if (amount === null || amount === undefined) return '0';
 		return new Intl.NumberFormat('ru-RU', {
-			style: 'currency',
-			currency: 'RUB',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		}).format(amount);
@@ -211,7 +210,7 @@
 						</div>
 
 						<!-- Metrics Cards -->
-						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-5">
+						<div class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидание</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-400">
@@ -232,10 +231,30 @@
 									{formatCurrency(stats.total_paid)}
 								</dd>
 							</div>
-							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Всего</dt>
-								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-300">
-									{formatCurrency((stats.total_pending || 0) + (stats.total_paid || 0))}
+							<div
+								class="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow dark:bg-gray-800 dark:from-blue-900/20 dark:to-indigo-900/20"
+							>
+								<dt class="text-sm font-medium text-blue-600 dark:text-blue-400">
+									Агентские
+								</dt>
+								<dd class="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
+									{formatCurrency(stats.total_agent || 0)}
+								</dd>
+								<dd class="mt-1 text-xs text-blue-500 dark:text-blue-400">
+									{stats.agent_count || 0} бонусов
+								</dd>
+							</div>
+							<div
+								class="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-4 shadow dark:bg-gray-800 dark:from-green-900/20 dark:to-emerald-900/20"
+							>
+								<dt class="text-sm font-medium text-green-600 dark:text-green-400">
+									Кураторские
+								</dt>
+								<dd class="mt-1 text-2xl font-semibold text-green-700 dark:text-green-300">
+									{formatCurrency(stats.total_curator || 0)}
+								</dd>
+								<dd class="mt-1 text-xs text-green-500 dark:text-green-400">
+									{stats.curator_count || 0} бонусов
 								</dd>
 							</div>
 							<div
@@ -303,14 +322,15 @@
 									{/each}
 								</select>
 
-								<!-- Bonus Type Filter -->
+								<!-- Recipient Type Filter -->
 								<select
-									bind:value={bonusTypeFilter}
+									bind:value={recipientTypeFilter}
 									class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
 								>
-									<option value="all">Все типы</option>
-									<option value="agent">Агентские</option>
-									<option value="referral">Реферальные</option>
+									<option value="all">Все получатели</option>
+									<option value="agent">Агенты</option>
+									<option value="curator">Кураторы</option>
+									<option value="referrer">Рефереры</option>
 								</select>
 							</div>
 
@@ -354,7 +374,7 @@
 						</div>
 
 						<!-- Results summary -->
-						{#if searchTerm.trim() || statusFilter !== 'all'}
+						{#if searchTerm.trim() || statusFilter !== 'all' || recipientTypeFilter !== 'all'}
 							<div class="mb-4 text-sm text-gray-600 dark:text-gray-400">
 								Найдено: {filteredBonuses.length} записей
 							</div>
