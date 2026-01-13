@@ -17,14 +17,14 @@ function getApiUrl() {
  * Получить все заявки на выплату с пагинацией
  * @param {number} first - Количество записей на странице
  * @param {number} page - Номер страницы
- * @param {Object} filters - Фильтры (status_id, date_from, date_to)
+ * @param {Object} filters - Фильтры (status_id, requester_type, date_from, date_to)
  * @param {Function} fetchFn - Функция fetch
  * @returns {Promise<Object>} Данные с пагинацией
  */
 export async function getBonusPaymentRequests(first = 20, page = 1, filters = {}, fetchFn = fetch) {
 	const query = `
-		query GetBonusPaymentRequests($first: Int, $page: Int, $status_id: ID, $date_from: DateTime, $date_to: DateTime) {
-			bonusPaymentRequests(first: $first, page: $page, filters: { status_id: $status_id, date_from: $date_from, date_to: $date_to }) {
+		query GetBonusPaymentRequests($first: Int, $page: Int, $status_id: ID, $requester_type: String, $date_from: DateTime, $date_to: DateTime) {
+			bonusPaymentRequests(first: $first, page: $page, filters: { status_id: $status_id, requester_type: $requester_type, date_from: $date_from, date_to: $date_to }) {
 				data {
 					id
 					agent_id
@@ -33,6 +33,7 @@ export async function getBonusPaymentRequests(first = 20, page = 1, filters = {}
 						name
 						email
 					}
+					requester_type
 					amount
 					payment_method
 					card_number
@@ -64,6 +65,7 @@ export async function getBonusPaymentRequests(first = 20, page = 1, filters = {}
 		}
 	`;
 
+
 	try {
 		const response = await fetchFn(getApiUrl(), {
 			method: 'POST',
@@ -79,6 +81,7 @@ export async function getBonusPaymentRequests(first = 20, page = 1, filters = {}
 					first, 
 					page, 
 					status_id: filters.status_id || null,
+					requester_type: filters.requester_type || null,
 					date_from: filters.date_from || null,
 					date_to: filters.date_to || null
 				}
@@ -222,6 +225,83 @@ export async function updateBonusPaymentRequestStatus(requestId, statusCode) {
 }
 
 /**
+ * Создать заявку на выплату бонуса (для куратора)
+ * @param {Object} input - Данные заявки
+ * @param {number} input.amount - Сумма выплаты
+ * @param {string} input.payment_method - Способ выплаты (card, sbp, other)
+ * @param {string} input.card_number - Номер карты (для card)
+ * @param {string} input.phone_number - Номер телефона (для sbp)
+ * @param {string} input.contact_info - Контактная информация (для other)
+ * @param {string} input.comment - Комментарий
+ * @returns {Promise<Object>} Созданная заявка
+ */
+export async function createBonusPaymentRequest(input) {
+	const mutation = `
+		mutation CreateBonusPaymentRequest($input: CreateBonusPaymentRequestInput!) {
+			createBonusPaymentRequest(input: $input) {
+				id
+				agent_id
+				amount
+				payment_method
+				card_number
+				phone_number
+				contact_info
+				comment
+				status_id
+				status {
+					id
+					code
+					name
+					color
+				}
+				payment_date
+				created_at
+				updated_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(getApiUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					input: {
+						amount: input.amount,
+						payment_method: input.payment_method,
+						card_number: input.card_number || null,
+						phone_number: input.phone_number || null,
+						contact_info: input.contact_info || null,
+						comment: input.comment || null
+					}
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to create bonus payment request');
+		}
+
+		return result.data.createBonusPaymentRequest;
+	} catch (error) {
+		throw error;
+	}
+}
+
+/**
  * Обновить список заявок
  * @returns {Promise<Object>} Данные с пагинацией
  */
@@ -239,6 +319,8 @@ export function createBonusPaymentsApiWithFetch(fetch) {
 		getBonusPaymentRequests: (first, page, filters) => getBonusPaymentRequests(first, page, filters, fetch),
 		getBonusPaymentStatuses: () => getBonusPaymentStatuses(fetch),
 		updateBonusPaymentRequestStatus: (requestId, statusCode) => updateBonusPaymentRequestStatus(requestId, statusCode),
+		createBonusPaymentRequest: (input) => createBonusPaymentRequest(input),
 		refreshBonusPaymentRequests: () => refreshBonusPaymentRequests()
 	};
 }
+
