@@ -14,6 +14,42 @@
 		updateOrderPartnerPaymentStatus
 	} from '$lib/api/finances.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
+	import { authState } from '$lib/state/auth.svelte.js';
+	import { hasAdminAccess } from '$lib/utils/domainAccess.svelte.js';
+
+	/**
+	 * Filter bonuses based on user role:
+	 * - Admin: sees ALL bonuses
+	 * - Curator: sees only bonuses from projects they accepted
+	 */
+	function filterBonusesByUserRole(bonusList, userId, isAdmin) {
+		if (isAdmin) {
+			return bonusList; // Admin sees all bonuses
+		}
+
+		// Curator filter: only bonuses from projects where user is curator
+		return bonusList.filter((bonus) => {
+			// Get project from contract or order
+			const project = bonus.contract?.project || bonus.order?.project;
+			if (!project) return false;
+
+			// Check if user is curator via project.curator relationship
+			if (project.curator && project.curator.length > 0) {
+				if (project.curator.some((c) => c.id == userId)) {
+					return true;
+				}
+			}
+
+			// Check projectUsers for curator role
+			if (project.projectUsers && project.projectUsers.length > 0) {
+				if (project.projectUsers.some((pu) => pu.role === 'curator' && pu.user?.id == userId)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
 
 	// Tab state
 	let activeTab = $state('contracts');
@@ -53,7 +89,13 @@
 
 	// Filter bonuses by source type
 	let filteredBonuses = $derived.by(() => {
-		let filtered = bonuses.filter((b) => {
+		// Apply role-based filtering first
+		const isAdmin = hasAdminAccess();
+		const userId = authState.user?.id;
+		let filtered = filterBonusesByUserRole(bonuses, userId, isAdmin);
+
+		// Filter by source type (tab)
+		filtered = filtered.filter((b) => {
 			if (activeTab === 'contracts') return b.source_type === 'contract';
 			if (activeTab === 'orders') return b.source_type === 'order';
 			return true;
@@ -79,9 +121,7 @@
 						: (b.order?.order_number || b.order_number || '').toLowerCase();
 				const projectName = (b.project_name || '').toLowerCase();
 				const userName = (b.user?.name || b.agent?.name || '').toLowerCase();
-				return (
-					sourceNumber.includes(term) || projectName.includes(term) || userName.includes(term)
-				);
+				return sourceNumber.includes(term) || projectName.includes(term) || userName.includes(term);
 			});
 		}
 
@@ -115,6 +155,46 @@
 	let paginatedBonuses = $derived.by(() => {
 		const start = (currentPage - 1) * itemsPerPage;
 		return filteredBonuses.slice(start, start + itemsPerPage);
+	});
+
+	// Computed stats based on role filtering
+	// For admins - use server stats, for curators - calculate from filtered bonuses
+	let displayStats = $derived.by(() => {
+		const isAdmin = hasAdminAccess();
+		const userId = authState.user?.id;
+
+		if (isAdmin) {
+			return stats; // Admin sees all stats from server
+		}
+
+		// Curator: calculate stats from role-filtered bonuses (before tab/search filters)
+		const curatorBonuses = filterBonusesByUserRole(bonuses, userId, false);
+
+		return {
+			total_pending: curatorBonuses
+				.filter((b) => b.status?.code === 'pending')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			total_available: curatorBonuses
+				.filter((b) => b.status?.code === 'available')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			total_paid: curatorBonuses
+				.filter((b) => b.status?.code === 'paid')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			contracts_count: curatorBonuses.filter((b) => b.source_type === 'contract').length,
+			orders_count: curatorBonuses.filter((b) => b.source_type === 'order').length,
+			total_curator: curatorBonuses
+				.filter((b) => b.recipient_type === 'curator')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			curator_count: curatorBonuses.filter((b) => b.recipient_type === 'curator').length,
+			total_agent: curatorBonuses
+				.filter((b) => b.recipient_type === 'agent')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			agent_count: curatorBonuses.filter((b) => b.recipient_type === 'agent').length,
+			total_referral: curatorBonuses
+				.filter((b) => b.recipient_type === 'referrer')
+				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
+			referral_count: curatorBonuses.filter((b) => b.recipient_type === 'referrer').length
+		};
 	});
 
 	// Reset page on filter change
@@ -214,7 +294,7 @@
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Ожидание</dt>
 								<dd class="mt-1 text-2xl font-semibold text-gray-600 dark:text-gray-400">
-									{formatCurrency(stats.total_pending)}
+									{formatCurrency(displayStats.total_pending)}
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
@@ -222,54 +302,54 @@
 									Доступно к выплате
 								</dt>
 								<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
-									{formatCurrency(stats.total_available)}
+									{formatCurrency(displayStats.total_available)}
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Выплачено</dt>
 								<dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">
-									{formatCurrency(stats.total_paid)}
+									{formatCurrency(displayStats.total_paid)}
 								</dd>
 							</div>
-							<div
-								class="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow dark:bg-gray-800 dark:from-blue-900/20 dark:to-indigo-900/20"
-							>
-								<dt class="text-sm font-medium text-blue-600 dark:text-blue-400">
-									Агентские
-								</dt>
-								<dd class="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
-									{formatCurrency(stats.total_agent || 0)}
-								</dd>
-								<dd class="mt-1 text-xs text-blue-500 dark:text-blue-400">
-									{stats.agent_count || 0} бонусов
-								</dd>
-							</div>
+							{#if hasAdminAccess()}
+								<div
+									class="rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50 p-4 shadow dark:bg-gray-800 dark:from-blue-900/20 dark:to-indigo-900/20"
+								>
+									<dt class="text-sm font-medium text-blue-600 dark:text-blue-400">Агентские</dt>
+									<dd class="mt-1 text-2xl font-semibold text-blue-700 dark:text-blue-300">
+										{formatCurrency(displayStats.total_agent || 0)}
+									</dd>
+									<dd class="mt-1 text-xs text-blue-500 dark:text-blue-400">
+										{displayStats.agent_count || 0} бонусов
+									</dd>
+								</div>
+							{/if}
 							<div
 								class="rounded-lg bg-gradient-to-br from-green-50 to-emerald-50 p-4 shadow dark:bg-gray-800 dark:from-green-900/20 dark:to-emerald-900/20"
 							>
-								<dt class="text-sm font-medium text-green-600 dark:text-green-400">
-									Кураторские
-								</dt>
+								<dt class="text-sm font-medium text-green-600 dark:text-green-400">Кураторские</dt>
 								<dd class="mt-1 text-2xl font-semibold text-green-700 dark:text-green-300">
-									{formatCurrency(stats.total_curator || 0)}
+									{formatCurrency(displayStats.total_curator || 0)}
 								</dd>
 								<dd class="mt-1 text-xs text-green-500 dark:text-green-400">
-									{stats.curator_count || 0} бонусов
+									{displayStats.curator_count || 0} бонусов
 								</dd>
 							</div>
-							<div
-								class="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-4 shadow dark:bg-gray-800 dark:from-purple-900/20 dark:to-pink-900/20"
-							>
-								<dt class="text-sm font-medium text-purple-600 dark:text-purple-400">
-									Реферальные
-								</dt>
-								<dd class="mt-1 text-2xl font-semibold text-purple-700 dark:text-purple-300">
-									{formatCurrency(stats.total_referral || 0)}
-								</dd>
-								<dd class="mt-1 text-xs text-purple-500 dark:text-purple-400">
-									{stats.referral_count || 0} бонусов
-								</dd>
-							</div>
+							{#if hasAdminAccess()}
+								<div
+									class="rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 p-4 shadow dark:bg-gray-800 dark:from-purple-900/20 dark:to-pink-900/20"
+								>
+									<dt class="text-sm font-medium text-purple-600 dark:text-purple-400">
+										Реферальные
+									</dt>
+									<dd class="mt-1 text-2xl font-semibold text-purple-700 dark:text-purple-300">
+										{formatCurrency(displayStats.total_referral || 0)}
+									</dd>
+									<dd class="mt-1 text-xs text-purple-500 dark:text-purple-400">
+										{displayStats.referral_count || 0} бонусов
+									</dd>
+								</div>
+							{/if}
 						</div>
 
 						<!-- Tabs -->
@@ -287,7 +367,7 @@
 									<span
 										class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
 									>
-										{stats.contracts_count || 0}
+										{displayStats.contracts_count || 0}
 									</span>
 								</button>
 								<button
@@ -302,7 +382,7 @@
 									<span
 										class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
 									>
-										{stats.orders_count || 0}
+										{displayStats.orders_count || 0}
 									</span>
 								</button>
 							</nav>

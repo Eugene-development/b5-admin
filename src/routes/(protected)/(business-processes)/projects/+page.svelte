@@ -31,6 +31,38 @@
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 	import { newProjectsState } from '$lib/state/newProjectsCount.svelte.js';
+	import { hasAdminAccess } from '$lib/utils/domainAccess.svelte.js';
+
+	/**
+	 * Filter projects based on user role:
+	 * - Admin: sees ALL projects
+	 * - Curator: sees only "new-project" status projects AND projects they accepted
+	 */
+	function filterProjectsByUserRole(projects, userId, isAdmin) {
+		if (isAdmin) {
+			return projects; // Admin sees all projects
+		}
+
+		// Curator filter: new-project status OR accepted by this curator
+		return projects.filter((project) => {
+			// Show projects with "Новый проект" status
+			if (project.status?.slug === 'new-project') {
+				return true;
+			}
+
+			// Show projects where current user is the curator
+			if (project.curator && project.curator.length > 0) {
+				return project.curator.some((c) => c.id == userId);
+			}
+
+			// Also check projectUsers for curator role
+			if (project.projectUsers && project.projectUsers.length > 0) {
+				return project.projectUsers.some((pu) => pu.role === 'curator' && pu.user_id == userId);
+			}
+
+			return false;
+		});
+	}
 
 	let { data } = $props();
 
@@ -87,7 +119,10 @@
 		// Explicitly depend on updateCounter to ensure reactivity
 		updateCounter;
 
-		let filtered = localProjects;
+		// Apply role-based filtering first
+		const isAdmin = hasAdminAccess();
+		const userId = authState.user?.id;
+		let filtered = filterProjectsByUserRole(localProjects, userId, isAdmin);
 
 		// Apply search filter
 		if (searchTerm.trim()) {
