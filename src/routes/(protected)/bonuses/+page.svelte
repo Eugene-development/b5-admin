@@ -298,9 +298,7 @@
 								</dd>
 							</div>
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">
-									Доступно к выплате
-								</dt>
+								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Доступно</dt>
 								<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
 									{formatCurrency(displayStats.total_available)}
 								</dd>
