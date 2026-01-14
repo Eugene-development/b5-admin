@@ -16,20 +16,37 @@ import { API_CONFIG } from './config.js';
 export async function loginUser(email, password, remember = false) {
 	try {
 		console.log('🔐 Login API request:', { email, remember });
-		const response = await post(API_CONFIG.endpoints.login, {
-			email,
-			password,
-			remember
+		
+		// Call SvelteKit endpoint that sets httpOnly cookie
+		const response = await fetch('/api/auth/login-jwt', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email, password, remember }),
+			credentials: 'include'
 		});
 
-		console.log('🔐 Login API response:', response);
+		const data = await response.json();
+
+		console.log('🔐 Login API response:', { success: data.success, hasUser: !!data.user });
+
+		if (!response.ok || !data.success) {
+			return {
+				success: false,
+				message: data.message || 'Login failed',
+				errors: data.errors || {}
+			};
+		}
+
 		return {
 			success: true,
-			user: response.user || response.data?.user || null,
-			token: response.token || response.data?.token || null,
-			message: response.message || response.data?.message || 'Login successful'
+			user: data.user || null,
+			token: data.token || null,
+			message: data.message || 'Login successful'
 		};
 	} catch (error) {
+		console.error('🔐 Login API error:', error);
 		// Handle specific authentication errors
 		let message = 'Login failed';
 
@@ -39,14 +56,12 @@ export async function loginUser(email, password, remember = false) {
 			message = 'Проверьте правильность введенных данных';
 		} else if (error.status === 429) {
 			message = 'Слишком много попыток входа. Попробуйте позже';
-		} else if (error.status === 0) {
-			message = error.message; // Network error message
 		}
 
 		return {
 			success: false,
 			message: error.message || message,
-			errors: error.data?.errors || {}
+			errors: {}
 		};
 	}
 }
@@ -110,6 +125,19 @@ export async function registerUser(userData) {
 export async function logoutUser() {
 	try {
 		console.log('🚪 Calling logout API...');
+		
+		// Call SvelteKit endpoint to clear httpOnly cookies
+		try {
+			await fetch('/api/auth/logout-jwt', {
+				method: 'POST',
+				credentials: 'include'
+			});
+			console.log('🍪 Cookies cleared via SvelteKit endpoint');
+		} catch (cookieError) {
+			console.warn('⚠️ Failed to clear cookies:', cookieError);
+		}
+
+		// Also call backend logout API to invalidate token
 		const response = await post(API_CONFIG.endpoints.logout, {}, {}, true);
 		console.log('🚪 Logout API response:', response);
 

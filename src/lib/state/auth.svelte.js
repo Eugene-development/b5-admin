@@ -276,9 +276,11 @@ export async function logout(options = {}) {
 		clearAuthState();
 		removeAuthToken();
 
-		// Handle post-logout redirect if in browser
-		if (typeof window !== 'undefined' && options.redirectTo) {
-			await goto(options.redirectTo);
+		// Handle post-logout redirect with full page reload
+		// This ensures server-side auth check runs with cleared cookies
+		if (typeof window !== 'undefined') {
+			const redirectTo = options.redirectTo || '/login';
+			window.location.href = redirectTo;
 		}
 
 		return true;
@@ -289,8 +291,9 @@ export async function logout(options = {}) {
 		removeAuthToken();
 
 		// Handle post-logout redirect even on error
-		if (typeof window !== 'undefined' && options.redirectTo) {
-			await goto(options.redirectTo);
+		if (typeof window !== 'undefined') {
+			const redirectTo = options.redirectTo || '/login';
+			window.location.href = redirectTo;
 		}
 
 		return true; // We consider logout successful even if API fails

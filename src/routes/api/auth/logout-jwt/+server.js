@@ -45,7 +45,13 @@ export async function POST({ request, cookies }) {
 			domain: cookieDomain
 		});
 
-		console.log('✅ JWT Logout (admin): Cookie cleared');
+		// Clear user data cookie
+		cookies.delete('b5_auth_user', {
+			path: '/',
+			domain: cookieDomain
+		});
+
+		console.log('✅ JWT Logout (admin): Cookies cleared');
 
 		return json({
 			success: true,

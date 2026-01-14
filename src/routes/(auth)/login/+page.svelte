@@ -3,7 +3,13 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 	import ErrorDisplay from '$lib/components/common/ErrorDisplay.svelte';
+
+	// Storage keys for "Remember Me" feature
+	const REMEMBER_ME_KEY = 'b5_admin_remember_me';
+	const SAVED_EMAIL_KEY = 'b5_admin_saved_email';
+	const SAVED_PASSWORD_KEY = 'b5_admin_saved_password';
 
 	// Form state
 	let email = $state('');
@@ -15,16 +21,23 @@
 	// Get return URL from query parameters for redirect after login
 	let returnUrl = $derived($page.url.searchParams.get('returnUrl') || '/dashboard');
 
-	// Restore "Remember Me" preference from localStorage
-	// Временно отключено: чекбокс "Запомнить меня" скрыт
-	// $effect(() => {
-	// 	if (browser) {
-	// 		const savedRememberMe = localStorage.getItem('rememberMe');
-	// 		if (savedRememberMe === 'true') {
-	// 			remember = true;
-	// 		}
-	// 	}
-	// });
+	// Restore saved credentials from localStorage on mount
+	onMount(() => {
+		if (browser) {
+			const savedRememberMe = localStorage.getItem(REMEMBER_ME_KEY);
+			if (savedRememberMe === 'true') {
+				remember = true;
+				const savedEmail = localStorage.getItem(SAVED_EMAIL_KEY);
+				const savedPassword = localStorage.getItem(SAVED_PASSWORD_KEY);
+				if (savedEmail) {
+					email = savedEmail;
+				}
+				if (savedPassword) {
+					password = savedPassword;
+				}
+			}
+		}
+	});
 
 	/**
 	 * Validate email format
@@ -67,11 +80,18 @@
 		clientErrors = {};
 		if (!validateForm()) return;
 
-		// Save "Remember Me" preference to localStorage
-		// Временно отключено: чекбокс "Запомнить меня" скрыт
-		// if (browser) {
-		// 	localStorage.setItem('rememberMe', remember.toString());
-		// }
+		// Save or clear "Remember Me" credentials in localStorage
+		if (browser) {
+			if (remember) {
+				localStorage.setItem(REMEMBER_ME_KEY, 'true');
+				localStorage.setItem(SAVED_EMAIL_KEY, email);
+				localStorage.setItem(SAVED_PASSWORD_KEY, password);
+			} else {
+				localStorage.removeItem(REMEMBER_ME_KEY);
+				localStorage.removeItem(SAVED_EMAIL_KEY);
+				localStorage.removeItem(SAVED_PASSWORD_KEY);
+			}
+		}
 
 		try {
 			// Pass remember parameter to login function
@@ -84,17 +104,18 @@
 				const allowedTypes = ['Админ', 'Куратор', 'Менеджер'];
 
 				if (!userType || !allowedTypes.includes(userType)) {
-					goto('/access-denied');
+					window.location.href = '/access-denied';
 					return;
 				}
 
 				// Check if email is verified
 				if (authState.user && !authState.user.email_verified) {
 					// Email not verified - redirect to email verification page
-					goto('/email-verify');
+					window.location.href = '/email-verify';
 				} else {
-					// Email verified - proceed to intended destination
-					goto(returnUrl);
+					// Email verified - proceed to intended destination with full page reload
+					// This ensures server-side auth check runs with new cookies
+					window.location.href = returnUrl;
 				}
 			}
 		} catch (error) {
@@ -359,8 +380,6 @@
 
 					<!-- Дополнительные опции -->
 					<div class="flex items-center justify-between">
-						<!-- Временно скрыто: чекбокс "Запомнить меня" -->
-						<!--
 						<label class="flex cursor-pointer items-center space-x-2">
 							<input
 								type="checkbox"
@@ -369,7 +388,6 @@
 							/>
 							<span class="text-sm text-gray-700 dark:text-gray-300">Запомнить меня</span>
 						</label>
-						-->
 						<a
 							href="/forgot-password"
 							class="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"

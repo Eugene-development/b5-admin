@@ -16,20 +16,20 @@ export async function POST({ request, cookies }) {
 		// Get login credentials from request
 		const { email, password, remember } = await request.json();
 
-		console.log('🔐 JWT Login (admin): Attempting login for:', email);
+		console.log('🔐 JWT Login (admin): Attempting login for:', email, 'remember:', remember);
 
 		// Get auth API URL based on current domain (pass request for server-side hostname detection)
 		const authApiUrl = getAuthApiUrl(request);
 		console.log('🔐 JWT Login (admin): Using auth API URL:', authApiUrl);
 		
-		// Call backend login API
+		// Call backend login API with remember parameter
 		const response = await fetch(`${authApiUrl}/api/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
 				Accept: 'application/json'
 			},
-			body: JSON.stringify({ email, password })
+			body: JSON.stringify({ email, password, remember })
 		});
 
 		if (!response.ok) {
@@ -76,6 +76,18 @@ export async function POST({ request, cookies }) {
 			domain: cookieDomain,
 			maxAge: remember ? 60 * 60 * 24 * 30 : 60 * 60 * 24 // 30 days or 1 day
 		});
+
+		// Also set user data cookie (not httpOnly so client can read it)
+		if (data.user) {
+			cookies.set('b5_auth_user', JSON.stringify(data.user), {
+				path: '/',
+				httpOnly: false,
+				secure: isProduction,
+				sameSite: 'lax',
+				domain: cookieDomain,
+				maxAge: remember ? 60 * 60 * 24 * 30 : 60 * 60 * 24
+			});
+		}
 
 		console.log('🍪 Cookie set with domain:', cookieDomain || 'default (current domain)');
 
