@@ -156,6 +156,7 @@ const ADMIN_BONUS_STATS_QUERY = gql`
 		adminBonusStats(filters: $filters) {
 			total_pending
 			total_available
+			total_requested
 			total_paid
 			contracts_count
 			orders_count

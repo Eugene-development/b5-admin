@@ -241,6 +241,7 @@ export async function createBonusPaymentRequest(input) {
 			createBonusPaymentRequest(input: $input) {
 				id
 				agent_id
+				requester_type
 				amount
 				payment_method
 				card_number
@@ -276,6 +277,7 @@ export async function createBonusPaymentRequest(input) {
 					input: {
 						amount: input.amount,
 						payment_method: input.payment_method,
+						requester_type: input.requester_type || 'agent',
 						card_number: input.card_number || null,
 						phone_number: input.phone_number || null,
 						contact_info: input.contact_info || null,

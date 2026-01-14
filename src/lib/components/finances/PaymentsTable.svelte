@@ -95,6 +95,18 @@
 		selectedPayment = null;
 	}
 
+	// Get requester type label
+	function getRequesterTypeLabel(type) {
+		switch (type) {
+			case 'agent':
+				return { label: 'Агент', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' };
+			case 'curator':
+				return { label: 'Куратор', color: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' };
+			default:
+				return { label: 'Агент', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' };
+		}
+	}
+
 	// Generate unique table ID for accessibility
 	const tableId = `payments-table-${Math.random().toString(36).substr(2, 9)}`;
 </script>
@@ -125,7 +137,14 @@
 					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 180px;"
 				>
-					АГЕНТ
+					ПОЛЬЗОВАТЕЛЬ
+				</th>
+				<th
+					scope="col"
+					class="px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+					style="min-width: 100px;"
+				>
+					ТИП
 				</th>
 				<th
 					scope="col"
@@ -181,7 +200,7 @@
 		<tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-950">
 			{#if requests.length === 0}
 				<tr>
-					<td colspan="9" class="px-3 py-8" role="cell">
+					<td colspan="10" class="px-3 py-8" role="cell">
 						<EmptyState
 							type={hasSearched ? 'no-results' : 'no-data'}
 							searchTerm={hasSearched ? searchTerm : ''}
@@ -191,6 +210,7 @@
 			{:else}
 				{#each requests as request, index (request.id + '-' + updateCounter)}
 					{@const methodInfo = getPaymentMethodInfo(request.payment_method)}
+					{@const typeInfo = getRequesterTypeLabel(request.requester_type)}
 					<tr
 						class="transition-colors duration-150 ease-in-out hover:bg-gray-50 dark:hover:bg-gray-800"
 					>
@@ -211,6 +231,11 @@
 									>
 								{/if}
 							</div>
+						</td>
+						<td class="whitespace-nowrap px-3 py-3 text-center align-middle">
+							<span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium {typeInfo.color}">
+								{typeInfo.label}
+							</span>
 						</td>
 						<td
 							class="whitespace-nowrap px-3 py-3 text-right align-middle text-sm font-semibold text-green-600 dark:text-green-400"
@@ -296,6 +321,7 @@
 		<div class="space-y-4" role="list" aria-label="Список заявок на выплату">
 			{#each requests as request, index (request.id + '-' + updateCounter)}
 				{@const methodInfo = getPaymentMethodInfo(request.payment_method)}
+				{@const typeInfo = getRequesterTypeLabel(request.requester_type)}
 				<div
 					class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800"
 					role="listitem"
@@ -303,9 +329,14 @@
 					<!-- Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="text-sm font-medium text-gray-900 dark:text-white">
-								{request.agent?.name || 'Агент не указан'}
-							</h3>
+							<div class="flex items-center gap-2">
+								<h3 class="text-sm font-medium text-gray-900 dark:text-white">
+									{request.agent?.name || 'Не указан'}
+								</h3>
+								<span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium {typeInfo.color}">
+									{typeInfo.label}
+								</span>
+							</div>
 							{#if request.agent?.email}
 								<p class="text-xs text-gray-500 dark:text-gray-400">{request.agent.email}</p>
 							{/if}

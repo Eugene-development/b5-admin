@@ -23,6 +23,9 @@
 	let hasSearched = $state(false);
 	let updateCounter = $state(0);
 
+	// Tab state for filtering by requester type
+	let activeTab = $state('agents');
+
 	// Pagination state
 	let currentPage = $state(1);
 	const itemsPerPage = 10;
@@ -46,29 +49,42 @@
 		}
 	});
 
-	// Filtered requests based on search term
+	// Filtered requests based on tab and search term
 	let filteredRequests = $derived.by(() => {
 		updateCounter;
 
-		if (!searchTerm.trim()) {
-			return requests;
+		// First filter by requester type (tab)
+		let filtered = requests.filter((request) => {
+			const requesterType = request.requester_type || 'agent';
+			if (activeTab === 'agents') return requesterType === 'agent';
+			if (activeTab === 'curators') return requesterType === 'curator';
+			return true;
+		});
+
+		// Then apply search filter
+		if (searchTerm.trim()) {
+			const term = searchTerm.toLowerCase().trim();
+			filtered = filtered.filter((request) => {
+				return (
+					request.id.toString().includes(term) ||
+					(request.agent?.name && request.agent.name.toLowerCase().includes(term)) ||
+					(request.agent?.email && request.agent.email.toLowerCase().includes(term)) ||
+					(request.agent?.phone && request.agent.phone.toLowerCase().includes(term)) ||
+					(request.card_number && request.card_number.toLowerCase().includes(term)) ||
+					(request.phone_number && request.phone_number.toLowerCase().includes(term)) ||
+					(request.contact_info && request.contact_info.toLowerCase().includes(term)) ||
+					(request.comment && request.comment.toLowerCase().includes(term)) ||
+					(request.status?.name && request.status.name.toLowerCase().includes(term))
+				);
+			});
 		}
 
-		const term = searchTerm.toLowerCase().trim();
-		return requests.filter((request) => {
-			return (
-				request.id.toString().includes(term) ||
-				(request.agent?.name && request.agent.name.toLowerCase().includes(term)) ||
-				(request.agent?.email && request.agent.email.toLowerCase().includes(term)) ||
-				(request.agent?.phone && request.agent.phone.toLowerCase().includes(term)) ||
-				(request.card_number && request.card_number.toLowerCase().includes(term)) ||
-				(request.phone_number && request.phone_number.toLowerCase().includes(term)) ||
-				(request.contact_info && request.contact_info.toLowerCase().includes(term)) ||
-				(request.comment && request.comment.toLowerCase().includes(term)) ||
-				(request.status?.name && request.status.name.toLowerCase().includes(term))
-			);
-		});
+		return filtered;
 	});
+
+	// Count requests by type for tab badges
+	let agentRequestsCount = $derived(requests.filter(r => (r.requester_type || 'agent') === 'agent').length);
+	let curatorRequestsCount = $derived(requests.filter(r => r.requester_type === 'curator').length);
 
 	// Get paginated requests
 	let paginatedRequests = $derived.by(() => {
@@ -103,6 +119,7 @@
 	// Reset to first page when filters change
 	$effect(() => {
 		searchTerm;
+		activeTab;
 		currentPage = 1;
 	});
 
@@ -272,6 +289,40 @@
 										</div>
 										<RefreshButton {isRefreshing} onclick={refreshData} />
 									</div>
+								</div>
+
+								<!-- Tabs for Agents/Curators -->
+								<div class="mt-6 border-b border-gray-200 dark:border-gray-700">
+									<nav class="-mb-px flex space-x-8" aria-label="Tabs">
+										<button
+											type="button"
+											onclick={() => (activeTab = 'agents')}
+											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'agents'
+												? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+												: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+										>
+											Агенты
+											<span
+												class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+											>
+												{agentRequestsCount}
+											</span>
+										</button>
+										<button
+											type="button"
+											onclick={() => (activeTab = 'curators')}
+											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'curators'
+												? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+												: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
+										>
+											Кураторы
+											<span
+												class="ml-2 rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+											>
+												{curatorRequestsCount}
+											</span>
+										</button>
+									</nav>
 								</div>
 
 								<!-- Results info -->

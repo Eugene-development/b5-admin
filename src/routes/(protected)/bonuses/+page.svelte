@@ -5,6 +5,7 @@
 	import Pagination from '$lib/components/common/Pagination.svelte';
 	import TableSkeleton from '$lib/components/common/TableSkeleton.svelte';
 	import FinancesBonusTable from '$lib/components/business-processes/finances/FinancesBonusTable.svelte';
+	import PayoutRequestModal from '$lib/components/finances/PayoutRequestModal.svelte';
 	import {
 		getAdminBonuses,
 		getAdminBonusStats,
@@ -13,6 +14,7 @@
 		updateContractPartnerPaymentStatus,
 		updateOrderPartnerPaymentStatus
 	} from '$lib/api/finances.js';
+	import { getBonusPaymentRequests } from '$lib/api/bonusPayments.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 	import { authState } from '$lib/state/auth.svelte.js';
 	import { hasAdminAccess } from '$lib/utils/domainAccess.svelte.js';
@@ -20,34 +22,16 @@
 	/**
 	 * Filter bonuses based on user role:
 	 * - Admin: sees ALL bonuses
-	 * - Curator: sees only bonuses from projects they accepted
+	 * - Curator: sees only their own curator bonuses (recipient_type = 'curator' AND user_id = current user)
 	 */
 	function filterBonusesByUserRole(bonusList, userId, isAdmin) {
 		if (isAdmin) {
 			return bonusList; // Admin sees all bonuses
 		}
 
-		// Curator filter: only bonuses from projects where user is curator
+		// Curator filter: only bonuses where recipient_type = 'curator' AND user_id = current user
 		return bonusList.filter((bonus) => {
-			// Get project from contract or order
-			const project = bonus.contract?.project || bonus.order?.project;
-			if (!project) return false;
-
-			// Check if user is curator via project.curator relationship
-			if (project.curator && project.curator.length > 0) {
-				if (project.curator.some((c) => c.id == userId)) {
-					return true;
-				}
-			}
-
-			// Check projectUsers for curator role
-			if (project.projectUsers && project.projectUsers.length > 0) {
-				if (project.projectUsers.some((pu) => pu.role === 'curator' && pu.user?.id == userId)) {
-					return true;
-				}
-			}
-
-			return false;
+			return bonus.recipient_type === 'curator' && bonus.user_id == userId;
 		});
 	}
 
@@ -71,6 +55,13 @@
 	});
 	let bonusStatuses = $state([]);
 	let partnerPaymentStatuses = $state([]);
+
+	// Curator payment requests state
+	let curatorPaymentRequests = $state([]);
+	let curatorRequestedAmount = $state(0);
+
+	// Payout request modal state
+	let showPayoutModal = $state(false);
 
 	// Loading state
 	let isLoading = $state(true);
@@ -158,43 +149,12 @@
 	});
 
 	// Computed stats based on role filtering
-	// For admins - use server stats, for curators - calculate from filtered bonuses
+	// For admins - use server stats, for curators - also use server stats (filtered by API)
 	let displayStats = $derived.by(() => {
-		const isAdmin = hasAdminAccess();
-		const userId = authState.user?.id;
-
-		if (isAdmin) {
-			return stats; // Admin sees all stats from server
-		}
-
-		// Curator: calculate stats from role-filtered bonuses (before tab/search filters)
-		const curatorBonuses = filterBonusesByUserRole(bonuses, userId, false);
-
-		return {
-			total_pending: curatorBonuses
-				.filter((b) => b.status?.code === 'pending')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			total_available: curatorBonuses
-				.filter((b) => b.status?.code === 'available')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			total_paid: curatorBonuses
-				.filter((b) => b.status?.code === 'paid')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			contracts_count: curatorBonuses.filter((b) => b.source_type === 'contract').length,
-			orders_count: curatorBonuses.filter((b) => b.source_type === 'order').length,
-			total_curator: curatorBonuses
-				.filter((b) => b.recipient_type === 'curator')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			curator_count: curatorBonuses.filter((b) => b.recipient_type === 'curator').length,
-			total_agent: curatorBonuses
-				.filter((b) => b.recipient_type === 'agent')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			agent_count: curatorBonuses.filter((b) => b.recipient_type === 'agent').length,
-			total_referral: curatorBonuses
-				.filter((b) => b.recipient_type === 'referrer')
-				.reduce((sum, b) => sum + (b.commission_amount || 0), 0),
-			referral_count: curatorBonuses.filter((b) => b.recipient_type === 'referrer').length
-		};
+		// Both admin and curator use server stats
+		// For curator, stats are already filtered by user_id and recipient_type='curator'
+		// total_requested is now included in API response
+		return stats;
 	});
 
 	// Reset page on filter change
@@ -219,19 +179,50 @@
 	async function loadData(showToast = false) {
 		isRefreshing = true;
 		try {
-			const [bonusesData, statsData, statusesData, partnerStatusesData] = await Promise.all([
-				getAdminBonuses(),
-				getAdminBonusStats(),
+			const isAdmin = hasAdminAccess();
+			const userId = authState.user?.id;
+
+			// For curators, add filters to get only their curator bonuses
+			const curatorFilters = !isAdmin && userId 
+				? { user_id: userId, recipient_type: 'curator' } 
+				: null;
+
+			const promises = [
+				getAdminBonuses(curatorFilters),
+				getAdminBonusStats(curatorFilters),
 				bonusStatuses.length === 0 ? getBonusStatuses() : Promise.resolve(bonusStatuses),
 				partnerPaymentStatuses.length === 0
 					? getPartnerPaymentStatuses()
 					: Promise.resolve(partnerPaymentStatuses)
-			]);
+			];
+
+			// For curators, also load their payment requests
+			if (!isAdmin && userId) {
+				promises.push(getBonusPaymentRequests(100, 1, { requester_type: 'curator' }));
+			}
+
+			const results = await Promise.all(promises);
+			const [bonusesData, statsData, statusesData, partnerStatusesData] = results;
+
 			bonuses = bonusesData;
 			stats = statsData;
 			if (statusesData !== bonusStatuses) bonusStatuses = statusesData;
 			if (partnerStatusesData !== partnerPaymentStatuses)
 				partnerPaymentStatuses = partnerStatusesData;
+
+			// Process curator payment requests
+			if (!isAdmin && userId && results[4]) {
+				const requestsData = results[4];
+				// Filter only current user's requests
+				curatorPaymentRequests = (requestsData.data || []).filter(
+					(r) => r.agent_id == userId && r.requester_type === 'curator'
+				);
+				// Calculate total requested amount (only pending/approved, not paid)
+				curatorRequestedAmount = curatorPaymentRequests
+					.filter((r) => r.status?.code !== 'paid')
+					.reduce((sum, r) => sum + (r.amount || 0), 0);
+			}
+
 			if (showToast) addSuccessToast('Данные обновлены');
 		} catch (error) {
 			handleApiError(error, 'Не удалось загрузить данные');
@@ -297,12 +288,39 @@
 									{formatCurrency(displayStats.total_pending)}
 								</dd>
 							</div>
+							<!-- Available card with request button for curators -->
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
-								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Доступно</dt>
-								<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
-									{formatCurrency(displayStats.total_available)}
-								</dd>
+								<div class="flex items-start justify-between">
+									<div>
+										<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Доступно</dt>
+										<dd class="mt-1 text-2xl font-semibold text-blue-600 dark:text-blue-400">
+											{formatCurrency(displayStats.total_available)}
+										</dd>
+									</div>
+									{#if !hasAdminAccess() && displayStats.total_available > 0}
+										<button
+											type="button"
+											onclick={() => (showPayoutModal = true)}
+											class="rounded-full bg-green-100 p-2 text-green-600 transition-colors hover:bg-green-200 dark:bg-green-500/20 dark:text-green-400 dark:hover:bg-green-500/30"
+											title="Запросить выплату"
+											aria-label="Запросить выплату"
+										>
+											<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+											</svg>
+										</button>
+									{/if}
+								</div>
 							</div>
+							<!-- Requested card for curators -->
+							{#if !hasAdminAccess()}
+								<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
+									<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Запрошено</dt>
+									<dd class="mt-1 text-2xl font-semibold text-orange-600 dark:text-orange-400">
+										{formatCurrency(displayStats.total_requested || 0)}
+									</dd>
+								</div>
+							{/if}
 							<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 								<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Выплачено</dt>
 								<dd class="mt-1 text-2xl font-semibold text-green-600 dark:text-green-400">
@@ -400,16 +418,18 @@
 									{/each}
 								</select>
 
-								<!-- Recipient Type Filter -->
-								<select
-									bind:value={recipientTypeFilter}
-									class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
-								>
-									<option value="all">Все получатели</option>
-									<option value="agent">Агенты</option>
-									<option value="curator">Кураторы</option>
-									<option value="referrer">Рефереры</option>
-								</select>
+								<!-- Recipient Type Filter (only for admins) -->
+								{#if hasAdminAccess()}
+									<select
+										bind:value={recipientTypeFilter}
+										class="rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-600"
+									>
+										<option value="all">Все получатели</option>
+										<option value="agent">Агенты</option>
+										<option value="curator">Кураторы</option>
+										<option value="referrer">Рефереры</option>
+									</select>
+								{/if}
 							</div>
 
 							<!-- Sort -->
@@ -486,3 +506,11 @@
 		</div>
 	{/snippet}
 </ProtectedRoute>
+
+<!-- Payout Request Modal for Curators -->
+<PayoutRequestModal
+	isOpen={showPayoutModal}
+	availableAmount={displayStats.total_available || 0}
+	onClose={() => (showPayoutModal = false)}
+	onSuccess={() => loadData(true)}
+/>
