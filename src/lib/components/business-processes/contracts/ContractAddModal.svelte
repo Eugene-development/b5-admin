@@ -17,6 +17,7 @@
 		project_id: '',
 		company_id: '',
 		contract_number: '',
+		comment: '',
 		contract_date: '',
 		planned_completion_date: '',
 		contract_amount: '',
@@ -51,7 +52,7 @@
 	$effect(() => {
 		if (isOpen) {
 			loadOptions();
-			formData = { project_id: '', company_id: '', contract_number: '', contract_date: '', planned_completion_date: '', contract_amount: '', is_active: true };
+			formData = { project_id: '', company_id: '', contract_number: '', comment: '', contract_date: '', planned_completion_date: '', contract_amount: '', is_active: true };
 			errors = {};
 		}
 	});
@@ -82,7 +83,9 @@
 				contract_amount: parseFloat(formData.contract_amount) || 0
 			};
 			if (formData.contract_number.trim()) contractData.contract_number = formData.contract_number.trim();
-			onSave(contractData);
+			// Передаём комментарий отдельно для обработки через полиморфную таблицу
+			const comment = formData.comment.trim() || null;
+			onSave(contractData, comment);
 		}
 	}
 
@@ -224,6 +227,12 @@
 						<div>
 							<label for="contract-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Номер договора</label>
 							<input type="text" id="contract-number" value={formData.contract_number} oninput={(e) => handleInputChange('contract_number', e.target.value)} disabled={isLoading} class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white" placeholder="Опционально" />
+						</div>
+
+						<!-- Comment -->
+						<div>
+							<label for="contract-comment" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Комментарий</label>
+							<textarea id="contract-comment" value={formData.comment} oninput={(e) => handleInputChange('comment', e.target.value)} disabled={isLoading} rows="2" class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white" placeholder="Опционально"></textarea>
 						</div>
 
 						<!-- Dates -->

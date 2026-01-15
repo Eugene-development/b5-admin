@@ -47,6 +47,12 @@ const CONTRACTS_QUERY = gql`
 					color
 				}
 				contract_number
+				comments {
+					id
+					value
+					author_name
+					created_at
+				}
 				contract_date
 				planned_completion_date
 				actual_completion_date
@@ -107,6 +113,12 @@ const CREATE_CONTRACT_MUTATION = gql`
 				color
 			}
 			contract_number
+			comments {
+				id
+				value
+				author_name
+				created_at
+			}
 			contract_date
 			planned_completion_date
 			actual_completion_date
@@ -156,6 +168,12 @@ const UPDATE_CONTRACT_MUTATION = gql`
 				color
 			}
 			contract_number
+			comments {
+				id
+				value
+				author_name
+				created_at
+			}
 			contract_date
 			planned_completion_date
 			actual_completion_date
@@ -469,6 +487,67 @@ export function createContractsApiWithFetch(fetch, cookies) {
 		deleteContract: (contractId) => deleteContract(contractId, fetch, cookies),
 		refreshContracts: (first, page) => refreshContracts(first, page, fetch, cookies),
 		getContractStatuses: () => getContractStatuses(fetch),
-		updateContractStatus: (contractId, statusSlug) => updateContractStatus(contractId, statusSlug, fetch)
+		updateContractStatus: (contractId, statusSlug) => updateContractStatus(contractId, statusSlug, fetch),
+		addContractComment: (contractId, value) => addContractComment(contractId, value, fetch, cookies),
+		updateContractComment: (commentId, value) => updateContractComment(commentId, value, fetch, cookies)
 	};
+}
+
+// GraphQL mutations for comments
+const ADD_CONTRACT_COMMENT_MUTATION = gql`
+	mutation AddContractComment($contract_id: ID!, $value: String!) {
+		addContractComment(contract_id: $contract_id, value: $value) {
+			id
+			value
+			author_name
+			created_at
+		}
+	}
+`;
+
+const UPDATE_CONTRACT_COMMENT_MUTATION = gql`
+	mutation UpdateContractComment($id: ID!, $value: String!) {
+		updateContractComment(id: $id, value: $value) {
+			id
+			value
+			author_name
+			created_at
+		}
+	}
+`;
+
+// Function to add a comment to a contract
+export async function addContractComment(contractId, value, customFetch = null, cookies = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			ADD_CONTRACT_COMMENT_MUTATION,
+			{ contract_id: contractId, value },
+			'addContractComment',
+			3,
+			customFetch,
+			cookies
+		);
+		return result.addContractComment;
+	} catch (err) {
+		console.error('Add contract comment failed:', err);
+		throw err;
+	}
+}
+
+// Function to update a contract comment
+export async function updateContractComment(commentId, value, customFetch = null, cookies = null) {
+	try {
+		const result = await makeGraphQLRequest(
+			UPDATE_CONTRACT_COMMENT_MUTATION,
+			{ id: commentId, value },
+			'updateContractComment',
+			3,
+			customFetch,
+			cookies
+		);
+		return result.updateContractComment;
+	} catch (err) {
+		console.error('Update contract comment failed:', err);
+		throw err;
+	}
 }

@@ -86,7 +86,7 @@
 	async function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			const orderData = {
-				value: formData.value.trim() || 'Не указан',
+				value: 'Заказ', // Placeholder value, comment will be stored separately
 				company_id: formData.company_id,
 				project_id: formData.project_id,
 				order_amount: formData.order_amount ? parseFloat(formData.order_amount) : null,
@@ -106,7 +106,9 @@
 					is_urgent: false
 				}))
 			};
-			onSave(orderData);
+			// Передаём комментарий отдельно для обработки через полиморфную таблицу
+			const comment = formData.value.trim() || null;
+			onSave(orderData, comment);
 		}
 	}
 

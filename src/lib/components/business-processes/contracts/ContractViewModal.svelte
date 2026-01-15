@@ -66,8 +66,6 @@
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
 		return new Intl.NumberFormat('ru-RU', {
-			style: 'currency',
-			currency: 'RUB',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		}).format(amount);
@@ -231,13 +229,6 @@
 							></span>
 							{contract.is_active ? 'Активен' : 'Неактивен'}
 						</span>
-						{#if contract.contract_amount}
-							<span
-								class="inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white"
-							>
-								{formatCurrency(contract.contract_amount)}
-							</span>
-						{/if}
 					</div>
 				</div>
 
@@ -304,6 +295,18 @@
 											{contract.company?.name || '—'}
 										</p>
 									</div>
+									{#if contract.comments && contract.comments.length > 0}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p
+												class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+											>
+												Комментарий
+											</p>
+											<p class="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+												{contract.comments[0].value}
+											</p>
+										</div>
+									{/if}
 								</div>
 							</div>
 
@@ -415,6 +418,12 @@
 										</svg>
 										Бонусы
 									</h3>
+									<div class="mb-3 rounded-lg bg-indigo-100 p-3 dark:bg-indigo-900/40">
+										<p class="text-xs text-indigo-600 dark:text-indigo-400">Сумма договора</p>
+										<p class="text-lg font-bold text-indigo-700 dark:text-indigo-300">
+											{formatCurrency(contract.contract_amount)}
+										</p>
+									</div>
 									<div class="grid grid-cols-2 gap-3">
 										<div class="rounded-lg bg-white/60 p-3 dark:bg-gray-800/60">
 											<p class="text-xs text-gray-500 dark:text-gray-400">% агента</p>

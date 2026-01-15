@@ -319,7 +319,7 @@
 							</div>
 
 							<!-- Comment Card -->
-							{#if order.value || order.comment}
+							{#if order.comments && order.comments.length > 0}
 								<div
 									class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50"
 								>
@@ -342,7 +342,7 @@
 										Комментарий
 									</h3>
 									<p class="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
-										{order.value || order.comment}
+										{order.comments[0].value}
 									</p>
 								</div>
 							{/if}

@@ -20,6 +20,8 @@
 		project_id: '',
 		company_id: '',
 		contract_number: '',
+		comment: '',
+		commentId: null,
 		contract_date: '',
 		planned_completion_date: '',
 		actual_completion_date: '',
@@ -71,10 +73,14 @@
 	$effect(() => {
 		if (contract && isOpen) {
 			loadOptions();
+			// Получаем первый комментарий (если есть)
+			const firstComment = contract.comments?.[0];
 			formData = {
 				project_id: contract.project_id || '',
 				company_id: contract.company_id || '',
 				contract_number: contract.contract_number || '',
+				comment: firstComment?.value || '',
+				commentId: firstComment?.id || null,
 				contract_date: contract.contract_date ? contract.contract_date.split('T')[0] : '',
 				planned_completion_date: contract.planned_completion_date ? contract.planned_completion_date.split('T')[0] : '',
 				actual_completion_date: contract.actual_completion_date ? contract.actual_completion_date.split('T')[0] : '',
@@ -133,7 +139,13 @@
 				contractData.actual_completion_date = formData.actual_completion_date;
 			}
 
-			onSave(contractData);
+			// Передаём данные комментария отдельно
+			const commentData = {
+				value: formData.comment.trim() || null,
+				commentId: formData.commentId
+			};
+
+			onSave(contractData, commentData);
 		}
 	}
 
@@ -293,6 +305,12 @@
 							<div>
 								<label for="contract-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Номер договора</label>
 								<input type="text" id="contract-number" value={formData.contract_number} oninput={(e) => handleInputChange('contract_number', e.target.value)} disabled={isLoading} class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white" placeholder="Опционально" />
+							</div>
+
+							<!-- Comment -->
+							<div>
+								<label for="contract-comment" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Комментарий</label>
+								<textarea id="contract-comment" value={formData.comment} oninput={(e) => handleInputChange('comment', e.target.value)} disabled={isLoading} rows="2" class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white" placeholder="Опционально"></textarea>
 							</div>
 
 							<!-- Active Status -->

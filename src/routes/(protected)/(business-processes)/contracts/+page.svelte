@@ -26,7 +26,9 @@
 		updateContract,
 		deleteContract,
 		refreshContracts,
-		getContractStatuses
+		getContractStatuses,
+		addContractComment,
+		updateContractComment
 	} from '$lib/api/contracts.js';
 	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
@@ -211,13 +213,20 @@
 	}
 
 	// Save new contract
-	async function handleSaveNewContract(contractData) {
+	async function handleSaveNewContract(contractData, comment = null) {
 		isActionLoading = true;
 
 		try {
 			await retryOperation(
 				async () => {
 					const newContract = await createContract(contractData);
+					
+					// Если есть комментарий, добавляем его
+					if (comment) {
+						const newComment = await addContractComment(newContract.id, comment);
+						newContract.comments = [newComment];
+					}
+					
 					localContracts = [newContract, ...localContracts];
 					addSuccessToast('Договор успешно создан.');
 				},
@@ -239,13 +248,27 @@
 	}
 
 	// Save contract changes
-	async function handleSaveContract(updatedContractData) {
+	async function handleSaveContract(updatedContractData, commentData = null) {
 		isActionLoading = true;
 
 		try {
 			await retryOperation(
 				async () => {
 					const updatedContract = await updateContract(updatedContractData);
+					
+					// Обрабатываем комментарий
+					if (commentData && commentData.value) {
+						if (commentData.commentId) {
+							// Обновляем существующий комментарий
+							const updatedComment = await updateContractComment(commentData.commentId, commentData.value);
+							updatedContract.comments = [updatedComment];
+						} else {
+							// Добавляем новый комментарий
+							const newComment = await addContractComment(updatedContract.id, commentData.value);
+							updatedContract.comments = [newComment];
+						}
+					}
+					
 					updateContractInList(updatedContract);
 					addSuccessToast('Договор успешно обновлен.');
 				},

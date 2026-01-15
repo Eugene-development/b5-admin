@@ -44,6 +44,12 @@ export async function createOrder(orderData) {
 					color
 					sort_order
 				}
+				comments {
+					id
+					value
+					author_name
+					created_at
+				}
 				created_at
 				updated_at
 				positions {
@@ -158,6 +164,12 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 						value
 						color
 						sort_order
+					}
+					comments {
+						id
+						value
+						author_name
+						created_at
 					}
 					created_at
 					updated_at
@@ -283,6 +295,12 @@ export async function updateOrder(orderData) {
 					value
 					color
 					sort_order
+				}
+				comments {
+					id
+					value
+					author_name
+					created_at
 				}
 				created_at
 				updated_at
@@ -772,6 +790,108 @@ export function createOrdersApiWithFetch(fetch, cookies) {
 		createOrderPosition: (positionData) => createOrderPosition(positionData),
 		updateOrderPosition: (positionData) => updateOrderPosition(positionData),
 		deleteOrderPosition: (positionId) => deleteOrderPosition(positionId),
-		getOrderStatuses: () => getOrderStatuses(fetch)
+		getOrderStatuses: () => getOrderStatuses(fetch),
+		addOrderComment: (orderId, value) => addOrderComment(orderId, value),
+		updateOrderComment: (commentId, value) => updateOrderComment(commentId, value)
 	};
+}
+
+/**
+ * Add a comment to an order
+ * @param {string} orderId - Order ID
+ * @param {string} value - Comment text
+ * @returns {Promise<Object>} Created comment
+ */
+export async function addOrderComment(orderId, value) {
+	const mutation = `
+		mutation AddOrderComment($order_id: ID!, $value: String!) {
+			addOrderComment(order_id: $order_id, value: $value) {
+				id
+				value
+				author_name
+				created_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(getApiUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: { order_id: orderId, value }
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to add comment');
+		}
+
+		return result.data.addOrderComment;
+	} catch (error) {
+		handleApiError(error, 'Не удалось добавить комментарий');
+		throw error;
+	}
+}
+
+/**
+ * Update an order comment
+ * @param {string} commentId - Comment ID
+ * @param {string} value - New comment text
+ * @returns {Promise<Object>} Updated comment
+ */
+export async function updateOrderComment(commentId, value) {
+	const mutation = `
+		mutation UpdateOrderComment($id: ID!, $value: String!) {
+			updateOrderComment(id: $id, value: $value) {
+				id
+				value
+				author_name
+				created_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(getApiUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: { id: commentId, value }
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update comment');
+		}
+
+		return result.data.updateOrderComment;
+	} catch (error) {
+		handleApiError(error, 'Не удалось обновить комментарий');
+		throw error;
+	}
 }

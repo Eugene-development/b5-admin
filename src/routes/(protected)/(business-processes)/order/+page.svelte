@@ -34,7 +34,9 @@
 		updateOrder,
 		getCompaniesForDropdown,
 		getProjectsForDropdown,
-		getOrderStatuses
+		getOrderStatuses,
+		addOrderComment,
+		updateOrderComment
 	} from '$lib/api/orders.js';
 	import { getPartnerPaymentStatuses } from '$lib/api/finances.js';
 
@@ -359,13 +361,19 @@
 	}
 
 	// Save new order
-	async function handleSaveNewOrder(orderData) {
+	async function handleSaveNewOrder(orderData, comment = null) {
 		isActionLoading = true;
 
 		try {
 			await retryOperation(
 				async () => {
 					const newOrder = await createOrder(orderData);
+
+					// Если есть комментарий, добавляем его через полиморфную таблицу
+					if (comment) {
+						const newComment = await addOrderComment(newOrder.id, comment);
+						newOrder.comments = [newComment];
+					}
 
 					// Добавляем информацию о компании и проекте для отображения
 					// Приводим ID к строке для корректного сравнения
@@ -408,7 +416,7 @@
 	}
 
 	// Save edited order
-	async function handleSaveEditedOrder(orderData) {
+	async function handleSaveEditedOrder(orderData, commentData = null) {
 		isActionLoading = true;
 
 		try {
@@ -434,6 +442,19 @@
 						is_active: orderData.is_active,
 						is_urgent: orderData.is_urgent
 					});
+
+					// Обрабатываем комментарий через полиморфную таблицу
+					if (commentData && commentData.value) {
+						if (commentData.commentId) {
+							// Обновляем существующий комментарий
+							const updatedComment = await updateOrderComment(commentData.commentId, commentData.value);
+							updatedOrder.comments = [updatedComment];
+						} else {
+							// Добавляем новый комментарий
+							const newComment = await addOrderComment(updatedOrder.id, commentData.value);
+							updatedOrder.comments = [newComment];
+						}
+					}
 
 					// Delete removed positions
 					if (orderData.deletedPositionIds && orderData.deletedPositionIds.length > 0) {

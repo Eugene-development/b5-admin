@@ -20,6 +20,8 @@
 	let formData = $state({
 		id: '',
 		value: '',
+		comment: '',
+		commentId: null,
 		company_id: '',
 		project_id: '',
 		order_number: '',
@@ -76,9 +78,13 @@
 
 	$effect(() => {
 		if (isOpen && order) {
+			// Получаем первый комментарий (если есть)
+			const firstComment = order.comments?.[0];
 			formData = {
 				id: order.id,
 				value: order.value || '',
+				comment: firstComment?.value || '',
+				commentId: firstComment?.id || null,
 				company_id: order.company_id || '',
 				project_id: order.project_id || '',
 				order_number: order.order_number || '',
@@ -149,7 +155,7 @@
 		if (onSave && !isLoading && isFormValid) {
 			const orderData = {
 				id: formData.id,
-				value: formData.value.trim() || 'Не указан',
+				value: formData.value.trim() || 'Заказ',
 				company_id: formData.company_id,
 				project_id: formData.project_id,
 				order_number: formData.order_number.trim(),
@@ -172,7 +178,12 @@
 				})),
 				deletedPositionIds
 			};
-			onSave(orderData);
+			// Передаём данные комментария отдельно
+			const commentData = {
+				value: formData.comment.trim() || null,
+				commentId: formData.commentId
+			};
+			onSave(orderData, commentData);
 		}
 	}
 
@@ -357,13 +368,13 @@
 							</div>
 							<div class="mt-4">
 								<label
-									for="order-value"
+									for="order-comment"
 									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 									>Комментарий</label
 								>
 								<textarea
-									id="order-value"
-									bind:value={formData.value}
+									id="order-comment"
+									bind:value={formData.comment}
 									disabled={isLoading}
 									rows="2"
 									placeholder="Не указан"
