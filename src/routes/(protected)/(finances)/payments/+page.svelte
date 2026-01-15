@@ -192,6 +192,22 @@
 		);
 		updateCounter++;
 	}
+
+	// Handle payment update
+	function handlePaymentUpdate(updatedPayment) {
+		requests = requests.map((request) =>
+			request.id === updatedPayment.id ? updatedPayment : request
+		);
+		updateCounter++;
+		addSuccessToast('Заявка успешно обновлена');
+	}
+
+	// Handle payment delete
+	function handlePaymentDelete(paymentId) {
+		requests = requests.filter((request) => request.id !== paymentId);
+		updateCounter++;
+		addSuccessToast('Заявка успешно удалена');
+	}
 </script>
 
 <svelte:window onkeydown={handleKeydown} />
@@ -350,6 +366,8 @@
 										{hasSearched}
 										{updateCounter}
 										onStatusChange={handleStatusChange}
+										onPaymentUpdate={handlePaymentUpdate}
+										onPaymentDelete={handlePaymentDelete}
 									/>
 								</div>
 

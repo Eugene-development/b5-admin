@@ -278,6 +278,25 @@
 	function removeContractFromList(contractId) {
 		localContracts = localContracts.filter((contract) => contract && contract.id !== contractId);
 		updateCounter++;
+		
+		// Check if current page is now empty and adjust if needed
+		const newTotalPages = Math.ceil(
+			(searchTerm.trim()
+				? localContracts.filter((contract) => {
+						const term = searchTerm.toLowerCase().trim();
+						const contractNumber = (contract.contract_number || '').toLowerCase();
+						const projectName = (contract.project?.value || '').toLowerCase();
+						const companyName = (contract.company?.name || '').toLowerCase();
+						return (
+							contractNumber.includes(term) || projectName.includes(term) || companyName.includes(term)
+						);
+					}).length
+				: localContracts.length) / itemsPerPage
+		);
+		
+		if (newTotalPages > 0 && currentPage > newTotalPages) {
+			currentPage = newTotalPages;
+		}
 	}
 
 	// Update contract in local state after editing

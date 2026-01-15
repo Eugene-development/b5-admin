@@ -368,6 +368,31 @@
 	function removeProjectFromList(projectId) {
 		localProjects = localProjects.filter((project) => project.id !== projectId);
 		updateCounter++;
+		
+		// Check if current page is now empty and adjust if needed
+		const newTotalPages = Math.ceil(
+			(searchTerm.trim()
+				? localProjects.filter((project) => {
+						const term = searchTerm.toLowerCase().trim();
+						const name = (project.value || '').toLowerCase();
+						const region = (project.region || '').toLowerCase();
+						const contractNumber = (project.contract_number || '').toLowerCase();
+						const agentName = (project.agent?.name || '').toLowerCase();
+						const agentEmail = (project.agent?.email || '').toLowerCase();
+						return (
+							name.includes(term) ||
+							region.includes(term) ||
+							contractNumber.includes(term) ||
+							agentName.includes(term) ||
+							agentEmail.includes(term)
+						);
+					}).length
+				: localProjects.length) / itemsPerPage
+		);
+		
+		if (newTotalPages > 0 && currentPage > newTotalPages) {
+			currentPage = newTotalPages;
+		}
 	}
 
 	// Update project in local state after editing

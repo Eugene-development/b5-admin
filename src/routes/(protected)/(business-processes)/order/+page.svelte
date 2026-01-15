@@ -221,6 +221,30 @@
 						}));
 						// filteredOrders automatically updates via $derived
 						updateCounter++;
+						
+						// Check if current page is now empty and adjust if needed
+						const newTotalPages = Math.ceil(
+							(searchTerm.trim()
+								? orders.filter((order) => {
+										const term = searchTerm.toLowerCase().trim();
+										return (
+											order.id.toString().includes(term) ||
+											(order.order_number && order.order_number.toLowerCase().includes(term)) ||
+											(order.value && order.value.toLowerCase().includes(term)) ||
+											(order.company?.name && order.company.name.toLowerCase().includes(term)) ||
+											(order.project?.value && order.project.value.toLowerCase().includes(term)) ||
+											(order.supplier && order.supplier.toLowerCase().includes(term)) ||
+											(order.deal && order.deal.toLowerCase().includes(term)) ||
+											(order.comment && order.comment.toLowerCase().includes(term))
+										);
+									}).length
+								: orders.length) / itemsPerPage
+						);
+						
+						if (newTotalPages > 0 && currentPage > newTotalPages) {
+							currentPage = newTotalPages;
+						}
+						
 						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
 					}
 				},

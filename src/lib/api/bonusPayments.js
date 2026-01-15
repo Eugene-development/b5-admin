@@ -304,6 +304,138 @@ export async function createBonusPaymentRequest(input) {
 }
 
 /**
+ * Обновить заявку на выплату
+ * @param {string} requestId - ID заявки
+ * @param {Object} input - Данные для обновления
+ * @param {number} input.amount - Сумма выплаты
+ * @param {string} input.payment_method - Способ выплаты (card, sbp, other)
+ * @param {string} input.card_number - Номер карты (для card)
+ * @param {string} input.phone_number - Номер телефона (для sbp)
+ * @param {string} input.contact_info - Контактная информация (для other)
+ * @param {string} input.comment - Комментарий
+ * @returns {Promise<Object>} Обновлённая заявка
+ */
+export async function updateBonusPaymentRequest(requestId, input) {
+	const mutation = `
+		mutation UpdateBonusPaymentRequest($requestId: ID!, $input: UpdateBonusPaymentRequestInput!) {
+			updateBonusPaymentRequest(request_id: $requestId, input: $input) {
+				id
+				agent_id
+				agent {
+					id
+					name
+					email
+				}
+				requester_type
+				amount
+				payment_method
+				card_number
+				phone_number
+				contact_info
+				comment
+				status_id
+				status {
+					id
+					code
+					name
+					color
+				}
+				payment_date
+				created_at
+				updated_at
+			}
+		}
+	`;
+
+	try {
+		const response = await fetch(getApiUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					requestId,
+					input: {
+						amount: input.amount,
+						payment_method: input.payment_method,
+						card_number: input.card_number || null,
+						phone_number: input.phone_number || null,
+						contact_info: input.contact_info || null,
+						comment: input.comment || null
+					}
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to update bonus payment request');
+		}
+
+		return result.data.updateBonusPaymentRequest;
+	} catch (error) {
+		handleApiError(error, 'Не удалось обновить заявку');
+		throw error;
+	}
+}
+
+/**
+ * Удалить заявку на выплату
+ * @param {string} requestId - ID заявки
+ * @returns {Promise<boolean>} Результат удаления
+ */
+export async function deleteBonusPaymentRequest(requestId) {
+	const mutation = `
+		mutation DeleteBonusPaymentRequest($requestId: ID!) {
+			deleteBonusPaymentRequest(request_id: $requestId)
+		}
+	`;
+
+	try {
+		const response = await fetch(getApiUrl(), {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+				...getAuthHeaders()
+			},
+			credentials: 'include',
+			body: JSON.stringify({
+				query: mutation,
+				variables: {
+					requestId
+				}
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const result = await response.json();
+
+		if (result.errors) {
+			throw new Error(result.errors[0]?.message || 'Failed to delete bonus payment request');
+		}
+
+		return result.data.deleteBonusPaymentRequest;
+	} catch (error) {
+		handleApiError(error, 'Не удалось удалить заявку');
+		throw error;
+	}
+}
+
+/**
  * Обновить список заявок
  * @returns {Promise<Object>} Данные с пагинацией
  */
@@ -322,6 +454,8 @@ export function createBonusPaymentsApiWithFetch(fetch) {
 		getBonusPaymentStatuses: () => getBonusPaymentStatuses(fetch),
 		updateBonusPaymentRequestStatus: (requestId, statusCode) => updateBonusPaymentRequestStatus(requestId, statusCode),
 		createBonusPaymentRequest: (input) => createBonusPaymentRequest(input),
+		updateBonusPaymentRequest: (requestId, input) => updateBonusPaymentRequest(requestId, input),
+		deleteBonusPaymentRequest: (requestId) => deleteBonusPaymentRequest(requestId),
 		refreshBonusPaymentRequests: () => refreshBonusPaymentRequests()
 	};
 }
