@@ -16,7 +16,8 @@
 				phone: project.phone,
 				is_incognito: project.is_incognito,
 				orders: project.orders,
-				contracts: project.contracts
+				contracts: project.contracts,
+				comments: project.comments
 			});
 		}
 	});
@@ -358,6 +359,20 @@
 											<p class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
 												{project.description}
 											</p>
+										</div>
+									{/if}
+									{#if project.comments && project.comments.length > 0}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p
+												class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+											>
+												Комментарий
+											</p>
+											{#each project.comments as comment}
+												<p class="mt-1 whitespace-pre-wrap text-sm text-gray-900 dark:text-white">
+													{comment.value}
+												</p>
+											{/each}
 										</div>
 									{/if}
 								</div>

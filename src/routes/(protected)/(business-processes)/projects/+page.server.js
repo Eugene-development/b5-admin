@@ -107,6 +107,12 @@ const PROJECTS_QUERY = `
 				curator_bonus
 				is_active
 			}
+				comments {
+					id
+					value
+					author_name
+					created_at
+				}
 				region
 				description
 				is_active
