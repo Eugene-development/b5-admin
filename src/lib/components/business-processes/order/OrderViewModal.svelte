@@ -6,6 +6,19 @@
 
 	const isAdmin = $derived(authState.user?.type === 'Админ');
 
+	// Debug: log order data
+	$effect(() => {
+		if (order) {
+			console.log('OrderViewModal - order data:', {
+				order_amount: order.order_amount,
+				agent_percentage: order.agent_percentage,
+				curator_percentage: order.curator_percentage,
+				agent_bonus: order.agent_bonus,
+				curator_bonus: order.curator_bonus
+			});
+		}
+	});
+
 	let modalElement = $state();
 	let previousActiveElement;
 
@@ -35,8 +48,6 @@
 	function formatCurrency(amount) {
 		if (amount === null || amount === undefined) return '—';
 		return new Intl.NumberFormat('ru-RU', {
-			style: 'currency',
-			currency: 'RUB',
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0
 		}).format(amount);
@@ -339,54 +350,6 @@
 
 						<!-- Right column -->
 						<div class="space-y-6">
-							<!-- Dates Card -->
-							<div
-								class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50"
-							>
-								<h3
-									class="mb-4 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white"
-								>
-									<svg
-										class="h-4 w-4 text-amber-500"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke="currentColor"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											stroke-width="2"
-											d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-										/>
-									</svg>
-									Сроки поставки
-								</h3>
-								<div class="grid grid-cols-2 gap-4">
-									<div>
-										<p
-											class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
-										>
-											Плановая
-										</p>
-										<p class="mt-1 font-medium text-gray-900 dark:text-white">
-											{formatDate(order.planned_delivery_date)}
-										</p>
-									</div>
-									{#if order.actual_delivery_date}
-										<div>
-											<p
-												class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
-											>
-												Фактическая
-											</p>
-											<p class="mt-1 font-medium text-emerald-600 dark:text-emerald-400">
-												{formatDate(order.actual_delivery_date)}
-											</p>
-										</div>
-									{/if}
-								</div>
-							</div>
-
 							<!-- Bonuses Card (Admin only) -->
 							{#if isAdmin}
 								<div

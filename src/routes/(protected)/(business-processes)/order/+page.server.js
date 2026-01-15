@@ -15,6 +15,11 @@ const ORDERS_QUERY = `
 				order_number
 				delivery_date
 				actual_delivery_date
+				order_amount
+				agent_percentage
+				curator_percentage
+				agent_bonus
+				curator_bonus
 				is_active
 				is_urgent
 				status_id
@@ -35,6 +40,12 @@ const ORDERS_QUERY = `
 					id
 					name
 					legal_name
+					phones {
+						id
+						value
+						contact_person
+						is_primary
+					}
 				}
 				project {
 					id

@@ -165,16 +165,26 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 						id
 						name
 						legal_name
-					}
-					project {
-						id
-						value
-						region
 						phones {
 							id
 							value
 							contact_person
 							is_primary
+						}
+					}
+					project {
+						id
+						value
+						region
+						client {
+							id
+							name
+							phones {
+								id
+								value
+								contact_person
+								is_primary
+							}
 						}
 					}
 					positions {
