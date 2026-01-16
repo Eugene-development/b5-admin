@@ -539,10 +539,10 @@
 										</div>
 									{/each}
 								</div>
-								<div class="mt-4 rounded-lg bg-gray-100 p-3 dark:bg-gray-700">
+								<div class="ml-auto mt-4 w-1/3 rounded-lg bg-gray-100 p-3 dark:bg-gray-700">
 									<div class="flex items-center justify-between">
 										<span class="text-sm font-medium text-gray-700 dark:text-gray-300"
-											>Общая сумма:</span
+											>Сумма заказа:</span
 										>
 										<span class="text-lg font-bold text-gray-900 dark:text-white"
 											>{positions
