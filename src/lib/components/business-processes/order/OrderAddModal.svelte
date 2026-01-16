@@ -534,7 +534,7 @@
 											>
 												Итого: {position.price && position.count
 													? ((parseFloat(position.price) || 0) * position.count).toFixed(0)
-													: '0'} ₽
+													: '0'}
 											</div>
 										</div>
 									{/each}
@@ -547,7 +547,7 @@
 										<span class="text-lg font-bold text-gray-900 dark:text-white"
 											>{positions
 												.reduce((sum, p) => sum + (parseFloat(p.price) || 0) * p.count, 0)
-												.toFixed(0)} ₽</span
+												.toFixed(0)}</span
 										>
 									</div>
 								</div>

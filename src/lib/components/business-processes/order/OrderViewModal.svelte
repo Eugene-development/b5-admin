@@ -1,8 +1,37 @@
 <script>
 	import { formatPhone } from '$lib/utils/formatters.js';
 	import { authState } from '$lib/state/auth.svelte.js';
+	import { exportOrder } from '$lib/utils/orderExport.js';
 
 	let { order = null, onClose } = $props();
+
+	// Состояние выпадающего меню скачивания
+	let showDownloadMenu = $state(false);
+	let isDownloading = $state(false);
+
+	// Обработчик скачивания
+	async function handleDownload(format) {
+		if (!order) return;
+
+		isDownloading = true;
+		showDownloadMenu = false;
+
+		try {
+			await exportOrder(order, format);
+		} catch (error) {
+			console.error('Ошибка при экспорте:', error);
+			alert('Произошла ошибка при скачивании документа');
+		} finally {
+			isDownloading = false;
+		}
+	}
+
+	// Закрытие меню при клике вне его
+	function handleClickOutside(event) {
+		if (showDownloadMenu && !event.target.closest('.download-menu-container')) {
+			showDownloadMenu = false;
+		}
+	}
 
 	const isAdmin = $derived(authState.user?.type === 'Админ');
 
@@ -85,11 +114,13 @@
 		if (order) {
 			previousActiveElement = document.activeElement;
 			document.addEventListener('keydown', handleKeydown);
+			document.addEventListener('click', handleClickOutside);
 			document.body.style.overflow = 'hidden';
 		}
 
 		return () => {
 			document.removeEventListener('keydown', handleKeydown);
+			document.removeEventListener('click', handleClickOutside);
 			document.body.style.overflow = '';
 			if (previousActiveElement) {
 				previousActiveElement.focus();
@@ -490,14 +521,14 @@
 													>{position.article || '—'}</td
 												>
 												<td class="px-3 py-3 text-right text-sm text-gray-900 dark:text-white"
-													>{position.price?.toLocaleString('ru-RU') || '—'} ₽</td
+													>{position.price?.toLocaleString('ru-RU') || '—'}</td
 												>
 												<td class="px-3 py-3 text-right text-sm text-gray-900 dark:text-white"
 													>{position.count}</td
 												>
 												<td
 													class="px-3 py-3 text-right text-sm font-medium text-gray-900 dark:text-white"
-													>{position.total_price?.toLocaleString('ru-RU') || '—'} ₽</td
+													>{position.total_price?.toLocaleString('ru-RU') || '—'}</td
 												>
 											</tr>
 										{/each}
@@ -514,7 +545,7 @@
 											>
 												{order.positions
 													.reduce((sum, p) => sum + (p.total_price || 0), 0)
-													.toLocaleString('ru-RU')} ₽
+													.toLocaleString('ru-RU')}
 											</td>
 										</tr>
 									</tfoot>
@@ -535,13 +566,111 @@
 								<span>Обновлён: {formatDateTime(order.updated_at)}</span>
 							{/if}
 						</div>
-						<button
-							type="button"
-							onclick={handleClose}
-							class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white dark:focus:ring-gray-100"
-						>
-							Закрыть
-						</button>
+						<div class="flex items-center gap-3">
+							<!-- Кнопка скачивания -->
+							<div class="download-menu-container relative">
+								<button
+									type="button"
+									onclick={() => (showDownloadMenu = !showDownloadMenu)}
+									disabled={isDownloading}
+									class="inline-flex items-center gap-2 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-amber-500 dark:hover:bg-amber-400"
+								>
+									{#if isDownloading}
+										<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+											<circle
+												class="opacity-25"
+												cx="12"
+												cy="12"
+												r="10"
+												stroke="currentColor"
+												stroke-width="4"
+											></circle>
+											<path
+												class="opacity-75"
+												fill="currentColor"
+												d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+											></path>
+										</svg>
+										Скачивание...
+									{:else}
+										<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+											/>
+										</svg>
+										Скачать
+										<svg
+											class="h-4 w-4 transition-transform {showDownloadMenu ? 'rotate-180' : ''}"
+											fill="none"
+											viewBox="0 0 24 24"
+											stroke="currentColor"
+										>
+											<path
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="2"
+												d="M19 9l-7 7-7-7"
+											/>
+										</svg>
+									{/if}
+								</button>
+
+								<!-- Выпадающее меню -->
+								{#if showDownloadMenu}
+									<div
+										class="absolute bottom-full right-0 mb-2 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-xl dark:border-gray-700 dark:bg-gray-800"
+									>
+										<button
+											type="button"
+											onclick={() => handleDownload('pdf')}
+											class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+										>
+											<svg class="h-5 w-5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
+												<path
+													d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM10.5 11c1.5 0 2.5 1 2.5 2.5S12 16 10.5 16h-1v2H8v-7h2.5zm-1 3.5h1c.5 0 1-.5 1-1s-.5-1-1-1h-1v2zm6.5-3.5h2.5v1.5H16V15h1.5v1.5H16V19h-1.5v-7.5z"
+												/>
+											</svg>
+											<span class="font-medium">PDF</span>
+										</button>
+										<button
+											type="button"
+											onclick={() => handleDownload('excel')}
+											class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+										>
+											<svg class="h-5 w-5 text-green-600" viewBox="0 0 24 24" fill="currentColor">
+												<path
+													d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 11h2l1.5 3 1.5-3h2l-2.5 4 2.5 4h-2l-1.5-3-1.5 3H8l2.5-4L8 11z"
+												/>
+											</svg>
+											<span class="font-medium">Excel</span>
+										</button>
+										<button
+											type="button"
+											onclick={() => handleDownload('word')}
+											class="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+										>
+											<svg class="h-5 w-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+												<path
+													d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM7 11h1.5l1.5 5 1.5-5h1l1.5 5 1.5-5H17l-2.25 8h-1.5L12 14l-1.25 5h-1.5L7 11z"
+												/>
+											</svg>
+											<span class="font-medium">Word</span>
+										</button>
+									</div>
+								{/if}
+							</div>
+
+							<button
+								type="button"
+								onclick={handleClose}
+								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 dark:bg-gray-100 dark:text-gray-900 dark:hover:bg-white dark:focus:ring-gray-100"
+							>
+								Закрыть
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
