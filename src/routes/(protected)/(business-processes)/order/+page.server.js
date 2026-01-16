@@ -43,7 +43,6 @@ const ORDERS_QUERY = `
 					phones {
 						id
 						value
-						contact_person
 						is_primary
 					}
 				}
