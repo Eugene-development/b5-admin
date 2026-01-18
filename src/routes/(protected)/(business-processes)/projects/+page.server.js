@@ -13,6 +13,7 @@ const PROJECTS_QUERY = `
 		projects(first: $first, page: $page) {
 			data {
 				id
+				project_number
 				value
 				user_id
 				client_id

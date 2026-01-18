@@ -287,7 +287,7 @@
 									>
 										<option value="">Не указан</option>
 										{#each projects as project}<option value={project.id}
-												>{project.value || 'Без названия'}</option
+												>{project.project_number || 'Без номера'}</option
 											>{/each}
 									</select>
 								</div>

@@ -104,6 +104,7 @@ const PROJECTS_QUERY = `
 		projects(first: 1000) {
 			data {
 				id
+				project_number
 				value
 				contract_number
 			}

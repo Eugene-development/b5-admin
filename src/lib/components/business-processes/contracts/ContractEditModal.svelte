@@ -359,7 +359,8 @@
 									required
 								>
 									<option value="">Выберите проект</option>
-									{#each projects as project}<option value={project.id}>{project.value}</option
+									{#each projects as project}<option value={project.id}
+											>{project.project_number || 'Без номера'}</option
 										>{/each}
 								</select>
 								{#if errors.project_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">

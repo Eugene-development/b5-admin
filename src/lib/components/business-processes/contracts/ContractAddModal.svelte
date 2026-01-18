@@ -265,89 +265,98 @@
 				<!-- Form Content -->
 				<form onsubmit={handleSubmit} class="max-h-[calc(100vh-200px)] overflow-y-auto p-6">
 					<div class="space-y-5">
-						<!-- Project Selection -->
-						<div>
-							<label
-								for="project-select"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-								>Проект <span class="text-red-500">*</span></label
-							>
-							<select
-								bind:this={firstInputElement}
-								id="project-select"
-								value={formData.project_id}
-								onchange={(e) => handleInputChange('project_id', e.target.value)}
-								disabled={isLoading || isLoadingProjects}
-								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								required
-							>
-								<option value="">Выберите проект</option>
-								{#each projects as project}<option value={project.id}>{project.value}</option
-									>{/each}
-							</select>
-							{#if errors.project_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-									{errors.project_id}
-								</p>{/if}
+						<!-- Project and Company Selection -->
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<label
+									for="project-select"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+									>Проект <span class="text-red-500">*</span></label
+								>
+								<select
+									bind:this={firstInputElement}
+									id="project-select"
+									value={formData.project_id}
+									onchange={(e) => handleInputChange('project_id', e.target.value)}
+									disabled={isLoading || isLoadingProjects}
+									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									required
+								>
+									<option value="">Выберите проект</option>
+									{#each projects as project}<option value={project.id}
+											>{project.project_number || 'Без номера'}</option
+										>{/each}
+								</select>
+								{#if errors.project_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.project_id}
+									</p>{/if}
+							</div>
+
+							<div>
+								<label
+									for="company-select"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+									>Компания <span class="text-red-500">*</span></label
+								>
+								<select
+									id="company-select"
+									value={formData.company_id}
+									onchange={(e) => handleInputChange('company_id', e.target.value)}
+									disabled={isLoading || isLoadingCompanies}
+									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									required
+								>
+									<option value="">Выберите компанию</option>
+									{#each companies as company}<option value={company.id}>{company.name}</option
+										>{/each}
+								</select>
+								{#if errors.company_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.company_id}
+									</p>{/if}
+							</div>
 						</div>
 
-						<!-- Company Selection -->
-						<div>
-							<label
-								for="company-select"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-								>Компания <span class="text-red-500">*</span></label
-							>
-							<select
-								id="company-select"
-								value={formData.company_id}
-								onchange={(e) => handleInputChange('company_id', e.target.value)}
-								disabled={isLoading || isLoadingCompanies}
-								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								required
-							>
-								<option value="">Выберите компанию</option>
-								{#each companies as company}<option value={company.id}>{company.name}</option
-									>{/each}
-							</select>
-							{#if errors.company_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-									{errors.company_id}
-								</p>{/if}
-						</div>
+						<!-- Factory Contract Number and Contract Amount -->
+						<div class="grid grid-cols-2 gap-4">
+							<div>
+								<label
+									for="factory-contract-number"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+									>Номер договора от фабрики</label
+								>
+								<input
+									type="text"
+									id="factory-contract-number"
+									value={formData.factory_contract_number}
+									oninput={(e) => handleInputChange('factory_contract_number', e.target.value)}
+									disabled={isLoading}
+									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									placeholder="Опционально"
+								/>
+							</div>
 
-						<!-- Factory Contract Number (номер договора от фабрики) -->
-						<div>
-							<label
-								for="factory-contract-number"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-								>Номер договора от фабрики</label
-							>
-							<input
-								type="text"
-								id="factory-contract-number"
-								value={formData.factory_contract_number}
-								oninput={(e) => handleInputChange('factory_contract_number', e.target.value)}
-								disabled={isLoading}
-								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								placeholder="Опционально"
-							/>
-						</div>
-
-						<!-- Comment -->
-						<div>
-							<label
-								for="contract-comment"
-								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-								>Комментарий</label
-							>
-							<textarea
-								id="contract-comment"
-								value={formData.comment}
-								oninput={(e) => handleInputChange('comment', e.target.value)}
-								disabled={isLoading}
-								rows="2"
-								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								placeholder="Опционально"
-							></textarea>
+							<div>
+								<label
+									for="contract-amount"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+									>Сумма контракта <span class="text-red-500">*</span></label
+								>
+								<input
+									type="number"
+									id="contract-amount"
+									min="0"
+									step="0.01"
+									value={formData.contract_amount}
+									oninput={(e) => handleInputChange('contract_amount', e.target.value)}
+									disabled={isLoading}
+									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									placeholder="0"
+									required
+								/>
+								{#if errors.contract_amount}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.contract_amount}
+									</p>{/if}
+							</div>
 						</div>
 
 						<!-- Dates -->
@@ -356,7 +365,7 @@
 								<label
 									for="contract-date"
 									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-									>Дата договора <span class="text-red-500">*</span></label
+									>Дата заключения <span class="text-red-500">*</span></label
 								>
 								<input
 									type="date"
@@ -394,28 +403,22 @@
 							</div>
 						</div>
 
-						<!-- Contract Amount -->
+						<!-- Comment -->
 						<div>
 							<label
-								for="contract-amount"
+								for="contract-comment"
 								class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-								>Сумма контракта (₽) <span class="text-red-500">*</span></label
+								>Комментарий</label
 							>
-							<input
-								type="number"
-								id="contract-amount"
-								min="0"
-								step="0.01"
-								value={formData.contract_amount}
-								oninput={(e) => handleInputChange('contract_amount', e.target.value)}
+							<textarea
+								id="contract-comment"
+								value={formData.comment}
+								oninput={(e) => handleInputChange('comment', e.target.value)}
 								disabled={isLoading}
+								rows="2"
 								class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								placeholder="0"
-								required
-							/>
-							{#if errors.contract_amount}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-									{errors.contract_amount}
-								</p>{/if}
+								placeholder="Опционально"
+							></textarea>
 						</div>
 
 						<!-- Status Checkboxes -->

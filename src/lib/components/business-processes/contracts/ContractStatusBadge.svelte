@@ -2,12 +2,7 @@
 	import { updateContractStatus } from '$lib/api/contracts.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 
-	let {
-		contract,
-		contractStatuses = [],
-		onStatusChange = null,
-		readonly = false
-	} = $props();
+	let { contract, contractStatuses = [], onStatusChange = null, readonly = false } = $props();
 
 	let isUpdating = $state(false);
 	let showDropdown = $state(false);
@@ -27,7 +22,7 @@
 			const viewportHeight = window.innerHeight;
 			const spaceBelow = viewportHeight - rect.bottom;
 			const spaceAbove = rect.top;
-			
+
 			// If not enough space below and more space above, show above
 			if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
 				dropdownPosition = {
@@ -103,17 +98,20 @@
 				showDropdown = !showDropdown;
 			}}
 			disabled={isUpdating}
-			class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all {isUpdating ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:ring-2 hover:ring-offset-1'}"
+			class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-all {isUpdating
+				? 'cursor-wait opacity-50'
+				: 'cursor-pointer hover:ring-2 hover:ring-offset-1'}"
 			style="color: {currentStatus.color}; --tw-ring-color: {currentStatus.color};"
 		>
 			{#if isUpdating}
 				<svg
-					class="mr-1 h-3 w-3 animate-spin flex-shrink-0"
+					class="mr-1 h-3 w-3 flex-shrink-0 animate-spin"
 					xmlns="http://www.w3.org/2000/svg"
 					fill="none"
 					viewBox="0 0 24 24"
 				>
-					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+					<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"
+					></circle>
 					<path
 						class="opacity-75"
 						fill="currentColor"
@@ -138,17 +136,16 @@
 								e.stopPropagation();
 								handleStatusChange(status.slug);
 							}}
-							class="flex w-full items-center px-4 py-2 text-left text-sm {status.slug === currentStatus.slug
+							class="flex w-full items-center px-4 py-2 text-left text-sm {status.slug ===
+							currentStatus.slug
 								? 'bg-gray-100 dark:bg-gray-600'
 								: 'hover:bg-gray-50 dark:hover:bg-gray-600'} text-gray-700 dark:text-gray-200"
 						>
-							<span
-								class="mr-2 h-2 w-2 rounded-full"
-								style="background-color: {status.color};"
+							<span class="mr-2 h-2 w-2 rounded-full" style="background-color: {status.color};"
 							></span>
 							{status.value}
 							{#if status.slug === currentStatus.slug}
-								<svg class="ml-auto h-4 w-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+								<svg class="ml-auto h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
 									<path
 										fill-rule="evenodd"
 										d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"

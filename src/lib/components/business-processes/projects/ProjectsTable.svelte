@@ -104,7 +104,12 @@
 	$effect(() => {
 		console.log(
 			'ProjectsTable received projects:',
-			projects.map((p) => ({ id: p.id, value: p.value, status: p.status }))
+			projects.map((p) => ({
+				id: p.id,
+				project_number: p.project_number,
+				value: p.value,
+				status: p.status
+			}))
 		);
 	});
 
@@ -256,7 +261,7 @@
 					id="col-status"
 					scope="col"
 					role="columnheader"
-					class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wide dark:text-gray-400"
+					class="px-6 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					aria-sort={sortColumn === 'status'
 						? sortDirection === 'asc'
 							? 'ascending'
