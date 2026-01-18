@@ -118,7 +118,7 @@
 				else delete newErrors.project_id;
 				break;
 			case 'company_id':
-				if (!value) newErrors.company_id = 'Выберите компанию';
+				if (!value) newErrors.company_id = 'Выберите фабрику';
 				else delete newErrors.company_id;
 				break;
 			case 'contract_date':
@@ -269,12 +269,35 @@
 						<div class="grid grid-cols-2 gap-4">
 							<div>
 								<label
+									for="company-select"
+									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+									>Фабрика <span class="text-red-500">*</span></label
+								>
+								<select
+									bind:this={firstInputElement}
+									id="company-select"
+									value={formData.company_id}
+									onchange={(e) => handleInputChange('company_id', e.target.value)}
+									disabled={isLoading || isLoadingCompanies}
+									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									required
+								>
+									<option value="">Выберите фабрику</option>
+									{#each companies as company}<option value={company.id}>{company.name}</option
+										>{/each}
+								</select>
+								{#if errors.company_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
+										{errors.company_id}
+									</p>{/if}
+							</div>
+
+							<div>
+								<label
 									for="project-select"
 									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
 									>Проект <span class="text-red-500">*</span></label
 								>
 								<select
-									bind:this={firstInputElement}
 									id="project-select"
 									value={formData.project_id}
 									onchange={(e) => handleInputChange('project_id', e.target.value)}
@@ -289,29 +312,6 @@
 								</select>
 								{#if errors.project_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
 										{errors.project_id}
-									</p>{/if}
-							</div>
-
-							<div>
-								<label
-									for="company-select"
-									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-									>Компания <span class="text-red-500">*</span></label
-								>
-								<select
-									id="company-select"
-									value={formData.company_id}
-									onchange={(e) => handleInputChange('company_id', e.target.value)}
-									disabled={isLoading || isLoadingCompanies}
-									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-									required
-								>
-									<option value="">Выберите компанию</option>
-									{#each companies as company}<option value={company.id}>{company.name}</option
-										>{/each}
-								</select>
-								{#if errors.company_id}<p class="mt-1 text-sm text-red-600 dark:text-red-400">
-										{errors.company_id}
 									</p>{/if}
 							</div>
 						</div>
@@ -339,7 +339,7 @@
 								<label
 									for="contract-amount"
 									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-									>Сумма контракта <span class="text-red-500">*</span></label
+									>Сумма договора <span class="text-red-500">*</span></label
 								>
 								<input
 									type="number"

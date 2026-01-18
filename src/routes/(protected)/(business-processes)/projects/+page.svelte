@@ -232,7 +232,7 @@
 			type: 'delete',
 			project: project,
 			title: 'Удалить проект',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить проект "${project.value}"? Это действие нельзя отменить. Все данные проекта будут потеряны.`,
+			message: `Вы уверены, что хотите НАВСЕГДА удалить проект "${project.project_number}"? Это действие нельзя отменить. Все данные проекта будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -255,7 +255,7 @@
 					if (type === 'delete') {
 						await deleteProject(project.id);
 						removeProjectFromList(project.id);
-						addSuccessToast(`Проект "${project.value}" удален.`);
+						addSuccessToast(`Проект "${project.project_number}" удалён.`);
 						// Refresh new projects count in sidebar (in case deleted project was new)
 						await newProjectsState.refresh();
 					}
