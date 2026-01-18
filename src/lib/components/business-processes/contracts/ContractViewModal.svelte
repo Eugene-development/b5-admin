@@ -295,6 +295,18 @@
 											{contract.company?.name || '—'}
 										</p>
 									</div>
+									{#if contract.value}
+										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
+											<p
+												class="text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400"
+											>
+												Номер договора от фабрики
+											</p>
+											<p class="mt-1 font-medium text-gray-900 dark:text-white">
+												{contract.value}
+											</p>
+										</div>
+									{/if}
 									{#if contract.comments && contract.comments.length > 0}
 										<div class="border-t border-gray-200 pt-4 dark:border-gray-700">
 											<p
@@ -302,7 +314,7 @@
 											>
 												Комментарий
 											</p>
-											<p class="mt-1 text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+											<p class="mt-1 whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300">
 												{contract.comments[0].value}
 											</p>
 										</div>

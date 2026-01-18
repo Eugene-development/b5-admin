@@ -190,7 +190,7 @@
 					if (type === 'delete') {
 						await deleteContract(contract.id);
 						removeContractFromList(contract.id);
-						addSuccessToast(`Договор успешно удален.`);
+						addSuccessToast(`Договор удален.`);
 					}
 				},
 				2,
@@ -220,15 +220,15 @@
 			await retryOperation(
 				async () => {
 					const newContract = await createContract(contractData);
-					
+
 					// Если есть комментарий, добавляем его
 					if (comment) {
 						const newComment = await addContractComment(newContract.id, comment);
 						newContract.comments = [newComment];
 					}
-					
+
 					localContracts = [newContract, ...localContracts];
-					addSuccessToast('Договор успешно создан.');
+					addSuccessToast('Договор создан.');
 				},
 				2,
 				1000
@@ -255,12 +255,15 @@
 			await retryOperation(
 				async () => {
 					const updatedContract = await updateContract(updatedContractData);
-					
+
 					// Обрабатываем комментарий
 					if (commentData && commentData.value) {
 						if (commentData.commentId) {
 							// Обновляем существующий комментарий
-							const updatedComment = await updateContractComment(commentData.commentId, commentData.value);
+							const updatedComment = await updateContractComment(
+								commentData.commentId,
+								commentData.value
+							);
 							updatedContract.comments = [updatedComment];
 						} else {
 							// Добавляем новый комментарий
@@ -268,9 +271,9 @@
 							updatedContract.comments = [newComment];
 						}
 					}
-					
+
 					updateContractInList(updatedContract);
-					addSuccessToast('Договор успешно обновлен.');
+					addSuccessToast('Договор обновлен.');
 				},
 				2,
 				1000
@@ -301,7 +304,7 @@
 	function removeContractFromList(contractId) {
 		localContracts = localContracts.filter((contract) => contract && contract.id !== contractId);
 		updateCounter++;
-		
+
 		// Check if current page is now empty and adjust if needed
 		const newTotalPages = Math.ceil(
 			(searchTerm.trim()
@@ -311,12 +314,14 @@
 						const projectName = (contract.project?.value || '').toLowerCase();
 						const companyName = (contract.company?.name || '').toLowerCase();
 						return (
-							contractNumber.includes(term) || projectName.includes(term) || companyName.includes(term)
+							contractNumber.includes(term) ||
+							projectName.includes(term) ||
+							companyName.includes(term)
 						);
 					}).length
 				: localContracts.length) / itemsPerPage
 		);
-		
+
 		if (newTotalPages > 0 && currentPage > newTotalPages) {
 			currentPage = newTotalPages;
 		}
@@ -345,7 +350,7 @@
 			loadError = null;
 
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

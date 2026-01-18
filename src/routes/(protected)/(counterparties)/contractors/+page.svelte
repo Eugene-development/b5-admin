@@ -191,7 +191,7 @@
 					contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
 				}
 			];
-			addSuccessToast(`Подрядчик "${newCompany.name}" успешно добавлен.`);
+			addSuccessToast(`Подрядчик "${newCompany.name}" добавлен.`);
 			showAddModal = false;
 		} catch (error) {
 			if (error instanceof DuplicateInnError) {
@@ -240,7 +240,7 @@
 								}
 							: contractor
 					);
-					addSuccessToast(`Подрядчик "${updatedCompany.name}" успешно обновлен.`);
+					addSuccessToast(`Подрядчик "${updatedCompany.name}" обновлен.`);
 				},
 				2,
 				1000
@@ -270,15 +270,15 @@
 					if (type === 'ban') {
 						await toggleCompanyBan(company.id, true);
 						updateContractorStatus(company.id, 'banned');
-						addSuccessToast(`Подрядчик "${company.name}" успешно забанен.`);
+						addSuccessToast(`Подрядчик "${company.name}" забанен.`);
 					} else if (type === 'unban') {
 						await toggleCompanyBan(company.id, false);
 						updateContractorStatus(company.id, 'active');
-						addSuccessToast(`Подрядчик "${company.name}" успешно разбанен.`);
+						addSuccessToast(`Подрядчик "${company.name}" разбанен.`);
 					} else if (type === 'delete') {
 						await deleteCompany(company.id);
 						removeContractorFromList(company.id);
-						addSuccessToast(`Подрядчик "${company.name}" успешно удален.`);
+						addSuccessToast(`Подрядчик "${company.name}" удален.`);
 					}
 				},
 				2,
@@ -330,7 +330,7 @@
 			loadError = null;
 			updateCounter++;
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

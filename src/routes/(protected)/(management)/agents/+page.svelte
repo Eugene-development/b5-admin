@@ -198,9 +198,7 @@
 							: user
 					);
 
-					addSuccessToast(
-						`Пользователь "${updatedUser.name || updatedUser.email}" успешно обновлен.`
-					);
+					addSuccessToast(`Пользователь "${updatedUser.name || updatedUser.email}" обновлен.`);
 				},
 				2,
 				1000
@@ -248,7 +246,7 @@
 						...localUsers
 					];
 
-					addSuccessToast(`Агент "${createdUser.name || createdUser.email}" успешно создан.`);
+					addSuccessToast(`Агент "${createdUser.name || createdUser.email}" создан.`);
 				},
 				2,
 				1000
@@ -284,17 +282,17 @@
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'banned';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно забанен.`);
+						addSuccessToast(`Агент "${user.name || user.email}" забанен.`);
 					} else if (type === 'unban') {
 						const result = await unbanUser(user.id);
 						// Convert GraphQL enum to lowercase for consistency
 						const status = result?.status?.toLowerCase() || 'active';
 						updateUserStatus(user.id, status);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно разбанен.`);
+						addSuccessToast(`Агент "${user.name || user.email}" разбанен.`);
 					} else if (type === 'delete') {
 						await deleteUser(user.id);
 						removeUserFromList(user.id);
-						addSuccessToast(`Агент "${user.name || user.email}" успешно удален.`);
+						addSuccessToast(`Агент "${user.name || user.email}" удален.`);
 					}
 				},
 				2,
@@ -351,7 +349,7 @@
 				}))
 				.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 			loadError = null;
-			addSuccessToast('Данные успешно обновлены');
+			addSuccessToast('Данные обновлены');
 		} catch (error) {
 			loadError = error;
 			handleApiError(error, 'Не удалось обновить данные');

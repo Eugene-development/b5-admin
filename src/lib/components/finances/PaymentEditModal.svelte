@@ -93,7 +93,7 @@
 			};
 
 			const result = await updateBonusPaymentRequest(payment.id, input);
-			addSuccessToast('Заявка успешно обновлена');
+			addSuccessToast('Заявка обновлена');
 
 			if (onSuccess) {
 				onSuccess(result);
@@ -188,10 +188,19 @@
 				</div>
 
 				<!-- Form -->
-				<form onsubmit={(e) => { e.preventDefault(); handleSubmit(); }} class="space-y-5">
+				<form
+					onsubmit={(e) => {
+						e.preventDefault();
+						handleSubmit();
+					}}
+					class="space-y-5"
+				>
 					<!-- Сумма выплаты -->
 					<div>
-						<label for="amount" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="amount"
+							class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Сумма выплаты
 						</label>
 						<div class="relative">
@@ -203,13 +212,11 @@
 								min="1000"
 								step="1"
 								required
-								class="block w-full rounded-md border-gray-300 pr-12 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500 sm:text-sm"
+								class="block w-full rounded-md border-gray-300 pr-12 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
 								placeholder="1000"
 							/>
-							<div
-								class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
-							>
-								<span class="text-gray-500 dark:text-gray-400 sm:text-sm">₽</span>
+							<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+								<span class="text-gray-500 sm:text-sm dark:text-gray-400">₽</span>
 							</div>
 						</div>
 						{#if parseFloat(amount) > 0 && parseFloat(amount) < 1000}
@@ -228,7 +235,8 @@
 									type="button"
 									onclick={() => (paymentMethod = method.value)}
 									disabled={isSubmitting}
-									class="flex flex-col items-center justify-center rounded-lg border-2 p-4 transition-all disabled:cursor-not-allowed disabled:opacity-50 {paymentMethod === method.value
+									class="flex flex-col items-center justify-center rounded-lg border-2 p-4 transition-all disabled:cursor-not-allowed disabled:opacity-50 {paymentMethod ===
+									method.value
 										? 'border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-indigo-900/30'
 										: 'border-gray-200 bg-white hover:border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500'}"
 								>
@@ -261,7 +269,7 @@
 								disabled={isSubmitting}
 								required
 								maxlength="19"
-								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500 sm:text-sm"
+								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
 								placeholder="0000 0000 0000 0000"
 							/>
 						</div>
@@ -279,7 +287,7 @@
 								bind:value={phoneNumber}
 								disabled={isSubmitting}
 								required
-								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500 sm:text-sm"
+								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
 								placeholder="+7 (900) 000-00-00"
 							/>
 						</div>
@@ -297,7 +305,7 @@
 								disabled={isSubmitting}
 								required
 								rows="3"
-								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500 sm:text-sm"
+								class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
 								placeholder="Укажите способ связи и реквизиты"
 							></textarea>
 						</div>
@@ -316,7 +324,7 @@
 							bind:value={comment}
 							disabled={isSubmitting}
 							rows="3"
-							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500 sm:text-sm"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
 							placeholder="Дополнительная информация"
 						></textarea>
 					</div>
@@ -359,13 +367,13 @@
 								</svg>
 								Сохранение...
 							{:else}
-								<svg
-									class="mr-2 h-4 w-4"
-									fill="none"
-									viewBox="0 0 24 24"
-									stroke="currentColor"
-								>
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M5 13l4 4L19 7"
+									/>
 								</svg>
 								Сохранить
 							{/if}

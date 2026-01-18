@@ -191,7 +191,7 @@
 					contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
 				}
 			];
-			addSuccessToast(`Сервис "${newCompany.name}" успешно добавлен.`);
+			addSuccessToast(`Сервис "${newCompany.name}" добавлен.`);
 			showAddModal = false;
 		} catch (error) {
 			if (error instanceof DuplicateInnError) {
@@ -240,7 +240,7 @@
 								}
 							: service
 					);
-					addSuccessToast(`Сервис "${updatedCompany.name}" успешно обновлен.`);
+					addSuccessToast(`Сервис "${updatedCompany.name}" обновлен.`);
 				},
 				2,
 				1000
@@ -270,15 +270,15 @@
 					if (type === 'ban') {
 						await toggleCompanyBan(company.id, true);
 						updateServiceStatus(company.id, 'banned');
-						addSuccessToast(`Сервис "${company.name}" успешно забанен.`);
+						addSuccessToast(`Сервис "${company.name}" забанен.`);
 					} else if (type === 'unban') {
 						await toggleCompanyBan(company.id, false);
 						updateServiceStatus(company.id, 'active');
-						addSuccessToast(`Сервис "${company.name}" успешно разбанен.`);
+						addSuccessToast(`Сервис "${company.name}" разбанен.`);
 					} else if (type === 'delete') {
 						await deleteCompany(company.id);
 						removeServiceFromList(company.id);
-						addSuccessToast(`Сервис "${company.name}" успешно удален.`);
+						addSuccessToast(`Сервис "${company.name}" удален.`);
 					}
 				},
 				2,
@@ -330,7 +330,7 @@
 			loadError = null;
 			updateCounter++;
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

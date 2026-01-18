@@ -9,6 +9,7 @@ const PROJECTS_QUERY = gql`
 		projects(first: $first, page: $page) {
 			data {
 				id
+				project_number
 				value
 				user_id
 				client_id
@@ -143,6 +144,7 @@ const UPDATE_PROJECT_MUTATION = gql`
 	mutation UpdateProject($input: UpdateProjectInput!) {
 		updateProject(input: $input) {
 			id
+			project_number
 			value
 			user_id
 			client_id
@@ -151,10 +153,24 @@ const UPDATE_PROJECT_MUTATION = gql`
 				id
 				name
 				email
+				region
+				status
+				phones {
+					id
+					value
+					is_primary
+				}
 			}
 			client {
 				id
 				name
+				birthday
+				ban
+				phones {
+					id
+					value
+					is_primary
+				}
 			}
 			status {
 				id
@@ -167,10 +183,79 @@ const UPDATE_PROJECT_MUTATION = gql`
 				is_default
 				is_active
 			}
+			users {
+				id
+				name
+				email
+				phones {
+					id
+					value
+					is_primary
+				}
+			}
+			curator {
+				id
+				name
+				email
+				phones {
+					id
+					value
+					is_primary
+				}
+			}
+			projectUsers {
+				id
+				user_id
+				role
+				user {
+					id
+					name
+					email
+					phones {
+						id
+						value
+						is_primary
+					}
+				}
+			}
+			contracts {
+				id
+				contract_number
+				contract_date
+				contract_amount
+				planned_completion_date
+				actual_completion_date
+				agent_percentage
+				curator_percentage
+				agent_bonus
+				curator_bonus
+				is_active
+				company {
+					id
+					name
+					legal_name
+				}
+			}
+			orders {
+				id
+				order_number
+				order_amount
+				agent_bonus
+				curator_bonus
+				is_active
+			}
+			comments {
+				id
+				value
+				author_name
+				created_at
+			}
 			region
 			description
 			is_active
+			is_incognito
 			contract_name
+			contract_number
 			contract_date
 			contract_amount
 			agent_percentage

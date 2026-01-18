@@ -2,13 +2,7 @@
 	import { createAgentPayment, getAvailableBonusesForPayment } from '$lib/api/finances.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 
-	let {
-		isOpen = false,
-		agents = [],
-		paymentMethods = [],
-		onClose,
-		onPaymentCreated
-	} = $props();
+	let { isOpen = false, agents = [], paymentMethods = [], onClose, onPaymentCreated } = $props();
 
 	let modalElement = $state();
 	let previousActiveElement;
@@ -31,9 +25,7 @@
 			.reduce((sum, b) => sum + parseFloat(b.commission_amount || 0), 0)
 	);
 
-	let isFormValid = $derived(
-		selectedAgentId && selectedMethodId && selectedBonusIds.length > 0
-	);
+	let isFormValid = $derived(selectedAgentId && selectedMethodId && selectedBonusIds.length > 0);
 
 	// Load bonuses when agent changes
 	$effect(() => {
@@ -89,7 +81,7 @@
 				method_id: selectedMethodId,
 				reference_number: referenceNumber || null
 			});
-			addSuccessToast('Выплата успешно создана');
+			addSuccessToast('Выплата создана');
 			if (onPaymentCreated) {
 				onPaymentCreated(payment);
 			}
@@ -197,7 +189,10 @@
 				<form onsubmit={handleSubmit} class="space-y-6">
 					<!-- Agent Selection -->
 					<div>
-						<label for="agent-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="agent-select"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Агент <span class="text-red-500">*</span>
 						</label>
 						<select
@@ -210,7 +205,9 @@
 							<option value="">Выберите агента</option>
 							{#each agents as agent}
 								<option value={agent.id}>
-									{agent.name} ({agent.email}) — {formatCurrency(agent.available_bonuses_total || 0)}
+									{agent.name} ({agent.email}) — {formatCurrency(
+										agent.available_bonuses_total || 0
+									)}
 								</option>
 							{/each}
 						</select>
@@ -218,7 +215,10 @@
 
 					<!-- Payment Method -->
 					<div>
-						<label for="method-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="method-select"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Способ выплаты <span class="text-red-500">*</span>
 						</label>
 						<select
@@ -237,7 +237,10 @@
 
 					<!-- Reference Number -->
 					<div>
-						<label for="reference-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="reference-number"
+							class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Номер документа
 						</label>
 						<input
@@ -280,8 +283,19 @@
 							{#if isLoadingBonuses}
 								<div class="flex items-center justify-center py-8">
 									<svg class="h-6 w-6 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24">
-										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-										<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+										<circle
+											class="opacity-25"
+											cx="12"
+											cy="12"
+											r="10"
+											stroke="currentColor"
+											stroke-width="4"
+										></circle>
+										<path
+											class="opacity-75"
+											fill="currentColor"
+											d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+										></path>
 									</svg>
 								</div>
 							{:else if availableBonuses.length === 0}
@@ -291,10 +305,12 @@
 									</p>
 								</div>
 							{:else}
-								<div class="max-h-64 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-600">
+								<div
+									class="max-h-64 overflow-y-auto rounded-md border border-gray-200 dark:border-gray-600"
+								>
 									{#each availableBonuses as bonus (bonus.id)}
 										<label
-											class="flex cursor-pointer items-center justify-between border-b border-gray-100 px-4 py-3 hover:bg-gray-50 last:border-b-0 dark:border-gray-700 dark:hover:bg-gray-700"
+											class="flex cursor-pointer items-center justify-between border-b border-gray-100 px-4 py-3 last:border-b-0 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
 										>
 											<div class="flex items-center">
 												<input
@@ -331,7 +347,11 @@
 						<div class="rounded-lg bg-indigo-50 p-4 dark:bg-indigo-900/20">
 							<div class="flex items-center justify-between">
 								<span class="text-sm font-medium text-indigo-700 dark:text-indigo-300">
-									Итого к выплате ({selectedBonusIds.length} бонус{selectedBonusIds.length === 1 ? '' : selectedBonusIds.length < 5 ? 'а' : 'ов'})
+									Итого к выплате ({selectedBonusIds.length} бонус{selectedBonusIds.length === 1
+										? ''
+										: selectedBonusIds.length < 5
+											? 'а'
+											: 'ов'})
 								</span>
 								<span class="text-lg font-bold text-indigo-700 dark:text-indigo-300">
 									{formatCurrency(totalAmount)}
@@ -341,7 +361,9 @@
 					{/if}
 
 					<!-- Actions -->
-					<div class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse">
+					<div
+						class="flex flex-col space-y-3 sm:flex-row-reverse sm:space-x-3 sm:space-y-0 sm:space-x-reverse"
+					>
 						<button
 							type="submit"
 							disabled={!isFormValid || isCreating}
@@ -349,8 +371,19 @@
 						>
 							{#if isCreating}
 								<svg class="mr-2 h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+									<circle
+										class="opacity-25"
+										cx="12"
+										cy="12"
+										r="10"
+										stroke="currentColor"
+										stroke-width="4"
+									></circle>
+									<path
+										class="opacity-75"
+										fill="currentColor"
+										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+									></path>
 								</svg>
 								Создание...
 							{:else}

@@ -83,8 +83,12 @@
 	});
 
 	// Count requests by type for tab badges
-	let agentRequestsCount = $derived(requests.filter(r => (r.requester_type || 'agent') === 'agent').length);
-	let curatorRequestsCount = $derived(requests.filter(r => r.requester_type === 'curator').length);
+	let agentRequestsCount = $derived(
+		requests.filter((r) => (r.requester_type || 'agent') === 'agent').length
+	);
+	let curatorRequestsCount = $derived(
+		requests.filter((r) => r.requester_type === 'curator').length
+	);
 
 	// Get paginated requests
 	let paginatedRequests = $derived.by(() => {
@@ -149,7 +153,7 @@
 			}
 
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 			updateCounter++;
 		} catch (error) {
@@ -199,14 +203,14 @@
 			request.id === updatedPayment.id ? updatedPayment : request
 		);
 		updateCounter++;
-		addSuccessToast('Заявка успешно обновлена');
+		addSuccessToast('Заявка обновлена');
 	}
 
 	// Handle payment delete
 	function handlePaymentDelete(paymentId) {
 		requests = requests.filter((request) => request.id !== paymentId);
 		updateCounter++;
-		addSuccessToast('Заявка успешно удалена');
+		addSuccessToast('Заявка удалена');
 	}
 </script>
 
@@ -313,7 +317,8 @@
 										<button
 											type="button"
 											onclick={() => (activeTab = 'agents')}
-											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'agents'
+											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
+											'agents'
 												? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
 												: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
 										>
@@ -327,7 +332,8 @@
 										<button
 											type="button"
 											onclick={() => (activeTab = 'curators')}
-											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab === 'curators'
+											class="whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium transition-colors {activeTab ===
+											'curators'
 												? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
 												: 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300'}"
 										>

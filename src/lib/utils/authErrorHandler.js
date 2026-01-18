@@ -242,7 +242,7 @@ export async function retryAuthOperation(operation, operationType, options = {})
 
 			// If we had previous failures but this attempt succeeded
 			if (attempt > 1 && showRetryToasts) {
-				addSuccessToast(`Операция "${operationType}" выполнена успешно после ${attempt} попыток`);
+				addSuccessToast(`Операция "${operationType}" выполнена после ${attempt} попыток`);
 			}
 
 			return result;

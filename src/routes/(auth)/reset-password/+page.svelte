@@ -121,7 +121,7 @@
 	<!-- Animated gradient background -->
 	<div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
 		<div
-			class="absolute top-0 left-1/2 -translate-x-1/2 blur-3xl"
+			class="absolute left-1/2 top-0 -translate-x-1/2 blur-3xl"
 			style="width: 90rem; height: 50rem;"
 		>
 			<div
@@ -178,9 +178,9 @@
 							/>
 						</svg>
 						<div>
-							<h3 class="font-semibold text-green-300">Пароль успешно изменен!</h3>
+							<h3 class="font-semibold text-green-300">Пароль изменен!</h3>
 							<p class="mt-2 text-sm text-green-300">
-								Ваш пароль был успешно изменен. Сейчас вы будете перенаправлены на страницу входа.
+								Ваш пароль был изменен. Сейчас вы будете перенаправлены на страницу входа.
 							</p>
 						</div>
 					</div>
@@ -188,7 +188,7 @@
 			{:else}
 				{#if generalError}
 					<div
-						class="mb-6 animate-shake rounded-xl border border-red-500/20 bg-red-500/10 p-4 backdrop-blur-sm"
+						class="animate-shake mb-6 rounded-xl border border-red-500/20 bg-red-500/10 p-4 backdrop-blur-sm"
 					>
 						<div class="flex items-start gap-3">
 							<svg
@@ -236,7 +236,7 @@
 									id="email"
 									bind:value={formData.email}
 									readonly
-									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pr-4 pl-10 text-white shadow-sm ring-1 ring-white/10 ring-inset placeholder:text-gray-500 sm:py-3 {errors.email
+									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pl-10 pr-4 text-white shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-500 sm:py-3 {errors.email
 										? 'ring-red-500/50'
 										: ''}"
 								/>
@@ -275,7 +275,7 @@
 									bind:value={formData.password}
 									disabled={isLoading}
 									placeholder="Минимум 8 символов"
-									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pr-4 pl-10 text-white shadow-sm ring-1 ring-white/10 transition-all ring-inset placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50 sm:py-3 {errors.password
+									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pl-10 pr-4 text-white shadow-sm ring-1 ring-inset ring-white/10 transition-all placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 sm:py-3 {errors.password
 										? 'ring-red-500/50 focus:ring-red-500'
 										: ''}"
 								/>
@@ -314,7 +314,7 @@
 									bind:value={formData.password_confirmation}
 									disabled={isLoading}
 									placeholder="Повторите пароль"
-									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pr-4 pl-10 text-white shadow-sm ring-1 ring-white/10 transition-all ring-inset placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500 focus:ring-inset disabled:cursor-not-allowed disabled:opacity-50 sm:py-3 {errors.password_confirmation
+									class="block w-full rounded-lg border-0 bg-white/5 py-2.5 pl-10 pr-4 text-white shadow-sm ring-1 ring-inset ring-white/10 transition-all placeholder:text-gray-500 hover:bg-white/10 focus:bg-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 disabled:cursor-not-allowed disabled:opacity-50 sm:py-3 {errors.password_confirmation
 										? 'ring-red-500/50 focus:ring-red-500'
 										: ''}"
 								/>
@@ -328,7 +328,7 @@
 						<button
 							type="submit"
 							disabled={isLoading}
-							class="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/40 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+							class="group relative w-full overflow-hidden rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/40 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-950 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
 						>
 							<span class="relative z-10 flex items-center justify-center gap-2">
 								{#if isLoading}

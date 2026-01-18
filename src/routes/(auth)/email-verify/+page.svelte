@@ -64,7 +64,7 @@
 
 			if (success) {
 				verificationStatus = 'success';
-				addSuccessToast('Email успешно подтвержден!');
+				addSuccessToast('Email подтвержден!');
 
 				setTimeout(() => {
 					if (isAuthenticated()) {
@@ -172,7 +172,7 @@
 				<div
 					class="absolute inset-0 bg-gradient-to-r from-orange-600/90 via-rose-600/90 to-pink-600/90"
 				></div>
-				<div class="absolute top-0 left-0 h-full w-full opacity-10">
+				<div class="absolute left-0 top-0 h-full w-full opacity-10">
 					<div
 						class="h-full w-full bg-white/5 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:20px_20px]"
 					></div>
@@ -182,7 +182,7 @@
 					<!-- Логотип -->
 					<div class="mb-4 lg:mb-6">
 						<div
-							class="inline-flex h-11 w-13 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16 lg:w-18"
+							class="w-13 lg:w-18 inline-flex h-11 items-center justify-center rounded-full border border-white/30 bg-white/20 backdrop-blur-sm lg:h-16"
 						>
 							<svg
 								class="h-4 w-4 text-white lg:h-8 lg:w-8"
@@ -266,7 +266,7 @@
 							type="button"
 							onclick={handleResendVerification}
 							disabled={loading || resendCooldown > 0}
-							class="mb-4 w-full transform cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:ring-4 focus:ring-orange-500/20 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+							class="mb-4 w-full transform cursor-pointer overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-orange-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 						>
 							<div class="flex items-center justify-center space-x-2">
 								{#if loading}
@@ -312,7 +312,7 @@
 							<button
 								type="button"
 								onclick={handleLogout}
-								class="w-full cursor-pointer rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-500/20 focus:outline-none sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+								class="w-full cursor-pointer rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
 							>
 								Выйти из системы
 							</button>
@@ -320,7 +320,7 @@
 							<button
 								type="button"
 								onclick={goToLogin}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-500/20 focus:outline-none sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 text-sm font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 sm:text-base dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
 							>
 								Вернуться ко входу
 							</button>
@@ -383,16 +383,16 @@
 						</h3>
 						<p class="mb-6 text-gray-600 dark:text-gray-400">
 							{#if isAuthenticated()}
-								Ваш email адрес успешно подтвержден. Теперь у вас есть полный доступ к
-								административной панели.
+								Ваш email адрес подтвержден. Теперь у вас есть полный доступ к административной
+								панели.
 							{:else}
-								Ваш email адрес успешно подтвержден. Теперь вы можете войти в систему.
+								Ваш email адрес подтвержден. Теперь вы можете войти в систему.
 							{/if}
 						</p>
 						<button
 							type="button"
 							onclick={isAuthenticated() ? goToDashboard : goToLogin}
-							class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-green-700 hover:to-emerald-700 focus:ring-4 focus:ring-green-500/20 focus:outline-none active:scale-[0.98]"
+							class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-500/20 active:scale-[0.98]"
 						>
 							<div class="flex items-center justify-center space-x-2">
 								<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -447,7 +447,7 @@
 								type="button"
 								onclick={handleResendVerification}
 								disabled={loading || resendCooldown > 0}
-								class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:ring-4 focus:ring-orange-500/20 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+								class="w-full transform overflow-hidden rounded-2xl bg-gradient-to-r from-orange-600 via-rose-600 to-pink-600 px-6 py-4 text-lg font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:from-orange-700 hover:via-rose-700 hover:to-pink-700 focus:outline-none focus:ring-4 focus:ring-orange-500/20 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
 							>
 								<div class="flex items-center justify-center space-x-2">
 									{#if loading}
@@ -491,7 +491,7 @@
 							<button
 								type="button"
 								onclick={goToLogin}
-								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-500/20 focus:outline-none dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
+								class="w-full rounded-2xl border-2 border-gray-200/50 bg-gray-50/50 px-6 py-4 font-semibold text-gray-700 backdrop-blur-sm transition-all duration-300 hover:border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-500/20 dark:border-gray-700/50 dark:bg-gray-800/50 dark:text-gray-300 dark:hover:border-gray-600 dark:hover:bg-gray-700/50"
 							>
 								Вернуться к входу
 							</button>

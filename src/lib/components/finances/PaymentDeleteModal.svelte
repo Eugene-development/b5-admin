@@ -29,7 +29,7 @@
 
 		try {
 			await deleteBonusPaymentRequest(payment.id);
-			addSuccessToast('Заявка успешно удалена');
+			addSuccessToast('Заявка удалена');
 
 			if (onSuccess) {
 				onSuccess(payment.id);
@@ -98,7 +98,7 @@
 				<!-- Icon -->
 				<div class="sm:flex sm:items-start">
 					<div
-						class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10"
+						class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10 dark:bg-red-900/30"
 					>
 						<svg
 							class="h-6 w-6 text-red-600 dark:text-red-400"
@@ -192,7 +192,7 @@
 						type="button"
 						onclick={() => onClose && onClose()}
 						disabled={isDeleting}
-						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600 sm:mt-0 sm:w-auto"
+						class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 sm:mt-0 sm:w-auto dark:bg-gray-700 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-600"
 					>
 						Отмена
 					</button>

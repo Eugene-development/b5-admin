@@ -328,7 +328,7 @@ export async function resetPassword(token, email, password, password_confirmatio
 
 		return {
 			success: true,
-			message: response.message || 'Пароль успешно изменен'
+			message: response.message || 'Пароль изменен'
 		};
 	} catch (error) {
 		// Handle specific reset password errors

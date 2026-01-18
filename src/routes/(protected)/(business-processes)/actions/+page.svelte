@@ -65,7 +65,7 @@
 			// This will trigger the load function to re-run
 			await invalidate(() => true); // Invalidate all data
 			console.log('✅ Actions data refreshed');
-			addSuccessToast('Данные успешно обновлены');
+			addSuccessToast('Данные обновлены');
 		} catch (error) {
 			console.error('❌ Failed to refresh data:', error);
 			handleApiError(error, 'Не удалось обновить данные');
@@ -126,7 +126,7 @@
 						// Remove from local state
 						allActions = allActions.filter((a) => a.id !== action.id);
 						updateCounter++;
-						addSuccessToast(`Акция "${action.action_name}" успешно удалена.`);
+						addSuccessToast(`Акция "${action.action_name}" удалена.`);
 					}
 				},
 				2,
@@ -167,7 +167,7 @@
 				async () => {
 					const newAction = await createAction(actionData);
 					await invalidate(() => true);
-					addSuccessToast(`Акция "${actionData.name}" успешно добавлена.`);
+					addSuccessToast(`Акция "${actionData.name}" добавлена.`);
 				},
 				2,
 				1000
@@ -195,7 +195,7 @@
 				async () => {
 					const updatedAction = await updateAction(actionData);
 					await invalidate(() => true);
-					addSuccessToast(`Акция "${actionData.name}" успешно обновлена.`);
+					addSuccessToast(`Акция "${actionData.name}" обновлена.`);
 				},
 				2,
 				1000

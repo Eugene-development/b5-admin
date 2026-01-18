@@ -116,7 +116,7 @@
 						await deleteTechnicalSpecification(tz.id);
 						// Remove from local list
 						tzList = tzList.filter((t) => t.id !== tz.id);
-						addSuccessToast(`Техзадание #${tz.id} успешно удалено`);
+						addSuccessToast(`Техзадание #${tz.id} удалено`);
 						updateCounter++;
 					}
 				},
@@ -201,7 +201,7 @@
 
 			tzList = sortedData;
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 			updateCounter++;
 		} catch (error) {
@@ -245,7 +245,7 @@
 					const newTz = await createTechnicalSpecification(tzData);
 					// Add to local list
 					tzList = [newTz, ...tzList];
-					addSuccessToast('Техзадание успешно создано');
+					addSuccessToast('Техзадание создано');
 					updateCounter++;
 					isCreateModalOpen = false;
 				},
@@ -275,7 +275,7 @@
 					const updatedTz = await updateTechnicalSpecification(tzData);
 					// Update in local list
 					tzList = tzList.map((t) => (t.id === updatedTz.id ? updatedTz : t));
-					addSuccessToast('Техзадание успешно обновлено');
+					addSuccessToast('Техзадание обновлено');
 					updateCounter++;
 					isEditModalOpen = false;
 					editingTz = null;
@@ -331,9 +331,9 @@
 					await uploadTzFile(tzId, fileType, file);
 
 					if (uploadType === 'sketch') {
-						addSuccessToast('Эскиз успешно загружен');
+						addSuccessToast('Эскиз загружен');
 					} else {
-						addSuccessToast('КП успешно загружено');
+						addSuccessToast('КП загружено');
 					}
 
 					// Reload data to get updated files

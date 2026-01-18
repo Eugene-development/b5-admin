@@ -221,7 +221,7 @@
 					contact_person: phones[0]?.contact_person || emails[0]?.contact_person || null
 				}
 			];
-			addSuccessToast(`Служба доставки "${newCompany.name}" успешно добавлена.`);
+			addSuccessToast(`Служба доставки "${newCompany.name}" добавлена.`);
 			showAddModal = false;
 		} catch (error) {
 			if (error instanceof DuplicateInnError) {
@@ -273,7 +273,7 @@
 								}
 							: company
 					);
-					addSuccessToast(`Служба доставки "${updatedCompany.name}" успешно обновлена.`);
+					addSuccessToast(`Служба доставки "${updatedCompany.name}" обновлена.`);
 				},
 				2,
 				1000
@@ -309,15 +309,15 @@
 					if (type === 'ban') {
 						await toggleCompanyBan(company.id, true);
 						updateDeliveryCompanyStatus(company.id, 'banned');
-						addSuccessToast(`Служба доставки "${company.name}" успешно забанена.`);
+						addSuccessToast(`Служба доставки "${company.name}" забанена.`);
 					} else if (type === 'unban') {
 						await toggleCompanyBan(company.id, false);
 						updateDeliveryCompanyStatus(company.id, 'active');
-						addSuccessToast(`Служба доставки "${company.name}" успешно разбанена.`);
+						addSuccessToast(`Служба доставки "${company.name}" разбанена.`);
 					} else if (type === 'delete') {
 						await deleteCompany(company.id);
 						removeDeliveryCompanyFromList(company.id);
-						addSuccessToast(`Служба доставки "${company.name}" успешно удалена.`);
+						addSuccessToast(`Служба доставки "${company.name}" удалена.`);
 					}
 				},
 				2,
@@ -373,7 +373,7 @@
 			loadError = null;
 			updateCounter++;
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

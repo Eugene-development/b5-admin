@@ -17,7 +17,7 @@
 	let phoneNumber = $state('');
 	let contactInfo = $state('');
 	let comment = $state('');
-	
+
 	// Состояние отправки
 	let isSubmitting = $state(false);
 
@@ -45,7 +45,7 @@
 	 */
 	async function handleSubmit() {
 		if (isSubmitting) return;
-		
+
 		const formData = {
 			amount: parseFloat(amount) || 0,
 			payment_method: paymentMethod,
@@ -56,12 +56,12 @@
 		};
 
 		isSubmitting = true;
-		
+
 		try {
 			await createBonusPaymentRequest(formData);
-			
-			addSuccessToast('Заявка на выплату успешно создана');
-			
+
+			addSuccessToast('Заявка на выплату создана');
+
 			// Reset form
 			amount = '';
 			paymentMethod = '';
@@ -69,11 +69,11 @@
 			phoneNumber = '';
 			contactInfo = '';
 			comment = '';
-			
+
 			if (onSubmit) {
 				onSubmit();
 			}
-			
+
 			onClose();
 		} catch (error) {
 			console.error('Failed to create payment request:', error);
@@ -103,12 +103,13 @@
 			digits = '7' + digits;
 		}
 		digits = digits.slice(0, 11);
-		
+
 		if (digits.length === 0) return '';
 		if (digits.length <= 1) return '+7';
 		if (digits.length <= 4) return `+7 (${digits.slice(1)}`;
 		if (digits.length <= 7) return `+7 (${digits.slice(1, 4)}) ${digits.slice(4)}`;
-		if (digits.length <= 9) return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+		if (digits.length <= 9)
+			return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
 		return `+7 (${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7, 9)}-${digits.slice(9)}`;
 	}
 
@@ -154,15 +155,13 @@
 
 	// Валидация формы
 	let isValid = $derived(
-		amount && 
-		paymentMethod && 
-		parseFloat(amount) >= 1000 && 
-		parseFloat(amount) <= Math.round(availableAmount) &&
-		(
-			(paymentMethod === 'card' && cardNumber.length >= 16) ||
-			(paymentMethod === 'sbp' && phoneNumber.length >= 17) ||
-			(paymentMethod === 'other' && contactInfo.length > 0)
-		)
+		amount &&
+			paymentMethod &&
+			parseFloat(amount) >= 1000 &&
+			parseFloat(amount) <= Math.round(availableAmount) &&
+			((paymentMethod === 'card' && cardNumber.length >= 16) ||
+				(paymentMethod === 'sbp' && phoneNumber.length >= 17) ||
+				(paymentMethod === 'other' && contactInfo.length > 0))
 	);
 </script>
 
@@ -186,10 +185,17 @@
 			class="max-h-[90vh] w-full max-w-lg overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900"
 		>
 			<!-- Header -->
-			<div class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700">
+			<div
+				class="flex items-center justify-between border-b border-gray-200 px-6 py-4 dark:border-gray-700"
+			>
 				<div class="flex items-center gap-3">
 					<div class="rounded-lg bg-green-500/10 p-2">
-						<svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<svg
+							class="h-6 w-6 text-green-500"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
 							<path
 								stroke-linecap="round"
 								stroke-linejoin="round"
@@ -201,7 +207,9 @@
 					<div>
 						<h3 class="text-lg font-semibold text-gray-900 dark:text-white">Заказать выплату</h3>
 						<p class="text-sm text-gray-500 dark:text-gray-400">
-							Доступно: <span class="text-green-600 dark:text-green-400">{formatCurrency(availableAmount)} ₽</span>
+							Доступно: <span class="text-green-600 dark:text-green-400"
+								>{formatCurrency(availableAmount)} ₽</span
+							>
 						</p>
 					</div>
 				</div>
@@ -212,7 +220,12 @@
 					aria-label="Закрыть"
 				>
 					<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M6 18L18 6M6 6l12 12"
+						/>
 					</svg>
 				</button>
 			</div>
@@ -227,7 +240,10 @@
 			>
 				<!-- Сумма выплаты -->
 				<div class="mb-5">
-					<label for="amount" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+					<label
+						for="amount"
+						class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>
 						Сумма выплаты
 					</label>
 					<div class="relative">
@@ -238,7 +254,7 @@
 							min="1000"
 							max={Math.round(availableAmount)}
 							placeholder="0"
-							class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 transition-all focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield]"
+							class="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 transition-all [appearance:textfield] focus:border-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
 						/>
 						<button
 							type="button"
@@ -255,13 +271,16 @@
 
 				<!-- Способ выплаты -->
 				<div class="mb-5">
-					<p class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Способ выплаты</p>
+					<p class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+						Способ выплаты
+					</p>
 					<div class="grid grid-cols-3 gap-3">
 						{#each paymentMethods as method}
 							<button
 								type="button"
 								onclick={() => (paymentMethod = method.id)}
-								class="flex items-center gap-2 rounded-lg border-2 p-2 transition-all {paymentMethod === method.id
+								class="flex items-center gap-2 rounded-lg border-2 p-2 transition-all {paymentMethod ===
+								method.id
 									? 'border-green-500 bg-green-500/10'
 									: 'border-gray-200 bg-white hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-gray-600'}"
 							>
@@ -329,7 +348,10 @@
 				<!-- Поля для реквизитов -->
 				{#if paymentMethod === 'card'}
 					<div class="mb-5">
-						<label for="cardNumber" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="cardNumber"
+							class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Номер карты
 						</label>
 						<input
@@ -346,7 +368,10 @@
 
 				{#if paymentMethod === 'sbp'}
 					<div class="mb-5">
-						<label for="phoneNumber" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="phoneNumber"
+							class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Номер телефона
 						</label>
 						<input
@@ -363,7 +388,10 @@
 
 				{#if paymentMethod === 'other'}
 					<div class="mb-5">
-						<label for="contactInfo" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+						<label
+							for="contactInfo"
+							class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
 							Как с вами связаться?
 						</label>
 						<input
@@ -379,7 +407,10 @@
 
 				<!-- Комментарий -->
 				<div class="mb-5">
-					<label for="comment" class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+					<label
+						for="comment"
+						class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+					>
 						Комментарий <span class="text-gray-400">(необязательно)</span>
 					</label>
 					<textarea
@@ -393,7 +424,9 @@
 				</div>
 
 				<!-- Информационный блок -->
-				<div class="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10">
+				<div
+					class="mb-5 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/20 dark:bg-amber-500/10"
+				>
 					<div class="flex gap-3">
 						<svg
 							class="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500"
@@ -409,7 +442,10 @@
 							/>
 						</svg>
 						<div class="text-sm text-amber-700 dark:text-amber-200">
-							<p>Выплаты обрабатываются в течение 3-5 рабочих дней. Минимальная сумма выплаты — 1 000 ₽.</p>
+							<p>
+								Выплаты обрабатываются в течение 3-5 рабочих дней. Минимальная сумма выплаты — 1 000
+								₽.
+							</p>
 						</div>
 					</div>
 				</div>
@@ -430,7 +466,14 @@
 					>
 						{#if isSubmitting}
 							<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+								<circle
+									class="opacity-25"
+									cx="12"
+									cy="12"
+									r="10"
+									stroke="currentColor"
+									stroke-width="4"
+								></circle>
 								<path
 									class="opacity-75"
 									fill="currentColor"
@@ -440,7 +483,12 @@
 							Отправка...
 						{:else}
 							<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									stroke-width="2"
+									d="M5 13l4 4L19 7"
+								/>
 							</svg>
 							Заказать выплату
 						{/if}
@@ -450,4 +498,3 @@
 		</div>
 	</div>
 {/if}
-</script>

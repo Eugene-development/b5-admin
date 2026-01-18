@@ -232,7 +232,7 @@
 				}
 			];
 
-			addSuccessToast(`Компания "${newCompany.name}" успешно добавлена.`);
+			addSuccessToast(`Компания "${newCompany.name}" добавлена.`);
 			showAddModal = false;
 		} catch (error) {
 			if (error instanceof DuplicateInnError) {
@@ -290,7 +290,7 @@
 							: supplier
 					);
 
-					addSuccessToast(`Компания "${updatedCompany.name}" успешно обновлена.`);
+					addSuccessToast(`Компания "${updatedCompany.name}" обновлена.`);
 				},
 				2,
 				1000
@@ -326,15 +326,15 @@
 					if (type === 'ban') {
 						const updatedCompany = await toggleCompanyBan(company.id, true);
 						updateSupplierStatus(company.id, 'banned');
-						addSuccessToast(`Компания "${company.name}" успешно забанена.`);
+						addSuccessToast(`Компания "${company.name}" забанена.`);
 					} else if (type === 'unban') {
 						const updatedCompany = await toggleCompanyBan(company.id, false);
 						updateSupplierStatus(company.id, 'active');
-						addSuccessToast(`Компания "${company.name}" успешно разбанена.`);
+						addSuccessToast(`Компания "${company.name}" разбанена.`);
 					} else if (type === 'delete') {
 						await deleteCompany(company.id);
 						removeSupplierFromList(company.id);
-						addSuccessToast(`Компания "${company.name}" успешно удалена.`);
+						addSuccessToast(`Компания "${company.name}" удалена.`);
 					}
 				},
 				2,
@@ -393,7 +393,7 @@
 			loadError = null;
 			updateCounter++;
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

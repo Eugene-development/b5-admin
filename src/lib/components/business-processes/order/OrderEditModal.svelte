@@ -19,7 +19,7 @@
 
 	let formData = $state({
 		id: '',
-		value: '',
+		supplier_order_number: '', // Номер заказа от поставщика (поле value в БД)
 		comment: '',
 		commentId: null,
 		company_id: '',
@@ -82,7 +82,7 @@
 			const firstComment = order.comments?.[0];
 			formData = {
 				id: order.id,
-				value: order.value || '',
+				supplier_order_number: order.value || '', // Номер заказа от поставщика (поле value)
 				comment: firstComment?.value || '',
 				commentId: firstComment?.id || null,
 				company_id: order.company_id || '',
@@ -155,7 +155,8 @@
 		if (onSave && !isLoading && isFormValid) {
 			const orderData = {
 				id: formData.id,
-				value: formData.value.trim() || 'Заказ',
+				// Номер заказа от поставщика записывается в поле value
+				value: formData.supplier_order_number.trim() || null,
 				company_id: formData.company_id,
 				project_id: formData.project_id,
 				order_number: formData.order_number.trim(),
@@ -366,20 +367,37 @@
 									</select>
 								</div>
 							</div>
-							<div class="mt-4">
-								<label
-									for="order-comment"
-									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-									>Комментарий</label
-								>
-								<textarea
-									id="order-comment"
-									bind:value={formData.comment}
-									disabled={isLoading}
-									rows="2"
-									placeholder="Не указан"
-									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								></textarea>
+							<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<div>
+									<label
+										for="supplier-order-number"
+										class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+										>Номер заказа от поставщика</label
+									>
+									<input
+										type="text"
+										id="supplier-order-number"
+										bind:value={formData.supplier_order_number}
+										disabled={isLoading}
+										placeholder="Опционально"
+										class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label
+										for="order-comment"
+										class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+										>Комментарий</label
+									>
+									<textarea
+										id="order-comment"
+										bind:value={formData.comment}
+										disabled={isLoading}
+										rows="1"
+										placeholder="Опционально"
+										class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									></textarea>
+								</div>
 							</div>
 							<div class="mt-4 grid grid-cols-2 gap-4">
 								<div>

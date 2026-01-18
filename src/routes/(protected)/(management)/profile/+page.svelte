@@ -63,8 +63,7 @@
 
 		if (message === 'email_verified') {
 			showSuccessMessage = true;
-			successMessage =
-				'Email успешно подтвержден! Теперь вы можете пользоваться всеми функциями сервиса.';
+			successMessage = 'Email подтвержден! Теперь вы можете пользоваться всеми функциями сервиса.';
 			setTimeout(() => {
 				showSuccessMessage = false;
 				clearUrlParams();
@@ -267,7 +266,7 @@
 				<!-- Success Notifications -->
 				{#if showSuccessMessage}
 					<div
-						class="animate-in fade-in slide-in-from-top-4 fixed top-6 left-1/2 z-50 -translate-x-1/2 transform duration-300"
+						class="animate-in fade-in slide-in-from-top-4 fixed left-1/2 top-6 z-50 -translate-x-1/2 transform duration-300"
 					>
 						<div
 							class="rounded-xl border border-green-500/30 bg-green-500/20 p-4 shadow-2xl shadow-green-500/10 backdrop-blur-md"
@@ -282,7 +281,7 @@
 										/>
 									</svg>
 								</div>
-								<p class="text-sm leading-relaxed font-medium text-green-300">{successMessage}</p>
+								<p class="text-sm font-medium leading-relaxed text-green-300">{successMessage}</p>
 							</div>
 						</div>
 					</div>
@@ -302,7 +301,7 @@
 					<div class="grid gap-6 sm:grid-cols-2 lg:gap-8">
 						<!-- Name -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Имя
 							</div>
 							<div
@@ -314,7 +313,7 @@
 
 						<!-- Email -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Email
 							</div>
 							<div
@@ -357,7 +356,7 @@
 
 						<!-- Region -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Регион
 							</div>
 							<div
@@ -369,7 +368,7 @@
 
 						<!-- Phone -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Телефон
 							</div>
 							<div
@@ -381,7 +380,7 @@
 
 						<!-- User Status -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Статус пользователя
 							</div>
 							<div
@@ -406,7 +405,7 @@
 
 						<!-- Registration Date -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Дата регистрации
 							</div>
 							<div
@@ -430,13 +429,13 @@
 
 						<!-- Secret Key -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Секретный ключ
 							</div>
 							<button
 								onclick={copyKey}
 								disabled={isCopyingKey}
-								class="group/key w-full rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+								class="group/key w-full rounded-lg border border-gray-700/50 bg-gray-800/50 px-4 py-3 transition-all duration-200 hover:border-indigo-500/50 hover:bg-gray-800/70 hover:shadow-lg hover:shadow-indigo-500/10 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 								title="Нажмите для копирования в буфер обмена"
 							>
 								<div class="flex items-center justify-between">
@@ -469,13 +468,13 @@
 
 						<!-- Logout Button -->
 						<div class="group">
-							<div class="mb-2 block text-xs font-medium tracking-wide text-gray-300 uppercase">
+							<div class="mb-2 block text-xs font-medium uppercase tracking-wide text-gray-300">
 								Действия
 							</div>
 							<button
 								onclick={handleLogoutClick}
 								disabled={isLogoutLoading || isRedirecting}
-								class="group/logout flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-red-500 bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+								class="group/logout flex h-[52px] w-full items-center justify-center gap-3 rounded-lg border border-red-500 bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:border-red-400 hover:bg-red-500 hover:shadow-xl hover:shadow-red-500/20 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
 							>
 								{#if isLogoutLoading}
 									<LoadingSpinner size="sm" color="white" inline={true} />
@@ -601,7 +600,7 @@
 								</p>
 								<button
 									onclick={() => goto('/email-verify')}
-									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none active:scale-[0.98]"
+									class="inline-flex items-center gap-2 rounded-lg bg-yellow-600 px-4 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-yellow-500 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-500/50 focus:ring-offset-2 focus:ring-offset-gray-900 active:scale-[0.98]"
 								>
 									<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
 										<path

@@ -185,7 +185,7 @@
 					if (type === 'delete') {
 						await deleteComplaint(complaint.id);
 						removeComplaintFromList(complaint.id);
-						addSuccessToast(`Рекламация успешно удалена.`);
+						addSuccessToast(`Рекламация удалена.`);
 					}
 				},
 				2,
@@ -216,7 +216,7 @@
 				async () => {
 					const newComplaint = await createComplaint(complaintData);
 					localComplaints = [newComplaint, ...localComplaints];
-					addSuccessToast('Рекламация успешно создана.');
+					addSuccessToast('Рекламация создана.');
 				},
 				2,
 				1000
@@ -244,7 +244,7 @@
 				async () => {
 					const updatedComplaint = await updateComplaint(updatedComplaintData);
 					updateComplaintInList(updatedComplaint);
-					addSuccessToast('Рекламация успешно обновлена.');
+					addSuccessToast('Рекламация обновлена.');
 				},
 				2,
 				1000
@@ -299,7 +299,7 @@
 			loadError = null;
 
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

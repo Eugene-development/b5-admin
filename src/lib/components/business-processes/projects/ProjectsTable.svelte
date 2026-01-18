@@ -371,7 +371,7 @@
 							role="cell"
 							headers="col-contract"
 						>
-							{project.value || ' - '}
+							{project.project_number || ' - '}
 						</td>
 						<td
 							class="whitespace-nowrap px-6 py-5 text-sm font-medium text-gray-900 dark:text-white"
@@ -511,7 +511,7 @@
 								id="project-{project.id}-name"
 								class="truncate text-sm font-medium text-gray-900 dark:text-white"
 							>
-								{project.value || ' - '}
+								{project.project_number || ' - '}
 							</h3>
 							<p
 								class="truncate text-sm text-gray-500 dark:text-gray-400"
@@ -545,7 +545,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{project.value || ' - '}
+								{project.project_number || ' - '}
 							</dd>
 						</div>
 						<div class="col-span-2">

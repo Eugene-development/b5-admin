@@ -47,6 +47,7 @@ const CONTRACTS_QUERY = gql`
 					color
 				}
 				contract_number
+				value
 				comments {
 					id
 					value
@@ -62,6 +63,7 @@ const CONTRACTS_QUERY = gql`
 				agent_bonus
 				curator_bonus
 				is_active
+				is_urgent
 				created_at
 				updated_at
 			}
@@ -113,6 +115,7 @@ const CREATE_CONTRACT_MUTATION = gql`
 				color
 			}
 			contract_number
+			value
 			comments {
 				id
 				value
@@ -128,6 +131,7 @@ const CREATE_CONTRACT_MUTATION = gql`
 			agent_bonus
 			curator_bonus
 			is_active
+			is_urgent
 			created_at
 			updated_at
 		}
@@ -168,6 +172,7 @@ const UPDATE_CONTRACT_MUTATION = gql`
 				color
 			}
 			contract_number
+			value
 			comments {
 				id
 				value
@@ -183,6 +188,7 @@ const UPDATE_CONTRACT_MUTATION = gql`
 			agent_bonus
 			curator_bonus
 			is_active
+			is_urgent
 			created_at
 			updated_at
 		}

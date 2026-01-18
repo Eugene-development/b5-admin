@@ -48,7 +48,7 @@ export async function loginUser(email, password, remember = false, options = {})
 		);
 
 		if (result.success && showSuccessToast) {
-			addSuccessToast('Вход выполнен успешно!');
+			addSuccessToast('Вход выполнен!');
 		}
 
 		// Format validation errors if present
@@ -93,7 +93,7 @@ export async function registerUser(userData, options = {}) {
 		);
 
 		if (result.success && showSuccessToast) {
-			addSuccessToast('Регистрация прошла успешно! Проверьте email для подтверждения.');
+			addSuccessToast('Регистрация выполнена! Проверьте email для подтверждения.');
 		}
 
 		// Format validation errors if present
@@ -137,7 +137,7 @@ export async function logoutUser(options = {}) {
 		);
 
 		if (result.success && showSuccessToast) {
-			addSuccessToast('Выход выполнен успешно');
+			addSuccessToast('Выход выполнен');
 		}
 
 		return result;
@@ -280,7 +280,7 @@ export async function verifyEmail(id, hash, signature, options = {}) {
 		);
 
 		if (result.success && showSuccessToast) {
-			addSuccessToast('Email адрес успешно подтвержден!');
+			addSuccessToast('Email адрес подтвержден!');
 		}
 
 		return result;

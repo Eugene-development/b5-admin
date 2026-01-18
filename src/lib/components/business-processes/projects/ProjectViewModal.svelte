@@ -189,7 +189,7 @@
 								</div>
 								<div>
 									<h2 class="text-xl font-bold text-white">
-										{project.value || 'Проект'}
+										{project.project_number || 'Проект'}
 									</h2>
 								</div>
 							</div>

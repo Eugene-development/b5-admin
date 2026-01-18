@@ -13,7 +13,8 @@
 	let previousActiveElement;
 
 	let formData = $state({
-		value: '',
+		supplier_order_number: '', // Номер заказа от поставщика (записывается в поле value)
+		comment: '', // Комментарий (хранится через полиморфную таблицу)
 		company_id: '',
 		project_id: '',
 		order_amount: '',
@@ -44,7 +45,8 @@
 	$effect(() => {
 		if (isOpen) {
 			formData = {
-				value: '',
+				supplier_order_number: '',
+				comment: '',
 				company_id: '',
 				project_id: '',
 				order_amount: '',
@@ -86,7 +88,8 @@
 	async function handleSave() {
 		if (onSave && !isLoading && isFormValid) {
 			const orderData = {
-				value: 'Заказ', // Placeholder value, comment will be stored separately
+				// Номер заказа от поставщика записывается в поле value
+				value: formData.supplier_order_number.trim() || null,
 				company_id: formData.company_id,
 				project_id: formData.project_id,
 				order_amount: formData.order_amount ? parseFloat(formData.order_amount) : null,
@@ -107,7 +110,7 @@
 				}))
 			};
 			// Передаём комментарий отдельно для обработки через полиморфную таблицу
-			const comment = formData.value.trim() || null;
+			const comment = formData.comment.trim() || null;
 			onSave(orderData, comment);
 		}
 	}
@@ -289,20 +292,37 @@
 									</select>
 								</div>
 							</div>
-							<div class="mt-4">
-								<label
-									for="order-value"
-									class="block text-sm font-medium text-gray-700 dark:text-gray-300"
-									>Комментарий</label
-								>
-								<input
-									type="text"
-									id="order-value"
-									bind:value={formData.value}
-									disabled={isLoading}
-									placeholder="Не указан"
-									class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
-								/>
+							<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+								<div>
+									<label
+										for="supplier-order-number"
+										class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+										>Номер заказа от поставщика</label
+									>
+									<input
+										type="text"
+										id="supplier-order-number"
+										bind:value={formData.supplier_order_number}
+										disabled={isLoading}
+										placeholder="Опционально"
+										class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									/>
+								</div>
+								<div>
+									<label
+										for="order-comment"
+										class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+										>Комментарий</label
+									>
+									<input
+										type="text"
+										id="order-comment"
+										bind:value={formData.comment}
+										disabled={isLoading}
+										placeholder="Опционально"
+										class="mt-1.5 block w-full rounded-lg border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 disabled:cursor-not-allowed disabled:opacity-60 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+									/>
+								</div>
 							</div>
 							<div class="mt-4 flex items-center gap-6">
 								<label class="flex items-center gap-2">

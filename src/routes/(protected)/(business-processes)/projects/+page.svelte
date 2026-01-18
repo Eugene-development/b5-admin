@@ -255,7 +255,7 @@
 					if (type === 'delete') {
 						await deleteProject(project.id);
 						removeProjectFromList(project.id);
-						addSuccessToast(`Проект "${project.value}" успешно удален.`);
+						addSuccessToast(`Проект "${project.value}" удален.`);
 						// Refresh new projects count in sidebar (in case deleted project was new)
 						await newProjectsState.refresh();
 					}
@@ -290,7 +290,7 @@
 				async () => {
 					const updatedProject = await updateProject(updatedProjectData);
 					updateProjectInList(updatedProject);
-					addSuccessToast(`Проект "${updatedProject.value}" успешно обновлен.`);
+					addSuccessToast(`Проект "${updatedProject.value}" обновлен.`);
 					// Refresh new projects count in sidebar (in case status changed)
 					await newProjectsState.refresh();
 				},
@@ -349,7 +349,7 @@
 						acceptedAt: new Date().toISOString()
 					});
 
-					addSuccessToast('Вы успешно приняли проект');
+					addSuccessToast('Вы приняли проект');
 					// Silently refresh data in background without showing loading state
 					await silentRefreshData();
 					// Refresh new projects count in sidebar
@@ -368,7 +368,7 @@
 	function removeProjectFromList(projectId) {
 		localProjects = localProjects.filter((project) => project.id !== projectId);
 		updateCounter++;
-		
+
 		// Check if current page is now empty and adjust if needed
 		const newTotalPages = Math.ceil(
 			(searchTerm.trim()
@@ -389,17 +389,30 @@
 					}).length
 				: localProjects.length) / itemsPerPage
 		);
-		
+
 		if (newTotalPages > 0 && currentPage > newTotalPages) {
 			currentPage = newTotalPages;
 		}
 	}
 
 	// Update project in local state after editing
+	// Merge updated project with existing project to preserve fields that may not be returned by API
 	function updateProjectInList(updatedProject) {
 		localProjects = localProjects.map((project) =>
 			project.id === updatedProject.id
-				? { ...updatedProject, sequentialNumber: project.sequentialNumber } // Preserve sequentialNumber
+				? {
+						...project, // Keep existing data as base
+						...updatedProject, // Override with updated fields
+						sequentialNumber: project.sequentialNumber, // Always preserve sequentialNumber
+						// Preserve nested arrays if not returned by update mutation
+						comments: updatedProject.comments ?? project.comments,
+						contracts: updatedProject.contracts ?? project.contracts,
+						orders: updatedProject.orders ?? project.orders,
+						users: updatedProject.users ?? project.users,
+						curator: updatedProject.curator ?? project.curator,
+						projectUsers: updatedProject.projectUsers ?? project.projectUsers,
+						phones: updatedProject.phones ?? project.phones
+					}
 				: project
 		);
 		updateCounter++;
@@ -455,7 +468,7 @@
 
 			// Only show success message for manual refresh, not initial load
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 		} catch (error) {
 			handleApiError(

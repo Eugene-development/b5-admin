@@ -267,6 +267,19 @@
 						</td>
 						<td class="whitespace-nowrap px-6 py-5 text-center text-sm">
 							<div class="flex items-center justify-center gap-2">
+								{#if contract.is_urgent}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-red-500"
+										title="Срочный"
+										aria-label="Срочный"
+									></span>
+								{:else}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-blue-500"
+										title="Обычный"
+										aria-label="Обычный"
+									></span>
+								{/if}
 								{#if contract.is_active}
 									<span
 										class="inline-block h-6 w-6 cursor-help rounded bg-green-500"
@@ -379,6 +392,41 @@
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
 								{contract.project?.value || 'Не указан'}
+							</dd>
+						</div>
+						<div>
+							<dt
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+							>
+								Метки
+							</dt>
+							<dd class="mt-1 flex items-center gap-2">
+								{#if contract.is_urgent}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-red-500"
+										title="Срочный"
+										aria-label="Срочный"
+									></span>
+								{:else}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-blue-500"
+										title="Обычный"
+										aria-label="Обычный"
+									></span>
+								{/if}
+								{#if contract.is_active}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-green-500"
+										title="Активен"
+										aria-label="Активен"
+									></span>
+								{:else}
+									<span
+										class="inline-block h-6 w-6 cursor-help rounded bg-gray-500"
+										title="Неактивен"
+										aria-label="Неактивен"
+									></span>
+								{/if}
 							</dd>
 						</div>
 						<div>

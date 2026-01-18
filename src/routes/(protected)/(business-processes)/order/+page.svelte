@@ -223,7 +223,7 @@
 						}));
 						// filteredOrders automatically updates via $derived
 						updateCounter++;
-						
+
 						// Check if current page is now empty and adjust if needed
 						const newTotalPages = Math.ceil(
 							(searchTerm.trim()
@@ -242,12 +242,12 @@
 									}).length
 								: orders.length) / itemsPerPage
 						);
-						
+
 						if (newTotalPages > 0 && currentPage > newTotalPages) {
 							currentPage = newTotalPages;
 						}
-						
-						addSuccessToast(`Заказ "${order.order_number}" успешно удален.`);
+
+						addSuccessToast(`Заказ "${order.order_number}" удален.`);
 					}
 				},
 				2,
@@ -321,7 +321,7 @@
 			orders = refreshedOrders;
 			// filteredOrders automatically updates via $derived
 			if (!isInitialLoad) {
-				addSuccessToast('Данные успешно обновлены');
+				addSuccessToast('Данные обновлены');
 			}
 			updateCounter++;
 		} catch (error) {
@@ -396,7 +396,7 @@
 					// filteredOrders automatically updates via $derived
 					updateCounter++;
 
-					addSuccessToast(`Заказ #${newOrder.order_number} успешно добавлен`);
+					addSuccessToast(`Заказ #${newOrder.order_number} добавлен`);
 				},
 				2,
 				1000
@@ -447,7 +447,10 @@
 					if (commentData && commentData.value) {
 						if (commentData.commentId) {
 							// Обновляем существующий комментарий
-							const updatedComment = await updateOrderComment(commentData.commentId, commentData.value);
+							const updatedComment = await updateOrderComment(
+								commentData.commentId,
+								commentData.value
+							);
 							updatedOrder.comments = [updatedComment];
 						} else {
 							// Добавляем новый комментарий
@@ -504,7 +507,7 @@
 					}
 
 					updateCounter++;
-					addSuccessToast(`Заказ #${updatedOrder.order_number} успешно обновлен`);
+					addSuccessToast(`Заказ #${updatedOrder.order_number} обновлен`);
 				},
 				2,
 				1000
