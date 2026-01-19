@@ -17,7 +17,7 @@
 	import { getBonusPaymentRequests } from '$lib/api/bonusPayments.js';
 	import { addSuccessToast, handleApiError } from '$lib/utils/toastStore.js';
 	import { authState } from '$lib/state/auth.svelte.js';
-	import { hasAdminAccess } from '$lib/utils/domainAccess.svelte.js';
+	import { hasAdminAccess, hasCuratorAccess } from '$lib/utils/domainAccess.svelte.js';
 
 	/**
 	 * Filter bonuses based on user role:
@@ -183,9 +183,8 @@
 			const userId = authState.user?.id;
 
 			// For curators, add filters to get only their curator bonuses
-			const curatorFilters = !isAdmin && userId 
-				? { user_id: userId, recipient_type: 'curator' } 
-				: null;
+			const curatorFilters =
+				!isAdmin && userId ? { user_id: userId, recipient_type: 'curator' } : null;
 
 			const promises = [
 				getAdminBonuses(curatorFilters),
@@ -196,8 +195,9 @@
 					: Promise.resolve(partnerPaymentStatuses)
 			];
 
-			// For curators, also load their payment requests
-			if (!isAdmin && userId) {
+			// For curators (and admins acting as curators), also load payment requests
+			const isCurator = hasCuratorAccess();
+			if (isCurator && userId) {
 				promises.push(getBonusPaymentRequests(100, 1, { requester_type: 'curator' }));
 			}
 
@@ -210,12 +210,14 @@
 			if (partnerStatusesData !== partnerPaymentStatuses)
 				partnerPaymentStatuses = partnerStatusesData;
 
-			// Process curator payment requests
-			if (!isAdmin && userId && results[4]) {
+			// Process curator payment requests (for curators and admins acting as curators)
+			if (isCurator && userId && results[4]) {
 				const requestsData = results[4];
-				// Filter only current user's requests
-				curatorPaymentRequests = (requestsData.data || []).filter(
-					(r) => r.agent_id == userId && r.requester_type === 'curator'
+				// For admin - show all curator requests, for curator - only their own
+				curatorPaymentRequests = (requestsData.data || []).filter((r) =>
+					isAdmin
+						? r.requester_type === 'curator'
+						: r.agent_id == userId && r.requester_type === 'curator'
 				);
 				// Calculate total requested amount (only pending/approved, not paid)
 				curatorRequestedAmount = curatorPaymentRequests
@@ -297,7 +299,7 @@
 											{formatCurrency(displayStats.total_available)}
 										</dd>
 									</div>
-									{#if !hasAdminAccess() && displayStats.total_available > 0}
+									{#if hasCuratorAccess() && displayStats.total_available > 0}
 										<button
 											type="button"
 											onclick={() => (showPayoutModal = true)}
@@ -306,14 +308,19 @@
 											aria-label="Запросить выплату"
 										>
 											<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+												<path
+													stroke-linecap="round"
+													stroke-linejoin="round"
+													stroke-width="2"
+													d="M12 4v16m8-8H4"
+												/>
 											</svg>
 										</button>
 									{/if}
 								</div>
 							</div>
 							<!-- Requested card for curators -->
-							{#if !hasAdminAccess()}
+							{#if hasCuratorAccess()}
 								<div class="rounded-lg bg-white p-4 shadow dark:bg-gray-800">
 									<dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Запрошено</dt>
 									<dd class="mt-1 text-2xl font-semibold text-orange-600 dark:text-orange-400">

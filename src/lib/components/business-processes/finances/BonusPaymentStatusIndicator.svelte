@@ -3,11 +3,7 @@
 	import { addSuccessToast } from '$lib/utils/toastStore.js';
 	import { onMount, onDestroy } from 'svelte';
 
-	let {
-		bonus,
-		bonusStatuses = [],
-		onStatusChange = null
-	} = $props();
+	let { bonus, bonusStatuses = [], onStatusChange = null } = $props();
 
 	let isUpdating = $state(false);
 	let showDropdown = $state(false);
@@ -15,14 +11,12 @@
 	let portalContainer = null;
 
 	// Get current status
-	let currentStatus = $derived(
-		bonus?.status || { code: 'pending', name: 'Ожидание' }
-	);
+	let currentStatus = $derived(bonus?.status || { code: 'pending', name: 'Ожидание' });
 
 	// Get date for current status
 	function getStatusDate() {
 		if (!bonus) return null;
-		
+
 		switch (currentStatus.code) {
 			case 'paid':
 				return bonus.paid_at;
@@ -96,25 +90,27 @@
 
 	function renderDropdown() {
 		if (!portalContainer || !buttonRef) return;
-		
+
 		const rect = buttonRef.getBoundingClientRect();
 		const dropdownHeight = 130;
 		const viewportHeight = window.innerHeight;
 		const spaceBelow = viewportHeight - rect.bottom;
 		const spaceAbove = rect.top;
 		const openUp = spaceBelow < dropdownHeight && spaceAbove > spaceBelow;
-		
-		const topStyle = openUp 
+
+		const topStyle = openUp
 			? `bottom: ${window.innerHeight - rect.top + 4}px`
 			: `top: ${rect.bottom + 4}px`;
-		
+
 		portalContainer.innerHTML = `
 			<div 
 				class="fixed z-[9999] w-40 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-gray-700"
 				style="${topStyle}; left: ${rect.left}px;"
 			>
 				<div class="py-1">
-					${bonusStatuses.map(status => `
+					${bonusStatuses
+						.map(
+							(status) => `
 						<button
 							type="button"
 							data-status-code="${status.code}"
@@ -122,19 +118,25 @@
 						>
 							<span class="mr-2 h-2 w-2 rounded-full ${getStatusDotColor(status.code)}"></span>
 							${status.name}
-							${status.code === currentStatus.code ? `
-								<svg class="ml-auto h-4 w-4 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+							${
+								status.code === currentStatus.code
+									? `
+								<svg class="ml-auto h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
 									<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
 								</svg>
-							` : ''}
+							`
+									: ''
+							}
 						</button>
-					`).join('')}
+					`
+						)
+						.join('')}
 				</div>
 			</div>
 		`;
-		
+
 		// Add click handlers
-		portalContainer.querySelectorAll('button[data-status-code]').forEach(btn => {
+		portalContainer.querySelectorAll('button[data-status-code]').forEach((btn) => {
 			btn.addEventListener('click', (e) => {
 				e.stopPropagation();
 				const code = btn.getAttribute('data-status-code');
@@ -154,7 +156,7 @@
 		isUpdating = true;
 		showDropdown = false;
 		clearDropdown();
-		
+
 		try {
 			const result = await updateBonusStatus(bonus.id, newStatusCode);
 			addSuccessToast('Статус бонуса обновлён');
@@ -170,7 +172,11 @@
 
 	// Close dropdown on outside click
 	function handleClickOutside(event) {
-		if (showDropdown && !event.target.closest('.bonus-indicator-container') && !event.target.closest('[data-status-code]')) {
+		if (
+			showDropdown &&
+			!event.target.closest('.bonus-indicator-container') &&
+			!event.target.closest('[data-status-code]')
+		) {
 			showDropdown = false;
 			clearDropdown();
 		}
@@ -201,9 +207,9 @@
 					toggleDropdown();
 				}}
 				disabled={isUpdating}
-				class="h-4 w-8 rounded transition-all {getStatusBgColor(
-					currentStatus.code
-				)} {isUpdating ? 'opacity-50 cursor-wait' : 'cursor-pointer hover:ring-2 hover:ring-offset-1 hover:ring-indigo-500'}"
+				class="h-4 w-8 rounded transition-all {getStatusBgColor(currentStatus.code)} {isUpdating
+					? 'cursor-wait opacity-50'
+					: 'cursor-pointer hover:ring-2 hover:ring-indigo-500 hover:ring-offset-1'}"
 			>
 				{#if isUpdating}
 					<svg
@@ -227,7 +233,9 @@
 			<div
 				class="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 transform opacity-0 transition-opacity duration-200 group-hover:opacity-100"
 			>
-				<div class="whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs text-white shadow-lg dark:bg-gray-700">
+				<div
+					class="whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs text-white shadow-lg dark:bg-gray-700"
+				>
 					{formatDate(getStatusDate())}
 				</div>
 				<!-- Arrow -->

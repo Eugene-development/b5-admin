@@ -31,7 +31,7 @@
 	import ProtectedRoute from '$lib/components/common/ProtectedRoute.svelte';
 	import { authState } from '$lib/state/auth.svelte.js';
 	import { newProjectsState } from '$lib/state/newProjectsCount.svelte.js';
-	import { hasAdminAccess } from '$lib/utils/domainAccess.svelte.js';
+	import { hasAdminAccess, hasCuratorAccess } from '$lib/utils/domainAccess.svelte.js';
 
 	/**
 	 * Filter projects based on user role:

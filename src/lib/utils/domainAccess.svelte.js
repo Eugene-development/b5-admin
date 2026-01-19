@@ -110,6 +110,16 @@ export function hasAdminAccess() {
 }
 
 /**
+ * Check if current user has curator-level access
+ * Admin also has curator access because Admin can act as Curator
+ * @returns {boolean} True if user has curator or admin status
+ */
+export function hasCuratorAccess() {
+	const statusSlug = getUserStatusSlug();
+	return statusSlug === USER_STATUSES.CURATOR || statusSlug === USER_STATUSES.ADMIN;
+}
+
+/**
  * Check if current user has access to order page
  * Based on user status permissions
  * @returns {boolean} True if user can access order page
@@ -186,6 +196,7 @@ export function getNavigationVisibility() {
 			showDocumentation: false,
 			showOrder: false,
 			hasAdminAccess: false,
+			hasCuratorAccess: false,
 			config
 		};
 	}
@@ -213,8 +224,9 @@ export function getNavigationVisibility() {
 		showDocumentation: shouldShowNavItem('/documentation'),
 		showOrder: hasOrderAccess(),
 
-		// Admin access and config
+		// Admin and curator access flags and config
 		hasAdminAccess: hasAdminAccess(),
+		hasCuratorAccess: hasCuratorAccess(),
 		config
 	};
 }

@@ -19,6 +19,7 @@
 	let phoneNumber = $state('');
 	let contactInfo = $state('');
 	let comment = $state('');
+	let paymentDate = $state('');
 
 	// Payment methods
 	const paymentMethods = [
@@ -26,6 +27,17 @@
 		{ value: 'sbp', label: 'СБП', icon: '📱' },
 		{ value: 'other', label: 'Другое', icon: '📋' }
 	];
+
+	// Format date for input field (YYYY-MM-DD)
+	function formatDateForInput(dateString) {
+		if (!dateString) return '';
+		try {
+			const date = new Date(dateString);
+			return date.toISOString().split('T')[0];
+		} catch {
+			return '';
+		}
+	}
 
 	// Initialize form when payment changes
 	$effect(() => {
@@ -36,6 +48,7 @@
 			phoneNumber = payment.phone_number || '';
 			contactInfo = payment.contact_info || '';
 			comment = payment.comment || '';
+			paymentDate = formatDateForInput(payment.payment_date);
 		}
 	});
 
@@ -83,13 +96,21 @@
 		isSubmitting = true;
 
 		try {
+			// Format date for Laravel (Y-m-d H:i:s format)
+			let formattedPaymentDate = null;
+			if (paymentDate) {
+				const date = new Date(paymentDate);
+				formattedPaymentDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} 00:00:00`;
+			}
+
 			const input = {
 				amount: amountValue,
 				payment_method: paymentMethod,
 				card_number: paymentMethod === 'card' ? cardNumber.trim() : null,
 				phone_number: paymentMethod === 'sbp' ? phoneNumber.trim() : null,
 				contact_info: paymentMethod === 'other' ? contactInfo.trim() : null,
-				comment: comment.trim() || null
+				comment: comment.trim() || null,
+				payment_date: formattedPaymentDate
 			};
 
 			const result = await updateBonusPaymentRequest(payment.id, input);
@@ -310,6 +331,26 @@
 							></textarea>
 						</div>
 					{/if}
+
+					<!-- Дата выплаты -->
+					<div>
+						<label
+							for="payment-date"
+							class="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300"
+						>
+							Дата выплаты
+						</label>
+						<input
+							type="date"
+							id="payment-date"
+							bind:value={paymentDate}
+							disabled={isSubmitting}
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
+						/>
+						<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+							Оставьте пустым, если выплата ещё не произведена
+						</p>
+					</div>
 
 					<!-- Комментарий -->
 					<div>

@@ -313,6 +313,7 @@ export async function createBonusPaymentRequest(input) {
  * @param {string} input.phone_number - Номер телефона (для sbp)
  * @param {string} input.contact_info - Контактная информация (для other)
  * @param {string} input.comment - Комментарий
+ * @param {string} input.payment_date - Дата выплаты (ISO формат)
  * @returns {Promise<Object>} Обновлённая заявка
  */
 export async function updateBonusPaymentRequest(requestId, input) {
@@ -366,7 +367,8 @@ export async function updateBonusPaymentRequest(requestId, input) {
 						card_number: input.card_number || null,
 						phone_number: input.phone_number || null,
 						contact_info: input.contact_info || null,
-						comment: input.comment || null
+						comment: input.comment || null,
+						payment_date: input.payment_date || null
 					}
 				}
 			})
