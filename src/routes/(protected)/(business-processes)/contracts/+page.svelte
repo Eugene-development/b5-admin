@@ -101,7 +101,7 @@
 			const term = searchTerm.toLowerCase().trim();
 			filtered = filtered.filter((contract) => {
 				const contractNumber = (contract.contract_number || '').toLowerCase();
-				const projectName = (contract.project?.value || '').toLowerCase();
+				const projectName = (contract.project?.project_number || '').toLowerCase();
 				const companyName = (contract.company?.name || '').toLowerCase();
 
 				return (
@@ -311,7 +311,7 @@
 				? localContracts.filter((contract) => {
 						const term = searchTerm.toLowerCase().trim();
 						const contractNumber = (contract.contract_number || '').toLowerCase();
-						const projectName = (contract.project?.value || '').toLowerCase();
+						const projectName = (contract.project?.project_number || '').toLowerCase();
 						const companyName = (contract.company?.name || '').toLowerCase();
 						return (
 							contractNumber.includes(term) ||

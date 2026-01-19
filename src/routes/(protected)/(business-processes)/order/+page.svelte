@@ -142,7 +142,8 @@
 				(order.order_number && order.order_number.toLowerCase().includes(term)) ||
 				(order.value && order.value.toLowerCase().includes(term)) ||
 				(order.company?.name && order.company.name.toLowerCase().includes(term)) ||
-				(order.project?.value && order.project.value.toLowerCase().includes(term)) ||
+				(order.project?.project_number &&
+					order.project.project_number.toLowerCase().includes(term)) ||
 				// Поддержка старых полей для обратной совместимости
 				(order.supplier && order.supplier.toLowerCase().includes(term)) ||
 				(order.deal && order.deal.toLowerCase().includes(term)) ||
@@ -234,7 +235,8 @@
 											(order.order_number && order.order_number.toLowerCase().includes(term)) ||
 											(order.value && order.value.toLowerCase().includes(term)) ||
 											(order.company?.name && order.company.name.toLowerCase().includes(term)) ||
-											(order.project?.value && order.project.value.toLowerCase().includes(term)) ||
+											(order.project?.project_number &&
+												order.project.project_number.toLowerCase().includes(term)) ||
 											(order.supplier && order.supplier.toLowerCase().includes(term)) ||
 											(order.deal && order.deal.toLowerCase().includes(term)) ||
 											(order.comment && order.comment.toLowerCase().includes(term))

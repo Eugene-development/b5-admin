@@ -22,6 +22,7 @@ const CONTRACTS_QUERY = gql`
 				status_id
 				project {
 					id
+					project_number
 					value
 					region
 					description
@@ -90,6 +91,7 @@ const CREATE_CONTRACT_MUTATION = gql`
 			status_id
 			project {
 				id
+				project_number
 				value
 				region
 				description
@@ -147,6 +149,7 @@ const UPDATE_CONTRACT_MUTATION = gql`
 			status_id
 			project {
 				id
+				project_number
 				value
 				region
 				description

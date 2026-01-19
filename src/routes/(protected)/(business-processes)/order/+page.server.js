@@ -48,6 +48,7 @@ const ORDERS_QUERY = `
 				}
 				project {
 					id
+					project_number
 					value
 					contract_name
 					region

@@ -13,6 +13,7 @@ const TZ_QUERY = `
 				project_id
 				project {
 					id
+					project_number
 					value
 					region
 					contract_name

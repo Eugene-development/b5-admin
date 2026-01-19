@@ -132,7 +132,7 @@ function generatePrintHTML(order) {
 			
 			<div class="info-row"><span class="info-label">Поставщик:</span> ${order.company?.name || '—'}</div>
 			${order.company?.legal_name ? `<div class="info-row"><span class="info-label">Юр. наименование:</span> ${order.company.legal_name}</div>` : ''}
-			<div class="info-row"><span class="info-label">Проект:</span> ${order.project?.value || '—'}</div>
+			<div class="info-row"><span class="info-label">Проект:</span> ${order.project?.project_number || '—'}</div>
 			${order.project?.region ? `<div class="info-row"><span class="info-label">Регион:</span> ${order.project.region}</div>` : ''}
 			<div class="info-row"><span class="info-label">Дата создания:</span> ${formatDate(order.created_at)}</div>
 			<div class="info-row"><span class="info-label">Статус:</span> ${order.is_active ? 'Активен' : 'Неактивен'}</div>
@@ -160,7 +160,7 @@ export async function exportToExcel(order) {
 		[''],
 		['Поставщик', order.company?.name || '—'],
 		['Юр. наименование', order.company?.legal_name || '—'],
-		['Проект', order.project?.value || '—'],
+		['Проект', order.project?.project_number || '—'],
 		['Регион', order.project?.region || '—'],
 		['Дата создания', formatDate(order.created_at)],
 		['Статус', order.is_active ? 'Активен' : 'Неактивен'],
@@ -240,7 +240,7 @@ export async function exportToWord(order) {
 	const infoData = [
 		['Поставщик', order.company?.name || '—'],
 		['Юр. наименование', order.company?.legal_name || '—'],
-		['Проект', order.project?.value || '—'],
+		['Проект', order.project?.project_number || '—'],
 		['Регион', order.project?.region || '—'],
 		['Дата создания', formatDate(order.created_at)],
 		['Статус', order.is_active ? 'Активен' : 'Неактивен'],

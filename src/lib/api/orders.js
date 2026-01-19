@@ -186,6 +186,7 @@ export async function getOrders(first = 1000, page = 1, fetchFn = fetch) {
 					}
 					project {
 						id
+						project_number
 						value
 						region
 						client {

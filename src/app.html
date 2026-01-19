@@ -1,22 +1,30 @@
 <!doctype html>
-<html lang="ru" class="dark">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<style>
-			/* Prevent white flash on page load */
-			html {
-				background-color: #030712; /* gray-950 */
-			}
-			body {
-				background-color: #030712; /* gray-950 */
-				color: #f9fafb; /* gray-50 */
-			}
-		</style>
-		%sveltekit.head%
-	</head>
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-	</body>
+<!-- <html lang="ru" class="dark"> -->
+<html lang="ru">
+
+<head>
+	<meta charset="utf-8" />
+	<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<style>
+		/* Prevent white flash on page load */
+		html {
+			background-color: #030712;
+			/* gray-950 */
+		}
+
+		body {
+			background-color: #030712;
+			/* gray-950 */
+			color: #f9fafb;
+			/* gray-50 */
+		}
+	</style>
+	%sveltekit.head%
+</head>
+
+<body data-sveltekit-preload-data="hover">
+	<div style="display: contents">%sveltekit.body%</div>
+</body>
+
 </html>

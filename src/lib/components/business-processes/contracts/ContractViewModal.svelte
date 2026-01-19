@@ -267,7 +267,7 @@
 											Проект
 										</p>
 										<p class="mt-1 font-medium text-gray-900 dark:text-white">
-											{contract.project?.value || '—'}
+											{contract.project?.project_number || '—'}
 										</p>
 										{#if contract.project?.region}
 											<p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">

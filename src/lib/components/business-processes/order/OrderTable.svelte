@@ -328,7 +328,7 @@
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
 							<div class="break-words pr-3 leading-relaxed">
-								{order.project?.value || order.project?.contract_number || 'Не указан'}
+								{order.project?.project_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
@@ -496,7 +496,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{order.project?.value || order.project?.contract_number || 'Не указан'}
+								{order.project?.project_number || 'Не указан'}
 							</dd>
 						</div>
 						<div>

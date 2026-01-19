@@ -249,7 +249,7 @@
 						</td>
 						<td class="px-6 py-5 text-sm">
 							<div class="font-medium text-gray-900 dark:text-gray-100">
-								{contract.project?.value || 'Не указан'}
+								{contract.project?.project_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-6 py-5 text-sm">
@@ -391,7 +391,7 @@
 								Проект
 							</dt>
 							<dd class="mt-1 text-sm text-gray-900 dark:text-white">
-								{contract.project?.value || 'Не указан'}
+								{contract.project?.project_number || 'Не указан'}
 							</dd>
 						</div>
 						<div>

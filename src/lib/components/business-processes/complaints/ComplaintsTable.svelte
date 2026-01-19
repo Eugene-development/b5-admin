@@ -102,7 +102,7 @@
 </script>
 
 <!-- Desktop Table View -->
-<div class="ring-opacity-5 hidden overflow-hidden shadow ring-1 ring-black md:block md:rounded-lg">
+<div class="hidden overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg">
 	<div class="overflow-x-auto">
 		<table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
 			<thead class="bg-gray-50 dark:bg-gray-900">
@@ -187,7 +187,7 @@
 				{:else}
 					{#each complaints as complaint, index (complaint.id + updateCounter)}
 						<tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-							<td class="px-3 py-5 text-sm whitespace-nowrap text-gray-900 dark:text-white">
+							<td class="whitespace-nowrap px-3 py-5 text-sm text-gray-900 dark:text-white">
 								{index + 1}
 							</td>
 							<td class="px-3 py-5 text-sm text-gray-900 dark:text-white">
@@ -196,7 +196,7 @@
 								</div>
 							</td>
 							<td
-								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 sm:table-cell dark:text-gray-400"
+								class="hidden whitespace-nowrap px-3 py-5 text-sm text-gray-500 sm:table-cell dark:text-gray-400"
 							>
 								{#if complaint.contract}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -204,7 +204,7 @@
 									</div>
 									{#if complaint.contract.project}
 										<div class="text-gray-500 dark:text-gray-400">
-											{truncateText(complaint.contract.project.value, 30)}
+											{truncateText(complaint.contract.project.project_number, 30)}
 										</div>
 									{/if}
 								{:else}
@@ -212,7 +212,7 @@
 								{/if}
 							</td>
 							<td
-								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 lg:table-cell dark:text-gray-400"
+								class="hidden whitespace-nowrap px-3 py-5 text-sm text-gray-500 lg:table-cell dark:text-gray-400"
 							>
 								{#if complaint.order}
 									<div class="font-medium text-gray-900 dark:text-white">
@@ -223,21 +223,21 @@
 								{/if}
 							</td>
 							<td
-								class="hidden px-3 py-5 text-sm whitespace-nowrap text-gray-500 xl:table-cell dark:text-gray-400"
+								class="hidden whitespace-nowrap px-3 py-5 text-sm text-gray-500 xl:table-cell dark:text-gray-400"
 							>
 								{formatDate(complaint.planned_resolution_date)}
 							</td>
-							<td class="px-3 py-5 text-sm whitespace-nowrap">
+							<td class="whitespace-nowrap px-3 py-5 text-sm">
 								<span class={getPriorityBadgeClasses(complaint.priority)}>
 									{getPriorityLabel(complaint.priority)}
 								</span>
 							</td>
-							<td class="px-3 py-5 text-sm whitespace-nowrap">
+							<td class="whitespace-nowrap px-3 py-5 text-sm">
 								<span class={getStatusBadgeClasses(complaint.status)}>
 									{getStatusLabel(complaint.status)}
 								</span>
 							</td>
-							<td class="px-3 py-5 text-right text-sm font-medium whitespace-nowrap">
+							<td class="whitespace-nowrap px-3 py-5 text-right text-sm font-medium">
 								<div class="flex items-center justify-end gap-2">
 									<button
 										type="button"
@@ -354,7 +354,7 @@
 					<!-- Complaint Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
+							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
 								{truncateText(complaint.title, 40)}
 							</h3>
 						</div>
@@ -371,7 +371,7 @@
 					<dl class="mb-4 grid grid-cols-2 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Приоритет
 							</dt>
@@ -383,7 +383,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Статус
 							</dt>
@@ -396,7 +396,7 @@
 						{#if complaint.contract}
 							<div class="col-span-2">
 								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
 									Договор
 								</dt>
@@ -404,7 +404,7 @@
 									{complaint.contract.contract_number || '—'}
 									{#if complaint.contract.project}
 										<span class="text-gray-500 dark:text-gray-400">
-											• {truncateText(complaint.contract.project.value, 30)}
+											• {truncateText(complaint.contract.project.project_number, 30)}
 										</span>
 									{/if}
 								</dd>
@@ -413,7 +413,7 @@
 						{#if complaint.order}
 							<div class="col-span-2">
 								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
 									Закупка
 								</dt>
@@ -425,7 +425,7 @@
 						{#if complaint.planned_resolution_date}
 							<div class="col-span-2">
 								<dt
-									class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+									class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 								>
 									Плановая дата
 								</dt>
@@ -458,7 +458,7 @@
 							variant="delete"
 							onclick={() => onDeleteComplaint(complaint)}
 							disabled={isLoading}
-							isLoading={isLoading}
+							{isLoading}
 							ariaLabel="Удалить рекламацию"
 							title="Удалить"
 						/>

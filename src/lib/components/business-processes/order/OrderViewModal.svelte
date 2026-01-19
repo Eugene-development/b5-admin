@@ -302,7 +302,7 @@
 											Проект
 										</p>
 										<p class="mt-1 font-medium text-gray-900 dark:text-white">
-											{order.project?.value || '—'}
+											{order.project?.project_number || '—'}
 										</p>
 										{#if order.project?.region}
 											<p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">

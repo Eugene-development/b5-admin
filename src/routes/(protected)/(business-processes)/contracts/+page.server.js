@@ -14,6 +14,7 @@ const CONTRACTS_QUERY = `
 				status_id
 				project {
 					id
+					project_number
 					value
 					region
 					description
