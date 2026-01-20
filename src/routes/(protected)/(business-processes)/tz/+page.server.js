@@ -57,6 +57,7 @@ const TZ_QUERY = `
 						name
 						email
 					}
+					download_url
 					created_at
 					updated_at
 				}
@@ -73,6 +74,7 @@ const TZ_QUERY = `
 						name
 						email
 					}
+					download_url
 					created_at
 					updated_at
 				}

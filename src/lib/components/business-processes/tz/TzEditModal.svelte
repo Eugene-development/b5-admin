@@ -160,7 +160,9 @@
 							</div>
 							<div>
 								<h2 class="text-xl font-bold text-white">Редактировать техзадание</h2>
-								<p class="mt-0.5 text-sm text-violet-100">ТЗ #{tz?.id}</p>
+								<p class="mt-0.5 text-sm text-violet-100">
+									{tz?.project?.project_number || `Проект #${tz?.project_id}`}
+								</p>
 							</div>
 						</div>
 						<button

@@ -15,10 +15,47 @@ const TECHNICAL_SPECIFICATIONS_QUERY = gql`
 					value
 					region
 					contract_name
+					project_number
+					is_incognito
 					agent {
 						id
 						name
 						email
+						phones {
+							id
+							value
+							is_primary
+						}
+					}
+					curator {
+						id
+						name
+						email
+						phones {
+							id
+							value
+							is_primary
+						}
+					}
+					projectUsers {
+						id
+						user_id
+						project_id
+						role
+						user {
+							id
+							name
+							email
+							phones {
+								id
+								value
+								is_primary
+							}
+						}
+					}
+					client {
+						id
+						name
 						phones {
 							id
 							value

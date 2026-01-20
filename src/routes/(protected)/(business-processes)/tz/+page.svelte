@@ -89,11 +89,12 @@
 	}
 
 	function handleDeleteTz(tz) {
+		const projectInfo = tz.project?.project_number || `Проект #${tz.project_id}`;
 		confirmAction = {
 			type: 'delete',
 			tz: tz,
 			title: 'Удалить техзадание',
-			message: `Вы уверены, что хотите НАВСЕГДА удалить техзадание #${tz.id}? Это действие нельзя отменить. Все данные техзадания будут потеряны.`,
+			message: `Вы уверены, что хотите НАВСЕГДА удалить техзадание для проекта ${projectInfo}? Это действие нельзя отменить. Все данные техзадания будут потеряны.`,
 			confirmText: 'Удалить навсегда',
 			isDestructive: true
 		};
@@ -116,7 +117,8 @@
 						await deleteTechnicalSpecification(tz.id);
 						// Remove from local list
 						tzList = tzList.filter((t) => t.id !== tz.id);
-						addSuccessToast(`Техзадание #${tz.id} удалено`);
+						const projectInfo = tz.project?.project_number || `Проект #${tz.project_id}`;
+						addSuccessToast(`Техзадание для ${projectInfo} удалено`);
 						updateCounter++;
 					}
 				},

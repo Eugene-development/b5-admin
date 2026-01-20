@@ -105,7 +105,9 @@
 </div>
 
 <!-- Desktop Table View with horizontal scroll -->
-<div class="ring-opacity-5 hidden w-full overflow-x-auto shadow ring-1 ring-black md:block md:rounded-lg">
+<div
+	class="hidden w-full overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:block md:rounded-lg"
+>
 	<table
 		id={tableId}
 		class="w-full table-auto divide-y divide-gray-300 dark:divide-gray-700"
@@ -123,56 +125,56 @@
 			<tr>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 80px; width: 80px;"
 				>
 					№
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					НОМЕР
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					ПРОЕКТ
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+					class="px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 200px;"
 				>
 					Комментарий
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-left text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-left text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 150px;"
 				>
 					Согласование
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					ТЗ
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 100px; width: 100px;"
 				>
 					КП
 				</th>
 				<th
 					scope="col"
-					class="px-3 py-4 text-center text-xs font-medium tracking-wide whitespace-nowrap text-gray-500 uppercase dark:text-gray-400"
+					class="whitespace-nowrap px-3 py-4 text-center text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 					style="min-width: 250px; width: 250px;"
 				>
 					<span class="sr-only">Действия</span>
@@ -196,23 +198,23 @@
 						aria-rowindex={index + 2}
 					>
 						<td
-							class="px-3 py-3 align-middle text-sm font-medium whitespace-nowrap text-gray-900 dark:text-white"
+							class="whitespace-nowrap px-3 py-3 align-middle text-sm font-medium text-gray-900 dark:text-white"
 							role="cell"
 						>
 							{tz.sequentialNumber || index + 1}
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 leading-relaxed whitespace-nowrap">
+							<div class="whitespace-nowrap pr-3 leading-relaxed">
 								{tz.value || '—'}
 							</div>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="pr-3 leading-relaxed break-words">
-								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
+							<div class="break-words pr-3 leading-relaxed">
+								{tz.project?.project_number || 'Не указан'}
 							</div>
 						</td>
 						<td class="px-3 py-3 align-middle text-sm text-gray-900 dark:text-white" role="cell">
-							<div class="max-w-xs pr-4 leading-relaxed break-words">
+							<div class="max-w-xs break-words pr-4 leading-relaxed">
 								{tz.comment || 'Нет комментария'}
 							</div>
 						</td>
@@ -239,7 +241,10 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td
+							class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white"
+							role="cell"
+						>
 							<div class="flex items-center justify-center">
 								{#if tz.sketches && tz.sketches.length > 0}
 									<span
@@ -252,7 +257,10 @@
 								{/if}
 							</div>
 						</td>
-						<td class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white" role="cell">
+						<td
+							class="px-3 py-3 text-center align-middle text-sm text-gray-900 dark:text-white"
+							role="cell"
+						>
 							<div class="flex items-center justify-center">
 								{#if tz.commercialOffers && tz.commercialOffers.length > 0}
 									<span
@@ -265,7 +273,7 @@
 								{/if}
 							</div>
 						</td>
-						<td class="relative px-4 py-3 text-center align-middle whitespace-nowrap" role="cell">
+						<td class="relative whitespace-nowrap px-4 py-3 text-center align-middle" role="cell">
 							<div class="flex items-center justify-center gap-1.5">
 								<ActionButton
 									variant="view"
@@ -326,10 +334,10 @@
 					<!-- TZ Header -->
 					<div class="mb-3 flex items-start justify-between">
 						<div class="min-w-0 flex-1">
-							<h3 class="text-sm font-medium break-words text-gray-900 dark:text-white">
+							<h3 class="break-words text-sm font-medium text-gray-900 dark:text-white">
 								{tz.value || 'Без номера'}
 							</h3>
-							<p class="text-sm break-words text-gray-500 dark:text-gray-400">
+							<p class="break-words text-sm text-gray-500 dark:text-gray-400">
 								Куратор: {getCuratorName(tz)}
 							</p>
 						</div>
@@ -346,27 +354,27 @@
 					<dl class="mb-4 grid grid-cols-1 gap-3">
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Проект
 							</dt>
-							<dd class="mt-1 text-sm break-words text-gray-900 dark:text-white">
-								{tz.project?.value || tz.project?.contract_number || 'Не указан'}
+							<dd class="mt-1 break-words text-sm text-gray-900 dark:text-white">
+								{tz.project?.project_number || 'Не указан'}
 							</dd>
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Комментарий
 							</dt>
-							<dd class="mt-1 text-sm break-words text-gray-900 dark:text-white">
+							<dd class="mt-1 break-words text-sm text-gray-900 dark:text-white">
 								{tz.comment || 'Нет комментария'}
 							</dd>
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Согласование
 							</dt>
@@ -394,7 +402,7 @@
 						</div>
 						<div>
 							<dt
-								class="text-xs font-medium tracking-wide text-gray-500 uppercase dark:text-gray-400"
+								class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
 							>
 								Файлы
 							</dt>
