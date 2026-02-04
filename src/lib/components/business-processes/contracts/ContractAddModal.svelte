@@ -91,8 +91,8 @@
 				company_id: formData.company_id,
 				contract_date: formData.contract_date,
 				planned_completion_date: formData.planned_completion_date,
-				agent_percentage: 0,
-				curator_percentage: 0,
+				agent_percentage: 5,
+				curator_percentage: 2,
 				is_active: formData.is_active,
 				is_urgent: formData.is_urgent,
 				contract_amount: parseFloat(formData.contract_amount) || 0

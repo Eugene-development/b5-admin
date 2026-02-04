@@ -19,7 +19,7 @@
 		project_id: '',
 		order_amount: '',
 		agent_percentage: '5',
-		curator_percentage: '5',
+		curator_percentage: '2',
 		is_active: true,
 		is_urgent: false
 	});
@@ -51,7 +51,7 @@
 				project_id: '',
 				order_amount: '',
 				agent_percentage: '5',
-				curator_percentage: '5',
+				curator_percentage: '2',
 				is_active: true,
 				is_urgent: false
 			};
@@ -94,7 +94,7 @@
 				project_id: formData.project_id,
 				order_amount: formData.order_amount ? parseFloat(formData.order_amount) : null,
 				agent_percentage: parseFloat(formData.agent_percentage) || 5,
-				curator_percentage: parseFloat(formData.curator_percentage) || 5,
+				curator_percentage: parseFloat(formData.curator_percentage) || 2,
 				is_active: formData.is_active,
 				is_urgent: formData.is_urgent,
 				positions: positions.map((p) => ({
