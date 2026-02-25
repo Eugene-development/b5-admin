@@ -1,5 +1,13 @@
 <script>
-	let { isOpen = false, tz = null, projects = [], onSave, onCancel, isLoading = false } = $props();
+	let {
+		isOpen = false,
+		tz = null,
+		projects = [],
+		onSave,
+		onCancel,
+		onDeleteFile,
+		isLoading = false
+	} = $props();
 
 	let modalElement = $state();
 	let previousActiveElement;
@@ -22,6 +30,10 @@
 	let errors = $state({});
 	let wasOpen = $state(false);
 
+	// File deletion confirmation state
+	let confirmDeleteFileId = $state(null);
+	let isDeletingFile = $state(false);
+
 	$effect(() => {
 		if (isOpen && !wasOpen && tz) {
 			formData = {
@@ -33,6 +45,8 @@
 				approval_status: getApprovalStatus(tz)
 			};
 			errors = {};
+			confirmDeleteFileId = null;
+			isDeletingFile = false;
 		}
 		wasOpen = isOpen;
 	});
@@ -114,6 +128,43 @@
 		if (project.project_number) parts.push(project.project_number);
 		if (project.region) parts.push(`(${project.region})`);
 		return parts.join(' ') || 'Без номера';
+	}
+
+	function formatFileSize(bytes) {
+		if (!bytes) return '';
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+	}
+
+	// Handle file delete with confirmation
+	function handleDeleteFileClick(fileId) {
+		if (confirmDeleteFileId === fileId) {
+			// Second click - confirmed, proceed with deletion
+			performDeleteFile(fileId);
+		} else {
+			// First click - ask for confirmation
+			confirmDeleteFileId = fileId;
+		}
+	}
+
+	function cancelDeleteConfirmation() {
+		confirmDeleteFileId = null;
+	}
+
+	async function performDeleteFile(fileId) {
+		if (!onDeleteFile) return;
+		isDeletingFile = true;
+		try {
+			await onDeleteFile(fileId);
+			confirmDeleteFileId = null;
+		} catch (error) {
+			console.error('Failed to delete file:', error);
+		} finally {
+			isDeletingFile = false;
+		}
 	}
 </script>
 
@@ -336,6 +387,250 @@
 								</label>
 							</div>
 						</div>
+
+						<!-- Files Section: Sketches (ТЗ) -->
+						{#if tz.sketches && tz.sketches.length > 0}
+							<div
+								class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50"
+							>
+								<h3
+									class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white"
+								>
+									<svg
+										class="h-4 w-4 text-violet-500"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+										/>
+									</svg>
+									Файлы ТЗ
+									<span
+										class="ml-auto rounded-full bg-violet-100 px-2 py-0.5 text-xs font-medium text-violet-700 dark:bg-violet-900/30 dark:text-violet-300"
+									>
+										{tz.sketches.length}
+									</span>
+								</h3>
+								<div class="space-y-2">
+									{#each tz.sketches as sketch (sketch.id)}
+										<div
+											class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 transition-colors dark:border-gray-600 dark:bg-gray-800"
+										>
+											<div class="min-w-0 flex-1">
+												<p
+													class="truncate text-sm font-medium text-gray-900 dark:text-white"
+													title={sketch.file_name}
+												>
+													{sketch.file_name}
+												</p>
+												<div
+													class="mt-0.5 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
+												>
+													{#if sketch.file_size}
+														<span>{formatFileSize(sketch.file_size)}</span>
+													{/if}
+													{#if sketch.uploader}
+														<span>•</span>
+														<span class="truncate"
+															>{sketch.uploader.name || sketch.uploader.email}</span
+														>
+													{/if}
+												</div>
+											</div>
+											<div class="ml-3 flex items-center gap-1.5">
+												{#if confirmDeleteFileId === sketch.id}
+													<!-- Confirmation state -->
+													<button
+														type="button"
+														onclick={() => performDeleteFile(sketch.id)}
+														disabled={isDeletingFile || isLoading}
+														class="inline-flex items-center gap-1 rounded-lg bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-red-700 disabled:opacity-50"
+													>
+														{#if isDeletingFile}
+															<svg class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+																<circle
+																	class="opacity-25"
+																	cx="12"
+																	cy="12"
+																	r="10"
+																	stroke="currentColor"
+																	stroke-width="4"
+																></circle>
+																<path
+																	class="opacity-75"
+																	fill="currentColor"
+																	d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+																></path>
+															</svg>
+														{/if}
+														Да, удалить
+													</button>
+													<button
+														type="button"
+														onclick={cancelDeleteConfirmation}
+														disabled={isDeletingFile}
+														class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+													>
+														Отмена
+													</button>
+												{:else}
+													<!-- Normal state -->
+													<button
+														type="button"
+														onclick={() => handleDeleteFileClick(sketch.id)}
+														disabled={isLoading || isDeletingFile}
+														title="Удалить файл"
+														class="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100 disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40"
+													>
+														<svg
+															class="h-3.5 w-3.5"
+															fill="none"
+															stroke="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+															/>
+														</svg>
+														Удалить
+													</button>
+												{/if}
+											</div>
+										</div>
+									{/each}
+								</div>
+							</div>
+						{/if}
+
+						<!-- Files Section: Commercial Offers (КП) -->
+						{#if tz.commercialOffers && tz.commercialOffers.length > 0}
+							<div
+								class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800/50"
+							>
+								<h3
+									class="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white"
+								>
+									<svg
+										class="h-4 w-4 text-blue-500"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+									>
+										<path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+										/>
+									</svg>
+									Файлы КП
+									<span
+										class="ml-auto rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+									>
+										{tz.commercialOffers.length}
+									</span>
+								</h3>
+								<div class="space-y-2">
+									{#each tz.commercialOffers as offer (offer.id)}
+										<div
+											class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-3 transition-colors dark:border-gray-600 dark:bg-gray-800"
+										>
+											<div class="min-w-0 flex-1">
+												<p
+													class="truncate text-sm font-medium text-gray-900 dark:text-white"
+													title={offer.file_name}
+												>
+													{offer.file_name}
+												</p>
+												<div
+													class="mt-0.5 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
+												>
+													{#if offer.file_size}
+														<span>{formatFileSize(offer.file_size)}</span>
+													{/if}
+													{#if offer.uploader}
+														<span>•</span>
+														<span class="truncate"
+															>{offer.uploader.name || offer.uploader.email}</span
+														>
+													{/if}
+												</div>
+											</div>
+											<div class="ml-3 flex items-center gap-1.5">
+												{#if confirmDeleteFileId === offer.id}
+													<!-- Confirmation state -->
+													<button
+														type="button"
+														onclick={() => performDeleteFile(offer.id)}
+														disabled={isDeletingFile || isLoading}
+														class="inline-flex items-center gap-1 rounded-lg bg-red-600 px-2.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-red-700 disabled:opacity-50"
+													>
+														{#if isDeletingFile}
+															<svg class="h-3.5 w-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+																<circle
+																	class="opacity-25"
+																	cx="12"
+																	cy="12"
+																	r="10"
+																	stroke="currentColor"
+																	stroke-width="4"
+																></circle>
+																<path
+																	class="opacity-75"
+																	fill="currentColor"
+																	d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+																></path>
+															</svg>
+														{/if}
+														Да, удалить
+													</button>
+													<button
+														type="button"
+														onclick={cancelDeleteConfirmation}
+														disabled={isDeletingFile}
+														class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+													>
+														Отмена
+													</button>
+												{:else}
+													<!-- Normal state -->
+													<button
+														type="button"
+														onclick={() => handleDeleteFileClick(offer.id)}
+														disabled={isLoading || isDeletingFile}
+														title="Удалить файл"
+														class="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-700 shadow-sm transition-colors hover:border-red-300 hover:bg-red-100 disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40"
+													>
+														<svg
+															class="h-3.5 w-3.5"
+															fill="none"
+															stroke="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<path
+																stroke-linecap="round"
+																stroke-linejoin="round"
+																stroke-width="2"
+																d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+															/>
+														</svg>
+														Удалить
+													</button>
+												{/if}
+											</div>
+										</div>
+									{/each}
+								</div>
+							</div>
+						{/if}
 					</div>
 				</form>
 
@@ -348,14 +643,14 @@
 							type="button"
 							onclick={onCancel}
 							disabled={isLoading}
-							class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+							class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:outline-none disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
 							>Отмена</button
 						>
 						<button
 							type="submit"
 							onclick={handleSubmit}
 							disabled={isLoading}
-							class="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-500 focus:outline-none focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 disabled:opacity-50 dark:focus:ring-offset-gray-900"
+							class="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-violet-500 focus:ring-2 focus:ring-violet-600 focus:ring-offset-2 focus:outline-none disabled:opacity-50 dark:focus:ring-offset-gray-900"
 						>
 							{#if isLoading}<svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24"
 									><circle

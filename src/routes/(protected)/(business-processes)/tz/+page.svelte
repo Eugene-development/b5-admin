@@ -371,6 +371,37 @@
 		uploadType = null;
 	}
 
+	// Handle delete TZ file (from edit modal)
+	async function handleDeleteTzFile(fileId) {
+		try {
+			await deleteTzFile(fileId);
+			addSuccessToast('Файл удалён');
+
+			// Reload data to get updated file lists
+			await loadServices();
+
+			// Update editingTz with refreshed data
+			if (editingTz) {
+				const updatedTz = tzList.find((t) => t.id === editingTz.id);
+				if (updatedTz) {
+					editingTz = updatedTz;
+				}
+			}
+
+			// Also update selectedTz if view modal is open
+			if (isViewModalOpen && selectedTz) {
+				const updatedTz = tzList.find((t) => t.id === selectedTz.id);
+				if (updatedTz) {
+					selectedTz = updatedTz;
+				}
+			}
+		} catch (error) {
+			console.error('Delete TZ file failed:', error);
+			handleApiError(error, 'Не удалось удалить файл');
+			throw error; // Re-throw so the modal knows it failed
+		}
+	}
+
 	// Handle retry on error
 	function handleRetry() {
 		goto(window.location.pathname, { invalidateAll: true });
@@ -426,7 +457,7 @@
 					<div class="space-y-6">
 						<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
 							<h1
-								class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+								class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 							>
 								Техзадания
 							</h1>
@@ -524,7 +555,7 @@
 				<div class="space-y-6">
 					<div class="border-b border-gray-200 pb-5 dark:border-gray-700">
 						<h1
-							class="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl dark:text-white"
+							class="text-2xl leading-7 font-bold text-gray-900 sm:truncate sm:text-3xl dark:text-white"
 						>
 							Техзадания
 						</h1>
@@ -562,6 +593,7 @@
 	{projects}
 	onSave={handleUpdateTz}
 	onCancel={handleCloseEditModal}
+	onDeleteFile={handleDeleteTzFile}
 	{isLoading}
 />
 

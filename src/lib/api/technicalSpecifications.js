@@ -1,6 +1,16 @@
 import { gql, request } from 'graphql-request';
 import { handleAuthError } from '$lib/utils/authErrorHandler.js';
 import { getGraphQLEndpoint } from '$lib/config/api.js';
+import { browser } from '$app/environment';
+
+/**
+ * Get JWT token from localStorage (client-side only)
+ * @returns {string|null} JWT token or null
+ */
+function getStoredToken() {
+	if (!browser) return null;
+	return localStorage.getItem('b5_auth_token');
+}
 
 // GraphQL queries and mutations
 const TECHNICAL_SPECIFICATIONS_QUERY = gql`
@@ -329,6 +339,14 @@ async function makeGraphQLRequest(
 				Accept: 'application/json'
 			};
 
+			// Add JWT token for client-side requests
+			if (!customFetch && browser) {
+				const token = getStoredToken();
+				if (token) {
+					headers['Authorization'] = `Bearer ${token}`;
+				}
+			}
+
 			const response = await fetchFunction(graphqlEndpoint, {
 				method: 'POST',
 				headers,
@@ -494,8 +512,19 @@ export async function uploadSketchFile(projectId, file) {
 		formData.append('0', file);
 
 		const graphqlEndpoint = getGraphQLEndpoint();
+		const headers = {};
+
+		// Add JWT token for authentication
+		if (browser) {
+			const token = getStoredToken();
+			if (token) {
+				headers['Authorization'] = `Bearer ${token}`;
+			}
+		}
+
 		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
+			headers,
 			body: formData,
 			credentials: 'include'
 		});
@@ -532,8 +561,19 @@ export async function uploadOfferFile(projectId, file) {
 		formData.append('0', file);
 
 		const graphqlEndpoint = getGraphQLEndpoint();
+		const headers = {};
+
+		// Add JWT token for authentication
+		if (browser) {
+			const token = getStoredToken();
+			if (token) {
+				headers['Authorization'] = `Bearer ${token}`;
+			}
+		}
+
 		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
+			headers,
 			body: formData,
 			credentials: 'include'
 		});
@@ -584,8 +624,19 @@ export async function uploadTzFile(tzId, fileType, file) {
 		formData.append('0', file);
 
 		const graphqlEndpoint = getGraphQLEndpoint();
+		const headers = {};
+
+		// Add JWT token for authentication
+		if (browser) {
+			const token = getStoredToken();
+			if (token) {
+				headers['Authorization'] = `Bearer ${token}`;
+			}
+		}
+
 		const response = await fetch(graphqlEndpoint, {
 			method: 'POST',
+			headers,
 			body: formData,
 			credentials: 'include'
 		});
